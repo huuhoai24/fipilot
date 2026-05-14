@@ -1,0 +1,23 @@
+[project]
+name = "fipilot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "accelerate>=1.13.0",
+    "browser-use>=0.12.9",
+    "cloakbrowser>=0.3.31",
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+    "playwright>=1.60.0",
+    "torch>=2.12.0",
+    "transformers>=4.45.0",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["config"]
