@@ -6,5 +6,4 @@ class Config:
     hf_token: str= os.environ["HF_TOKEN"] 
     
 
-
 cfg = Config()
