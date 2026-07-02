@@ -1,0 +1,29 @@
+If any field does not exist, output an empty string "".
+If no projects are mentioned, return an empty array [].
+If no project section exists in the resume, return {"projects": []}. Do NOT invent or infer projects from work experience.
+
+CRITICAL RULES:
+- ONLY extract projects if they are listed under a dedicated section like "PROJECTS", "PERSONAL PROJECTS", "SIDE PROJECTS", or "ACADEMIC PROJECTS".
+- Do NOT extract work experience projects or duties performed at named companies. If a task was done as part of a job at a company, it belongs to WORK EXPERIENCE, not projects.
+- Do NOT output any project that does not have a clear project name.
+- Do NOT use the example project name "Invoice OCR System" in the output.
+- If there is no dedicated projects section, you MUST return exactly: {"projects": []}
+
+Field descriptions:
+- name: Project name (MUST NOT be empty)
+- description: A two-element array [start_index, end_index] representing the inclusive range of line indices in the input that cover the project details.
+- tech_stack: List of individual technologies extracted from the project.
+
+Output schema:
+{
+  "projects": [
+    {
+      "name": "string",
+      "description": [start_index, end_index],
+      "tech_stack": ["string"]
+    }
+  ]
+}
+
+--- RESUME ---
+{{ resume_text }}
