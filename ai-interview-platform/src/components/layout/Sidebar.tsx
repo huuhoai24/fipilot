@@ -9,6 +9,8 @@ import {
   ChevronsRight,
   ChevronDown,
   Circle,
+  Sun,
+  Moon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/store/useAppStore'
@@ -19,7 +21,7 @@ import { UserMenu } from './UserMenu'
 const navItem = (to: string, label: string, icon: any) => ({ to, label, icon })
 
 export function Sidebar() {
-  const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu, theme, toggleTheme } = useUIStore()
   const { currentUser } = useAuthStore()
   const sessions = useActiveSessionStore((s) => s.sessions)
   const navigate = useNavigate()
@@ -134,6 +136,62 @@ export function Sidebar() {
           </>
         )}
       </button>
+
+      {/* Theme toggle — ngay trên khối user theo yêu cầu */}
+      <div className={cn(
+        'border-t border-border',
+        sidebarCollapsed ? 'flex justify-center px-0 py-3' : 'px-4 py-3'
+      )}>
+        {sidebarCollapsed ? (
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Chuyển sang Light' : 'Chuyển sang Dark'}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted hover:bg-surface-raised hover:text-text-primary transition-colors duration-150"
+          >
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-text-muted">
+              {theme === 'dark' ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
+              <span>Theme</span>
+            </div>
+            {/* Pill switch */}
+            <button
+              onClick={toggleTheme}
+              role="switch"
+              aria-checked={theme === 'light'}
+              className={cn(
+                'relative flex h-6 w-[88px] items-center rounded-full border p-0.5 transition-colors duration-200',
+                theme === 'dark'
+                  ? 'border-border bg-surface-raised'
+                  : 'border-accent/40 bg-accent-soft'
+              )}
+            >
+              {/* Track labels */}
+              <span className={cn(
+                'flex-1 text-center text-[10px] font-medium transition-colors duration-150',
+                theme === 'dark' ? 'text-accent' : 'text-text-faint'
+              )}>
+                Dark
+              </span>
+              <span className={cn(
+                'flex-1 text-center text-[10px] font-medium transition-colors duration-150',
+                theme === 'light' ? 'text-accent' : 'text-text-faint'
+              )}>
+                Light
+              </span>
+              {/* Sliding thumb */}
+              <span
+                className={cn(
+                  'absolute top-0.5 h-5 w-[42px] rounded-full bg-accent shadow transition-transform duration-200',
+                  theme === 'light' ? 'translate-x-[42px]' : 'translate-x-0'
+                )}
+              />
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* User — click to open Settings / Sign out popover */}
       <div className="relative border-t border-border">

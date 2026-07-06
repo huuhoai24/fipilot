@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -237,8 +236,6 @@ def get_segments(history, template_questions):
         segments.append(current_segment)
     return segments
 
-active_connections = {}
-
 async def evaluate_segment_background_task(session_id: int, segment: dict, level: str, role: str):
     db = SessionLocal()
     try:
@@ -258,25 +255,6 @@ async def evaluate_segment_background_task(session_id: int, segment: dict, level
         evals = db.query(models.Evaluation).filter(models.Evaluation.session_id == session_id).order_by(models.Evaluation.id.desc()).limit(3).all()
         if len(evals) == 3 and all(e.correctness == "Wrong" for e in evals):
             crud.update_session_status(db, session_id, "ENDED")
-            # Tự động tạo kết quả đánh giá tổng quát
-            history = crud.get_session_messages(db, session_id)
-            session = db.query(models.Session).filter(models.Session.id == session_id).first()
-            if session and history:
-                report = await ai_services.evaluate_overall_session(history, session.role, session.level, session.language)
-                session.report_data = json.dumps(report)
-                db.commit()
-            
-            # Gửi thông báo kết thúc sớm tới WebSocket nếu đang hoạt động
-            if session_id in active_connections:
-                ws = active_connections[session_id]
-                try:
-                    closing_text = "Buổi phỏng vấn tạm dừng tại đây. AI đang phân tích kết quả và chuyển hướng bạn đến trang báo cáo."
-                    if session and session.language == "en":
-                        closing_text = "The interview has ended early. The AI is compiling the results and redirecting you to the report."
-                    await ws.send_json({"text": closing_text, "status": "ENDED"})
-                    await ws.close()
-                except Exception as ws_err:
-                    print(f"Error sending early stopping notification: {ws_err}")
     finally:
         db.close()
 
@@ -397,8 +375,6 @@ async def websocket_endpoint(websocket: WebSocket, session_id: int, background_t
         await websocket.close(code=1008)
         return
 
-    active_connections[session_id] = websocket
-
     # Khởi tạo Hàng đợi
     audio_queue = asyncio.Queue()
     
@@ -425,14 +401,5 @@ async def websocket_endpoint(websocket: WebSocket, session_id: int, background_t
     except WebSocketDisconnect:
         print(f"Client {session_id} disconnected")
     finally:
-        active_connections.pop(session_id, None)
         # Khi client ngắt kết nối, dọn dẹp luồng xử lý AI
         ai_task.cancel()
-=======
-def main():
-    print("Hello from fipilot!")
-
-
-if __name__ == "__main__":
-    main()
->>>>>>> a2647a97ce7ec80af26309f2190f598a7b025c1e

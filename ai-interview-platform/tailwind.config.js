@@ -5,10 +5,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#0F1117',
-        surface: '#1A1D27',
-        'surface-raised': '#21242F',
-        border: '#2A2D3E',
+        bg: 'var(--color-bg)',
+        surface: 'var(--color-surface)',
+        'surface-raised': 'var(--color-surface-raised)',
+        border: 'var(--color-border)',
         accent: {
           DEFAULT: '#6366F1',
           soft: 'rgba(99, 102, 241, 0.12)',
@@ -18,9 +18,9 @@ export default {
         warning: '#F59E0B',
         danger: '#EF4444',
         text: {
-          primary: '#F0F1F5',
-          muted: '#8B8FA8',
-          faint: '#5C6079',
+          primary: 'var(--color-text-primary)',
+          muted: 'var(--color-text-muted)',
+          faint: 'var(--color-text-faint)',
         },
       },
       fontFamily: {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { PhoneOff, MoreHorizontal, VideoOff, MicOff } from 'lucide-react';
+import { PhoneOff, MoreHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useActiveSessionStore } from '@/store/useActiveSessionStore';
 
@@ -20,12 +20,6 @@ export function InterviewSessionPage() {
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [messages, setMessages] = useState<{sender: string, text: string}[]>([]);
-  
-  const [cameraError, setCameraError] = useState<string | null>(null);
-  const [micError, setMicError] = useState<string | null>(null);
-  const [wsTrigger, setWsTrigger] = useState(0);
-  const [reconnectAttempts, setReconnectAttempts] = useState(0);
-  const maxReconnectAttempts = 5;
   
   const wsRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -52,10 +46,8 @@ export function InterviewSessionPage() {
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-        setCameraError(null);
       } catch (err) {
         console.error("Error accessing webcam", err);
-        setCameraError("Không thể truy cập máy ảnh. Vui lòng cấp quyền truy cập webcam trong cài đặt trình duyệt.");
       }
     };
     startVideo();
@@ -110,11 +102,9 @@ export function InterviewSessionPage() {
     }
     const ws = new WebSocket(`${WS_URL}/interview/${sessionId}`);
     wsRef.current = ws;
-    let reconnectTimer: NodeJS.Timeout;
 
     ws.onopen = () => {
       setStatus('Connected');
-      setReconnectAttempts(0);
     };
 
     ws.onmessage = async (event) => {
@@ -144,29 +134,12 @@ export function InterviewSessionPage() {
       }
     };
 
-    ws.onclose = (event) => {
-      if (event.wasClean) {
-        setStatus('Disconnected');
-      } else {
-        if (reconnectAttempts < maxReconnectAttempts) {
-          setStatus(`Mất kết nối. Đang thử kết nối lại (Lần ${reconnectAttempts + 1}/${maxReconnectAttempts})...`);
-          reconnectTimer = setTimeout(() => {
-            setReconnectAttempts(prev => prev + 1);
-            setWsTrigger(prev => prev + 1);
-          }, 3000);
-        } else {
-          setStatus('Mất kết nối. Vui lòng tải lại trang.');
-        }
-      }
-    };
-
-    ws.onerror = (err) => {
-      console.error("WebSocket error:", err);
+    ws.onclose = () => {
+      setStatus('Disconnected');
     };
 
     return () => {
       ws.close();
-      clearTimeout(reconnectTimer);
       if (audioSourceRef.current) {
         try { audioSourceRef.current.stop(); } catch (e) { }
       }
@@ -174,7 +147,7 @@ export function InterviewSessionPage() {
         audioContextRef.current.close();
       }
     };
-  }, [navigate, sessionId, wsTrigger]);
+  }, [navigate, sessionId]);
 
   const startRecording = async () => {
     try {
@@ -199,11 +172,8 @@ export function InterviewSessionPage() {
 
       mediaRecorder.start();
       setIsListening(true);
-      setMicError(null);
     } catch (err) {
       console.error("Microphone access denied or error:", err);
-      setMicError("Không thể truy cập mic. Vui lòng cấp quyền truy cập microphone trong trình duyệt.");
-      setTimeout(() => setMicError(null), 5000);
     }
   };
 
@@ -257,15 +227,6 @@ export function InterviewSessionPage() {
           className="absolute inset-0 w-full h-full object-cover transform scale-x-[-1]"
         />
         
-        {/* Camera Permission Error Overlay */}
-        {cameraError && (
-          <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center text-center p-6 z-20">
-            <VideoOff className="w-12 h-12 text-red-500 mb-3 animate-pulse" />
-            <p className="text-white font-medium text-sm">{cameraError}</p>
-            <p className="text-xs text-white/60 mt-1">Vui lòng kiểm tra cài đặt thiết bị của bạn.</p>
-          </div>
-        )}
-
         {/* Name Overlay */}
         <div className="absolute bottom-8 left-8 flex items-center space-x-2 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 shadow-lg z-10">
           <span className="text-white font-medium drop-shadow-md text-sm">
@@ -298,14 +259,6 @@ export function InterviewSessionPage() {
            </div>
            {!isSpeaking && <MoreHorizontal className="w-4 h-4 text-white/50 mt-1" />}
         </div>
-
-        {/* Mic Error Tooltip */}
-        {micError && (
-          <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-red-500/90 text-white px-4 py-2.5 rounded-xl text-xs font-medium border border-red-400 shadow-2xl z-20 flex items-center gap-2 animate-bounce">
-            <MicOff className="w-4 h-4 shrink-0" />
-            <span>{micError}</span>
-          </div>
-        )}
 
         {/* Bottom Controls */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 z-10">

@@ -1,3 +1,20 @@
+<<<<<<< HEAD
+=======
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+.ipynb_checkpoints/
+
+# FE
+>>>>>>> a2647a97ce7ec80af26309f2190f598a7b025c1e
 node_modules
 dist
 dist-ssr
@@ -6,3 +23,10 @@ dist-ssr
 .env
 .env.local
 *.log
+<<<<<<< HEAD
+=======
+
+# BE
+data
+models
+>>>>>>> a2647a97ce7ec80af26309f2190f598a7b025c1e
