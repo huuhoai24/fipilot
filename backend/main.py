@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -12,8 +11,6 @@ from ai_services import ai_services
 from cv_parser import cv_extractor
 from template_service import template_service
 import json
-import tempfile
-import shutil
 import os
 
 # Initialize database
@@ -271,8 +268,6 @@ async def evaluate_segment_background_task(session_id: int, segment: dict, level
                 ws = active_connections[session_id]
                 try:
                     closing_text = "Buổi phỏng vấn tạm dừng tại đây. AI đang phân tích kết quả và chuyển hướng bạn đến trang báo cáo."
-                    if session and session.language == "en":
-                        closing_text = "The interview has ended early. The AI is compiling the results and redirecting you to the report."
                     await ws.send_json({"text": closing_text, "status": "ENDED"})
                     await ws.close()
                 except Exception as ws_err:
@@ -428,11 +423,3 @@ async def websocket_endpoint(websocket: WebSocket, session_id: int, background_t
         active_connections.pop(session_id, None)
         # Khi client ngắt kết nối, dọn dẹp luồng xử lý AI
         ai_task.cancel()
-=======
-def main():
-    print("Hello from fipilot!")
-
-
-if __name__ == "__main__":
-    main()
->>>>>>> a2647a97ce7ec80af26309f2190f598a7b025c1e

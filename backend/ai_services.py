@@ -14,23 +14,6 @@ class AIServices:
         # Groq STT client
         self.groq_client = AsyncGroq(api_key=os.environ.get("GROQ_API_KEY", "placeholder"))
         
-        # FunASR local STT
-        print("Initializing FunASR SenseVoiceSmall...")
-        try:
-            from funasr import AutoModel
-            self.funasr_model = AutoModel(
-                model=r"C:\Users\vderf\.cache\modelscope\hub\models\iic\SenseVoiceSmall",
-                vad_model=r"C:\Users\vderf\.cache\modelscope\hub\models\iic\speech_fsmn_vad_zh-cn-16k-common-pytorch",
-                vad_kwargs={"max_single_segment_time": 30000},
-                trust_remote_code=True,
-                device="cpu",
-                disable_update=True
-            )
-            print("FunASR initialized successfully.")
-        except Exception as e:
-            print(f"Failed to initialize FunASR: {e}")
-            self.funasr_model = None
-            
         # HTTP client with SSL verification disabled for proxies
         http_client = httpx.AsyncClient(verify=False)
         
@@ -54,21 +37,45 @@ class AIServices:
         print("Initializing PhoWhisper...")
         try:
             import torch
+            
+            # Monkeypatch transformers security checks for torch < 2.6 to allow loading .bin/.pth models
+            try:
+                import transformers.utils.import_utils
+                import transformers.modeling_utils
+                import transformers.pipelines.base
+                transformers.utils.import_utils.check_torch_load_is_safe = lambda: None
+                transformers.modeling_utils.check_torch_load_is_safe = lambda: None
+                transformers.pipelines.base.check_torch_load_is_safe = lambda: None
+                
+                import transformers.utils
+                transformers.utils.check_torch_load_is_safe = lambda: None
+            except ImportError:
+                pass
+                
             from transformers import pipeline
-            device = "cuda:0" if torch.cuda.is_available() else "cpu"
-            self.phowhisper_pipeline = pipeline("automatic-speech-recognition", model="vinai/PhoWhisper-small", device=device)
-            print("PhoWhisper initialized successfully.")
+            if torch.cuda.is_available():
+                try:
+                    print("Attempting to load PhoWhisper on GPU...")
+                    self.phowhisper_pipeline = pipeline("automatic-speech-recognition", model="vinai/PhoWhisper-small", device="cuda:0")
+                    print("PhoWhisper initialized successfully on GPU.")
+                except Exception as cuda_err:
+                    print(f"Failed to load PhoWhisper on GPU: {cuda_err}. Falling back to CPU...")
+                    self.phowhisper_pipeline = pipeline("automatic-speech-recognition", model="vinai/PhoWhisper-small", device="cpu")
+                    print("PhoWhisper initialized successfully on CPU.")
+            else:
+                self.phowhisper_pipeline = pipeline("automatic-speech-recognition", model="vinai/PhoWhisper-small", device="cpu")
+                print("PhoWhisper initialized successfully on CPU.")
         except Exception as e:
             print(f"Failed to initialize PhoWhisper: {e}")
             self.phowhisper_pipeline = None
 
     async def stt(self, audio_bytes: bytes, language: str = "vi") -> str:
         """
-        Convert audio bytes to text using PhoWhisper for Vietnamese and FunASR for English.
+        Convert audio bytes to text using PhoWhisper for Vietnamese and fallback to Groq.
         """
         print(f"Processing STT (Language: {language})...")
         try:
-            if language == "vi" and hasattr(self, "phowhisper_pipeline") and self.phowhisper_pipeline is not None:
+            if hasattr(self, "phowhisper_pipeline") and self.phowhisper_pipeline is not None:
                 print("Using local PhoWhisper for Vietnamese...")
                 import tempfile
                 import os
@@ -88,29 +95,6 @@ class AIServices:
                     text = res['text'].strip()
                     return text
                 return "Xin lỗi, tôi không nghe rõ."
-            elif self.funasr_model is not None and language != "vi":
-                print("Using local FunASR...")
-                import tempfile
-                import os
-                
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-                    tmp.write(audio_bytes)
-                    tmp_path = tmp.name
-                
-                # generate text
-                res = self.funasr_model.generate(input=tmp_path, language="auto", use_itn=True)
-                
-                # clean up
-                os.remove(tmp_path)
-                
-                # Extract text
-                if res and len(res) > 0 and 'text' in res[0]:
-                    import re
-                    text = res[0]['text']
-                    # Remove tags like <|vi|><|NEUTRAL|> <|Speech|>
-                    text = re.sub(r'<\|.*?\|>', '', text).strip()
-                    return text
-                return "Xin lỗi, tôi không nghe rõ."
             else:
                 print("Using Groq Whisper STT as fallback...")
                 prompt_text = "Các thuật ngữ công nghệ tiếng Anh: OCR, AI, LLM, SQL, Python, Spark, Airflow, Cloud, API, Database, Data Engineering, Machine Learning, Deep Learning, NLP, Backend, Frontend, React, Next.js."
@@ -119,7 +103,7 @@ class AIServices:
                     file=("audio.wav", audio_bytes),
                     response_format="text",
                     prompt=prompt_text,
-                    language="vi" if language == "vi" else "en"
+                    language="vi"
                 )
                 return completion
         except Exception as e:
@@ -132,7 +116,7 @@ class AIServices:
         """
         print(f"Calling Core LLM ({self.core_model}) with template_id: {template_id}...")
         
-        system_prompt = f"You are an AI interviewer conducting a technical interview. The candidate's name is {name} and they are applying for the role of {role} at the {level} level. The current interview status is {status}. You MUST communicate strictly in {'English' if language == 'en' else 'Vietnamese'}."
+        system_prompt = f"You are an AI interviewer conducting a technical interview. The candidate's name is {name} and they are applying for the role of {role} at the {level} level. The current interview status is {status}. You MUST communicate strictly in Vietnamese."
         
         # Load and append template questions if available
         template_questions = []
@@ -145,8 +129,7 @@ class AIServices:
             for q in template_questions:
                 questions_formatted += f"Câu {q['id']} (Độ khó: {q['difficulty']}): {q['question']}\nĐáp án mẫu tham khảo: {q['answer']}\n\n"
             
-            if language == "vi":
-                template_instruction = f"""
+            template_instruction = f"""
 Bạn đang thực hiện cuộc phỏng vấn dựa trên bộ câu hỏi tiêu chuẩn gồm 10 câu sau đây:
 {questions_formatted}
 
@@ -161,45 +144,18 @@ Quy trình phỏng vấn:
 3. Hãy phân tích kỹ lịch sử cuộc trò chuyện (history) để tự xác định bạn đang ở câu hỏi nào trong danh sách 10 câu, câu nào đã hoàn thành và câu nào cần đặt tiếp theo. Không lặp lại câu hỏi đã hỏi xong.
 4. Khi đã hoàn thành câu hỏi số 10 và ứng viên đã hoàn tất câu trả lời/câu hỏi phụ cuối cùng, hãy đưa ra lời kết thúc phỏng vấn một cách thân thiện, cảm ơn ứng viên và thông báo buổi phỏng vấn đã hoàn tất.
 """
-            else:
-                template_instruction = f"""
-You are conducting the interview based on the following standard set of 10 questions:
-{questions_formatted}
-
-Interview Process:
-1. You must go through these 10 questions sequentially from Question 1 to Question 10.
-2. For each standard question:
-   - Ask the question naturally.
-   - When the candidate answers:
-     * Evaluate if their answer is complete. If the answer is too brief, vague, or mentions something that can be elaborated (e.g. they say "langgraph runs on nodes"), ask a contextual follow-up question (e.g., asking them to clarify the names or details of those nodes).
-     * Ask a maximum of 1 or 2 follow-up questions per standard question to keep the session on track.
-     * If the candidate says "I don't know", "skip", "next", "I have no idea", or similar, or after you have completed the follow-ups and they have responded, immediately proceed to the next standard question in the template.
-3. Analyze the conversation history to determine which standard question you are currently on and whether to ask a follow-up or move to the next standard question. Do not repeat questions.
-4. Once question 10 is completed, thank the candidate, state that the interview has finished, and wish them a great day.
-"""
             system_prompt += "\n" + template_instruction
             
         if not history:
-            # Add specific instruction for the first greeting
             greeting_instruction = f"""
-            Since this is the very first message, you must start the interview with a warm greeting similar to this structure:
-            - "Hey {name}, I'm Alex, an AI recruiter."
-            - "You're applying for a role as a {role}."
-            - "I'm excited to learn more about you!"
-            - "To get us started here, can you tell me a bit about yourself and what motivated you to apply to this position?"
+            Vì đây là tin nhắn đầu tiên, bạn hãy bắt đầu cuộc phỏng vấn bằng một lời chào thân thiện theo cấu trúc này (có thể dùng từ ngữ khác nhưng cùng ngữ nghĩa):
+            - "Chào {name}, tôi là Alex, một chuyên viên tuyển dụng AI."
+            - "Bạn đang ứng tuyển cho vị trí {role}."
+            - "Tôi rất hào hứng muốn tìm hiểu thêm về bạn!"
+            - "Để bắt đầu, bạn có thể chia sẻ một chút về bản thân và điều gì đã thúc đẩy bạn ứng tuyển vào vị trí này không?"
             
-            You can use different words but KEEP THE EXACT SAME MEANING AND FRIENDLY VIBE. Keep it natural and conversational.
+            Hãy giữ phong cách tự nhiên, thân thiện và chuyên nghiệp.
             """
-            if language == "vi":
-                greeting_instruction = f"""
-                Vì đây là tin nhắn đầu tiên, bạn hãy bắt đầu cuộc phỏng vấn bằng một lời chào thân thiện theo cấu trúc này (có thể dùng từ ngữ khác nhưng cùng ngữ nghĩa):
-                - "Chào {name}, tôi là Alex, một chuyên viên tuyển dụng AI."
-                - "Bạn đang ứng tuyển cho vị trí {role}."
-                - "Tôi rất hào hứng muốn tìm hiểu thêm về bạn!"
-                - "Để bắt đầu, bạn có thể chia sẻ một chút về bản thân và điều gì đã thúc đẩy bạn ứng tuyển vào vị trí này không?"
-                
-                Hãy giữ phong cách tự nhiên, thân thiện và chuyên nghiệp.
-                """
             system_prompt += "\n" + greeting_instruction
 
         messages = [{"role": "system", "content": system_prompt}]
@@ -221,9 +177,10 @@ Interview Process:
             else:
                 return "Xin lỗi, hiện tại tôi không thể phản hồi. Vui lòng thử lại sau."
 
+
     async def evaluate_answer(self, question: str, answer: str, level: str, role: str) -> dict:
         """
-        Evaluate answer using Evaluator LLM (GPT-4.1)
+        Evaluate answer using Evaluator LLM (GPT-4.1) - Preserved for demo/future use.
         """
         print(f"Calling Evaluator LLM ({self.evaluator_model})...")
         
@@ -307,7 +264,7 @@ Evaluate their overall performance and output a JSON object with the following k
 - "strengths": (list of strings)
 - "weaknesses": (list of strings)
 - "final_feedback": (detailed string)
-Output must be in {'English' if language == 'en' else 'Vietnamese'}.
+Output must be in Vietnamese.
 """
         transcript = ""
         for msg in history:

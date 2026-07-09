@@ -12,9 +12,7 @@ httpx
 groq
 soundfile
 numpy
-edge-tts
-funasr
-modelscope
+vieneu
 torchaudio
 torch
 pypdf
