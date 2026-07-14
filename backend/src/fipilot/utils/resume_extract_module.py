@@ -96,15 +96,26 @@ def calculate_experience(work_experience: list[dict]) -> dict:
     """
     now_idx = datetime.now().year * 12 + (datetime.now().month - 1)
 
+    # Các giá trị coi là "đang làm việc" (chưa kết thúc)
+    ONGOING_VALUES = {None, "", "present", "current", "now", "ongoing"}
+
     intervals = []
     for entry in work_experience:
         start_idx = _to_month_idx(entry.get("startDate"))
         if start_idx is None:
             continue
+
         end_str = entry.get("endDate")
-        end_idx = _to_month_idx(end_str) if end_str else now_idx
+        normalized_end = end_str.strip().lower() if isinstance(end_str, str) else end_str
+
+        if normalized_end in ONGOING_VALUES:
+            end_idx = now_idx
+        else:
+            end_idx = _to_month_idx(end_str)
+
         if end_idx is None or end_idx < start_idx:
             continue
+
         intervals.append((start_idx, end_idx))
 
     if not intervals:

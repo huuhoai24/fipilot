@@ -22,5 +22,8 @@ dist-ssr
 *.log
 
 # BE
-data
-models
+data/
+models/
+*.zip
+*.pdf
+backend/test/page_image/

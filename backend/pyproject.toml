@@ -14,6 +14,7 @@ dependencies = [
     "torch>=2.12.0",
     "transformers>=4.45.0",
     "ultralytics>=8.4.67",
+    "ollama>=0.6.2",
 ]
 
 [build-system]

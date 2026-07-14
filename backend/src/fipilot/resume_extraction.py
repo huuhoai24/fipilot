@@ -13,9 +13,10 @@ from pathlib import Path
 
 import pymupdf
 from dotenv import load_dotenv
-from groq import Groq
+from ollama import Client
 from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
+from groq import RateLimitError
 
 from fipilot.config.settings import cfg
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
@@ -40,7 +41,7 @@ class ResumeExtract:
         self.llm_model =  llm_model
         self.max_workers = max_workers
         self.max_retries = max_retries
-        self.groq_client = Groq(api_key=os.environ["GROQ_API_KEY"])
+        self.ollama_client = Client(host="https://pronto-swagger-area.ngrok-free.dev")
 
     # saved image into location    
     def pdf_to_images(self, pdf_path: str, output_dir: str, overwrite: bool = False) -> list[Path]:  
@@ -49,12 +50,8 @@ class ResumeExtract:
             raise FileNotFoundError(f"PDF not exists: {pdf_path}")
         
         output = Path(output_dir)
-        if output.exists():
-            if overwrite:
-                shutil.rmtree(output)
-            elif any(output.iterdir()):
-                raise FileExistsError(f"{output} exists, use overwrite=True")
-        output.mkdir(parents=True, exist_ok=True)
+        if not output.exists():
+            output.mkdir(parents=True, exist_ok=True)
 
         file_paths = []
         with pymupdf.open(pdf_path) as doc:
@@ -154,26 +151,34 @@ class ResumeExtract:
     @staticmethod
     def intra_segment_sorting(inter_seg_box, resume_lines):
         layout_regions = [
-            {
-                "image": image,
-                "bbox": bbox,
-                "contained_blocks": []
-            }
+            {"image": image, "bbox": bbox, "contained_blocks": []}
             for image, boxes in inter_seg_box.items()
             for bbox in boxes
         ]
 
+        # Đảo vòng lặp: duyệt theo từng dòng trước, tìm vùng khớp nhất
+        regions_by_image = {}
         for region in layout_regions:
-            page_lines = resume_lines[region["image"]]
+            regions_by_image.setdefault(region["image"], []).append(region)
+
+        for image, page_lines in resume_lines.items():
+            candidate_regions = regions_by_image.get(image, [])
             for line in page_lines:
-                if is_center_inside(line["bbox"], region["bbox"]):
-                    region["contained_blocks"].append(line)
+                best_region = None
+                best_score = 0.0
+                for region in candidate_regions:
+                    if is_center_inside(line["bbox"], region["bbox"]):
+                        score = get_ioa(line["bbox"], region["bbox"])  # diện tích giao / diện tích line
+                        if score > best_score:
+                            best_score = score
+                            best_region = region
+                if best_region is not None:
+                    best_region["contained_blocks"].append(line)
+                # else: dòng không thuộc vùng nào -> xử lý ở cách 3
 
         for region in layout_regions:
-            region["contained_blocks"] = sorted(
-                region["contained_blocks"],
-                key=lambda line: (line["bbox"][1], line["bbox"][0])
-            )
+            region["contained_blocks"].sort(key=lambda l: (l["bbox"][1], l["bbox"][0]))
+
         return layout_regions
 
     @staticmethod
@@ -198,17 +203,16 @@ class ResumeExtract:
         last_err = None
         for attempt in range(self.max_retries):
             try:
-                response = self.groq_client.chat.completions.create(
+                response = self.ollama_client.chat(
                     model=self.llm_model,
                     messages=[
                         {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
                         {"role": "user", "content": prompt},
                     ],
-                    temperature=0.1,
-                    response_format={"type": "json_object"},
-                    timeout=30,
+                    options={"temperature": 0.0},
+                    format="json"
                 )
-                return json.loads(response.choices[0].message.content)
+                return json.loads(response.message.content)
             except Exception as e:
                 last_err = e
                 logger.warning(f"[{prompt_template}] attempt {attempt+1}/{self.max_retries} failed: {e}")
@@ -238,36 +242,53 @@ class ResumeExtract:
 
         return {key: results[i] for i, key in enumerate(KEYS)}
     
-    def process_create_data(self, pdf_path: str | Path, txt_dir: str, json_dir: str, TEMPLATES: list[str], KEYS: list[str]):
+    def process_create_data(self, pdf_path, txt_dir, json_dir, TEMPLATES, KEYS, max_retries=5):
         pdf_path = Path(pdf_path)
-
         if is_scanned_pdf(pdf_path):
-            logger.warning(f"Skipped (scanned/no text layer): {pdf_path}")
             raise ValueError(f"Scanned PDF, no extractable text: {pdf_path}")
-        
+
         boxes = self.layout_detection(pdf_path)
         boxes = self.remove_duplicate_boxes(boxes)
         boxes = self.inter_segment_sorting(boxes)
-
         resume_lines = self.pair_resume(pdf_path)
         regions = self.intra_segment_sorting(boxes, resume_lines)
         resume_text = self.linearize_layout_regions(regions)
 
-        result = self.extract_all(resume_text, TEMPLATES, KEYS)
-        result_add_exp = enrich_output(result)
-        export_file = save_resume_data(resume_text, result_add_exp, txt_dir, json_dir, pdf_path)
-        return export_file
+        for attempt in range(max_retries):
+            try:
+                result = self.extract_all(resume_text, TEMPLATES, KEYS)
+                break
+            except RateLimitError as e:
+                wait = getattr(e, "retry_after", None) or (2 ** attempt)
+                logger.warning(f"Rate limited on {pdf_path}, retry in {wait}s ({attempt+1}/{max_retries})")
+                time.sleep(wait)
+        else:
+            raise RuntimeError(f"Rate limit retries exhausted: {pdf_path}")
 
-    def process_batch(self, pdf_paths: list[str | Path], txt_dir: str, json_dir: str, TEMPLATES: list[str], KEYS: list[str]):
+        result_add_exp = enrich_output(result)
+        return save_resume_data(resume_text, result_add_exp, txt_dir, json_dir, pdf_path)
+
+    def process_batch(self, pdf_paths, txt_dir, json_dir, TEMPLATES, KEYS):
         results = {}
         total = len(pdf_paths)
+        n_success, n_fail = 0, 0
 
         for i, pdf_path in enumerate(pdf_paths, start=1):
+            json_out = Path(json_dir) / f"{Path(pdf_path).stem}.json"
+            if json_out.exists():
+                logger.info(f"[{i}/{total}] Skip (already exists): {pdf_path}")
+                results[str(pdf_path)] = json_out
+                n_success += 1
+                continue
+
             logger.info(f"[{i}/{total}] Processing {pdf_path}")
             try:
                 results[str(pdf_path)] = self.process_create_data(pdf_path, txt_dir, json_dir, TEMPLATES, KEYS)
+                n_success += 1
             except Exception as e:
                 logger.error(f"[{i}/{total}] Failed {pdf_path}: {e}")
                 results[str(pdf_path)] = {"error": str(e)}
+                n_fail += 1
 
+        logger.info(f"Batch done: {n_success} success, {n_fail} failed out of {total}")
         return results
