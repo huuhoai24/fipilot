@@ -411,14 +411,22 @@ class ResumeExtract:
             device = next(self.model.parameters()).device
             inputs = {k: v.to(device) for k, v in inputs.items()}
 
+            gen_kwargs = {
+                "max_new_tokens": max_tokens,
+                "repetition_penalty": 1.1,
+                "pad_token_id": self.tokenizer.eos_token_id,
+                "eos_token_id": self.tokenizer.eos_token_id
+            }
+            if attempt > 0:
+                gen_kwargs["do_sample"] = True
+                gen_kwargs["temperature"] = 1.0
+            else:
+                gen_kwargs["do_sample"] = False
+
             with torch.no_grad():
                 out = self.model.generate(
                     **inputs,
-                    max_new_tokens=max_tokens,
-                    do_sample=True if attempt > 0 else False,
-                    temperature=1.0 if attempt > 0 else None,
-                    pad_token_id=self.tokenizer.eos_token_id,
-                    eos_token_id=self.tokenizer.eos_token_id
+                    **gen_kwargs
                 )
             
             input_len = inputs['input_ids'].shape[1]
@@ -490,6 +498,7 @@ class ResumeExtract:
                         **inputs,
                         max_new_tokens=2048,
                         do_sample=False,
+                        repetition_penalty=1.1,
                         pad_token_id=self.tokenizer.pad_token_id,
                         eos_token_id=self.tokenizer.eos_token_id
                     )
