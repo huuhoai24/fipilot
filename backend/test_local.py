@@ -19,6 +19,17 @@ def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"💻 Thiết bị sử dụng: {device.upper()}")
     
+    # Debug print: xem nội dung config.json trước khi chạy
+    try:
+        from huggingface_hub import snapshot_download
+        repo_path = snapshot_download("Alibaba-EI/SmartResume")
+        config_path = os.path.join(repo_path, "Qwen3-0.6B", "config.json")
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg_data = json.load(f)
+            print("🔍 [DEBUG] rope_scaling in config.json:", cfg_data.get("rope_scaling"))
+    except Exception as dbg_err:
+        print(f"🔍 [DEBUG] Lỗi đọc config.json: {dbg_err}")
+    
     # Khởi tạo extractor
     extractor = ResumeExtract(
         yolo_model=str(cfg.YOLO_MODEL),
