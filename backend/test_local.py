@@ -48,6 +48,13 @@ def main():
     
     print(f"✅ Xong phần đọc text ({time.time() - start_time:.2f} giây).")
     
+    print("\n🔍 5 dòng text đầu tiên trích xuất được để kiểm tra:")
+    lines = resume_text.split('\n')
+    for line in lines[:5]:
+        print(f"  {line}")
+    if len(lines) > 5:
+        print(f"  ... và {len(lines) - 5} dòng khác.")
+    
     # 2. Gọi LLM trích xuất
     print("\n🤖 Đang gọi LLM Qwen3 để bóc tách thông tin (Vì chạy CPU nên mất khoảng 1-3 phút)...")
     llm_start_time = time.time()
