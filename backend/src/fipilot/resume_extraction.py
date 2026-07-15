@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import shutil
 import tempfile
 import threading
@@ -18,6 +19,9 @@ from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
 from groq import RateLimitError
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
 from fipilot.config.settings import cfg
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
 from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
@@ -30,18 +34,66 @@ class ResumeExtract:
     def __init__(
         self,
         yolo_model: str,
-        llm_model: str,
-        dpi: int,
-        max_workers: int,
-        max_retries: int,
-        
+        source_model: str = "Alibaba-EI/SmartResume",
+        llm_model: str = "Qwen3-0.6B",
+        dpi: int = 200,
+        max_workers: int = 1,
+        max_retries: int = 3,
+        device: str = "cuda" if torch.cuda.is_available() else "cpu"
     ):
         self.yolo_model = YOLO(yolo_model)
         self.dpi = dpi
-        self.llm_model =  llm_model
+        self.llm_model = llm_model
         self.max_workers = max_workers
         self.max_retries = max_retries
-        self.ollama_client = Client(host="https://pronto-swagger-area.ngrok-free.dev")
+        self.source_model = source_model
+        self.device = device
+        
+        # Load Tokenizer
+        model_id = f"{source_model}/{llm_model}" if not os.path.exists(os.path.join(source_model, llm_model)) else os.path.join(source_model, llm_model)
+        if not os.path.exists(model_id) and not "/" in model_id:
+            model_id = source_model # fallback
+            
+        self.tokenizer = AutoTokenizer.from_pretrained(source_model, subfolder=llm_model)
+        
+        # Try loading vLLM if CUDA is available
+        self.use_vllm = False
+        self.vllm_model = None
+        
+        if torch.cuda.is_available():
+            try:
+                from vllm import LLM, SamplingParams
+                self.use_vllm = True
+                self.vllm_sampling_params = SamplingParams(
+                    temperature=0.1,
+                    top_p=0.95,
+                    max_tokens=2048,
+                    repetition_penalty=1.05
+                )
+                self.vllm_model = LLM(
+                    model=source_model,
+                    tokenizer=source_model,
+                    trust_remote_code=True,
+                    tensor_parallel_size=torch.cuda.device_count() or 1,
+                    gpu_memory_utilization=0.9,
+                    max_model_len=32768,
+                    enforce_eager=False,
+                    swap_space=4
+                )
+                logger.info("Loaded vLLM for fast GPU inference.")
+            except ImportError:
+                logger.warning("vLLM not installed. Falling back to transformers.")
+        
+        if not self.use_vllm:
+            dtype = torch.float16 if "cuda" in self.device else torch.float32
+            self.model = AutoModelForCausalLM.from_pretrained(
+                source_model, subfolder=llm_model,
+                torch_dtype=dtype,
+                device_map="auto" if "cuda" in self.device else None
+            )
+            if "cpu" in self.device:
+                self.model = self.model.to(self.device)
+            logger.info(f"Loaded transformers model on {self.device} with dtype {dtype}")
 
     # saved image into location    
     def pdf_to_images(self, pdf_path: str, output_dir: str, overwrite: bool = False) -> list[Path]:  
@@ -72,14 +124,13 @@ class ResumeExtract:
     def layout_detection(self, pdf_path: str | Path, batch_size: int = 8) -> dict:
         all_detection = {}
         with self.pdf_to_images_tmp(pdf_path) as images:
-            # results = self.yolo_model(images, batch=batch_size, stream=True)
             results = self.yolo_model(images, batch=batch_size, imgsz=640, stream=True, verbose=False)
             for image, result in zip(images, results):
                 all_detection[Path(image).name] = result.boxes.xyxy.cpu().numpy().tolist()
         return all_detection
     
     @staticmethod
-    def remove_duplicate_boxes( yolo_boxes: dict, ioa_threshold: float = 0.85) -> dict:
+    def remove_duplicate_boxes(yolo_boxes: dict, ioa_threshold: float = 0.85) -> dict:
         all_boxes = {}
         for image, boxes in yolo_boxes.items():
             n = len(boxes)
@@ -156,7 +207,6 @@ class ResumeExtract:
             for bbox in boxes
         ]
 
-        # Đảo vòng lặp: duyệt theo từng dòng trước, tìm vùng khớp nhất
         regions_by_image = {}
         for region in layout_regions:
             regions_by_image.setdefault(region["image"], []).append(region)
@@ -168,13 +218,12 @@ class ResumeExtract:
                 best_score = 0.0
                 for region in candidate_regions:
                     if is_center_inside(line["bbox"], region["bbox"]):
-                        score = get_ioa(line["bbox"], region["bbox"])  # diện tích giao / diện tích line
+                        score = get_ioa(line["bbox"], region["bbox"])
                         if score > best_score:
                             best_score = score
                             best_region = region
                 if best_region is not None:
                     best_region["contained_blocks"].append(line)
-                # else: dòng không thuộc vùng nào -> xử lý ở cách 3
 
         for region in layout_regions:
             region["contained_blocks"].sort(key=lambda l: (l["bbox"][1], l["bbox"][0]))
@@ -191,51 +240,114 @@ class ResumeExtract:
                 if text:
                     linearized_lines.append(f"[{line_index}]: {text}")
                     line_index += 1
-        # linearized_text = "\n".join(linearized_lines)
-        linearized_text = " ".join(linearized_lines)
+        linearized_text = "\n".join(linearized_lines)
         return linearized_text
 
-    # llm extraction
+    def _parse_json(self, raw: str) -> dict:
+        match = re.search(r"\{.*\}", raw, re.DOTALL)
+        if not match:
+            raise ValueError(f"Không tìm thấy JSON hợp lệ trong output: {raw[:200]}")
+        return json.loads(match.group(0))
+
+    # llm extraction using local model
     def llm_classify(self, prompt_template: str, resume: str) -> dict:
         template = env.get_template(prompt_template)
         prompt = template.render(resume_text=resume)
 
+        messages = [
+            {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
+            {"role": "user", "content": prompt}
+        ]
+        
+        # Apply chat template correctly (disabling thinking mode if supported)
+        try:
+            formatted_prompt = self.tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True,
+                chat_template_kwargs={"enable_thinking": False}
+            )
+        except Exception:
+            # Fallback if chat_template_kwargs is not supported
+            formatted_prompt = self.tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
+
         last_err = None
         for attempt in range(self.max_retries):
             try:
-                response = self.ollama_client.chat(
-                    model=self.llm_model,
-                    messages=[
-                        {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
-                        {"role": "user", "content": prompt},
-                    ],
-                    options={"temperature": 0.0},
-                    format="json"
-                )
-                return json.loads(response.message.content)
+                if self.use_vllm:
+                    outputs = self.vllm_model.generate([formatted_prompt], self.vllm_sampling_params, use_tqdm=False)
+                    raw = outputs[0].outputs[0].text
+                else:
+                    inputs = self.tokenizer(
+                        formatted_prompt,
+                        return_tensors="pt",
+                        truncation=True,
+                        max_length=32768
+                    )
+                    
+                    device = next(self.model.parameters()).device
+                    inputs = {k: v.to(device) for k, v in inputs.items()}
+
+                    with torch.no_grad():
+                        out = self.model.generate(
+                            **inputs,
+                            max_new_tokens=2048,
+                            temperature=0.1,
+                            top_p=0.95,
+                            do_sample=True,
+                            pad_token_id=self.tokenizer.eos_token_id,
+                            eos_token_id=self.tokenizer.eos_token_id
+                        )
+                    
+                    input_len = inputs['input_ids'].shape[1]
+                    raw = self.tokenizer.decode(out[0][input_len:], skip_special_tokens=True)
+                
+                # Cleanup JSON output
+                raw = raw.strip().replace('\\"', '"')
+                return self._parse_json(raw)
+                
             except Exception as e:
                 last_err = e
                 logger.warning(f"[{prompt_template}] attempt {attempt+1}/{self.max_retries} failed: {e}")
-                time.sleep(2 ** attempt)  # backoff: 1s, 2s, 4s
+                if attempt < self.max_retries - 1:
+                    time.sleep(1) # Reduced sleep time
+                    
         raise RuntimeError(f"llm_classify failed for {prompt_template} after {self.max_retries} attempts") from last_err
 
-    # paralled extraction
+    # paralled/sequential extraction
     def extract_all(self, resume_text: str, TEMPLATES: list[str], KEYS: list[str]) -> dict:
+        # Check if the templates requested are the standard 3 templates
+        # If so, optimize by using the single-pass combined template instead
+        standard_templates = ["match_info.jinja2", "work_exp.jinja2", "project.jinja2"]
+        if TEMPLATES == standard_templates or (len(TEMPLATES) == 1 and TEMPLATES[0] == "combined.jinja2"):
+            try:
+                # Returns the full combined JSON
+                combined_result = self.llm_classify("combined.jinja2", resume_text)
+                
+                # Re-map keys to match the expected output format if necessary
+                mapped_result = {}
+                for key in KEYS:
+                    if key == "match_info":
+                        mapped_result[key] = {"matching": combined_result.get("matching", {})}
+                    elif key == "work_exp":
+                        mapped_result[key] = {"workExperience": combined_result.get("workExperience", [])}
+                    elif key == "project":
+                        mapped_result[key] = {"projects": combined_result.get("projects", [])}
+                return mapped_result
+            except Exception as e:
+                logger.error(f"Combined extraction failed: {e}. Falling back to sequential extraction.")
+                # Fallback will continue below if this fails
+                
+        # Fallback to sequential extraction
         results = [None] * len(TEMPLATES)
         errors = {}
 
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_idx = {
-                executor.submit(self.llm_classify, tmpl, resume_text): i
-                for i, tmpl in enumerate(TEMPLATES)
-            }
-            for future in as_completed(future_to_idx):
-                idx = future_to_idx[future]
-                try:
-                    results[idx] = future.result()
-                except Exception as e:
-                    errors[KEYS[idx]] = str(e)
-                    logger.error(f"Section '{KEYS[idx]}' failed permanently: {e}")
+        for i, tmpl in enumerate(TEMPLATES):
+            try:
+                results[i] = self.llm_classify(tmpl, resume_text)
+            except Exception as e:
+                errors[KEYS[i]] = str(e)
+                logger.error(f"Section '{KEYS[i]}' failed permanently: {e}")
 
         if errors:
             logger.warning(f"extract_all completed with {len(errors)} failed sections: {list(errors.keys())}")
@@ -254,19 +366,23 @@ class ResumeExtract:
         regions = self.intra_segment_sorting(boxes, resume_lines)
         resume_text = self.linearize_layout_regions(regions)
 
+        # Chuyển đổi txt_dir và json_dir thành Path object trước khi ghi file
+        txt_path_dir = Path(txt_dir)
+        json_path_dir = Path(json_dir)
+
         for attempt in range(max_retries):
             try:
                 result = self.extract_all(resume_text, TEMPLATES, KEYS)
                 break
-            except RateLimitError as e:
-                wait = getattr(e, "retry_after", None) or (2 ** attempt)
-                logger.warning(f"Rate limited on {pdf_path}, retry in {wait}s ({attempt+1}/{max_retries})")
-                time.sleep(wait)
+            except Exception as e:
+                # Local execution doesn't have Groq rate limit errors, but keep retry logic for robustness
+                logger.warning(f"Extraction failed on {pdf_path}, retry ({attempt+1}/{max_retries}): {e}")
+                time.sleep(2 ** attempt)
         else:
-            raise RuntimeError(f"Rate limit retries exhausted: {pdf_path}")
+            raise RuntimeError(f"Retries exhausted for PDF extraction: {pdf_path}")
 
         result_add_exp = enrich_output(result)
-        return save_resume_data(resume_text, result_add_exp, txt_dir, json_dir, pdf_path)
+        return save_resume_data(resume_text, result_add_exp, txt_path_dir, json_path_dir, pdf_path)
 
     def process_batch(self, pdf_paths, txt_dir, json_dir, TEMPLATES, KEYS):
         results = {}
