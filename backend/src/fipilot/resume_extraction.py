@@ -432,24 +432,84 @@ class ResumeExtract:
 
     # paralled/sequential extraction
     def extract_all(self, resume_text: str, TEMPLATES: list[str], KEYS: list[str]) -> dict:
-        is_standard_cv_extraction = set(KEYS) == {"match_info", "work_exp", "project"}
+        # Check if we should use Hugging Face batch inference (on CUDA) or sequential fallback
+        use_hf_batching = "cuda" in self.device and not self.use_vllm and len(TEMPLATES) > 1
         
-        # 1. OPTIMIZATION: Single-pass Combined Extraction
-        if is_standard_cv_extraction:
+        # 1. OPTIMIZATION: Hugging Face GPU Batch Inference (Parallel generation on GPU)
+        if use_hf_batching:
             try:
-                print("  🤖 [Single-pass] Đang trích xuất toàn bộ thông tin bằng prompt gộp...", flush=True)
+                print(f"  🤖 [HF GPU Batching] Đang trích xuất song song {len(TEMPLATES)} phần bằng batch inference...", flush=True)
                 start_section = time.time()
-                combined_result = self.llm_classify("combined.jinja2", resume_text)
-                print(f"  ✅ Hoàn thành trích xuất Single-pass trong {time.time() - start_section:.2f} giây.", flush=True)
                 
-                return {
-                    "match_info": {"matching": combined_result.get("matching", {})},
-                    "work_exp": {"workExperience": combined_result.get("workExperience", [])},
-                    "project": {"projects": combined_result.get("projects", [])}
-                }
+                formatted_prompts = []
+                for tmpl in TEMPLATES:
+                    template = env.get_template(tmpl)
+                    prompt = template.render(resume_text=resume_text)
+                    messages = [
+                        {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
+                        {"role": "user", "content": prompt}
+                    ]
+                    try:
+                        formatted = self.tokenizer.apply_chat_template(
+                            messages, tokenize=False, add_generation_prompt=True,
+                            chat_template_kwargs={"enable_thinking": False}
+                        )
+                    except Exception:
+                        formatted = self.tokenizer.apply_chat_template(
+                            messages, tokenize=False, add_generation_prompt=True
+                        )
+                    
+                    # Force JSON response by pre-filling the assistant output with "{"
+                    formatted = formatted.strip()
+                    if formatted.endswith("assistant"):
+                        formatted += "\n{"
+                    else:
+                        formatted += " {"
+                    formatted_prompts.append(formatted)
+
+                # Set padding token if not set
+                if self.tokenizer.pad_token is None:
+                    self.tokenizer.pad_token = self.tokenizer.eos_token
+                
+                # Left padding is required for batched generation in causal LMs
+                self.tokenizer.padding_side = "left"
+                
+                inputs = self.tokenizer(
+                    formatted_prompts,
+                    return_tensors="pt",
+                    padding=True,
+                    truncation=True,
+                    max_length=32768
+                )
+                
+                device = next(self.model.parameters()).device
+                inputs = {k: v.to(device) for k, v in inputs.items()}
+
+                with torch.no_grad():
+                    out = self.model.generate(
+                        **inputs,
+                        max_new_tokens=2048,
+                        do_sample=False,
+                        pad_token_id=self.tokenizer.pad_token_id,
+                        eos_token_id=self.tokenizer.eos_token_id
+                    )
+                
+                input_len = inputs['input_ids'].shape[1]
+                
+                results = {}
+                for i, key in enumerate(KEYS):
+                    generated_tokens = out[i][input_len:]
+                    raw = "{" + self.tokenizer.decode(generated_tokens, skip_special_tokens=True)
+                    raw = raw.strip().replace('\\"', '"')
+                    if raw.startswith("{{"):
+                        raw = raw[1:]
+                    results[key] = self._parse_json(raw)
+                    
+                print(f"  ✅ Hoàn thành Batching GPU trong {time.time() - start_section:.2f} giây.", flush=True)
+                return results
             except Exception as e:
-                logger.error(f"Single-pass extraction failed: {e}. Falling back to sequential/batched extraction...")
-                print(f"  ⚠️ Single-pass thất bại: {e}. Đang chuyển sang trích xuất fallback...", flush=True)
+                logger.error(f"HF GPU Batch inference failed: {e}. Falling back to sequential execution...")
+                print(f"  ⚠️ HF GPU Batch thất bại: {e}. Đang chuyển sang chạy tuần tự...", flush=True)
 
         # 2. OPTIMIZATION: vLLM Batch Inference (if use_vllm is True and multiple templates exist)
         if self.use_vllm and len(TEMPLATES) > 1:
@@ -474,6 +534,12 @@ class ResumeExtract:
                         formatted = self.tokenizer.apply_chat_template(
                             messages, tokenize=False, add_generation_prompt=True
                         )
+                    
+                    formatted = formatted.strip()
+                    if formatted.endswith("assistant"):
+                        formatted += "\n{"
+                    else:
+                        formatted += " {"
                     formatted_prompts.append(formatted)
 
                 # Generate outputs in a single batch call
@@ -481,8 +547,10 @@ class ResumeExtract:
                 
                 results = {}
                 for i, key in enumerate(KEYS):
-                    raw = outputs[i].outputs[0].text
+                    raw = "{" + outputs[i].outputs[0].text
                     raw = raw.strip().replace('\\"', '"')
+                    if raw.startswith("{{"):
+                        raw = raw[1:]
                     results[key] = self._parse_json(raw)
                     
                 print(f"  ✅ Hoàn thành Batching vLLM trong {time.time() - start_section:.2f} giây.", flush=True)
