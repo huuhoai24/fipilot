@@ -72,6 +72,21 @@ class ResumeExtract:
                 repo_path = snapshot_download(repo_id=source_model)
                 model_path = os.path.join(repo_path, llm_model)
                 
+                # Patch config.json để tránh lỗi RoPE scaling của vLLM
+                config_file = os.path.join(model_path, "config.json")
+                if os.path.exists(config_file):
+                    try:
+                        with open(config_file, "r", encoding="utf-8") as f:
+                            config_data = json.load(f)
+                        if "rope_scaling" in config_data and isinstance(config_data["rope_scaling"], dict):
+                            if "factor" not in config_data["rope_scaling"]:
+                                config_data["rope_scaling"]["factor"] = 1.0
+                                with open(config_file, "w", encoding="utf-8") as f:
+                                    json.dump(config_data, f, indent=2)
+                                print("🔧 Đã tự động vá lỗi config.json (bổ sung rope_scaling.factor = 1.0) cho vLLM.")
+                    except Exception as patch_err:
+                        print(f"⚠️ Không thể vá config.json: {patch_err}")
+                
                 self.vllm_sampling_params = SamplingParams(
                     temperature=0.1,
                     top_p=0.95,
