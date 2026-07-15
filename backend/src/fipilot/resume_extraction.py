@@ -138,15 +138,18 @@ class ResumeExtract:
                 from huggingface_hub import snapshot_download
                 repo_path = snapshot_download(repo_id=source_model)
                 load_path = os.path.join(repo_path, llm_model)
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    load_path,
+                    torch_dtype=dtype,
+                    device_map="auto" if "cuda" in self.device else None
+                )
             else:
-                load_path = source_model
-                
-            self.model = AutoModelForCausalLM.from_pretrained(
-                load_path,
-                subfolder=llm_model if not torch.cuda.is_available() else None,
-                torch_dtype=dtype,
-                device_map="auto" if "cuda" in self.device else None
-            )
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    source_model,
+                    subfolder=llm_model,
+                    torch_dtype=dtype,
+                    device_map="auto" if "cuda" in self.device else None
+                )
             if "cpu" in self.device:
                 self.model = self.model.to(self.device)
             logger.info(f"Loaded transformers model on {self.device} with dtype {dtype}")
