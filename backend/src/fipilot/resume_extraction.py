@@ -14,10 +14,8 @@ from pathlib import Path
 
 import pymupdf
 from dotenv import load_dotenv
-from ollama import Client
 from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
-from groq import RateLimitError
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
@@ -27,6 +25,11 @@ from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_ins
 from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
 
 load_dotenv()
+
+# Set HF_TOKEN if available in .env to suppress warnings and speed up downloads
+if os.getenv("HUGGINGFACE_API_KEY"):
+    os.environ["HF_TOKEN"] = os.getenv("HUGGINGFACE_API_KEY")
+
 env = Environment(loader=FileSystemLoader(os.path.join(cfg.ROOT, "prompts")))
 logger = logging.getLogger(__name__)
 
@@ -316,32 +319,10 @@ class ResumeExtract:
 
     # paralled/sequential extraction
     def extract_all(self, resume_text: str, TEMPLATES: list[str], KEYS: list[str]) -> dict:
-        # Check if the templates requested are the standard 3 templates
-        # If so, optimize by using the single-pass combined template instead
-        standard_templates = ["match_info.jinja2", "work_exp.jinja2", "project.jinja2"]
-        if TEMPLATES == standard_templates or (len(TEMPLATES) == 1 and TEMPLATES[0] == "combined.jinja2"):
-            try:
-                # Returns the full combined JSON
-                combined_result = self.llm_classify("combined.jinja2", resume_text)
-                
-                # Re-map keys to match the expected output format if necessary
-                mapped_result = {}
-                for key in KEYS:
-                    if key == "match_info":
-                        mapped_result[key] = {"matching": combined_result.get("matching", {})}
-                    elif key == "work_exp":
-                        mapped_result[key] = {"workExperience": combined_result.get("workExperience", [])}
-                    elif key == "project":
-                        mapped_result[key] = {"projects": combined_result.get("projects", [])}
-                return mapped_result
-            except Exception as e:
-                logger.error(f"Combined extraction failed: {e}. Falling back to sequential extraction.")
-                # Fallback will continue below if this fails
-                
-        # Fallback to sequential extraction
         results = [None] * len(TEMPLATES)
         errors = {}
 
+        # Chạy tuần tự để tránh lỗi OOM GPU/tranh chấp CUDA core khi gọi sinh cục bộ
         for i, tmpl in enumerate(TEMPLATES):
             try:
                 results[i] = self.llm_classify(tmpl, resume_text)
