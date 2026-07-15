@@ -63,16 +63,41 @@ class ResumeExtract:
         self.use_vllm = False
         self.vllm_model = None
         
-        if torch.cuda.is_available():
+        # Qwen3 is not natively supported by vLLM. Disable vLLM for Qwen3 to avoid weight conflicts.
+        is_qwen3 = "qwen3" in llm_model.lower() or "qwen3" in source_model.lower()
+        
+        # Khôi phục config.json nếu bị poisoned (từng bị vá thành qwen2/Qwen2ForCausalLM)
+        try:
+            from huggingface_hub import snapshot_download
+            repo_path = snapshot_download(repo_id=source_model)
+            model_path = os.path.join(repo_path, llm_model)
+            config_file = os.path.join(model_path, "config.json")
+            if os.path.exists(config_file):
+                with open(config_file, "r", encoding="utf-8") as f:
+                    config_data = json.load(f)
+                
+                # Nếu config đã bị đổi sang Qwen2, khôi phục lại Qwen3 gốc
+                if "architectures" in config_data and "Qwen2ForCausalLM" in config_data["architectures"]:
+                    config_data["architectures"] = ["Qwen3ForCausalLM"]
+                    config_data["model_type"] = "qwen3"
+                    if "rope_scaling" in config_data:
+                        config_data["rope_scaling"] = None
+                    with open(config_file, "w", encoding="utf-8") as f:
+                        json.dump(config_data, f, indent=2)
+                    print("🔧 [Heal] Đã tự động khôi phục config.json bị lỗi từ 'qwen2' về 'qwen3'.")
+                    logger.info("🔧 [Heal] Restored config.json from qwen2 to qwen3.")
+        except Exception as restore_err:
+            logger.warning(f"Không thể khôi phục config.json: {restore_err}")
+
+        if torch.cuda.is_available() and not is_qwen3:
             try:
                 from vllm import LLM, SamplingParams
                 from huggingface_hub import snapshot_download
                 
-                # Tải repo từ HF và xác định đường dẫn thư mục chứa model
                 repo_path = snapshot_download(repo_id=source_model)
                 model_path = os.path.join(repo_path, llm_model)
                 
-                # Patch config.json để tránh lỗi RoPE scaling của vLLM
+                # Chỉ patch config.json đối với các model hỗ trợ vLLM (Không phải Qwen3)
                 config_file = os.path.join(model_path, "config.json")
                 if os.path.exists(config_file):
                     try:
@@ -80,21 +105,15 @@ class ResumeExtract:
                             config_data = json.load(f)
                         
                         modified = False
-                        if "architectures" in config_data and "Qwen3ForCausalLM" in config_data["architectures"]:
-                            config_data["architectures"] = ["Qwen2ForCausalLM"]
-                            config_data["model_type"] = "qwen2"
-                            modified = True
-                            print("🔧 Đã tự động đổi model_type thành 'qwen2' và architectures thành 'Qwen2ForCausalLM' để vLLM hỗ trợ.")
-                            
                         if "rope_scaling" not in config_data or config_data["rope_scaling"] is None:
                             config_data["rope_scaling"] = {"type": "linear", "factor": 1.0}
                             modified = True
-                            print("🔧 Đã tự động vá lỗi config.json (bổ sung rope_scaling = {'type': 'linear', 'factor': 1.0}) cho vLLM.")
+                            print("🔧 Đã tự động bổ sung rope_scaling cho vLLM.")
                         elif isinstance(config_data["rope_scaling"], dict):
                             if "factor" not in config_data["rope_scaling"]:
                                 config_data["rope_scaling"]["factor"] = 1.0
                                 modified = True
-                                print("🔧 Đã tự động vá lỗi config.json (bổ sung rope_scaling.factor = 1.0) cho vLLM.")
+                                print("🔧 Đã bổ sung rope_scaling.factor cho vLLM.")
                         
                         if modified:
                             with open(config_file, "w", encoding="utf-8") as f:
@@ -117,7 +136,7 @@ class ResumeExtract:
                     max_model_len=32768,
                     enforce_eager=False,
                     swap_space=4,
-                    dtype="float16"  # Ép buộc dùng FP16 để tương thích với GPU Tesla T4 (Capability 7.5)
+                    dtype="float16"
                 )
                 self.use_vllm = True
                 logger.info("Loaded vLLM for fast GPU inference.")
