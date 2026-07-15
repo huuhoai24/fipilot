@@ -12,9 +12,12 @@ sys.path.append(str(Path(__file__).resolve().parent / "src"))
 from fipilot.resume_extraction import ResumeExtract
 from fipilot.config.settings import cfg
 
+import torch
+
 def main():
     print("🚀 Khởi tạo model (có thể mất vài chục giây lần đầu)...")
-    device = "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"💻 Thiết bị sử dụng: {device.upper()}")
     
     # Khởi tạo extractor
     extractor = ResumeExtract(
@@ -73,7 +76,10 @@ def main():
         print(f"  ... và {len(lines) - 5} dòng khác.")
     
     # 2. Gọi LLM trích xuất
-    print("\n🤖 Đang gọi LLM Qwen3 để bóc tách thông tin (Vì chạy CPU nên mất khoảng 1-3 phút)...")
+    if device == "cuda":
+        print("\n🤖 Đang gọi LLM Qwen3 để bóc tách thông tin (Chạy trên GPU)...")
+    else:
+        print("\n🤖 Đang gọi LLM Qwen3 để bóc tách thông tin (Vì chạy CPU nên mất khoảng 1-3 phút)...")
     llm_start_time = time.time()
     
     TEMPLATES = ["match_info.jinja2", "work_exp.jinja2", "project.jinja2"]
