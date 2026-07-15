@@ -25,5 +25,3 @@ dist-ssr
 data/
 models/
 *.zip
-*.pdf
-backend/test/page_image/
