@@ -80,6 +80,12 @@ class ResumeExtract:
                             config_data = json.load(f)
                         
                         modified = False
+                        if "architectures" in config_data and "Qwen3ForCausalLM" in config_data["architectures"]:
+                            config_data["architectures"] = ["Qwen2ForCausalLM"]
+                            config_data["model_type"] = "qwen2"
+                            modified = True
+                            print("🔧 Đã tự động đổi model_type thành 'qwen2' và architectures thành 'Qwen2ForCausalLM' để vLLM hỗ trợ.")
+                            
                         if "rope_scaling" not in config_data or config_data["rope_scaling"] is None:
                             config_data["rope_scaling"] = {"type": "linear", "factor": 1.0}
                             modified = True
@@ -126,8 +132,18 @@ class ResumeExtract:
         
         if not self.use_vllm:
             dtype = torch.float16 if "cuda" in self.device else torch.float32
+            
+            # Sử dụng model_path cục bộ đã được patch nếu có
+            if torch.cuda.is_available():
+                from huggingface_hub import snapshot_download
+                repo_path = snapshot_download(repo_id=source_model)
+                load_path = os.path.join(repo_path, llm_model)
+            else:
+                load_path = source_model
+                
             self.model = AutoModelForCausalLM.from_pretrained(
-                source_model, subfolder=llm_model,
+                load_path,
+                subfolder=llm_model if not torch.cuda.is_available() else None,
                 torch_dtype=dtype,
                 device_map="auto" if "cuda" in self.device else None
             )
