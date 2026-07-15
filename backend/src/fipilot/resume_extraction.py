@@ -315,9 +315,18 @@ class ResumeExtract:
         # Xóa block <think>...</think> nếu model tự động sinh ra
         raw_clean = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
         
+        raw_clean = raw_clean.strip()
+        if raw_clean.startswith("{{"):
+            raw_clean = raw_clean[1:]
+        
         match = re.search(r"\{.*\}", raw_clean, re.DOTALL)
         if not match:
-            raise ValueError(f"Không tìm thấy JSON hợp lệ trong output: {raw[:200]}")
+            # Thử khôi phục nếu JSON bị thiếu dấu đóng ngoặc nhọn do bị ngắt quãng giữa chừng
+            if not raw_clean.endswith("}"):
+                raw_clean += "\n}"
+            match = re.search(r"\{.*\}", raw_clean, re.DOTALL)
+            if not match:
+                raise ValueError(f"Không tìm thấy JSON hợp lệ trong output: {raw[:200]}")
         
         json_str = match.group(0)
         try:
@@ -368,6 +377,14 @@ class ResumeExtract:
                 messages, tokenize=False, add_generation_prompt=True
             )
 
+        # Force JSON response by pre-filling the assistant output with "{"
+        # This completely skips reasoning/thinking blocks (<think>) and forces direct JSON generation.
+        formatted_prompt = formatted_prompt.strip()
+        if formatted_prompt.endswith("assistant"):
+            formatted_prompt += "\n{"
+        else:
+            formatted_prompt += " {"
+
         # Dynamic parameter adjustments based on template and attempt index
         is_combined = prompt_template == "combined.jinja2"
         max_tokens = 4096 if is_combined else 2048
@@ -382,7 +399,7 @@ class ResumeExtract:
                 repetition_penalty=1.05
             )
             outputs = self.vllm_model.generate([formatted_prompt], sampling_params, use_tqdm=False)
-            raw = outputs[0].outputs[0].text
+            raw = "{" + outputs[0].outputs[0].text
         else:
             inputs = self.tokenizer(
                 formatted_prompt,
@@ -405,10 +422,12 @@ class ResumeExtract:
                 )
             
             input_len = inputs['input_ids'].shape[1]
-            raw = self.tokenizer.decode(out[0][input_len:], skip_special_tokens=True)
+            raw = "{" + self.tokenizer.decode(out[0][input_len:], skip_special_tokens=True)
         
         # Cleanup JSON output
         raw = raw.strip().replace('\\"', '"')
+        if raw.startswith("{{"):
+            raw = raw[1:]
         return self._parse_json(raw)
 
     # paralled/sequential extraction
