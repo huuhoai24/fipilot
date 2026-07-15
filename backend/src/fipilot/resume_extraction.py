@@ -328,7 +328,10 @@ class ResumeExtract:
         # Chạy tuần tự để tránh lỗi OOM GPU/tranh chấp CUDA core khi gọi sinh cục bộ
         for i, tmpl in enumerate(TEMPLATES):
             try:
+                print(f"  🤖 [{i+1}/{len(TEMPLATES)}] Đang trích xuất phần '{KEYS[i]}'...", flush=True)
+                start_section = time.time()
                 results[i] = self.llm_classify(tmpl, resume_text)
+                print(f"  ✅ Hoàn thành '{KEYS[i]}' trong {time.time() - start_section:.2f} giây.", flush=True)
             except Exception as e:
                 errors[KEYS[i]] = str(e)
                 logger.error(f"Section '{KEYS[i]}' failed permanently: {e}")

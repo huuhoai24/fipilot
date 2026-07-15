@@ -39,14 +39,31 @@ def main():
     start_time = time.time()
     
     # 1. Trích xuất text từ CV
+    t = time.time()
     boxes = extractor.layout_detection(pdf_path)
-    boxes = extractor.remove_duplicate_boxes(boxes)
-    boxes = extractor.inter_segment_sorting(boxes)
-    resume_lines = extractor.pair_resume(pdf_path)
-    regions = extractor.intra_segment_sorting(boxes, resume_lines)
-    resume_text = extractor.linearize_layout_regions(regions)
+    print(f"  ⏱️  [1/6] Layout Detection (YOLO): {time.time() - t:.2f} giây.")
     
-    print(f"✅ Xong phần đọc text ({time.time() - start_time:.2f} giây).")
+    t = time.time()
+    boxes = extractor.remove_duplicate_boxes(boxes)
+    print(f"  ⏱️  [2/6] Loại bỏ các box trùng lặp: {time.time() - t:.2f} giây.")
+    
+    t = time.time()
+    boxes = extractor.inter_segment_sorting(boxes)
+    print(f"  ⏱️  [3/6] Sắp xếp inter-segment: {time.time() - t:.2f} giây.")
+    
+    t = time.time()
+    resume_lines = extractor.pair_resume(pdf_path)
+    print(f"  ⏱️  [4/6] Trích xuất text / OCR: {time.time() - t:.2f} giây.")
+    
+    t = time.time()
+    regions = extractor.intra_segment_sorting(boxes, resume_lines)
+    print(f"  ⏱️  [5/6] Sắp xếp intra-segment: {time.time() - t:.2f} giây.")
+    
+    t = time.time()
+    resume_text = extractor.linearize_layout_regions(regions)
+    print(f"  ⏱️  [6/6] Chuyển đổi sang text tuyến tính: {time.time() - t:.2f} giây.")
+    
+    print(f"✅ Xong phần đọc text (Tổng cộng: {time.time() - start_time:.2f} giây).")
     
     print("\n🔍 5 dòng text đầu tiên trích xuất được để kiểm tra:")
     lines = resume_text.split('\n')
