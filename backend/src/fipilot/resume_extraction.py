@@ -78,12 +78,21 @@ class ResumeExtract:
                     try:
                         with open(config_file, "r", encoding="utf-8") as f:
                             config_data = json.load(f)
-                        if "rope_scaling" in config_data and isinstance(config_data["rope_scaling"], dict):
+                        
+                        modified = False
+                        if "rope_scaling" not in config_data or config_data["rope_scaling"] is None:
+                            config_data["rope_scaling"] = {"type": "linear", "factor": 1.0}
+                            modified = True
+                            print("🔧 Đã tự động vá lỗi config.json (bổ sung rope_scaling = {'type': 'linear', 'factor': 1.0}) cho vLLM.")
+                        elif isinstance(config_data["rope_scaling"], dict):
                             if "factor" not in config_data["rope_scaling"]:
                                 config_data["rope_scaling"]["factor"] = 1.0
-                                with open(config_file, "w", encoding="utf-8") as f:
-                                    json.dump(config_data, f, indent=2)
+                                modified = True
                                 print("🔧 Đã tự động vá lỗi config.json (bổ sung rope_scaling.factor = 1.0) cho vLLM.")
+                        
+                        if modified:
+                            with open(config_file, "w", encoding="utf-8") as f:
+                                json.dump(config_data, f, indent=2)
                     except Exception as patch_err:
                         print(f"⚠️ Không thể vá config.json: {patch_err}")
                 
