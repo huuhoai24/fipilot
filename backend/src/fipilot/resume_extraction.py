@@ -116,7 +116,8 @@ class ResumeExtract:
                     gpu_memory_utilization=0.9,
                     max_model_len=32768,
                     enforce_eager=False,
-                    swap_space=4
+                    swap_space=4,
+                    dtype="float16"  # Ép buộc dùng FP16 để tương thích với GPU Tesla T4 (Capability 7.5)
                 )
                 self.use_vllm = True
                 logger.info("Loaded vLLM for fast GPU inference.")
@@ -132,24 +133,13 @@ class ResumeExtract:
         
         if not self.use_vllm:
             dtype = torch.float16 if "cuda" in self.device else torch.float32
-            
-            # Sử dụng model_path cục bộ đã được patch nếu có
-            if torch.cuda.is_available():
-                from huggingface_hub import snapshot_download
-                repo_path = snapshot_download(repo_id=source_model)
-                load_path = os.path.join(repo_path, llm_model)
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    load_path,
-                    torch_dtype=dtype,
-                    device_map="auto" if "cuda" in self.device else None
-                )
-            else:
-                self.model = AutoModelForCausalLM.from_pretrained(
-                    source_model,
-                    subfolder=llm_model,
-                    torch_dtype=dtype,
-                    device_map="auto" if "cuda" in self.device else None
-                )
+            self.model = AutoModelForCausalLM.from_pretrained(
+                source_model,
+                subfolder=llm_model,
+                torch_dtype=dtype,
+                device_map="auto" if "cuda" in self.device else None,
+                trust_remote_code=True
+            )
             if "cpu" in self.device:
                 self.model = self.model.to(self.device)
             logger.info(f"Loaded transformers model on {self.device} with dtype {dtype}")
