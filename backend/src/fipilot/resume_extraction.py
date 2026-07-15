@@ -91,9 +91,13 @@ class ResumeExtract:
                 self.use_vllm = True
                 logger.info("Loaded vLLM for fast GPU inference.")
             except Exception as e:
+                import traceback
+                print("\n=== vLLM Load Traceback ===")
+                traceback.print_exc()
+                print("===========================\n")
                 self.use_vllm = False
                 self.vllm_model = None
-                print(f"⚠️ Không thể tải vLLM (Lỗi: {e}). Đang sử dụng thư viện transformers...")
+                print(f"⚠️ Không thể tải vLLM (Lỗi: {type(e).__name__}: {e}). Đang sử dụng thư viện transformers...")
                 logger.warning(f"vLLM load failed: {e}. Falling back to transformers.")
         
         if not self.use_vllm:
