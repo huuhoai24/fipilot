@@ -247,7 +247,10 @@ class ResumeExtract:
         return linearized_text
 
     def _parse_json(self, raw: str) -> dict:
-        match = re.search(r"\{.*\}", raw, re.DOTALL)
+        # Xóa block <think>...</think> nếu model tự động sinh ra
+        raw_clean = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
+        
+        match = re.search(r"\{.*\}", raw_clean, re.DOTALL)
         if not match:
             raise ValueError(f"Không tìm thấy JSON hợp lệ trong output: {raw[:200]}")
         return json.loads(match.group(0))
