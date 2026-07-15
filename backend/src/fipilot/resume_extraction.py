@@ -84,8 +84,9 @@ class ResumeExtract:
                     swap_space=4
                 )
                 logger.info("Loaded vLLM for fast GPU inference.")
-            except ImportError:
-                logger.warning("vLLM not installed. Falling back to transformers.")
+            except Exception as e:
+                print(f"⚠️ Không thể tải vLLM (Lỗi: {e}). Đang sử dụng thư viện transformers...")
+                logger.warning(f"vLLM load failed: {e}. Falling back to transformers.")
         
         if not self.use_vllm:
             dtype = torch.float16 if "cuda" in self.device else torch.float32
@@ -298,9 +299,7 @@ class ResumeExtract:
                         out = self.model.generate(
                             **inputs,
                             max_new_tokens=2048,
-                            temperature=0.1,
-                            top_p=0.95,
-                            do_sample=True,
+                            do_sample=False,
                             pad_token_id=self.tokenizer.eos_token_id,
                             eos_token_id=self.tokenizer.eos_token_id
                         )
