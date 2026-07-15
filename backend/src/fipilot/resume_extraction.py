@@ -66,7 +66,12 @@ class ResumeExtract:
         if torch.cuda.is_available():
             try:
                 from vllm import LLM, SamplingParams
-                self.use_vllm = True
+                from huggingface_hub import snapshot_download
+                
+                # Tải repo từ HF và xác định đường dẫn thư mục chứa model
+                repo_path = snapshot_download(repo_id=source_model)
+                model_path = os.path.join(repo_path, llm_model)
+                
                 self.vllm_sampling_params = SamplingParams(
                     temperature=0.1,
                     top_p=0.95,
@@ -74,8 +79,8 @@ class ResumeExtract:
                     repetition_penalty=1.05
                 )
                 self.vllm_model = LLM(
-                    model=source_model,
-                    tokenizer=source_model,
+                    model=model_path,
+                    tokenizer=model_path,
                     trust_remote_code=True,
                     tensor_parallel_size=torch.cuda.device_count() or 1,
                     gpu_memory_utilization=0.9,
@@ -83,8 +88,11 @@ class ResumeExtract:
                     enforce_eager=False,
                     swap_space=4
                 )
+                self.use_vllm = True
                 logger.info("Loaded vLLM for fast GPU inference.")
             except Exception as e:
+                self.use_vllm = False
+                self.vllm_model = None
                 print(f"⚠️ Không thể tải vLLM (Lỗi: {e}). Đang sử dụng thư viện transformers...")
                 logger.warning(f"vLLM load failed: {e}. Falling back to transformers.")
         
