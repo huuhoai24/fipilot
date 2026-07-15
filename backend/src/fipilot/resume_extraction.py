@@ -299,10 +299,36 @@ class ResumeExtract:
         match = re.search(r"\{.*\}", raw_clean, re.DOTALL)
         if not match:
             raise ValueError(f"Không tìm thấy JSON hợp lệ trong output: {raw[:200]}")
-        return json.loads(match.group(0))
+        
+        json_str = match.group(0)
+        try:
+            return json.loads(json_str)
+        except json.JSONDecodeError as decode_err:
+            logger.warning(f"Standard JSON parsing failed: {decode_err}. Attempting auto-repair...")
+            # Sửa các lỗi cú pháp JSON cơ bản
+            repaired_str = json_str
+            # Thay thế nháy đơn thành nháy kép quanh key/value
+            repaired_str = re.sub(r"'(.*?)'", r'"\1"', repaired_str)
+            # Sửa boolean/None của Python
+            repaired_str = re.sub(r"\bTrue\b", "true", repaired_str)
+            repaired_str = re.sub(r"\bFalse\b", "false", repaired_str)
+            repaired_str = re.sub(r"\bNone\b", "null", repaired_str)
+            # Xóa dấu phẩy thừa ở cuối các phần tử JSON (trailing commas)
+            repaired_str = re.sub(r",\s*([\]}])", r"\1", repaired_str)
+            
+            try:
+                return json.loads(repaired_str)
+            except Exception:
+                # Fallback to json_repair if available
+                try:
+                    import json_repair
+                    return json_repair.loads(json_str)
+                except ImportError:
+                    pass
+                raise decode_err
 
     # llm extraction using local model
-    def llm_classify(self, prompt_template: str, resume: str) -> dict:
+    def llm_classify(self, prompt_template: str, resume: str, attempt: int = 0) -> dict:
         template = env.get_template(prompt_template)
         prompt = template.render(resume_text=resume)
 
@@ -323,67 +349,139 @@ class ResumeExtract:
                 messages, tokenize=False, add_generation_prompt=True
             )
 
-        last_err = None
-        for attempt in range(self.max_retries):
-            try:
-                if self.use_vllm:
-                    outputs = self.vllm_model.generate([formatted_prompt], self.vllm_sampling_params, use_tqdm=False)
-                    raw = outputs[0].outputs[0].text
-                else:
-                    inputs = self.tokenizer(
-                        formatted_prompt,
-                        return_tensors="pt",
-                        truncation=True,
-                        max_length=32768
-                    )
-                    
-                    device = next(self.model.parameters()).device
-                    inputs = {k: v.to(device) for k, v in inputs.items()}
+        # Dynamic parameter adjustments based on template and attempt index
+        is_combined = prompt_template == "combined.jinja2"
+        max_tokens = 4096 if is_combined else 2048
+        
+        if self.use_vllm:
+            # Create a copy or new instance of SamplingParams to customize max_tokens and temperature
+            from vllm import SamplingParams
+            sampling_params = SamplingParams(
+                temperature=1.0 if attempt > 0 else 0.1,
+                top_p=0.95,
+                max_tokens=max_tokens,
+                repetition_penalty=1.05
+            )
+            outputs = self.vllm_model.generate([formatted_prompt], sampling_params, use_tqdm=False)
+            raw = outputs[0].outputs[0].text
+        else:
+            inputs = self.tokenizer(
+                formatted_prompt,
+                return_tensors="pt",
+                truncation=True,
+                max_length=32768
+            )
+            
+            device = next(self.model.parameters()).device
+            inputs = {k: v.to(device) for k, v in inputs.items()}
 
-                    with torch.no_grad():
-                        out = self.model.generate(
-                            **inputs,
-                            max_new_tokens=2048,
-                            do_sample=False,
-                            pad_token_id=self.tokenizer.eos_token_id,
-                            eos_token_id=self.tokenizer.eos_token_id
-                        )
-                    
-                    input_len = inputs['input_ids'].shape[1]
-                    raw = self.tokenizer.decode(out[0][input_len:], skip_special_tokens=True)
-                
-                # Cleanup JSON output
-                raw = raw.strip().replace('\\"', '"')
-                return self._parse_json(raw)
-                
-            except Exception as e:
-                last_err = e
-                logger.warning(f"[{prompt_template}] attempt {attempt+1}/{self.max_retries} failed: {e}")
-                if attempt < self.max_retries - 1:
-                    time.sleep(1) # Reduced sleep time
-                    
-        raise RuntimeError(f"llm_classify failed for {prompt_template} after {self.max_retries} attempts") from last_err
+            with torch.no_grad():
+                out = self.model.generate(
+                    **inputs,
+                    max_new_tokens=max_tokens,
+                    do_sample=True if attempt > 0 else False,
+                    temperature=1.0 if attempt > 0 else None,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                    eos_token_id=self.tokenizer.eos_token_id
+                )
+            
+            input_len = inputs['input_ids'].shape[1]
+            raw = self.tokenizer.decode(out[0][input_len:], skip_special_tokens=True)
+        
+        # Cleanup JSON output
+        raw = raw.strip().replace('\\"', '"')
+        return self._parse_json(raw)
 
     # paralled/sequential extraction
     def extract_all(self, resume_text: str, TEMPLATES: list[str], KEYS: list[str]) -> dict:
+        is_standard_cv_extraction = set(KEYS) == {"match_info", "work_exp", "project"}
+        
+        # 1. OPTIMIZATION: Single-pass Combined Extraction
+        if is_standard_cv_extraction:
+            try:
+                print("  🤖 [Single-pass] Đang trích xuất toàn bộ thông tin bằng prompt gộp...", flush=True)
+                start_section = time.time()
+                combined_result = self.llm_classify("combined.jinja2", resume_text)
+                print(f"  ✅ Hoàn thành trích xuất Single-pass trong {time.time() - start_section:.2f} giây.", flush=True)
+                
+                return {
+                    "match_info": {"matching": combined_result.get("matching", {})},
+                    "work_exp": {"workExperience": combined_result.get("workExperience", [])},
+                    "project": {"projects": combined_result.get("projects", [])}
+                }
+            except Exception as e:
+                logger.error(f"Single-pass extraction failed: {e}. Falling back to sequential/batched extraction...")
+                print(f"  ⚠️ Single-pass thất bại: {e}. Đang chuyển sang trích xuất fallback...", flush=True)
+
+        # 2. OPTIMIZATION: vLLM Batch Inference (if use_vllm is True and multiple templates exist)
+        if self.use_vllm and len(TEMPLATES) > 1:
+            try:
+                print(f"  🤖 [vLLM Batch] Đang trích xuất song song {len(TEMPLATES)} phần...", flush=True)
+                start_section = time.time()
+                
+                formatted_prompts = []
+                for tmpl in TEMPLATES:
+                    template = env.get_template(tmpl)
+                    prompt = template.render(resume_text=resume_text)
+                    messages = [
+                        {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
+                        {"role": "user", "content": prompt}
+                    ]
+                    try:
+                        formatted = self.tokenizer.apply_chat_template(
+                            messages, tokenize=False, add_generation_prompt=True,
+                            chat_template_kwargs={"enable_thinking": False}
+                        )
+                    except Exception:
+                        formatted = self.tokenizer.apply_chat_template(
+                            messages, tokenize=False, add_generation_prompt=True
+                        )
+                    formatted_prompts.append(formatted)
+
+                # Generate outputs in a single batch call
+                outputs = self.vllm_model.generate(formatted_prompts, self.vllm_sampling_params, use_tqdm=False)
+                
+                results = {}
+                for i, key in enumerate(KEYS):
+                    raw = outputs[i].outputs[0].text
+                    raw = raw.strip().replace('\\"', '"')
+                    results[key] = self._parse_json(raw)
+                    
+                print(f"  ✅ Hoàn thành Batching vLLM trong {time.time() - start_section:.2f} giây.", flush=True)
+                return results
+            except Exception as e:
+                logger.error(f"vLLM Batch inference failed: {e}. Falling back to sequential execution...")
+                print(f"  ⚠️ vLLM Batch thất bại: {e}. Đang chuyển sang chạy tuần tự...", flush=True)
+
+        # 3. Fallback: Sequential Extraction
         results = [None] * len(TEMPLATES)
         errors = {}
 
-        # Chạy tuần tự để tránh lỗi OOM GPU/tranh chấp CUDA core khi gọi sinh cục bộ
         for i, tmpl in enumerate(TEMPLATES):
-            try:
-                print(f"  🤖 [{i+1}/{len(TEMPLATES)}] Đang trích xuất phần '{KEYS[i]}'...", flush=True)
-                start_section = time.time()
-                results[i] = self.llm_classify(tmpl, resume_text)
-                print(f"  ✅ Hoàn thành '{KEYS[i]}' trong {time.time() - start_section:.2f} giây.", flush=True)
-            except Exception as e:
-                errors[KEYS[i]] = str(e)
-                logger.error(f"Section '{KEYS[i]}' failed permanently: {e}")
+            last_err = None
+            for attempt in range(self.max_retries):
+                try:
+                    if attempt == 0:
+                        print(f"  🤖 [{i+1}/{len(TEMPLATES)}] Đang trích xuất phần '{KEYS[i]}'...", flush=True)
+                    else:
+                        print(f"  🔄 Thử lại lần {attempt}/{self.max_retries-1} cho '{KEYS[i]}'...", flush=True)
+                    
+                    start_section = time.time()
+                    results[i] = self.llm_classify(tmpl, resume_text, attempt=attempt)
+                    print(f"  ✅ Hoàn thành '{KEYS[i]}' trong {time.time() - start_section:.2f} giây.", flush=True)
+                    break
+                except Exception as e:
+                    last_err = e
+                    if attempt < self.max_retries - 1:
+                        time.sleep(1)
+            else:
+                errors[KEYS[i]] = str(last_err)
+                logger.error(f"Section '{KEYS[i]}' failed permanently: {last_err}")
 
         if errors:
             logger.warning(f"extract_all completed with {len(errors)} failed sections: {list(errors.keys())}")
 
-        return {key: results[i] for i, key in enumerate(KEYS)}
+        return {key: results[i] for i, key in enumerate(KEYS) if results[i] is not None}
     
     def process_create_data(self, pdf_path, txt_dir, json_dir, TEMPLATES, KEYS, max_retries=5):
         pdf_path = Path(pdf_path)
