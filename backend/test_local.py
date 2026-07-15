@@ -30,6 +30,8 @@ def main():
         device=device
     )
 
+    print(f"⚡ Chế độ tăng tốc vLLM: {'BẬT (Khởi tạo động cơ vLLM thành công)' if extractor.use_vllm else 'TẮT (Sử dụng Transformers)'}")
+
     # Đường dẫn đến file PDF test
     pdf_path = Path(__file__).resolve().parent / "test" / "AI_Engineer_candidate_dung-cong-anh-11835246.pdf"
     
