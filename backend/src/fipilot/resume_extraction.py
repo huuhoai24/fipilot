@@ -111,7 +111,7 @@ class ResumeExtract:
                 self.vllm_model = LLM(
                     model=model_path,
                     tokenizer=model_path,
-                    trust_remote_code=True,
+                    trust_remote_code=False,
                     tensor_parallel_size=torch.cuda.device_count() or 1,
                     gpu_memory_utilization=0.9,
                     max_model_len=32768,
