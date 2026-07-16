@@ -231,35 +231,35 @@ class ResumeExtract:
             )
         
         # Parse resume_text to build a mapping from line index to clean text
-        lines_map = {}
-        for line in resume_text.split('\n'):
-            line = line.strip()
-            if not line:
-                continue
-            match = re.match(r'^\[(\d+)\]:\s*(.*)$', line)
-            if match:
-                idx = int(match.group(1))
-                text = match.group(2)
-                lines_map[idx] = text
+        # lines_map = {}
+        # for line in resume_text.split('\n'):
+        #     line = line.strip()
+        #     if not line:
+        #         continue
+        #     match = re.match(r'^\[(\d+)\]:\s*(.*)$', line)
+        #     if match:
+        #         idx = int(match.group(1))
+        #         text = match.group(2)
+        #         lines_map[idx] = text
 
-        # Post-process workExperience: replace index range with actual text
-        if "workExperience" in result and isinstance(result["workExperience"], list):
-            for entry in result["workExperience"]:
-                if isinstance(entry, dict):
-                    index_range = entry.get("jobDescription_refer_index_range")
-                    if isinstance(index_range, list) and len(index_range) == 2:
-                        try:
-                            start_idx = int(index_range[0])
-                            end_idx = int(index_range[1])
-                            extracted_lines = []
-                            for idx in range(start_idx, end_idx + 1):
-                                if idx in lines_map:
-                                    extracted_lines.append(lines_map[idx])
-                            job_description_text = "\n".join(extracted_lines)
-                            entry["jobDescription"] = job_description_text
-                            entry["jobDescription_refer_index_range"] = job_description_text
-                        except (ValueError, TypeError) as e:
-                            logger.error(f"Error parsing index range {index_range}: {e}")
+        # # Post-process workExperience: replace index range with actual text
+        # if "workExperience" in result and isinstance(result["workExperience"], list):
+        #     for entry in result["workExperience"]:
+        #         if isinstance(entry, dict):
+        #             index_range = entry.get("jobDescription_refer_index_range")
+        #             if isinstance(index_range, list) and len(index_range) == 2:
+        #                 try:
+        #                     start_idx = int(index_range[0])
+        #                     end_idx = int(index_range[1])
+        #                     extracted_lines = []
+        #                     for idx in range(start_idx, end_idx + 1):
+        #                         if idx in lines_map:
+        #                             extracted_lines.append(lines_map[idx])
+        #                     job_description_text = "\n".join(extracted_lines)
+        #                     entry["jobDescription"] = job_description_text
+        #                     entry["jobDescription_refer_index_range"] = job_description_text
+        #                 except (ValueError, TypeError) as e:
+        #                     logger.error(f"Error parsing index range {index_range}: {e}")
 
         return json.dumps(result, indent=2, ensure_ascii=False)
         
