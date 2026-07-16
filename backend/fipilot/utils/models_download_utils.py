@@ -1,6 +1,3 @@
-"""
-Model download utilities for SmartResume (Hugging Face source)
-"""
 import os
 from typing import Optional
 

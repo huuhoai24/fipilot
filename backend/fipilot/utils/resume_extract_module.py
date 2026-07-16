@@ -135,47 +135,6 @@ def calculate_experience(work_experience: list[dict]) -> dict:
     years, months = divmod(total, 12)
     return {"total_years": years, "total_months": months}
 
-
-def enrich_output(parsed: dict) -> dict:
-    matching = {**parsed["match_info"]["matching"]}
-    matching["years_of_experience"] = calculate_experience(
-        parsed.get("work_exp", {}).get("workExperience", [])
-    )
-    return {**parsed, "match_info": {**parsed["match_info"], "matching": matching}}
-
-def atomic_write_text(path: Path, content: str) -> None:
-    tmp_path = path.with_suffix(path.suffix + ".tmp")
-    try:
-        tmp_path.write_text(content, encoding="utf-8")
-        tmp_path.replace(path)
-    except Exception:
-        tmp_path.unlink(missing_ok=True)
-        raise
-
-def save_resume_data(resume_text: str, output: dict, txt_dir: str, json_dir: str, pdf_path: str | Path) -> tuple[str, str]:
-        base_name = Path(pdf_path).stem
-        base_name = "".join(c for c in base_name if c.isalnum() or c in "-_")
-        if not base_name:
-            base_name = f"resume_{uuid.uuid4().hex[:8]}"
-
-        txt_dir.mkdir(parents=True, exist_ok=True)
-        json_dir.mkdir(parents=True, exist_ok=True)
-
-        txt_path = txt_dir / f"{base_name}.txt"
-        json_path = json_dir / f"{base_name}.json"
-
-        try:
-            atomic_write_text(txt_path, resume_text)
-            atomic_write_text(json_path, json.dumps(output, ensure_ascii=False, indent=2, default=str))
-        except Exception as e:
-            logger.error(f"Failed saving resume data for {pdf_path}: {e}")
-            txt_path.unlink(missing_ok=True)
-            raise
-
-        logger.info(f"Saved TXT: {txt_path}")
-        logger.info(f"Saved JSON: {json_path}")
-        return str(txt_path), str(json_path)
-
 def is_scanned_pdf(pdf_path: str | Path, text_threshold: int = 20) -> bool:
     with pymupdf.open(pdf_path) as doc:
         total_text = "".join(page.get_text() for page in doc)

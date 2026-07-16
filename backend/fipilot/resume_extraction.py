@@ -2,25 +2,20 @@ import json
 import logging
 import os
 import re
-import shutil
 import tempfile
-import threading
-import time
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
 import pymupdf
 from dotenv import load_dotenv
-from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
 
 from fipilot.model.llm_client import LLMClient
 from fipilot.utils.config import config
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
-from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
+from fipilot.utils.resume_extract_module import is_scanned_pdf
 
 load_dotenv()
 
@@ -45,6 +40,7 @@ class ResumeExtract:
             # Get yolo model path from config
             yolo_model_name = getattr(config, 'yolo_model_name', "best.pt")
             models_dir = config.model_download.get('models_dir', {}).get('layout', 'models')
+            os.makedirs(models_dir, exist_ok=True)
             
             # Check if it exists locally in the layout models directory
             possible_path = os.path.join(models_dir, yolo_model_name)
@@ -68,6 +64,7 @@ class ResumeExtract:
                 except Exception as e:
                     print(f"Failed to download YOLO model: {e}")
                     print("If the repository 'hoainh204/YoloV12s' is private, please set the HF_TOKEN environment variable.")
+                    print(f"Alternatively, you can manually upload your model 'best.pt' to: {os.path.abspath(possible_path)}")
                     # Final fallback to standard path
                     yolo_model = possible_path
 
@@ -221,7 +218,7 @@ class ResumeExtract:
                 if text:
                     linearized_lines.append(f"[{line_index}]: {text}")
                     line_index += 1
-        linearized_text = "\n".join(linearized_lines)
+        linearized_text = " ".join(linearized_lines)
         return linearized_text
 
     def llm_analyzer(self, resume_text, resume_id):
