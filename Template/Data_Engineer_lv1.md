@@ -1,8 +1,9 @@
 # Bộ Câu Hỏi Phỏng Vấn Data Engineer (Level 1)
 
-* **Role:** Data Engineer
+* **Vai trò:** Data Engineer
 * **Level:** Level 1
-* **Experience:** 0 - 1 năm kinh nghiệm
+* **Kinh nghiệm:** 0 - 1 năm kinh nghiệm
+* **Kỳ vọng:** nắm khái niệm cơ bản, làm được nhiệm vụ nhỏ và giao tiếp rõ ràng
 
 ---
 
@@ -10,22 +11,18 @@
 
 ### Câu 1
 * **Độ khó:** Dễ
-* **Câu hỏi:** Trong quy trình ETL truyền thống, ba chữ cái E, T, L là viết tắt của các từ nào và nhiệm vụ cốt lõi của từng bước là gì?
-* **Đáp án mẫu:** - E (Extract): Trích xuất dữ liệu từ các nguồn khác nhau (Database, API, File thô).
-  - T (Transform): Biến đổi dữ liệu (làm sạch, chuẩn hóa, tính toán, định dạng lại) cho phù hợp với yêu cầu nghiệp vụ.
-  - L (Load): Ghi/Nạp dữ liệu đã biến đổi vào hệ thống lưu trữ đích (như Data Warehouse).
+* **Câu hỏi:** Theo bạn, trách nhiệm chính của một Data Engineer trong team phần mềm là gì?
+* **Đáp án mẫu:** Câu trả lời tốt nên nêu được việc hiểu yêu cầu được giao, đóng góp vào một pipeline dữ liệu đáng tin cậy, làm việc cẩn thận, báo sớm blocker, tuân thủ tiêu chuẩn của team và có tinh thần học hỏi.
 
 ### Câu 2
 * **Độ khó:** Dễ
-* **Câu hỏi:** Phân biệt sự khác nhau cơ bản về mục đích sử dụng giữa Data Warehouse (Kho dữ liệu) và Data Lake (Hồ dữ liệu).
-* **Đáp án mẫu:** - Data Warehouse: Lưu trữ dữ liệu đã qua xử lý, có cấu trúc rõ ràng (Structured), phục vụ chủ yếu cho việc làm báo cáo BI và phân tích định kỳ.
-  - Data Lake: Lưu trữ dữ liệu thô ở mọi định dạng (Structured, Semi-structured, Unstructured) với khối lượng lớn, phục vụ cho khai phá dữ liệu và Data Science.
+* **Câu hỏi:** Bạn đã từng dùng công cụ hoặc công nghệ nào trong nhóm sau: SQL, Python, Spark, Airflow, Kafka, dbt, data warehouse?
+* **Đáp án mẫu:** Ứng viên nên nói đúng công cụ mình đã dùng, mô tả một việc cụ thể đã làm với công cụ đó, ví dụ xây feature nhỏ, viết query, test endpoint hoặc cấu hình workflow đơn giản.
 
 ### Câu 3
 * **Độ khó:** Dễ
-* **Câu hỏi:** Trong SQL, sự khác biệt về kết quả trả về giữa hai phép toán `INNER JOIN` và `LEFT JOIN` là gì?
-* **Đáp án mẫu:** - `INNER JOIN`: Chỉ trả về các bản ghi có giá trị trùng khớp xuất hiện ở cả hai bảng.
-  - `LEFT JOIN`: Trá về toàn bộ các bản ghi từ bảng bên trái và các bản ghi trùng khớp từ bảng bên phải; các vị trí không có dữ liệu trùng khớp ở bảng bên phải sẽ được điền giá trị `NULL`.
+* **Câu hỏi:** Trước khi bàn giao một pipeline dữ liệu đáng tin cậy, bạn kiểm tra công việc của mình như thế nào?
+* **Đáp án mẫu:** Câu trả lời nên có đọc lại yêu cầu, test luồng chính và edge case đơn giản, kiểm tra log hoặc output, nhờ review khi cần và ghi chú giả định quan trọng.
 
 ---
 
@@ -33,26 +30,23 @@
 
 ### Câu 4
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Trong các hệ thống Big Data, cơ chế phân tán dữ liệu "Sharding" và "Replication" khác nhau như thế nào về mục đích?
-* **Đáp án mẫu:** - Sharding: Chia nhỏ một tập dữ liệu lớn thành các phần nhỏ hơn (shards) và lưu trữ rải rác trên nhiều máy chủ để tăng hiệu năng xử lý ghi/đọc (mở rộng theo chiều ngang).
-  - Replication: Sao chép cùng một tập dữ liệu ra nhiều bản để lưu trữ trên nhiều máy chủ khác nhau nhằm đảm bảo tính sẵn sàng cao (High Availability) và khả năng chịu lỗi (Fault Tolerance) khi có máy chủ bị hỏng.
+* **Câu hỏi:** Hãy kể một bug hoặc vấn đề bạn từng gặp khi làm việc với data pipeline, ETL/ELT, batch processing, orchestration và data quality. Bạn đã điều tra như thế nào?
+* **Đáp án mẫu:** Ứng viên nên trình bày quy trình debug: tái hiện lỗi, khoanh vùng nguyên nhân, xem log/dữ liệu, đặt giả thuyết, thử fix và xác minh lại kết quả.
 
 ### Câu 5
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Định dạng lưu trữ tệp tin dạng dòng (Row-oriented như CSV, JSON) và dạng cột (Columnar như Parquet, ORC) có ưu thế khác nhau thế nào khi thực hiện truy vấn dữ liệu?
-* **Đáp án mẫu:** - Dạng dòng (Row-oriented): Tối ưu cho các tác vụ ghi dữ liệu liên tục hoặc truy vấn lấy ra toàn bộ thông tin của một vài bản ghi cụ thể.
-  - Dạng cột (Columnar): Tối ưu cho các truy vấn phân tích tổng hợp (như `SUM`, `AVG`, `COUNT` trên một vài cột cụ thể) vì hệ thống chỉ cần đọc đúng các cột đó mà không phải quét qua toàn bộ các cột khác, giúp giảm IO và tăng tốc độ xử lý.
+* **Câu hỏi:** Khi nhận một task chưa rõ yêu cầu, bạn sẽ hỏi những câu gì trước khi bắt đầu?
+* **Đáp án mẫu:** Câu trả lời tốt nên hỏi về behavior mong muốn, input/output, acceptance criteria, edge case, deadline, dependency, constraint và cách đo task đã hoàn thành.
 
 ### Câu 6
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Hãy phân biệt sự khác nhau giữa Batch Processing (Xử lý theo lô) và Stream Processing (Xử lý luồng/thời gian thực). Cho ví dụ về công cụ phổ biến cho mỗi loại.
-* **Đáp án mẫu:** - Batch Processing: Xử lý một lượng lớn dữ liệu tích tụ lại sau một khoảng thời gian cố định (độ trễ cao). Ví dụ công cụ: Apache Spark, AWS EMR.
-  - Stream Processing: Xử lý dữ liệu liên tục, ngay lập tức khi dữ liệu vừa mới phát sinh (độ trễ cực thấp). Ví dụ công cụ: Apache Kafka, Apache Flink, Apache Spark Streaming.
+* **Câu hỏi:** Trong công việc Data Engineer, khác nhau giữa cách vá tạm và cách sửa đúng gốc là gì?
+* **Đáp án mẫu:** Cách sửa đúng gốc xử lý nguyên nhân chính, có test, dễ bảo trì và ít tạo side effect. Cách vá tạm có thể dùng trong tình huống khẩn cấp nhưng cần ghi rõ rủi ro và kế hoạch xử lý tiếp theo.
 
 ### Câu 7
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Công cụ quản lý luồng công việc (Workflow Orchestration) như Apache Airflow đảm nhận vai trò gì trong một kiến trúc dữ liệu hiện đại?
-* **Đáp án mẫu:** Apache Airflow đảm nhận vai trò lập lịch (Scheduling), điều phối và giám sát các pipeline dữ liệu dưới dạng đồ thị có hướng không chu trình (DAG). Nó giúp tự động hóa thứ tự chạy của các tác vụ, quản lý các kết nối, xử lý lỗi (retry) và gửi cảnh báo khi pipeline gặp sự cố.
+* **Câu hỏi:** Bạn sẽ giải thích một vấn đề kỹ thuật cho teammate không chuyên kỹ thuật như thế nào?
+* **Đáp án mẫu:** Ứng viên nên dùng ngôn ngữ đơn giản, tập trung vào impact, tránh jargon không cần thiết, dùng ví dụ hoặc sơ đồ và trình bày các lựa chọn kèm trade-off.
 
 ---
 
@@ -60,13 +54,15 @@
 
 ### Câu 8
 * **Độ khó:** Khó
-* **Câu hỏi:** Khi thiết kế Data Warehouse theo mô hình Dimensional Modeling, bảng Sự kiện (Fact Table) và bảng Chiều (Dimension Table) khác nhau như thế nào? Nêu mối quan hệ kết nối giữa chúng trong sơ đồ Star Schema.
-* **Đáp án mẫu:** - Fact Table: Chứa các chỉ số định lượng có thể đo lường được (metrics/measures như doanh số, số lượng) và các khóa ngoại liên kết tới các bảng chiều.
-  - Dimension Table: Chứa các thuộc tính văn bản mô tả bối cảnh của sự kiện (như thông tin khách hàng, sản phẩm, thời gian).
-  - Trong Star Schema: Fact Table nằm ở trung tâm và kết nối trực tiếp với các Dimension Table xung quanh thông qua mối quan hệ khóa chính - khóa ngoại (mô hình 1-nhiều).
+* **Câu hỏi:** Nếu bạn nhận hai task cùng deadline, bạn quyết định làm task nào trước như thế nào?
+* **Đáp án mẫu:** Câu trả lời nên ưu tiên theo business impact, độ khẩn cấp, dependency, rủi ro và effort; đồng thời trao đổi sớm với lead/stakeholder thay vì im lặng trễ deadline.
 
 ### Câu 9
 * **Độ khó:** Khó
-* **Câu hỏi:** Trong tính toán phân tán với Apache Spark, sự khác biệt giữa hai loại thao tác "Transformation" và "Action" là gì? Cơ chế "Lazy Evaluation" hoạt động như thế nào dựa trên hai thao tác này?
-* **Đáp án mẫu:** - Transformation: Tạo ra một RDD/DataFrame mới từ một RDD/DataFrame cũ (như `map`, `filter`, `groupBy`).
-  - Action: Thực thi tính toán để trả về kết quả cho Driver program hoặc ghi dữ liệu ra bộ lưu trữ ngoại vi (như `count
+* **Câu hỏi:** Nếu solution chạy đúng ở local nhưng fail ở môi trường chung, bạn xử lý thế nào?
+* **Đáp án mẫu:** Ứng viên nên so sánh environment variable, version dependency, dữ liệu, log, build step, permission và config; sau đó đưa bằng chứng khi nhờ hỗ trợ.
+
+### Câu 10
+* **Độ khó:** Khó
+* **Câu hỏi:** Nếu sau khi release bạn phát hiện phần mình làm gây regression, bạn sẽ làm gì?
+* **Đáp án mẫu:** Câu trả lời tốt là minh bạch: báo team, hỗ trợ tái hiện lỗi, rollback hoặc hotfix nếu cần, thêm test ngăn tái diễn và ghi lại root cause ngắn gọn.

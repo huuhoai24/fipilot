@@ -1,8 +1,9 @@
-# Bộ Câu Hỏi Phỏng Vấn Full-Stack Developer (Level 1)
+# Bộ Câu Hỏi Phỏng Vấn Fullstack Developer (Level 1)
 
-* **Role:** Full-Stack Developer
+* **Vai trò:** Fullstack Developer
 * **Level:** Level 1
-* **Experience:** 0 - 1 năm kinh nghiệm
+* **Kinh nghiệm:** 0 - 1 năm kinh nghiệm
+* **Kỳ vọng:** nắm khái niệm cơ bản, làm được nhiệm vụ nhỏ và giao tiếp rõ ràng
 
 ---
 
@@ -10,22 +11,18 @@
 
 ### Câu 1
 * **Độ khó:** Dễ
-* **Câu hỏi:** Khái niệm "Client-Side" và "Server-Side" trong lập trình Web đại diện cho những thành phần nào và chúng giao tiếp with nhau qua giao thức nào?
-* **Đáp án mẫu:** - Client-Side (Frontend) chạy trên trình duyệt của người dùng (HTML, CSS, JS). 
-  - Server-Side (Backend) chạy trên máy chủ để xử lý logic và cơ sở dữ liệu. 
-  - Hai bên giao tiếp với nhau chủ yếu qua giao thức HTTP/HTTPS.
+* **Câu hỏi:** Theo bạn, trách nhiệm chính của một Fullstack Developer trong team phần mềm là gì?
+* **Đáp án mẫu:** Câu trả lời tốt nên nêu được việc hiểu yêu cầu được giao, đóng góp vào một tính năng web hoàn chỉnh từ UI đến backend, làm việc cẩn thận, báo sớm blocker, tuân thủ tiêu chuẩn của team và có tinh thần học hỏi.
 
 ### Câu 2
 * **Độ khó:** Dễ
-* **Câu hỏi:** Trong CSS, sự khác biệt cốt lõi giữa hai thuộc tính hiển thị `display: none` và `visibility: hidden` là gì?
-* **Đáp án mẫu:** - `display: none` ẩn hoàn toàn phần tử và xóa bỏ hoàn toàn không gian chiếm dụng của nó trên giao diện (layout).
-  - `visibility: hidden` ẩn phần tử nhưng vẫn giữ lại khoảng không gian chiếm dụng của phần tử đó trên giao diện (để lại khoảng trống).
+* **Câu hỏi:** Bạn đã từng dùng công cụ hoặc công nghệ nào trong nhóm sau: React, Node.js, SQL/NoSQL, REST API, Docker?
+* **Đáp án mẫu:** Ứng viên nên nói đúng công cụ mình đã dùng, mô tả một việc cụ thể đã làm với công cụ đó, ví dụ xây feature nhỏ, viết query, test endpoint hoặc cấu hình workflow đơn giản.
 
 ### Câu 3
 * **Độ khó:** Dễ
-* **Câu hỏi:** Lệnh `git merge` và `git rebase` đều dùng để tích hợp code từ nhánh này sang nhánh khác. Sự khác biệt cơ bản về lịch sử commit (Commit History) giữa chúng là gì?
-* **Đáp án mẫu:** - `git merge` giữ nguyên lịch sử và tạo ra một commit gộp (merge commit) mới, liên kết cả hai nhánh lại với nhau.
-  - `git rebase` viết lại lịch sử bằng cách chuyển toàn bộ các commit của nhánh hiện tại lên trên đỉnh của nhánh đích, tạo ra một đường thẳng tuyến tính.
+* **Câu hỏi:** Trước khi bàn giao một tính năng web hoàn chỉnh từ UI đến backend, bạn kiểm tra công việc của mình như thế nào?
+* **Đáp án mẫu:** Câu trả lời nên có đọc lại yêu cầu, test luồng chính và edge case đơn giản, kiểm tra log hoặc output, nhờ review khi cần và ghi chú giả định quan trọng.
 
 ---
 
@@ -33,27 +30,23 @@
 
 ### Câu 4
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Mô hình kiến trúc MVC (Model-View-Controller) phân tách một ứng dụng web thành 3 thành phần cốt lõi nào? Nêu nhiệm vụ ngắn gọn của từng thành phần.
-* **Đáp án mẫu:** - Model: Quản lý dữ liệu, logic nghiệp vụ và tương tác với Database.
-  - View: Hiển thị giao diện và dữ liệu cho người dùng cuối.
-  - Controller: Tiếp nhận request từ người dùng, điều phối dữ liệu qua Model và chọn View phù hợp để trả về kết quả.
+* **Câu hỏi:** Hãy kể một bug hoặc vấn đề bạn từng gặp khi làm việc với frontend, backend, hợp đồng API, thiết kế database và deployment. Bạn đã điều tra như thế nào?
+* **Đáp án mẫu:** Ứng viên nên trình bày quy trình debug: tái hiện lỗi, khoanh vùng nguyên nhân, xem log/dữ liệu, đặt giả thuyết, thử fix và xác minh lại kết quả.
 
 ### Câu 5
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Cơ chế State Management (Quản lý trạng thái) trong các Frontend Framework (như React, Vue) giải quyết bài toán khó khăn nào của JavaScript thuần?
-* **Đáp án mẫu:** Nó giải quyết bài toán đồng bộ và truyền dữ liệu giữa nhiều component phức tạp. Thay vì phải truyền dữ liệu thủ công qua nhiều tầng (prop drilling) hoặc cập nhật DOM thủ công bằng JS thuần, State Management tạo ra một luồng dữ liệu tập trung giúp giao diện tự động cập nhật chính xác khi trạng thái thay đổi.
+* **Câu hỏi:** Khi nhận một task chưa rõ yêu cầu, bạn sẽ hỏi những câu gì trước khi bắt đầu?
+* **Đáp án mẫu:** Câu trả lời tốt nên hỏi về behavior mong muốn, input/output, acceptance criteria, edge case, deadline, dependency, constraint và cách đo task đã hoàn thành.
 
 ### Câu 6
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Sự khác biệt cốt lõi giữa cơ chế kết nối qua HTTP Request truyền thống và WebSockets là gì? Khi nào một Full-Stack Developer nên dùng WebSockets?
-* **Đáp án mẫu:** - HTTP Request: Client phải chủ động gửi yêu cầu thì Server mới phản hồi (giao tiếp một chiều, ngắt kết nối sau khi phản hồi).
-  - WebSockets: Thiết lập một kết nối liên tục, hai chiều (full-duplex) giữa Client và Server.
-  - Nên dùng WebSockets khi xây dựng ứng dụng thời gian thực (Real-time) như: Chat app, biểu đồ chứng khoán, thông báo trực ca.
+* **Câu hỏi:** Trong công việc Fullstack Developer, khác nhau giữa cách vá tạm và cách sửa đúng gốc là gì?
+* **Đáp án mẫu:** Cách sửa đúng gốc xử lý nguyên nhân chính, có test, dễ bảo trì và ít tạo side effect. Cách vá tạm có thể dùng trong tình huống khẩn cấp nhưng cần ghi rõ rủi ro và kế hoạch xử lý tiếp theo.
 
 ### Câu 7
 * **Độ khó:** Trung bình
-* **Câu hỏi:** Để phòng chống lỗ hổng bảo mật SQL Injection khi tương tác với cơ sở dữ liệu, lập trình viên Back-End nên viết câu lệnh truy vấn theo cách nào?
-* **Đáp án mẫu:** Tuyệt đối không dùng kỹ thuật cộng chuỗi (string concatenation) để ghép dữ liệu nhập từ người dùng vào câu lệnh SQL. Thay vào đó, phải sử dụng Parameterized Queries (truy vấn có tham số) hoặc Prepared Statements, hoặc sử dụng các thư viện ORM phổ biến.
+* **Câu hỏi:** Bạn sẽ giải thích một vấn đề kỹ thuật cho teammate không chuyên kỹ thuật như thế nào?
+* **Đáp án mẫu:** Ứng viên nên dùng ngôn ngữ đơn giản, tập trung vào impact, tránh jargon không cần thiết, dùng ví dụ hoặc sơ đồ và trình bày các lựa chọn kèm trade-off.
 
 ---
 
@@ -61,18 +54,15 @@
 
 ### Câu 8
 * **Độ khó:** Khó
-* **Câu hỏi:** Hãy phân biệt hai chiến lược kết xuất trang web: SSR (Server-Side Rendering) và SPA (Single Page Application - Client-Side Rendering) về mặt tốc độ tải trang ban đầu và tối ưu hóa SEO.
-* **Đáp án mẫu:** - SSR: Server render sẵn mã HTML đầy đủ nội dung rồi gửi về trình duyệt. Ưu điểm: SEO cực tốt, trang ban đầu hiển thị nhanh. Nhược điểm: Chuyển trang chậm vì phải load lại từ server.
-  - SPA: Trình duyệt tải một file HTML rỗng và file JS về rồi tự sinh giao diện trên máy Client. Ưu điểm: Trải nghiệm mượt, chuyển trang nhanh. Nhược điểm: Tải trang đầu chậm, SEO kém nếu không có cấu hình bổ trợ.
+* **Câu hỏi:** Nếu bạn nhận hai task cùng deadline, bạn quyết định làm task nào trước như thế nào?
+* **Đáp án mẫu:** Câu trả lời nên ưu tiên theo business impact, độ khẩn cấp, dependency, rủi ro và effort; đồng thời trao đổi sớm với lead/stakeholder thay vì im lặng trễ deadline.
 
 ### Câu 9
 * **Độ khó:** Khó
-* **Câu hỏi:** Khi thiết kế một hệ thống lưu trữ phiên đăng nhập, việc lưu JWT ở `LocalStorage` của trình duyệt có nguy cơ bảo mật gì và giải pháp thay thế an toàn hơn là gì?
-* **Đáp án mẫu:** - Nguy cơ: `LocalStorage` có thể bị truy cập bởi bất kỳ đoạn mã JavaScript nào trên trang, dẫn đến nguy cơ bị đánh cắp Token qua lỗ hổng tấn công XSS (Cross-Site Scripting).
-  - Giải pháp: Lưu JWT vào bên trong `HttpOnly Cookie` kèm theo cờ `Secure` và `SameSite`, ngăn không cho JavaScript truy cập trực tiếp vào cookie này, giảm thiểu nguy cơ bị tấn công đánh cắp.
+* **Câu hỏi:** Nếu solution chạy đúng ở local nhưng fail ở môi trường chung, bạn xử lý thế nào?
+* **Đáp án mẫu:** Ứng viên nên so sánh environment variable, version dependency, dữ liệu, log, build step, permission và config; sau đó đưa bằng chứng khi nhờ hỗ trợ.
 
 ### Câu 10
 * **Độ khó:** Khó
-* **Câu hỏi:** Trong mô hình Database Transaction (Giao dịch cơ sở dữ liệu), tính chất ACID gồm những đặc tính nào? Giải thích ngắn gọn ý nghĩa của tính Atomicity (Tính nguyên tử).
-* **Đáp án mẫu:** - ACID gồm: Atomicity (Nguyên tử), Consistency (Nhất quán), Isolation (Cô lập), Durability (Bền vững).
-  - Atomicity (Tính nguyên tử): Đảm bảo một chuỗi các thao tác trong một transaction phải được thực hiện trọn vẹn cùng nhau (All or Nothing). Nếu có bất kỳ một thao tác nào bị lỗi, toàn bộ transaction sẽ bị hủy bỏ (rollback) và dữ liệu quay về trạng thái ban đầu như chưa có chuyện gì xảy ra.
+* **Câu hỏi:** Nếu sau khi release bạn phát hiện phần mình làm gây regression, bạn sẽ làm gì?
+* **Đáp án mẫu:** Câu trả lời tốt là minh bạch: báo team, hỗ trợ tái hiện lỗi, rollback hoặc hotfix nếu cần, thêm test ngăn tái diễn và ghi lại root cause ngắn gọn.

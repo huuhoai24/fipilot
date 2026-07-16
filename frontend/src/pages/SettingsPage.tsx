@@ -154,9 +154,8 @@ export function SettingsPage() {
               </div>
               <div>
                 <Label>Ngôn ngữ</Label>
-                <Select defaultValue={active.language}>
+                <Select defaultValue="vi">
                   <option value="vi">Tiếng Việt</option>
-                  <option value="en">English</option>
                 </Select>
               </div>
             </div>

@@ -57,14 +57,24 @@ def create_message(db: Session, session_id: int, role: str, content: str):
 def get_session_messages(db: Session, session_id: int, limit: int = 100):
     return db.query(models.Message).filter(models.Message.session_id == session_id).order_by(models.Message.created_at).limit(limit).all()
 
-def create_evaluation(db: Session, session_id: int, question_id: int, answer_id: int, correctness: str, score: int, explanation: str):
+def create_evaluation(
+    db: Session,
+    session_id: int,
+    question_id: int,
+    answer_id: int,
+    correctness: str,
+    score: int,
+    explanation: str,
+    rubric_json: str = None,
+):
     db_evaluation = models.Evaluation(
         session_id=session_id,
         question_id=question_id,
         answer_id=answer_id,
         correctness=correctness,
         score=score,
-        explanation=explanation
+        explanation=explanation,
+        rubric_json=rubric_json,
     )
     db.add(db_evaluation)
     db.commit()

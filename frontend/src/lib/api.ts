@@ -6,6 +6,17 @@ export interface CreateSessionData {
   level: string;
   language?: string;
   template_id?: string;
+  skills?: string[];
+  recent_role?: string;
+  years_experience?: number;
+  education?: string;
+}
+
+export interface TemplateMatchData {
+  role_fit: string;
+  inferred_level: number;
+  skills: string[];
+  target_role?: string;
 }
 
 export const api = {
@@ -15,7 +26,10 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error('Failed to create session');
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to create session');
+    }
     return response.json();
   },
 
@@ -33,6 +47,12 @@ export const api = {
     return response.json();
   },
 
+  getSession: async (sessionId: string | number) => {
+    const response = await fetch(`${API_URL}/sessions/${sessionId}`);
+    if (!response.ok) throw new Error('Failed to fetch session');
+    return response.json();
+  },
+
   getReport: async (sessionId: string | number) => {
     const response = await fetch(`${API_URL}/sessions/${sessionId}/report`);
     if (!response.ok) throw new Error('Failed to fetch report');
@@ -46,7 +66,23 @@ export const api = {
       method: 'POST',
       body: formData,
     });
-    if (!response.ok) throw new Error('Failed to extract CV');
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to extract CV');
+    }
+    return response.json();
+  },
+
+  matchTemplates: async (data: TemplateMatchData) => {
+    const response = await fetch(`${API_URL}/templates/match`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.detail || 'Failed to match templates');
+    }
     return response.json();
   }
 };

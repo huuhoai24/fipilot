@@ -23,6 +23,11 @@ class Session(Base):
     candidate_name = Column(String, nullable=True)
     question_count = Column(Integer, default=0)
     template_id = Column(String, nullable=True)
+    current_question_id = Column(Integer, default=0)
+    follow_up_count = Column(Integer, default=0)
+    completed_question_ids = Column(Text, default="[]")
+    state = Column(String, default="GREETING")
+    question_plan_json = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     report_data = Column(Text, nullable=True)
 
@@ -51,5 +56,6 @@ class Evaluation(Base):
     correctness = Column(String) # Correct, Partial, Wrong
     score = Column(Integer)
     explanation = Column(Text)
+    rubric_json = Column(Text, nullable=True)
     
     session = relationship("Session", back_populates="evaluations")

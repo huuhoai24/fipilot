@@ -20,7 +20,6 @@ import { Select, Label, Input } from '@/components/ui/Input'
 import { Badge } from '@/components/ui/Badge'
 import { StepIndicator } from '@/components/StepIndicator'
 import { CvDropzone } from '@/components/CvDropzone'
-import { mockCandidateProfile } from '@/data/mockData'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useScheduleStore } from '@/store/useScheduleStore'
 import { useActiveSessionStore } from '@/store/useActiveSessionStore'
@@ -39,6 +38,8 @@ export function InterviewFlowPage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null)
   const [cvFile, setCvFile] = useState<File | null>(null)
   const [templateMatches, setTemplateMatches] = useState<TemplateMatch[]>([])
+  const [extractError, setExtractError] = useState<string | null>(null)
+  const [matchingTemplates, setMatchingTemplates] = useState(false)
 
   // Step 4: chọn giữa bắt đầu ngay hoặc để vào hàng đợi phỏng vấn sau
   const [startMode, setStartMode] = useState<'immediate' | 'later' | null>(null)
@@ -48,21 +49,25 @@ export function InterviewFlowPage() {
   const handleExtract = async () => {
     if (!cvFile) return
     setExtracting(true)
+    setExtractError(null)
     try {
       const res = await api.extractCv(cvFile)
       setProfile(res.profile)
       setTemplateMatches(res.matches)
+      setSelectedTemplateId(res.matches?.[0]?.score >= 0.5 ? res.matches[0].template_id : null)
       setStep(2)
     } catch (e) {
       console.error(e)
-      alert("Lỗi khi trích xuất CV. Đảm bảo backend đang chạy và Ollama đã được bật.")
+      const message = e instanceof Error ? e.message : 'Không thể trích xuất CV.'
+      setExtractError(message)
+      alert(message)
     } finally {
       setExtracting(false)
     }
   }
 
   const handleStartNow = async () => {
-    if (!profile) return
+    if (!profile || !selectedTemplateId) return
     setStarting(true)
     try {
       const res = await api.createSession({
@@ -70,20 +75,46 @@ export function InterviewFlowPage() {
         role: profile.role_fit,
         level: profile.inferred_level.toString(),
         language: 'vi',
-        template_id: selectedTemplateId || undefined,
+        template_id: selectedTemplateId,
+        skills: profile.skills,
+        recent_role: profile.recent_role,
+        years_experience: profile.years_experience,
+        education: profile.education,
       })
       startSession({ sessionId: res.session_id.toString(), candidateName: profile.candidate_name })
       navigate(`/interview-flow/session/${res.session_id}`)
     } catch (error) {
       console.error('Failed to start session:', error)
-      alert('Không thể tạo phiên phỏng vấn. Vui lòng kiểm tra xem backend đã chạy chưa.')
+      alert(error instanceof Error ? error.message : 'Không thể tạo phiên phỏng vấn.')
     } finally {
       setStarting(false)
     }
   }
 
-  const handleQueueForLater = async () => {
+  const handleMatchTemplates = async () => {
     if (!profile) return
+    setMatchingTemplates(true)
+    try {
+      const res = await api.matchTemplates({
+        role_fit: profile.role_fit,
+        inferred_level: profile.inferred_level,
+        skills: profile.skills,
+        target_role: profile.role_fit,
+      })
+      const matches = res.matches ?? []
+      setTemplateMatches(matches)
+      setSelectedTemplateId(matches?.[0]?.score >= 0.5 ? matches[0].template_id : null)
+      setStep(3)
+    } catch (error) {
+      console.error('Failed to match templates:', error)
+      alert(error instanceof Error ? error.message : 'KhÃ´ng thá»ƒ khá»›p template.')
+    } finally {
+      setMatchingTemplates(false)
+    }
+  }
+
+  const handleQueueForLater = async () => {
+    if (!profile || !selectedTemplateId) return
     setStarting(true)
     try {
       const res = await api.createSession({
@@ -91,19 +122,23 @@ export function InterviewFlowPage() {
         role: profile.role_fit,
         level: profile.inferred_level.toString(),
         language: 'vi',
-        template_id: selectedTemplateId || undefined,
+        template_id: selectedTemplateId,
+        skills: profile.skills,
+        recent_role: profile.recent_role,
+        years_experience: profile.years_experience,
+        education: profile.education,
       })
       addPending({
         sessionId: res.session_id.toString(),
         candidate: profile.candidate_name,
-        role: `AI Eng L${profile.inferred_level}`,
+        role: `${profile.role_fit} L${profile.inferred_level}`,
         interviewer_email: currentUser?.email ?? '',
         created_at: new Date().toISOString(),
       })
       setQueued(true)
     } catch (error) {
       console.error('Failed to queue session:', error)
-      alert('Không thể tạo phiên phỏng vấn. Vui lòng kiểm tra xem backend đã chạy chưa.')
+      alert(error instanceof Error ? error.message : 'Không thể tạo phiên phỏng vấn.')
     } finally {
       setStarting(false)
     }
@@ -116,6 +151,8 @@ export function InterviewFlowPage() {
     setEditingProfile(false)
     setSelectedTemplateId(null)
     setTemplateMatches([])
+    setExtractError(null)
+    setMatchingTemplates(false)
     setStartMode(null)
     setQueued(false)
   }
@@ -165,6 +202,7 @@ export function InterviewFlowPage() {
               <div>
                 <Label>CV ứng viên</Label>
                 <CvDropzone onFileAccepted={setCvFile} />
+                {extractError && <p className="mt-2 text-sm text-danger">{extractError}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -179,7 +217,6 @@ export function InterviewFlowPage() {
                   <Label>Ngôn ngữ</Label>
                   <Select defaultValue="vi">
                     <option value="vi">Tiếng Việt</option>
-                    <option value="en">English</option>
                   </Select>
                 </div>
               </div>
@@ -228,8 +265,18 @@ export function InterviewFlowPage() {
                     value={`${profile.years_experience} năm`}
                     editing={false}
                   />
-                  <ProfileField label="Level suy luận" value={`Level ${profile.inferred_level}`} editing={false} />
-                  <ProfileField label="Vai trò phù hợp" value={profile.role_fit} editing={false} />
+                  <ProfileField
+                    label="Level suy luận"
+                    value={`${profile.inferred_level}`}
+                    editing={editingProfile}
+                    onChange={(v) => setProfile({ ...profile, inferred_level: Number(v) || profile.inferred_level })}
+                  />
+                  <ProfileField
+                    label="Vai trò phù hợp"
+                    value={profile.role_fit}
+                    editing={editingProfile}
+                    onChange={(v) => setProfile({ ...profile, role_fit: v as any })}
+                  />
                   <ProfileField label="Học vấn" value={profile.education} editing={false} />
                 </div>
                 <div>
@@ -247,7 +294,7 @@ export function InterviewFlowPage() {
                 <Button variant="ghost" onClick={() => setStep(1)}>
                   <ArrowLeft className="h-4 w-4" /> Quay lại
                 </Button>
-                <Button onClick={() => setStep(3)}>
+                <Button onClick={handleMatchTemplates} disabled={matchingTemplates}>
                   Khớp template <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -258,6 +305,16 @@ export function InterviewFlowPage() {
           {step === 3 && (
             <div className="space-y-4 animate-fade-in">
               <div className="text-sm font-medium text-text-primary">5 template phù hợp nhất</div>
+              {templateMatches.length === 0 && (
+                <div className="rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm text-warning">
+                  Không tìm thấy template phù hợp. Vui lòng import template hoặc kiểm tra lại role/level.
+                </div>
+              )}
+              {templateMatches[0] && templateMatches[0].score < 0.5 && (
+                <div className="rounded-lg border border-warning/30 bg-warning/10 p-4 text-sm text-warning">
+                  Không có template match mạnh. Hãy chọn thủ công template gần nhất trước khi bắt đầu.
+                </div>
+              )}
               <div className="space-y-2">
                 {templateMatches.map((m) => (
                   <button
@@ -390,7 +447,7 @@ export function InterviewFlowPage() {
                       <ArrowLeft className="h-4 w-4" /> Quay lại
                     </Button>
                     {startMode === 'later' ? (
-                      <Button onClick={handleQueueForLater}>
+                      <Button onClick={handleQueueForLater} disabled={!selectedTemplateId || starting}>
                         <Clock4 className="h-4 w-4" /> Thêm vào danh sách chờ
                       </Button>
                     ) : (
