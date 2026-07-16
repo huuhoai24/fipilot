@@ -209,8 +209,7 @@ class ResumeExtract:
 
         return layout_regions
 
-    @staticmethod
-    def linearize_layout_regions(self, layout_regions):
+    def linearize_layout_regions(self,layout_regions):
         resume_text, index_map = IndexedTextResolver.linearize(layout_regions)
         return resume_text, index_map
 
