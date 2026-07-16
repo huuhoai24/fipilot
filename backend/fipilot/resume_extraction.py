@@ -16,6 +16,7 @@ from fipilot.model.llm_client import LLMClient
 from fipilot.utils.config import config
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
 from fipilot.utils.resume_extract_module import is_scanned_pdf
+from fipilot.utils.index_text import IndexedTextResolver
 
 load_dotenv()
 
@@ -209,17 +210,9 @@ class ResumeExtract:
         return layout_regions
 
     @staticmethod
-    def linearize_layout_regions(layout_regions):
-        linearized_lines = []
-        line_index = 0
-        for region in layout_regions:
-            for block in region["contained_blocks"]:
-                text = block["text"].strip()
-                if text:
-                    linearized_lines.append(f"[{line_index}]: {text}")
-                    line_index += 1
-        linearized_text = " ".join(linearized_lines)
-        return linearized_text
+    def linearize_layout_regions(self, layout_regions):
+        resume_text, index_map = IndexedTextResolver.linearize(layout_regions)
+        return resume_text, index_map
 
     def llm_analyzer(self, resume_text, resume_id):
         llm_client = LLMClient()
@@ -229,39 +222,7 @@ class ResumeExtract:
             extract_types=extract_types,
             resume_id=resume_id
             )
-        
-        # Parse resume_text to build a mapping from line index to clean text
-        # lines_map = {}
-        # for line in resume_text.split('\n'):
-        #     line = line.strip()
-        #     if not line:
-        #         continue
-        #     match = re.match(r'^\[(\d+)\]:\s*(.*)$', line)
-        #     if match:
-        #         idx = int(match.group(1))
-        #         text = match.group(2)
-        #         lines_map[idx] = text
-
-        # # Post-process workExperience: replace index range with actual text
-        # if "workExperience" in result and isinstance(result["workExperience"], list):
-        #     for entry in result["workExperience"]:
-        #         if isinstance(entry, dict):
-        #             index_range = entry.get("jobDescription_refer_index_range")
-        #             if isinstance(index_range, list) and len(index_range) == 2:
-        #                 try:
-        #                     start_idx = int(index_range[0])
-        #                     end_idx = int(index_range[1])
-        #                     extracted_lines = []
-        #                     for idx in range(start_idx, end_idx + 1):
-        #                         if idx in lines_map:
-        #                             extracted_lines.append(lines_map[idx])
-        #                     job_description_text = "\n".join(extracted_lines)
-        #                     entry["jobDescription"] = job_description_text
-        #                     entry["jobDescription_refer_index_range"] = job_description_text
-        #                 except (ValueError, TypeError) as e:
-        #                     logger.error(f"Error parsing index range {index_range}: {e}")
-
-        return json.dumps(result, indent=2, ensure_ascii=False)
+        return result
         
     def pipeline(self, pdf_path):
         pdf_path = Path(pdf_path)
@@ -273,6 +234,7 @@ class ResumeExtract:
         boxes = self.inter_segment_sorting(boxes)
         resume_lines = self.pair_resume(pdf_path)
         regions = self.intra_segment_sorting(boxes, resume_lines)
-        resume_text = self.linearize_layout_regions(regions)
+        resume_text, index_map = self.linearize_layout_regions(regions)
         result = self.llm_analyzer(resume_text, pdf_path.stem)
-        return result
+        result = IndexedTextResolver.resolve(result, index_map)
+        return json.dumps(result, indent=2, ensure_ascii=False) 
