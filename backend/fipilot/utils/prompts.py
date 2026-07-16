@@ -14,7 +14,7 @@ WORK_EXPERIENCE_PROMPT = """{
       "companyName": "", # Company name, e.g.: Viettel
       "employmentPeriod": {  # Start and end dates of this experience
         "startDate": "",# Start/joining date. If not present, leave "" (do not fabricate). Format: %Y.%m or %Y, e.g. 2024, 2024.1
-        "endDate": "" # If ongoing, fill "至今" (present). If not present, leave "" (do not fabricate). Format: %Y.%m or %Y, e.g. 2024, 2024.1
+        "endDate": "" # If ongoing, fill (present). If not present, leave "" (do not fabricate). Format: %Y.%m or %Y, e.g. 2024, 2024.1
       },
       "position": "", # Job title, e.g. Algorithm Engineer, Team Lead, Expert Software Engineer. Follow the original text exactly — do not fabricate or infer the position
       "internship": 0, # Whether this experience is an internship. 1 if internship, 0 if not
