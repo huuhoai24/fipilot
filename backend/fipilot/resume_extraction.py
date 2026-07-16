@@ -18,7 +18,7 @@ from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
 
 from fipilot.model.llm_client import LLMClient
-from fipilot.configs.settings import cfg
+from fipilot.utils.config import config
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
 from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
 
@@ -34,10 +34,42 @@ logger = logging.getLogger(__name__)
 class ResumeExtract:
     def __init__(
         self,
-        yolo_model: str,
-        dpi: int,
-        
+        yolo_model: str = None,
+        dpi: int = 150,
     ):
+        # Resolve yolo model path from config if not specified, or if it points to non-existent default 'best.pt'
+        if yolo_model is None or yolo_model == "None" or yolo_model == "" or yolo_model == "best.pt":
+            yolo_model = None
+
+        if yolo_model is None:
+            # Get yolo model path from config
+            yolo_model_name = getattr(config, 'yolo_model_name', "best.pt")
+            models_dir = config.model_download.get('models_dir', {}).get('layout', 'models')
+            
+            # Check if it exists locally in the layout models directory
+            possible_path = os.path.join(models_dir, yolo_model_name)
+            if os.path.exists(possible_path):
+                yolo_model = possible_path
+            elif os.path.exists(yolo_model_name):
+                yolo_model = yolo_model_name
+            else:
+                # Auto-download the layout model
+                print(f"Local YOLO model not found, attempting to download: {yolo_model_name}")
+                try:
+                    from fipilot.utils.models_download_utils import download_model
+                    from fipilot.utils.model_paths import ModelType, ModelSource
+                    
+                    downloaded_dir = download_model(ModelType.LAYOUT, ModelSource.HUGGINGFACE, models_dir)
+                    downloaded_path = os.path.join(downloaded_dir, yolo_model_name)
+                    if os.path.exists(downloaded_path):
+                        yolo_model = downloaded_path
+                    else:
+                        yolo_model = downloaded_dir
+                except Exception as e:
+                    print(f"Failed to download YOLO model: {e}")
+                    # Final fallback to standard path
+                    yolo_model = "best.pt"
+
         self.yolo_model = YOLO(yolo_model)
         self.dpi = dpi
 
@@ -76,7 +108,9 @@ class ResumeExtract:
         return all_detection
     
     @staticmethod
-    def remove_duplicate_boxes(yolo_boxes: dict, ioa_threshold: float = 0.85) -> dict:
+    def remove_duplicate_boxes(yolo_boxes: dict, ioa_threshold: float = None) -> dict:
+        if ioa_threshold is None:
+            ioa_threshold = config.extraction.ioa_threshold
         all_boxes = {}
         for image, boxes in yolo_boxes.items():
             n = len(boxes)
@@ -197,6 +231,38 @@ class ResumeExtract:
             extract_types=extract_types,
             resume_id=resume_id
             )
+        
+        # Parse resume_text to build a mapping from line index to clean text
+        lines_map = {}
+        for line in resume_text.split('\n'):
+            line = line.strip()
+            if not line:
+                continue
+            match = re.match(r'^\[(\d+)\]:\s*(.*)$', line)
+            if match:
+                idx = int(match.group(1))
+                text = match.group(2)
+                lines_map[idx] = text
+
+        # Post-process workExperience: replace index range with actual text
+        if "workExperience" in result and isinstance(result["workExperience"], list):
+            for entry in result["workExperience"]:
+                if isinstance(entry, dict):
+                    index_range = entry.get("jobDescription_refer_index_range")
+                    if isinstance(index_range, list) and len(index_range) == 2:
+                        try:
+                            start_idx = int(index_range[0])
+                            end_idx = int(index_range[1])
+                            extracted_lines = []
+                            for idx in range(start_idx, end_idx + 1):
+                                if idx in lines_map:
+                                    extracted_lines.append(lines_map[idx])
+                            job_description_text = "\n".join(extracted_lines)
+                            entry["jobDescription"] = job_description_text
+                            entry["jobDescription_refer_index_range"] = job_description_text
+                        except (ValueError, TypeError) as e:
+                            logger.error(f"Error parsing index range {index_range}: {e}")
+
         return json.dumps(result, indent=2, ensure_ascii=False)
         
     def pipeline(self, pdf_path):

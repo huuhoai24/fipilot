@@ -1,14 +1,3 @@
-# ==============================================================================
-# Hướng dẫn chạy trên Google Colab:
-#
-# Bước 1: Cài đặt các thư viện cần thiết bằng cách chạy cell sau trên Colab:
-# !pip install ultralytics pymupdf transformers torch pyyaml json-repair
-#
-# Bước 2: Đảm bảo bạn đã upload/mount thư mục chứa mã nguồn này (đặc biệt là thư mục fipilot, best.pt và test/1.pdf)
-#
-# Bước 3: Chạy script này bằng lệnh:
-# !python run_colab.py
-# ==============================================================================
 
 import os
 import sys
@@ -30,14 +19,11 @@ if os.getenv("HUGGINGFACE_API_KEY"):
     os.environ["HF_TOKEN"] = os.getenv("HUGGINGFACE_API_KEY")
 
 from fipilot.resume_extraction import ResumeExtract
-from fipilot.configs.settings import cfg
 
 def main():
     print("🚀 Khởi tạo ResumeExtract...")
-    # Khởi tạo bộ trích xuất thông tin
-    # cfg.YOLO_MODEL mặc định trỏ tới file best.pt nằm ở ROOT
+    # Khởi tạo bộ trích xuất thông tin (tự động load/download YOLO model từ config)
     extractor = ResumeExtract(
-        yolo_model=str(cfg.YOLO_MODEL),
         dpi=150
     )
     
@@ -48,15 +34,19 @@ def main():
         print(f"❌ Không tìm thấy file PDF tại: {pdf_path}")
         print("Vui lòng kiểm tra lại xem file test/1.pdf có nằm trong thư mục hiện tại hay chưa.")
         return
-
     print(f"📄 Đang xử lý file PDF: {pdf_path.name}")
     print("⏳ Đang chạy pipeline phân tích cấu trúc layout và gọi LLM...")
+    
+    import time
+    start_time = time.time()
     
     try:
         # Chạy pipeline bóc tách thông tin
         result_json = extractor.pipeline(pdf_path)
         
+        elapsed_time = time.time() - start_time
         print("\n✅ HOÀN THÀNH!")
+        print(f"⏱️ Thời gian xử lý: {elapsed_time:.2f} giây (~ {elapsed_time/60:.2f} phút)")
         print("\n📊 KẾT QUẢ TRÍCH XUẤT (JSON):")
         print(result_json)
         

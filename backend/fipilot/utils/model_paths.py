@@ -9,7 +9,7 @@ class ModelPath(Enum):
 
     # Specific model paths
     QWEN3_0_6B = "Qwen3-0.6B"
-    YOLO_MODEL = "YoloV12s/best.pt"
+    YOLO_MODEL = "best.pt"
 
     # Model types
     LLM_MODEL = "llm"

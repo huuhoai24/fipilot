@@ -50,7 +50,6 @@ EDUCATION_PROMPT = """
         "endDate":""  # If ongoing, fill (present). If not present, leave ""
       },
       "school": "", # School name, e.g. FPT University, University of Information Technology
-      "department": "", # Department, e.g. Department of Information Engineering
       "major": "", # Major, e.g. Software Engineer, Computer Science
       "educationDescription": "" # Education description, including coursework grades, research direction, GPA, honors/awards, etc. for this education experience, excluding the degree itself. Use the exact wording from the resume; if not present, leave "" (empty)
     }, ...
