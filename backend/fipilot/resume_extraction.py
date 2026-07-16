@@ -67,8 +67,9 @@ class ResumeExtract:
                         yolo_model = downloaded_dir
                 except Exception as e:
                     print(f"Failed to download YOLO model: {e}")
+                    print("If the repository 'hoainh204/YoloV12s' is private, please set the HF_TOKEN environment variable.")
                     # Final fallback to standard path
-                    yolo_model = "best.pt"
+                    yolo_model = possible_path
 
         self.yolo_model = YOLO(yolo_model)
         self.dpi = dpi
