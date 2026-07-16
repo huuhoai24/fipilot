@@ -26,3 +26,5 @@ data/
 models/
 *.zip
 backend/test/page_image/
+backend/SmartResume_git/
+backend/SmartResume_hungingface/
