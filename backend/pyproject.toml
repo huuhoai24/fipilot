@@ -15,14 +15,13 @@ dependencies = [
     "transformers>=4.45.0",
     "ultralytics>=8.4.67",
     "ollama>=0.6.2",
+    "json-repair>=0.61.5",
 ]
 
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-py-modules = ["config"]
-
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+include = ["fipilot*"]

@@ -13,12 +13,11 @@ from pathlib import Path
 
 import pymupdf
 from dotenv import load_dotenv
-from ollama import Client
 from jinja2 import Environment, FileSystemLoader
 from ultralytics import YOLO
-from groq import RateLimitError
 
-from fipilot.config.settings import cfg
+from fipilot.model.llm_client import LLMClient
+from fipilot.configs.settings import cfg
 from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_inside, clean_text
 from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
 
@@ -30,18 +29,11 @@ class ResumeExtract:
     def __init__(
         self,
         yolo_model: str,
-        llm_model: str,
         dpi: int,
-        max_workers: int,
-        max_retries: int,
         
     ):
         self.yolo_model = YOLO(yolo_model)
         self.dpi = dpi
-        self.llm_model =  llm_model
-        self.max_workers = max_workers
-        self.max_retries = max_retries
-        self.ollama_client = Client(host="https://pronto-swagger-area.ngrok-free.dev")
 
     # saved image into location    
     def pdf_to_images(self, pdf_path: str, output_dir: str, overwrite: bool = False) -> list[Path]:  
@@ -195,54 +187,17 @@ class ResumeExtract:
         linearized_text = " ".join(linearized_lines)
         return linearized_text
 
-    # llm extraction
-    def llm_classify(self, prompt_template: str, resume: str) -> dict:
-        template = env.get_template(prompt_template)
-        prompt = template.render(resume_text=resume)
-
-        last_err = None
-        for attempt in range(self.max_retries):
-            try:
-                response = self.ollama_client.chat(
-                    model=self.llm_model,
-                    messages=[
-                        {"role": "system", "content": "You are a professional resume analysis assistant, your task is to convert the given resume text into the following JSON output."},
-                        {"role": "user", "content": prompt},
-                    ],
-                    options={"temperature": 0.0},
-                    format="json"
-                )
-                return json.loads(response.message.content)
-            except Exception as e:
-                last_err = e
-                logger.warning(f"[{prompt_template}] attempt {attempt+1}/{self.max_retries} failed: {e}")
-                time.sleep(2 ** attempt)  # backoff: 1s, 2s, 4s
-        raise RuntimeError(f"llm_classify failed for {prompt_template} after {self.max_retries} attempts") from last_err
-
-    # paralled extraction
-    def extract_all(self, resume_text: str, TEMPLATES: list[str], KEYS: list[str]) -> dict:
-        results = [None] * len(TEMPLATES)
-        errors = {}
-
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
-            future_to_idx = {
-                executor.submit(self.llm_classify, tmpl, resume_text): i
-                for i, tmpl in enumerate(TEMPLATES)
-            }
-            for future in as_completed(future_to_idx):
-                idx = future_to_idx[future]
-                try:
-                    results[idx] = future.result()
-                except Exception as e:
-                    errors[KEYS[idx]] = str(e)
-                    logger.error(f"Section '{KEYS[idx]}' failed permanently: {e}")
-
-        if errors:
-            logger.warning(f"extract_all completed with {len(errors)} failed sections: {list(errors.keys())}")
-
-        return {key: results[i] for i, key in enumerate(KEYS)}
-    
-    def process_create_data(self, pdf_path, txt_dir, json_dir, TEMPLATES, KEYS, max_retries=5):
+    def llm_analyzer(self, resume_text, resume_id):
+        llm_client = LLMClient()
+        extract_types = ["work_experience", "education"]
+        result = llm_client.extract_info(
+            text_content=resume_text,
+            extract_types=extract_types,
+            resume_id=resume_id
+            )
+        return json.dumps(result, indent=2, ensure_ascii=False)
+        
+    def pipeline(self, pdf_path):
         pdf_path = Path(pdf_path)
         if is_scanned_pdf(pdf_path):
             raise ValueError(f"Scanned PDF, no extractable text: {pdf_path}")
@@ -253,42 +208,5 @@ class ResumeExtract:
         resume_lines = self.pair_resume(pdf_path)
         regions = self.intra_segment_sorting(boxes, resume_lines)
         resume_text = self.linearize_layout_regions(regions)
-
-        for attempt in range(max_retries):
-            try:
-                result = self.extract_all(resume_text, TEMPLATES, KEYS)
-                break
-            except RateLimitError as e:
-                wait = getattr(e, "retry_after", None) or (2 ** attempt)
-                logger.warning(f"Rate limited on {pdf_path}, retry in {wait}s ({attempt+1}/{max_retries})")
-                time.sleep(wait)
-        else:
-            raise RuntimeError(f"Rate limit retries exhausted: {pdf_path}")
-
-        result_add_exp = enrich_output(result)
-        return save_resume_data(resume_text, result_add_exp, txt_dir, json_dir, pdf_path)
-
-    def process_batch(self, pdf_paths, txt_dir, json_dir, TEMPLATES, KEYS):
-        results = {}
-        total = len(pdf_paths)
-        n_success, n_fail = 0, 0
-
-        for i, pdf_path in enumerate(pdf_paths, start=1):
-            json_out = Path(json_dir) / f"{Path(pdf_path).stem}.json"
-            if json_out.exists():
-                logger.info(f"[{i}/{total}] Skip (already exists): {pdf_path}")
-                results[str(pdf_path)] = json_out
-                n_success += 1
-                continue
-
-            logger.info(f"[{i}/{total}] Processing {pdf_path}")
-            try:
-                results[str(pdf_path)] = self.process_create_data(pdf_path, txt_dir, json_dir, TEMPLATES, KEYS)
-                n_success += 1
-            except Exception as e:
-                logger.error(f"[{i}/{total}] Failed {pdf_path}: {e}")
-                results[str(pdf_path)] = {"error": str(e)}
-                n_fail += 1
-
-        logger.info(f"Batch done: {n_success} success, {n_fail} failed out of {total}")
-        return results
+        result = self.llm_analyzer(resume_text, pdf_path.stem)
+        return result
