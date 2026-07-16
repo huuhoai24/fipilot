@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import shutil
 import tempfile
 import threading
@@ -22,8 +23,13 @@ from fipilot.utils.resume_extract_module import get_area, get_ioa, is_center_ins
 from fipilot.utils.resume_extract_module import enrich_output, save_resume_data, is_scanned_pdf
 
 load_dotenv()
-env = Environment(loader=FileSystemLoader(os.path.join(cfg.ROOT, "prompts")))
+
+# Set HF_TOKEN if available in .env to suppress warnings and speed up downloads
+if os.getenv("HUGGINGFACE_API_KEY"):
+    os.environ["HF_TOKEN"] = os.getenv("HUGGINGFACE_API_KEY")
+
 logger = logging.getLogger(__name__)
+
 
 class ResumeExtract:
     def __init__(
@@ -64,14 +70,13 @@ class ResumeExtract:
     def layout_detection(self, pdf_path: str | Path, batch_size: int = 8) -> dict:
         all_detection = {}
         with self.pdf_to_images_tmp(pdf_path) as images:
-            # results = self.yolo_model(images, batch=batch_size, stream=True)
             results = self.yolo_model(images, batch=batch_size, imgsz=640, stream=True, verbose=False)
             for image, result in zip(images, results):
                 all_detection[Path(image).name] = result.boxes.xyxy.cpu().numpy().tolist()
         return all_detection
     
     @staticmethod
-    def remove_duplicate_boxes( yolo_boxes: dict, ioa_threshold: float = 0.85) -> dict:
+    def remove_duplicate_boxes(yolo_boxes: dict, ioa_threshold: float = 0.85) -> dict:
         all_boxes = {}
         for image, boxes in yolo_boxes.items():
             n = len(boxes)
@@ -148,7 +153,6 @@ class ResumeExtract:
             for bbox in boxes
         ]
 
-        # Đảo vòng lặp: duyệt theo từng dòng trước, tìm vùng khớp nhất
         regions_by_image = {}
         for region in layout_regions:
             regions_by_image.setdefault(region["image"], []).append(region)
@@ -160,13 +164,12 @@ class ResumeExtract:
                 best_score = 0.0
                 for region in candidate_regions:
                     if is_center_inside(line["bbox"], region["bbox"]):
-                        score = get_ioa(line["bbox"], region["bbox"])  # diện tích giao / diện tích line
+                        score = get_ioa(line["bbox"], region["bbox"])
                         if score > best_score:
                             best_score = score
                             best_region = region
                 if best_region is not None:
                     best_region["contained_blocks"].append(line)
-                # else: dòng không thuộc vùng nào -> xử lý ở cách 3
 
         for region in layout_regions:
             region["contained_blocks"].sort(key=lambda l: (l["bbox"][1], l["bbox"][0]))
@@ -183,8 +186,7 @@ class ResumeExtract:
                 if text:
                     linearized_lines.append(f"[{line_index}]: {text}")
                     line_index += 1
-        # linearized_text = "\n".join(linearized_lines)
-        linearized_text = " ".join(linearized_lines)
+        linearized_text = "\n".join(linearized_lines)
         return linearized_text
 
     def llm_analyzer(self, resume_text, resume_id):

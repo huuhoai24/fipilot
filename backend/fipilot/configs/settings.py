@@ -17,7 +17,7 @@ class Config:
     INPUT_DATA_DIR: Path = ROOT / "/home/hoai/user/resource/fipilot/backend/data/raw/resumes_copy/ai-se"
     OUTPUT_DATA_DIR:Path = ROOT / "data" / "processed" / "resume_images"
     PAGE_IMAGE_DIR: Path = ROOT / "test" / "page_image"
-    YOLO_MODEL:     Path = ROOT / "models" / "yolo26_train_results" / "weights" / "best.pt"
+    YOLO_MODEL:     Path = ROOT / "best.pt"
     TXT_DIR = Path = ROOT / "data" / "processed" / "resume_text"
     JSON_DIR = Path = ROOT / "data" / "processed" / "resume_json"
 
