@@ -1,11 +1,15 @@
 import calendar
+import json
 import math
+import os
 import re
 from datetime import date
 from difflib import SequenceMatcher
 
 import docx
+import httpx
 import pypdf
+from openai import AsyncOpenAI
 
 
 CURRENT_YEAR = date.today().year
@@ -32,17 +36,36 @@ SKILL_TAXONOMY = {
     "Azure": ["azure"],
     "GCP": ["gcp", "google cloud"],
     "Linux": ["linux", "ubuntu", "bash", "shell"],
-    "Git": ["git", "github", "gitlab", "bitbucket"],
+    "Git": ["git"],
+    "GitHub": ["github"],
+    "GitLab": ["gitlab"],
+    "Bitbucket": ["bitbucket"],
     "CI/CD": ["ci/cd", "cicd", "jenkins", "github actions", "gitlab ci"],
     "Testing": ["testing", "unit test", "integration test", "pytest", "jest", "selenium", "cypress"],
-    "QA Automation": ["qa automation", "automation test", "automated testing", "selenium", "cypress", "playwright"],
+    "Playwright": ["playwright"],
+    "QA Automation": ["qa automation", "automation test", "automated testing", "selenium", "cypress"],
     "HTML": ["html", "html5"],
     "CSS": ["css", "css3", "sass", "scss", "tailwind", "bootstrap"],
-    "Machine Learning": ["machine learning", "ml", "scikit-learn", "sklearn"],
-    "Deep Learning": ["deep learning", "neural network", "tensorflow", "pytorch", "keras"],
-    "LLM": ["llm", "large language model", "openai", "ollama", "langchain", "llamaindex"],
+    "AI/ML": ["ai/ml", "artificial intelligence", "ai powered", "ai-powered", "ai model"],
+    "Machine Learning": ["machine learning", "scikit-learn", "sklearn"],
+    "Deep Learning": ["deep learning", "neural network", "tensorflow", "keras"],
+    "PyTorch": ["pytorch", "torch"],
+    "CNN": ["cnn", "convolutional neural network"],
+    "Transformer": ["transformer", "transformers", "bert", "gpt"],
+    "OCR": ["ocr", "optical character recognition"],
+    "LLM": ["llm", "large language model", "openai", "ollama", "llamaindex"],
+    "LLM APIs": ["llm api", "llm apis", "openai api", "gemini api", "ollama api"],
+    "LangChain": ["langchain"],
+    "LangGraph": ["langgraph"],
     "RAG": ["rag", "retrieval augmented generation", "vector database", "embedding", "faiss", "qdrant", "pinecone"],
     "NLP": ["nlp", "natural language processing", "spacy", "nltk"],
+    "FastAPI": ["fastapi", "fast api"],
+    "Computer Vision": ["computer vision", "image processing", "object detection"],
+    "OpenCV": ["opencv", "open cv"],
+    "Ultralytics": ["ultralytics", "yolo", "yolov8", "yolov10", "yolov11"],
+    "CLIP": ["clip", "openai clip"],
+    "Pandas": ["pandas"],
+    "Matplotlib": ["matplotlib", "pyplot"],
     "MLOps": ["mlops", "model serving", "mlflow", "kubeflow", "airflow"],
     "Data Engineering": ["data engineering", "etl", "elt", "data pipeline", "data warehouse"],
     "Spark": ["spark", "pyspark", "databricks"],
@@ -58,11 +81,11 @@ SKILL_TAXONOMY = {
 ROLE_PROFILES = {
     "Backend Developer": {
         "title": ["backend", "back-end", "server side", "api developer"],
-        "skills": ["Python", "Java", "Node.js", "C#", "Go", "PHP", "SQL", "NoSQL", "API", "Docker", "Git"],
+        "skills": ["Python", "Java", "Node.js", "C#", "Go", "PHP", "SQL", "NoSQL", "API", "Docker", "Git", "GitHub"],
     },
     "Frontend Developer": {
         "title": ["frontend", "front-end", "web ui", "ui developer"],
-        "skills": ["JavaScript", "TypeScript", "React", "Vue", "Angular", "HTML", "CSS", "Testing", "Git"],
+        "skills": ["JavaScript", "TypeScript", "React", "Vue", "Angular", "HTML", "CSS", "Testing", "Playwright", "Git", "GitHub"],
     },
     "Fullstack Developer": {
         "title": ["fullstack", "full-stack", "full stack"],
@@ -74,15 +97,47 @@ ROLE_PROFILES = {
     },
     "Software Engineer": {
         "title": ["software engineer", "software developer", "developer", "programmer"],
-        "skills": ["Python", "Java", "JavaScript", "TypeScript", "SQL", "API", "Git", "Testing", "Docker"],
+        "skills": ["Python", "Java", "JavaScript", "TypeScript", "SQL", "API", "Git", "GitHub", "Testing", "Playwright", "Docker"],
     },
     "AI Engineer": {
-        "title": ["ai engineer", "machine learning engineer", "ml engineer", "nlp engineer"],
-        "skills": ["Python", "Machine Learning", "Deep Learning", "LLM", "RAG", "NLP", "MLOps", "SQL"],
+        "title": [
+            "ai engineer",
+            "artificial intelligence",
+            "machine learning engineer",
+            "ml engineer",
+            "nlp engineer",
+            "computer vision engineer",
+            "ai ml",
+        ],
+        "skills": [
+            "Python",
+            "AI/ML",
+            "Machine Learning",
+            "Deep Learning",
+            "PyTorch",
+            "CNN",
+            "Transformer",
+            "OCR",
+            "LLM",
+            "LLM APIs",
+            "LangChain",
+            "LangGraph",
+            "RAG",
+            "NLP",
+            "FastAPI",
+            "Computer Vision",
+            "OpenCV",
+            "Ultralytics",
+            "CLIP",
+            "MLOps",
+            "SQL",
+            "Git",
+            "GitHub",
+        ],
     },
     "Data Scientist": {
         "title": ["data scientist", "machine learning scientist"],
-        "skills": ["Python", "SQL", "Machine Learning", "Deep Learning", "NLP", "Power BI", "Tableau"],
+        "skills": ["Python", "SQL", "Machine Learning", "Deep Learning", "PyTorch", "NLP", "Pandas", "Matplotlib", "Power BI", "Tableau"],
     },
     "Data Engineer": {
         "title": ["data engineer", "etl developer", "big data engineer"],
@@ -98,7 +153,7 @@ ROLE_PROFILES = {
     },
     "Tester": {
         "title": ["tester", "qa", "quality assurance", "test engineer"],
-        "skills": ["Testing", "QA Automation", "SQL", "API", "Selenium", "Git"],
+        "skills": ["Testing", "QA Automation", "Playwright", "SQL", "API", "Selenium", "Git", "GitHub"],
     },
     "Business Analyst": {
         "title": ["business analyst", "product analyst"],
@@ -176,6 +231,44 @@ ROLE_TITLE_TERMS = {
 
 GENERIC_ROLE_ALIASES = {"developer", "engineer", "analyst", "tester", "programmer"}
 
+EDUCATION_DATE_CONTEXT_TERMS = {
+    "academic",
+    "bachelor",
+    "campus",
+    "college",
+    "degree",
+    "diploma",
+    "education",
+    "expected graduation",
+    "faculty",
+    "gpa",
+    "graduation",
+    "major",
+    "school",
+    "student",
+    "university",
+}
+
+WORK_DATE_CONTEXT_TERMS = {
+    "company",
+    "contract",
+    "developer",
+    "employment",
+    "engineer",
+    "experience",
+    "freelance",
+    "full time",
+    "full-time",
+    "intern",
+    "internship",
+    "part time",
+    "part-time",
+    "position",
+    "remote",
+    "role",
+    "work",
+}
+
 
 MONTHS = {
     name.lower(): index for index, name in enumerate(calendar.month_name) if name
@@ -184,6 +277,14 @@ MONTHS.update({name.lower(): index for index, name in enumerate(calendar.month_a
 
 
 class CVExtractor:
+    def __init__(self):
+        self.llm_model = os.environ.get("OLLAMA_CV_MODEL") or os.environ.get("CORE_MODEL", "gemma4:e2b")
+        self.llm_client = AsyncOpenAI(
+            api_key=os.environ.get("OLLAMA_API_KEY") or os.environ.get("CORE_API_KEY", "ollama"),
+            base_url=os.environ.get("OLLAMA_BASE_URL") or os.environ.get("CORE_BASE_URL", "http://localhost:11434/v1"),
+            http_client=httpx.AsyncClient(verify=False, timeout=45),
+        )
+
     def extract_text(self, file_path: str, filename: str) -> str:
         text = ""
         ext = filename.split(".")[-1].lower()
@@ -212,6 +313,44 @@ class CVExtractor:
     async def parse_cv(self, text: str) -> dict:
         return self.parse_cv_sync(text)
 
+    async def parse_cv_with_llm(self, text: str) -> dict:
+        resume_text = self._normalize_whitespace(text)[:18000]
+        prompt = f"""
+Extract the candidate profile from this English CV and return only a valid JSON object.
+
+Required schema:
+{{
+  "candidate_name": "string",
+  "years_experience": number,
+  "skills": ["string"],
+  "education": "string",
+  "recent_role": "string",
+  "inferred_level": integer,
+  "role_fit": "string",
+  "confidence": number
+}}
+
+Rules:
+- inferred_level must be 1 for fresher/junior, 2 for 2-4 years, 3 for senior/lead, 4 for principal/architect/manager.
+- role_fit should be one common IT role such as Software Engineer, Backend Developer, Frontend Developer, AI Engineer, Data Scientist, Data Engineer, DevOps Engineer, Tester, Business Analyst, Cybersecurity Analyst.
+- confidence must be between 0 and 1.
+- If a field is missing, infer conservatively from the CV text.
+
+CV:
+{resume_text}
+"""
+        response = await self.llm_client.chat.completions.create(
+            model=self.llm_model,
+            messages=[
+                {"role": "system", "content": "You are a precise resume extraction engine. Return JSON only."},
+                {"role": "user", "content": prompt},
+            ],
+            temperature=0.1,
+            response_format={"type": "json_object"},
+        )
+        content = response.choices[0].message.content or "{}"
+        return self._normalize_profile(json.loads(content), extraction_method=f"llm:{self.llm_model}")
+
     def parse_cv_sync(self, text: str) -> dict:
         normalized_text = self._normalize_whitespace(text)
         sections = self._split_sections(normalized_text)
@@ -219,6 +358,7 @@ class CVExtractor:
         recent_role = self._extract_recent_role(normalized_text, sections)
         years_experience = self._estimate_years_experience(normalized_text, sections)
         role_fit, role_confidence = self._infer_role(normalized_text, recent_role, skills)
+        role_fit, role_confidence = self._refine_role_fit(normalized_text, sections, recent_role, skills, role_fit, role_confidence)
         inferred_level = self._infer_level(years_experience, recent_role, normalized_text)
 
         confidence_parts = [
@@ -228,7 +368,7 @@ class CVExtractor:
             role_confidence * 0.3,
         ]
 
-        return {
+        return self._normalize_profile({
             "candidate_name": self._extract_candidate_name(normalized_text),
             "years_experience": years_experience,
             "skills": skills or ["Not Found"],
@@ -238,7 +378,103 @@ class CVExtractor:
             "role_fit": role_fit,
             "confidence": round(min(sum(confidence_parts), 0.98), 2),
             "extraction_method": "rule_based",
+        })
+
+    def _refine_role_fit(
+        self,
+        text: str,
+        sections: dict,
+        recent_role: str,
+        skills: list,
+        role_fit: str,
+        confidence: float,
+    ) -> tuple[str, float]:
+        normalized = self._clean_heading(
+            "\n".join([
+                text[:5000],
+                sections.get("education", ""),
+                sections.get("projects", ""),
+                recent_role,
+            ])
+        )
+        skill_set = set(skills)
+        ai_skill_hits = len(skill_set & {
+            "AI/ML",
+            "Machine Learning",
+            "Deep Learning",
+            "PyTorch",
+            "CNN",
+            "Transformer",
+            "OCR",
+            "LLM",
+            "LLM APIs",
+            "LangChain",
+            "LangGraph",
+            "RAG",
+            "NLP",
+            "Computer Vision",
+            "OpenCV",
+            "Ultralytics",
+            "CLIP",
+        })
+        has_ai_degree = any(
+            phrase in normalized
+            for phrase in [
+                "bachelor of artificial intelligence",
+                "artificial intelligence",
+                "ai campus",
+                "major ai",
+                "major artificial intelligence",
+            ]
+        )
+        has_ai_project = any(
+            phrase in normalized
+            for phrase in [
+                "anti bot ai crawler",
+                "ai crawler",
+                "computer vision",
+                "ocr",
+                "rag",
+                "pytorch",
+                "ultralytics",
+                "opencv",
+                "langchain",
+                "langgraph",
+            ]
+        )
+
+        if has_ai_degree and ai_skill_hits >= 2:
+            return "AI Engineer", max(confidence, 0.85)
+        if ai_skill_hits >= 5 and has_ai_project:
+            return "AI Engineer", max(confidence, 0.82)
+        if ai_skill_hits >= 7:
+            return "AI Engineer", max(confidence, 0.8)
+        return role_fit, confidence
+
+    def _normalize_profile(self, profile: dict, extraction_method: str | None = None) -> dict:
+        skills = profile.get("skills") if isinstance(profile.get("skills"), list) else []
+        clean_skills = [str(skill).strip() for skill in skills if str(skill).strip()]
+        years = self._coerce_float(profile.get("years_experience"), 0.0)
+        level = int(self._coerce_float(profile.get("inferred_level"), 1))
+        confidence = self._coerce_float(profile.get("confidence"), 0.7)
+
+        return {
+            "candidate_name": str(profile.get("candidate_name") or "Candidate").strip()[:120],
+            "years_experience": round(max(years, 0.0), 1),
+            "skills": clean_skills[:32] or ["Not Found"],
+            "education": str(profile.get("education") or "Not Found").strip()[:240],
+            "recent_role": str(profile.get("recent_role") or "Not Found").strip()[:140],
+            "inferred_level": max(1, min(level, 4)),
+            "role_fit": str(profile.get("role_fit") or "Software Engineer").strip()[:80],
+            "confidence": round(max(0.0, min(confidence, 0.99)), 2),
+            "extraction_method": extraction_method or profile.get("extraction_method") or "rule_based",
         }
+
+    def _coerce_float(self, value, default: float) -> float:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
 
     def _normalize_whitespace(self, text: str) -> str:
         text = text.replace("\r", "\n")
@@ -323,20 +559,32 @@ class CVExtractor:
             ]
         ).lower()
 
-        found = []
+        found = {}
         for canonical, aliases in SKILL_TAXONOMY.items():
             for alias in aliases:
                 pattern = r"(?<![a-z0-9])" + re.escape(alias.lower()) + r"(?![a-z0-9])"
-                if re.search(pattern, search_text):
-                    found.append(canonical)
+                match = re.search(pattern, search_text)
+                if match:
+                    found[canonical] = min(found.get(canonical, match.start()), match.start())
                     break
-        return sorted(set(found))
+
+        if "LLM APIs" in found and "LLM" in found and abs(found["LLM APIs"] - found["LLM"]) <= 2:
+            found.pop("LLM", None)
+
+        return [
+            canonical
+            for canonical, _position in sorted(found.items(), key=lambda item: (item[1], list(SKILL_TAXONOMY).index(item[0])))
+        ]
 
     def _extract_recent_role(self, text: str, sections: dict) -> str:
         experience = sections.get("experience", "")
         projects = sections.get("projects", "")
         role_source = "\n".join(part for part in [experience, projects] if part.strip()) or text
         candidates = []
+
+        project_role = self._extract_project_role(projects)
+        if project_role:
+            candidates.append(project_role)
 
         for line in role_source.splitlines()[:120]:
             candidate = self._role_from_position_row(line)
@@ -358,6 +606,39 @@ class CVExtractor:
             if self._is_probably_title(line) and not self._is_section_heading(line):
                 return self._clean_role_line(line)[:140]
         return "Not Found"
+
+    def _extract_project_role(self, projects: str) -> str:
+        if not projects.strip():
+            return ""
+
+        project_name = ""
+        position = ""
+        for line in projects.splitlines()[:80]:
+            cells = self._split_table_cells(line)
+            if len(cells) >= 2:
+                label = self._clean_heading(cells[0])
+                value = cells[1].strip()
+                if label == "project name" and not project_name:
+                    project_name = value
+                elif label in {"position", "positions", "role", "title"} and not position:
+                    position = self._clean_role_line(value)
+            else:
+                cleaned = self._clean_heading(line)
+                if not project_name and re.search(r"\b(project|crawler|bot|ocr|rag|ai|ml|vision)\b", cleaned):
+                    project_name = line.strip(" -*•|")
+
+        if not project_name:
+            return ""
+
+        project_signal = self._clean_heading(project_name)
+        project_is_ai = any(term in project_signal for term in ["ai", "ml", "bot", "crawler", "ocr", "rag", "vision", "model"])
+        role = position or "Developer"
+        role_words = self._clean_heading(role).split()
+        if project_is_ai and any(word in role_words for word in ["backend", "frontend", "fullstack", "software"]):
+            role = "Developer"
+        if self._looks_like_role_value(role) or role == "Developer":
+            return f"{role} (Mock Project:{project_name})"[:140]
+        return ""
 
     def _clean_role_line(self, line: str) -> str:
         return re.sub(r"^\s*(position|title|role|current role)\s*:\s*", "", line, flags=re.I).strip()
@@ -427,9 +708,7 @@ class CVExtractor:
 
     def _estimate_years_experience(self, text: str, sections: dict) -> float:
         explicit = self._extract_explicit_years(text)
-        experience_text = "\n".join(
-            part for part in [sections.get("experience", ""), sections.get("projects", "")] if part.strip()
-        )
+        experience_text = sections.get("experience", "")
         ranges = self._extract_date_ranges(experience_text)
         months = self._merge_ranges_in_months(ranges)
 
@@ -463,11 +742,29 @@ class CVExtractor:
         )
         ranges = []
         for match in range_pattern.finditer(text):
+            context = self._date_range_context(text, match.start(), match.end())
+            if self._is_education_date_context(context):
+                continue
             start = self._parse_date_token(match.group(1))
             end = self._parse_date_token(match.group(2), end=True)
             if start and end and start <= end:
                 ranges.append((start, end))
         return ranges
+
+    def _date_range_context(self, text: str, start: int, end: int) -> str:
+        line_start = text.rfind("\n", 0, start) + 1
+        line_end = text.find("\n", end)
+        if line_end == -1:
+            line_end = len(text)
+        return text[line_start:line_end].lower()
+
+    def _is_education_date_context(self, context: str) -> bool:
+        normalized = self._clean_heading(context)
+        if not normalized:
+            return False
+        has_education_context = any(term in normalized for term in EDUCATION_DATE_CONTEXT_TERMS)
+        has_work_context = any(term in normalized for term in WORK_DATE_CONTEXT_TERMS)
+        return has_education_context and not has_work_context
 
     def _parse_date_token(self, token: str, end: bool = False):
         token = token.strip().lower().replace(".", "")
@@ -554,5 +851,69 @@ class CVExtractor:
         )
         return stripped.replace("đ", "d").replace("Đ", "D")
 
+
+def _extract_education_v2(self, sections: dict) -> str:
+    education = sections.get("education", "").strip()
+    if not education:
+        return "Not Found"
+    cells = []
+    expected_graduation = ""
+    for line in education.splitlines():
+        for cell in self._split_table_cells(line):
+            cleaned = self._clean_education_cell(cell)
+            if not cleaned:
+                continue
+            grad = self._extract_expected_graduation(cleaned)
+            if grad and not expected_graduation:
+                expected_graduation = grad
+                continue
+            cells.append(cleaned)
+
+    unique_cells = []
+    seen = set()
+    for cell in cells:
+        normalized = self._clean_heading(cell)
+        if normalized and normalized not in seen:
+            unique_cells.append(cell)
+            seen.add(normalized)
+
+    if not unique_cells and not expected_graduation:
+        return "Not Found"
+
+    summary = ", ".join(unique_cells[:2])
+    if expected_graduation:
+        summary = f"{summary} (Expected Graduation: {expected_graduation})" if summary else f"Expected Graduation: {expected_graduation}"
+    return summary[:240]
+
+
+def _clean_education_cell(self, cell: str) -> str:
+    value = cell.strip(" -*â€¢|")
+    if not value:
+        return ""
+    normalized = self._clean_heading(value)
+    if normalized in {"education", "academic background", "qualification", "qualifications"}:
+        return ""
+    if re.search(r"\benglish\s*:?\s*[a-z0-9.+-]+\b", value, re.I):
+        return ""
+    if re.search(r"\bfrom\s+\d{1,2}[/.-]\d{4}\s+to\s*$", value, re.I):
+        return ""
+    if re.search(r"\b(?:gpa|ielts|toeic|toefl)\s*:?", value, re.I):
+        return ""
+    value = re.sub(r"\s*\bfrom\s+\d{1,2}[/.-]\d{4}\s+to\s*$", "", value, flags=re.I)
+    return re.sub(r"\s+", " ", value).strip(" ,")
+
+
+def _extract_expected_graduation(self, text: str) -> str:
+    match = re.search(
+        r"expected\s+graduation(?:\s+in|:)?\s*([0-9]{1,2}[/.-][0-9]{4}|[A-Za-z]+\s+[0-9]{4}|[0-9]{4})",
+        text,
+        re.I,
+    )
+    return match.group(1).strip() if match else ""
+
+
+CVExtractor._extract_education = _extract_education_v2
+CVExtractor._clean_education_cell = _clean_education_cell
+CVExtractor._extract_expected_graduation = _extract_expected_graduation
 
 cv_extractor = CVExtractor()

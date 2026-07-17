@@ -1,7 +1,7 @@
 import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
-import { Mic, MoreHorizontal, PhoneOff, Send, WifiOff } from 'lucide-react'
+import { AlertTriangle, Mic, MoreHorizontal, PhoneOff, Send, WifiOff } from 'lucide-react'
 import { api } from '@/lib/api'
 import { useActiveSessionStore } from '@/store/useActiveSessionStore'
 
@@ -42,6 +42,9 @@ export function InterviewSessionPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [typedAnswer, setTypedAnswer] = useState('')
   const [isEnding, setIsEnding] = useState(false)
+  const [proctorWarning, setProctorWarning] = useState<string | null>(null)
+  const [proctorCounts, setProctorCounts] = useState({ tab_switch_count: 0, window_blur_count: 0 })
+  const [canAnswer, setCanAnswer] = useState(false)
 
   const wsRef = useRef<WebSocket | null>(null)
   const reconnectTimerRef = useRef<number | null>(null)
@@ -61,6 +64,7 @@ export function InterviewSessionPage() {
   const endedRef = useRef(false)
   const recentMessageKeysRef = useRef<Map<string, number>>(new Map())
   const pendingAudioMessageKeysRef = useRef<Set<string>>(new Set())
+  const lastProctorEventRef = useRef(0)
 
   const scrollToBottom = () => {
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 80)
@@ -72,6 +76,43 @@ export function InterviewSessionPage() {
     endActiveSession(sessionId)
     window.setTimeout(() => navigate(`/history/${sessionId}`), 1800)
   }, [endActiveSession, navigate, sessionId])
+
+  const reportProctoringViolation = useCallback((eventType: 'tab_hidden' | 'window_blur', reason: string) => {
+    if (!sessionId || endedRef.current) return
+
+    const now = Date.now()
+    if (now - lastProctorEventRef.current < 1200) return
+    lastProctorEventRef.current = now
+
+    const message = eventType === 'tab_hidden'
+      ? 'Cảnh báo: hệ thống phát hiện bạn vừa chuyển tab trong lúc phỏng vấn.'
+      : 'Cảnh báo: hệ thống phát hiện cửa sổ phỏng vấn vừa mất focus.'
+
+    setProctorWarning(message)
+    window.setTimeout(() => setProctorWarning(null), 6000)
+    setProctorCounts((prev) => ({
+      tab_switch_count: prev.tab_switch_count + (eventType === 'tab_hidden' ? 1 : 0),
+      window_blur_count: prev.window_blur_count + (eventType === 'window_blur' ? 1 : 0),
+    }))
+
+    api.recordProctoringEvent(sessionId, {
+      event_type: eventType,
+      reason,
+      occurred_at: new Date().toISOString(),
+      visible: document.visibilityState === 'visible',
+      focus_state: document.hasFocus() ? 'focused' : 'blurred',
+    })
+      .then((res) => {
+        const summary = res?.proctoring
+        if (summary) {
+          setProctorCounts({
+            tab_switch_count: Number(summary.tab_switch_count || 0),
+            window_blur_count: Number(summary.window_blur_count || 0),
+          })
+        }
+      })
+      .catch((error) => console.error('Failed to record proctoring event:', error))
+  }, [sessionId])
 
   const rememberRecentMessage = useCallback((sender: string, text: string, windowMs = 8000) => {
     const key = getMessageKey(sender, text)
@@ -121,6 +162,7 @@ export function InterviewSessionPage() {
       if (cursor >= totalChars && revealTimerRef.current) {
         window.clearInterval(revealTimerRef.current)
         revealTimerRef.current = null
+        if (nextStatus !== 'ENDED') setCanAnswer(true)
         finishIfEnded(nextStatus)
       }
     }, intervalMs)
@@ -136,11 +178,19 @@ export function InterviewSessionPage() {
         setCandidateName(session.candidate_name || 'Bạn')
         setRole(session.role || 'Candidate')
         setStatus(session.status || 'Connecting...')
+        if (session.proctoring) {
+          setProctorCounts({
+            tab_switch_count: Number(session.proctoring.tab_switch_count || 0),
+            window_blur_count: Number(session.proctoring.window_blur_count || 0),
+          })
+        }
         const historyMessages = (session.messages || []).map((msg: any) => ({
           id: String(msg.id || `history-${messageSeqRef.current++}`),
           sender: msg.role === 'ai' ? 'AI' : (msg.sender || session.candidate_name || 'Bạn'),
           text: msg.text || '',
         }))
+        const lastMessage = historyMessages[historyMessages.length - 1]
+        setCanAnswer(session.status !== 'ENDED' && lastMessage?.sender === 'AI')
         const recentKeys = new Set(recentMessageKeysRef.current.keys())
         const pendingAudioKeys = new Set(pendingAudioMessageKeysRef.current)
         setMessages((prev) => {
@@ -186,6 +236,29 @@ export function InterviewSessionPage() {
     }
   }, [])
 
+  useEffect(() => {
+    if (!sessionId) return
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        reportProctoringViolation('tab_hidden', 'Document visibility changed to hidden')
+      }
+    }
+
+    const handleBlur = () => {
+      if (document.visibilityState === 'visible') {
+        reportProctoringViolation('window_blur', 'Window lost focus')
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('blur', handleBlur)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [reportProctoringViolation, sessionId])
+
   const playDecodedAudio = async (arrayBuffer: ArrayBuffer, pending: PendingAiMessage | null) => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
@@ -202,8 +275,12 @@ export function InterviewSessionPage() {
       try { audioSourceRef.current?.stop() } catch {}
       audioSourceRef.current = source
       source.connect(ctx.destination)
-      source.onended = () => setIsSpeaking(false)
+      source.onended = () => {
+        setIsSpeaking(false)
+        if (pending?.status !== 'ENDED') setCanAnswer(true)
+      }
       setIsSpeaking(true)
+      setCanAnswer(false)
       source.start(0)
       if (pending?.text && !pending.revealed) {
         pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', pending.text))
@@ -237,7 +314,13 @@ export function InterviewSessionPage() {
       if (wsRef.current !== ws) return
 
       if (typeof event.data === 'string') {
-        const data = JSON.parse(event.data)
+        let data: any
+        try {
+          data = JSON.parse(event.data)
+        } catch (error) {
+          console.error('Invalid websocket payload:', error)
+          return
+        }
         if (data.status) setStatus(data.status)
 
         if (data.sender && data.sender !== 'AI') {
@@ -248,6 +331,8 @@ export function InterviewSessionPage() {
         }
 
         if (data.text) {
+          setCanAnswer(false)
+          if (data.retry_answer) setCanAnswer(true)
           if (data.has_audio) {
             pendingAudioMessageKeysRef.current.add(getMessageKey('AI', data.text))
             pendingAiRef.current = data
@@ -305,6 +390,10 @@ export function InterviewSessionPage() {
   }, [])
 
   const startRecording = async () => {
+    if (!canAnswer || isSpeaking) {
+      alert('Vui lòng đợi AI mở màn hoặc hỏi xong rồi mới trả lời.')
+      return
+    }
     if (wsRef.current?.readyState !== WebSocket.OPEN) {
       alert('Kết nối phỏng vấn chưa sẵn sàng. Hệ thống đang thử kết nối lại.')
       return
@@ -335,6 +424,7 @@ export function InterviewSessionPage() {
         stream.getTracks().forEach((track) => track.stop())
         const audioBlob = new Blob(audioChunks, { type: mimeType })
         if (audioBlob.size > 0 && wsRef.current?.readyState === WebSocket.OPEN) {
+          setCanAnswer(false)
           wsRef.current.send(audioBlob)
         }
       }
@@ -376,7 +466,8 @@ export function InterviewSessionPage() {
   const sendTextAnswer = (event: FormEvent) => {
     event.preventDefault()
     const text = typedAnswer.trim()
-    if (!text || wsRef.current?.readyState !== WebSocket.OPEN) return
+    if (!text || !canAnswer || isSpeaking || wsRef.current?.readyState !== WebSocket.OPEN) return
+    setCanAnswer(false)
     wsRef.current.send(JSON.stringify({ text }))
     setTypedAnswer('')
   }
@@ -405,6 +496,19 @@ export function InterviewSessionPage() {
 
   return (
     <div className="relative h-[calc(100vh-6rem)] w-full bg-slate-900 flex overflow-hidden font-sans rounded-[1.5rem]">
+      {proctorWarning && (
+        <div className="absolute left-1/2 top-16 z-30 w-[min(560px,calc(100%-2rem))] -translate-x-1/2 rounded-lg border border-amber-300/60 bg-amber-50 px-4 py-3 text-amber-900 shadow-2xl">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold">{proctorWarning}</p>
+              <p className="mt-1 text-xs">
+                Số lần chuyển tab: {proctorCounts.tab_switch_count} · Mất focus cửa sổ: {proctorCounts.window_blur_count}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10 text-white">
         <div className="text-sm font-medium opacity-70">
           {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} | {role} Interview
@@ -412,6 +516,9 @@ export function InterviewSessionPage() {
         <div className="flex space-x-3 text-sm items-center">
           <span className={`w-2 h-2 rounded-full ${status === 'Connected' || status === 'INTERVIEWING' ? 'bg-emerald-500' : 'bg-red-500'}`} />
           <span className="opacity-70">{status}</span>
+          <span className="rounded-full border border-white/15 px-2 py-0.5 text-xs opacity-80">
+            Tab: {proctorCounts.tab_switch_count} · Window: {proctorCounts.window_blur_count}
+          </span>
           {status === 'Disconnected' || status === 'Connection issue' ? <WifiOff className="h-4 w-4 opacity-70" /> : null}
         </div>
       </div>
@@ -444,7 +551,7 @@ export function InterviewSessionPage() {
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex items-center space-x-4 z-10">
           <button
             onClick={toggleRecording}
-            disabled={status === 'ENDED'}
+            disabled={status === 'ENDED' || (!isListening && (!canAnswer || isSpeaking))}
             className={`flex items-center space-x-2 px-6 py-3 rounded-full text-white font-medium text-sm transition-all shadow-lg backdrop-blur-md ${
               isListening ? 'bg-red-500/90 border border-red-400' : 'bg-indigo-500/90 hover:bg-indigo-500 border border-indigo-400/50'
             }`}
@@ -506,11 +613,11 @@ export function InterviewSessionPage() {
               onChange={(event) => setTypedAnswer(event.target.value)}
               className="min-w-0 flex-1 rounded-full border border-gray-300 px-4 py-2 text-sm outline-none focus:border-indigo-500"
               placeholder="Nhập câu trả lời nếu không dùng mic..."
-              disabled={status === 'ENDED'}
+              disabled={status === 'ENDED' || !canAnswer || isSpeaking}
             />
             <button
               type="submit"
-              disabled={!typedAnswer.trim() || status === 'ENDED'}
+              disabled={!typedAnswer.trim() || status === 'ENDED' || !canAnswer || isSpeaking}
               className="rounded-full bg-indigo-500 p-2.5 text-white disabled:opacity-40"
             >
               <Send className="h-4 w-4" />

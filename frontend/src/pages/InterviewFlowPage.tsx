@@ -13,6 +13,9 @@ import {
   ListChecks,
   Zap,
   Plus,
+  AlertTriangle,
+  BrainCircuit,
+  Workflow,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -40,6 +43,8 @@ export function InterviewFlowPage() {
   const [templateMatches, setTemplateMatches] = useState<TemplateMatch[]>([])
   const [extractError, setExtractError] = useState<string | null>(null)
   const [matchingTemplates, setMatchingTemplates] = useState(false)
+  const [parserMode, setParserMode] = useState<'workflow' | 'llm'>('workflow')
+  const [confirmStartOpen, setConfirmStartOpen] = useState(false)
 
   // Step 4: chọn giữa bắt đầu ngay hoặc để vào hàng đợi phỏng vấn sau
   const [startMode, setStartMode] = useState<'immediate' | 'later' | null>(null)
@@ -51,7 +56,7 @@ export function InterviewFlowPage() {
     setExtracting(true)
     setExtractError(null)
     try {
-      const res = await api.extractCv(cvFile)
+      const res = await api.extractCv(cvFile, parserMode)
       setProfile(res.profile)
       setTemplateMatches(res.matches)
       setSelectedTemplateId(res.matches?.[0]?.score >= 0.5 ? res.matches[0].template_id : null)
@@ -68,6 +73,7 @@ export function InterviewFlowPage() {
 
   const handleStartNow = async () => {
     if (!profile || !selectedTemplateId) return
+    setConfirmStartOpen(false)
     setStarting(true)
     try {
       const res = await api.createSession({
@@ -155,6 +161,7 @@ export function InterviewFlowPage() {
     setMatchingTemplates(false)
     setStartMode(null)
     setQueued(false)
+    setConfirmStartOpen(false)
   }
 
   const runningSessions = useActiveSessionStore((s) => Object.values(s.sessions))
@@ -220,6 +227,41 @@ export function InterviewFlowPage() {
                   </Select>
                 </div>
               </div>
+              <div>
+                <Label>Chế độ track CV</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setParserMode('workflow')}
+                    className={`rounded-lg border p-3 text-left transition-colors duration-150 ${
+                      parserMode === 'workflow'
+                        ? 'border-accent bg-accent-soft'
+                        : 'border-border bg-surface-raised hover:border-accent/40'
+                    }`}
+                  >
+                    <div className="mb-1 flex items-center gap-2 text-sm font-medium text-text-primary">
+                      <Workflow className="h-4 w-4 text-accent" />
+                      Workflow nhanh
+                    </div>
+                    <p className="text-xs text-text-muted">Tối ưu tốc độ, ổn định cho CV có text rõ.</p>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setParserMode('llm')}
+                    className={`rounded-lg border p-3 text-left transition-colors duration-150 ${
+                      parserMode === 'llm'
+                        ? 'border-accent bg-accent-soft'
+                        : 'border-border bg-surface-raised hover:border-accent/40'
+                    }`}
+                  >
+                    <div className="mb-1 flex items-center gap-2 text-sm font-medium text-text-primary">
+                      <BrainCircuit className="h-4 w-4 text-accent" />
+                      LLM Gemma
+                    </div>
+                    <p className="text-xs text-text-muted">Dùng gemma4:e2b để phân tích CV linh hoạt hơn.</p>
+                  </button>
+                </div>
+              </div>
               <div className="flex justify-end pt-2">
                 <Button onClick={handleExtract} disabled={!cvFile || extracting}>
                   {extracting ? (
@@ -246,6 +288,12 @@ export function InterviewFlowPage() {
                 </div>
                 <Badge variant="success">Độ tin cậy {(profile.confidence * 100).toFixed(0)}%</Badge>
               </div>
+
+              {profile.parser_warning && (
+                <div className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
+                  {profile.parser_warning}
+                </div>
+              )}
 
               <div className="rounded-lg border border-border bg-surface-raised p-4 space-y-4">
                 <div className="flex items-center justify-between">
@@ -451,7 +499,7 @@ export function InterviewFlowPage() {
                         <Clock4 className="h-4 w-4" /> Thêm vào danh sách chờ
                       </Button>
                     ) : (
-                      <Button onClick={handleStartNow} disabled={startMode !== 'immediate' || starting}>
+                      <Button onClick={() => setConfirmStartOpen(true)} disabled={startMode !== 'immediate' || starting}>
                         {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />}
                         {starting ? ' Đang kết nối...' : ' Vào phòng phỏng vấn'}
                       </Button>
@@ -463,6 +511,32 @@ export function InterviewFlowPage() {
           )}
         </CardContent>
       </Card>
+
+      {confirmStartOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-lg border border-warning/30 bg-surface p-5 shadow-2xl">
+            <div className="mb-3 flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/10">
+                <AlertTriangle className="h-5 w-5 text-warning" />
+              </div>
+              <h3 className="text-base font-semibold text-text-primary">Chuẩn bị trước khi phỏng vấn</h3>
+            </div>
+            <div className="space-y-2 text-sm leading-relaxed text-text-muted">
+              <p>Hãy chuẩn bị thật kỹ trước khi bắt đầu. Trong lúc phỏng vấn, bạn không được chuyển tab, đổi cửa sổ, rời khỏi trang hoặc làm việc khác ngoài trả lời phỏng vấn.</p>
+              <p>Hệ thống sẽ hiển thị cảnh báo ngay khi phát hiện bạn chuyển tab/cửa sổ và số lần vi phạm sẽ xuất hiện trong báo cáo đánh giá.</p>
+            </div>
+            <div className="mt-5 flex justify-end gap-2">
+              <Button variant="secondary" onClick={() => setConfirmStartOpen(false)} disabled={starting}>
+                Suy nghĩ lại
+              </Button>
+              <Button onClick={handleStartNow} disabled={starting}>
+                {starting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mic className="h-4 w-4" />}
+                Bắt đầu ngay
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

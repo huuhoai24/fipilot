@@ -8,6 +8,7 @@ import {
   Download,
   Loader2,
   RotateCcw,
+  ShieldAlert,
   Sparkles,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -142,6 +143,9 @@ export function EvaluationReportPage() {
   const strengths = asList(evaluation.strengths)
   const weaknesses = asList(evaluation.weaknesses)
   const improvementPlan = asList(evaluation.improvement_plan)
+  const proctoring = evaluation.proctoring || session?.proctoring || {}
+  const tabSwitchCount = Number(proctoring.tab_switch_count || 0)
+  const windowBlurCount = Number(proctoring.window_blur_count || 0)
 
   return (
     <div className="space-y-6">
@@ -186,6 +190,31 @@ export function EvaluationReportPage() {
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-text-muted">
             {evaluation.final_feedback || 'AI chưa trả về nhận xét tổng quan.'}
           </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <div className="mb-4 flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5 text-warning" />
+            <h2 className="text-sm font-semibold text-text-primary">Giám sát trong lúc phỏng vấn</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-lg border border-border bg-surface-raised p-3">
+              <div className="text-xs uppercase text-text-muted">Chuyển tab</div>
+              <div className="mt-1 font-mono text-xl font-bold text-text-primary">{tabSwitchCount}</div>
+            </div>
+            <div className="rounded-lg border border-border bg-surface-raised p-3">
+              <div className="text-xs uppercase text-text-muted">Mất focus cửa sổ</div>
+              <div className="mt-1 font-mono text-xl font-bold text-text-primary">{windowBlurCount}</div>
+            </div>
+            <div className="rounded-lg border border-border bg-surface-raised p-3">
+              <div className="text-xs uppercase text-text-muted">Tổng cảnh báo</div>
+              <div className="mt-1 font-mono text-xl font-bold text-text-primary">
+                {Number(proctoring.total_events ?? tabSwitchCount + windowBlurCount)}
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends, UploadFile, File, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, BackgroundTasks, Depends, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from contextlib import asynccontextmanager
@@ -47,6 +47,7 @@ def migrate_db():
                 "completed_question_ids": "TEXT DEFAULT '[]'",
                 "state": "VARCHAR DEFAULT 'GREETING'",
                 "question_plan_json": "TEXT",
+                "proctoring_events_json": "TEXT DEFAULT '[]'",
             }
             for column_name, column_type in session_columns_to_add.items():
                 if column_name not in columns:
@@ -102,6 +103,13 @@ class TemplateMatchRequest(BaseModel):
     skills: list[str] = Field(default_factory=list)
     target_role: str | None = None
 
+class ProctoringEventCreate(BaseModel):
+    event_type: str
+    reason: str | None = None
+    occurred_at: str | None = None
+    visible: bool | None = None
+    focus_state: str | None = None
+
 def get_completed_ids(session):
     try:
         return set(json.loads(session.completed_question_ids or "[]"))
@@ -110,6 +118,24 @@ def get_completed_ids(session):
 
 def set_completed_ids(session, completed_ids):
     session.completed_question_ids = json.dumps(sorted({int(item) for item in completed_ids}))
+
+def get_proctoring_events(session):
+    try:
+        events = json.loads(session.proctoring_events_json or "[]")
+        return events if isinstance(events, list) else []
+    except Exception:
+        return []
+
+def get_proctoring_summary(session):
+    events = get_proctoring_events(session)
+    tab_switch_count = sum(1 for event in events if event.get("event_type") == "tab_hidden")
+    window_blur_count = sum(1 for event in events if event.get("event_type") == "window_blur")
+    return {
+        "tab_switch_count": tab_switch_count,
+        "window_blur_count": window_blur_count,
+        "total_events": len(events),
+        "events": events[-100:],
+    }
 
 def ensure_valid_template(template_id: str):
     if not template_id:
@@ -226,6 +252,42 @@ def validate_cv_file_content(file_path: str, expected_ext: str):
             raise HTTPException(status_code=422, detail="PDF không có trang nào.")
         if page_count > MAX_CV_PAGES:
             raise HTTPException(status_code=422, detail=f"CV PDF không nên vượt quá {MAX_CV_PAGES} trang.")
+
+def cv_error(code: str, message: str, status_code: int = 422):
+    raise HTTPException(status_code=status_code, detail={"code": code, "message": message})
+
+def cv_profile_quality(profile: dict):
+    skills = profile.get("skills") if isinstance(profile.get("skills"), list) else []
+    skill_count = len([skill for skill in skills if str(skill).strip() and str(skill).lower() != "not found"])
+    score = 0
+    if profile.get("candidate_name") and profile.get("candidate_name") != "Candidate":
+        score += 2
+    if profile.get("role_fit"):
+        score += 2
+    if profile.get("recent_role") and profile.get("recent_role") != "Not Found":
+        score += 1
+    if profile.get("education") and profile.get("education") != "Not Found":
+        score += 1
+    score += min(skill_count, 10)
+    return score
+
+def choose_best_cv_profile(workflow_profile: dict, llm_profile: dict | None):
+    if not llm_profile:
+        return workflow_profile, "workflow"
+    workflow_score = cv_profile_quality(workflow_profile)
+    llm_score = cv_profile_quality(llm_profile)
+    if workflow_score >= llm_score + 3:
+        merged = {**llm_profile, **workflow_profile}
+        merged["confidence"] = max(float(workflow_profile.get("confidence", 0) or 0), float(llm_profile.get("confidence", 0) or 0))
+        merged["extraction_method"] = "hybrid:workflow_preferred"
+        return merged, "hybrid"
+    if llm_score >= workflow_score:
+        merged = {**workflow_profile, **llm_profile}
+        merged["extraction_method"] = llm_profile.get("extraction_method", "llm")
+        return merged, "llm"
+    merged = {**llm_profile, **workflow_profile}
+    merged["extraction_method"] = "hybrid:workflow"
+    return merged, "hybrid"
 
 def is_likely_resume_text(text: str):
     normalized = (text or "").lower()
@@ -360,6 +422,7 @@ async def get_session_detail(session_id: int, db: Session = Depends(get_db)):
         "follow_up_count": session.follow_up_count,
         "completed_question_ids": sorted(get_completed_ids(session)),
         "question_count": session.question_count,
+        "proctoring": get_proctoring_summary(session),
         "created_at": session.created_at.isoformat() if session.created_at else None,
         "messages": [
             {
@@ -391,7 +454,9 @@ async def get_session_report(session_id: int, background_tasks: BackgroundTasks,
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     if session.report_data:
-        return {"status": "success", "report": json.loads(session.report_data)}
+        report = json.loads(session.report_data)
+        report["proctoring"] = get_proctoring_summary(session)
+        return {"status": "success", "report": report}
     if session.status == "ENDED":
         schedule_report_generation(background_tasks, session_id)
     return {
@@ -419,6 +484,29 @@ async def get_sessions(db: Session = Depends(get_db)):
             "interviewer_email": "admin2026@gmail.com"
         })
     return result
+
+@app.post("/api/sessions/{session_id}/proctoring-events")
+async def record_proctoring_event(session_id: int, event: ProctoringEventCreate, db: Session = Depends(get_db)):
+    session = db.query(models.Session).filter(models.Session.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    if session.status == "ENDED":
+        return {"status": "ignored", "proctoring": get_proctoring_summary(session)}
+
+    allowed_events = {"tab_hidden", "window_blur"}
+    event_type = event.event_type if event.event_type in allowed_events else "window_blur"
+    events = get_proctoring_events(session)
+    events.append({
+        "event_type": event_type,
+        "reason": (event.reason or "").strip()[:160],
+        "occurred_at": event.occurred_at,
+        "visible": event.visible,
+        "focus_state": event.focus_state,
+    })
+    session.proctoring_events_json = json.dumps(events[-250:], ensure_ascii=False)
+    db.commit()
+    db.refresh(session)
+    return {"status": "success", "proctoring": get_proctoring_summary(session)}
 
 @app.get("/api/templates")
 async def get_templates():
@@ -455,7 +543,7 @@ async def validate_template(template_id: str):
     }
 
 @app.post("/api/cv/extract")
-async def extract_cv(file: UploadFile = File(...)):
+async def extract_cv(file: UploadFile = File(...), parser_mode: str = Form("workflow")):
     validate_cv_upload(file)
     ext = file.filename.split('.')[-1].lower() if '.' in file.filename else 'pdf'
     
@@ -485,7 +573,23 @@ async def extract_cv(file: UploadFile = File(...)):
                 detail="Hiện chỉ hỗ trợ detect CV tiếng Anh. Vui lòng upload resume tiếng Anh.",
             )
 
-        profile = await cv_extractor.parse_cv(text)
+        normalized_mode = (parser_mode or "workflow").lower()
+        if normalized_mode not in {"workflow", "llm"}:
+            raise HTTPException(status_code=400, detail="parser_mode must be workflow or llm.")
+
+        llm_warning = None
+        workflow_profile = await cv_extractor.parse_cv(text)
+        selected_parser = "workflow"
+        if normalized_mode == "llm":
+            try:
+                llm_profile = await cv_extractor.parse_cv_with_llm(text)
+                profile, selected_parser = choose_best_cv_profile(workflow_profile, llm_profile)
+            except Exception as e:
+                print(f"LLM CV extraction failed, falling back to workflow: {e}")
+                profile = workflow_profile
+                llm_warning = "LLM Gemma khong phan tich duoc CV, he thong da fallback sang workflow nhanh."
+        else:
+            profile = workflow_profile
         
         role_fit = profile.get("role_fit", "Software Engineer")
         inferred_level = profile.get("inferred_level", 1)
@@ -496,14 +600,19 @@ async def extract_cv(file: UploadFile = File(...)):
             target_role=profile.get("recent_role"),
         )
         
-        profile["confidence"] = 0.92
+        if normalized_mode == "workflow":
+            profile["confidence"] = 0.92
         if matches and matches[0]["score"] < MIN_TEMPLATE_MATCH_SCORE:
             profile["template_warning"] = "No strong template match was found. Please choose a template manually."
+        if llm_warning:
+            profile["parser_warning"] = llm_warning
         
         return {
             "status": "success",
             "profile": profile,
-            "matches": matches
+            "matches": matches,
+            "parser_mode": normalized_mode,
+            "selected_parser": selected_parser,
         }
     finally:
         if os.path.exists(tmp_path):
@@ -619,6 +728,32 @@ def is_unclear_transcript(text: str):
         "could not understand",
     ]
     return any(phrase in normalized for phrase in unclear_phrases)
+
+def is_low_information_answer(text: str):
+    normalized = (text or "").strip().lower()
+    if not normalized:
+        return True
+    normalized_plain = re.sub(r"[^a-z0-9A-ZÀ-ỹ\s]+", " ", normalized)
+    words = [word for word in normalized_plain.split() if word.strip()]
+    if len(words) <= 2:
+        return True
+    low_signal_phrases = [
+        "khong biet",
+        "khong tra loi",
+        "khong nghe ro",
+        "bo qua",
+        "chiu",
+        "im lang",
+        "no answer",
+        "skip",
+        "silence",
+        "i do not know",
+        "i don't know",
+    ]
+    return any(phrase in normalized for phrase in low_signal_phrases)
+
+def is_meaningful_answer(text: str):
+    return not is_unclear_transcript(text) and not is_non_answer(text) and not is_low_information_answer(text)
 
 def should_ask_follow_up(segment: dict, max_follow_ups: int = 1):
     answer = (segment.get("initial_answer") or "").strip()
@@ -829,6 +964,40 @@ async def ensure_segment_evaluated(db: Session, session_id: int, segment: dict, 
     ).first()
     if not segment.get("initial_answer"):
         return existing
+    if not is_meaningful_answer(segment.get("initial_answer", "")):
+        eval_result = {
+            "correctness": "Wrong",
+            "score": 0,
+            "explanation": "Ung vien khong cung cap cau tra loi hop le cho cau hoi nay.",
+            "rubric": {
+                "technical_accuracy": 0,
+                "depth": 0,
+                "clarity": 0,
+                "relevance": 0,
+            },
+            "issues": ["Khong co cau tra loi hop le."],
+            "suggestion": "Hay tra loi truc tiep vao cau hoi, neu chua chac hay neu cach hieu va gia dinh cua ban.",
+            "keyword_hints": segment.get("expected_keywords", []),
+            "evidence": [],
+        }
+        if existing:
+            existing.correctness = eval_result["correctness"]
+            existing.score = eval_result["score"]
+            existing.explanation = eval_result["explanation"]
+            existing.rubric_json = json.dumps(eval_result, ensure_ascii=False)
+            db.commit()
+            db.refresh(existing)
+            return existing
+        return crud.create_evaluation(
+            db=db,
+            session_id=session_id,
+            question_id=segment["question_id"],
+            answer_id=0,
+            correctness=eval_result["correctness"],
+            score=eval_result["score"],
+            explanation=eval_result["explanation"],
+            rubric_json=json.dumps(eval_result, ensure_ascii=False),
+        )
 
     has_follow_ups = bool(segment.get("follow_ups"))
     if existing and not has_follow_ups:
@@ -863,18 +1032,19 @@ async def finalize_session_report(db: Session, session_id: int):
     history = crud.get_session_messages(db, session_id)
     template_questions = get_session_questions(session)
     per_question = build_per_question_payload(db, session_id, template_questions)
+    meaningful_user_answers = [msg for msg in history if msg.role == "user" and is_meaningful_answer(msg.content)]
 
-    if not history:
+    if not meaningful_user_answers:
         report = {
             "overall_score": 0,
             "max_score": 10,
             "strengths": ["Chua co du lieu phong van."],
             "weaknesses": ["Ung vien chua cung cap cau tra loi nao."],
-            "final_feedback": "Phien phong van ket thuc qua som.",
+            "final_feedback": "Phien phong van khong co cau tra loi hop le tu ung vien nen diem tong la 0.",
             "score_by_difficulty": {"easy": 0, "medium": 0, "hard": 0},
-            "per_question": [],
+            "per_question": per_question,
             "skill_breakdown": [],
-            "improvement_plan": [],
+            "improvement_plan": ["Hay doi AI hoi xong cau mo dau/cau hoi ky thuat, sau do tra loi ro rang vao dung cau hoi."],
             "hire_recommendation": "reject",
         }
     else:
@@ -886,6 +1056,7 @@ async def finalize_session_report(db: Session, session_id: int):
             per_question=per_question,
         )
 
+    report["proctoring"] = get_proctoring_summary(session)
     session.report_data = json.dumps(report, ensure_ascii=False)
     session.status = "ENDED"
     db.commit()
@@ -1080,6 +1251,17 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                 pass
             elif isinstance(input_data, dict) and input_data.get("type") == "text":
                 user_text = input_data.get("content", "")
+                if not is_meaningful_answer(user_text):
+                    await websocket.send_json({
+                        "sender": "AI",
+                        "text": "Câu trả lời của bạn đang quá ngắn hoặc chưa rõ ý. Bạn vui lòng trả lời đầy đủ hơn trước khi mình chấm câu này nhé.",
+                        "status": session.status,
+                        "has_audio": False,
+                        "retry_answer": True,
+                    })
+                    queue.task_done()
+                    got_queue_item = False
+                    continue
                 await websocket.send_json({
                     "sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You",
                     "text": user_text,
@@ -1093,6 +1275,7 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                         "text": "Mình chưa nghe rõ phần trả lời của bạn. Bạn nói lại chậm hơn một chút hoặc nhập câu trả lời bằng chữ nhé.",
                         "status": session.status,
                         "has_audio": False,
+                        "retry_answer": True,
                     })
                     queue.task_done()
                     got_queue_item = False
@@ -1167,24 +1350,17 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
 
             crud.create_message(db, session_id, "ai", ai_text)
 
-            await websocket.send_json({
-                "text": ai_text,
-                "status": session.status,
-                "sender": "AI",
-                "has_audio": True,
-            })
-
             audio_response = None
             try:
                 audio_response = await tts_service.synthesize(ai_text, language=session.language)
             except Exception as tts_error:
                 print(f"TTS error: {tts_error}")
-                await websocket.send_json({
-                    "sender": "AI",
-                    "text": ai_text,
-                    "status": session.status,
-                    "has_audio": False,
-                })
+            await websocket.send_json({
+                "sender": "AI",
+                "text": ai_text,
+                "status": session.status,
+                "has_audio": audio_response is not None,
+            })
             if audio_response is not None:
                 await websocket.send_bytes(audio_response)
             queue.task_done()

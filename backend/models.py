@@ -28,6 +28,7 @@ class Session(Base):
     completed_question_ids = Column(Text, default="[]")
     state = Column(String, default="GREETING")
     question_plan_json = Column(Text, nullable=True)
+    proctoring_events_json = Column(Text, default="[]")
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     report_data = Column(Text, nullable=True)
 

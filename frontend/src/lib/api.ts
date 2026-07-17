@@ -59,17 +59,42 @@ export const api = {
     return response.json();
   },
 
-  extractCv: async (file: File) => {
+  extractCv: async (file: File, parserMode: 'workflow' | 'llm' = 'workflow') => {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('parser_mode', parserMode);
     const response = await fetch(`${API_URL}/cv/extract`, {
       method: 'POST',
       body: formData,
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || 'Failed to extract CV');
+      const detail = error.detail;
+      throw new Error(
+        typeof detail === 'string'
+          ? detail
+          : detail?.message || 'Failed to extract CV'
+      );
     }
+    return response.json();
+  },
+
+  recordProctoringEvent: async (
+    sessionId: string | number,
+    event: {
+      event_type: 'tab_hidden' | 'window_blur';
+      reason?: string;
+      occurred_at?: string;
+      visible?: boolean;
+      focus_state?: string;
+    }
+  ) => {
+    const response = await fetch(`${API_URL}/sessions/${sessionId}/proctoring-events`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(event),
+    });
+    if (!response.ok) throw new Error('Failed to record proctoring event');
     return response.json();
   },
 

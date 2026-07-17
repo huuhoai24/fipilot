@@ -66,8 +66,10 @@ export interface CandidateProfile {
   education: string
   recent_role: string
   inferred_level: number
-  role_fit: Role
+  role_fit: string
   confidence: number
+  extraction_method?: string
+  parser_warning?: string
 }
 
 export interface TranscriptEntry {
