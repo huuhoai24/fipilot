@@ -1,0 +1,5 @@
+direct_model_name: "Qwen3-0.6B"
+yolo_model_name: "best.pt"
+
+extraction:
+  ioa_threshold: 0.85
