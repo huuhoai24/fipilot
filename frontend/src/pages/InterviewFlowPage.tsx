@@ -325,7 +325,12 @@ export function InterviewFlowPage() {
                     editing={editingProfile}
                     onChange={(v) => setProfile({ ...profile, role_fit: v as any })}
                   />
-                  <ProfileField label="Học vấn" value={profile.education} editing={false} />
+                  <ProfileField
+                    label="Học vấn"
+                    value={profile.education && profile.education !== 'Not Found' ? profile.education : 'Chưa xác định'}
+                    editing={editingProfile}
+                    onChange={(v) => setProfile({ ...profile, education: v })}
+                  />
                 </div>
                 <div>
                   <Label>Kỹ năng</Label>

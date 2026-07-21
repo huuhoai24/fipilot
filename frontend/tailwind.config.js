@@ -10,9 +10,9 @@ export default {
         'surface-raised': 'var(--color-surface-raised)',
         border: 'var(--color-border)',
         accent: {
-          DEFAULT: '#6366F1',
-          soft: 'rgba(99, 102, 241, 0.12)',
-          hover: '#7779F3',
+          DEFAULT: 'var(--color-accent)',
+          soft: 'var(--color-accent-soft)',
+          hover: 'var(--color-accent-hover)',
         },
         success: '#22C55E',
         warning: '#F59E0B',
@@ -29,7 +29,7 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
-        card: '12px',
+        card: '8px',
       },
       keyframes: {
         'pulse-ring': {

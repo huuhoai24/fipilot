@@ -16,6 +16,7 @@ type Message = {
 }
 
 type PendingAiMessage = {
+  message_id?: string | number
   text: string
   status?: string
   has_audio?: boolean
@@ -51,6 +52,7 @@ export function InterviewSessionPage() {
   const shouldReconnectRef = useRef(true)
   const pendingAiRef = useRef<PendingAiMessage | null>(null)
   const revealTimerRef = useRef<number | null>(null)
+  const pendingAudioFallbackTimerRef = useRef<number | null>(null)
   const messageSeqRef = useRef(0)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const mediaStreamRef = useRef<MediaStream | null>(null)
@@ -63,6 +65,7 @@ export function InterviewSessionPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const endedRef = useRef(false)
   const recentMessageKeysRef = useRef<Map<string, number>>(new Map())
+  const renderedMessageIdsRef = useRef<Set<string>>(new Set())
   const pendingAudioMessageKeysRef = useRef<Set<string>>(new Set())
   const lastProctorEventRef = useRef(0)
 
@@ -129,8 +132,19 @@ export function InterviewSessionPage() {
     return true
   }, [])
 
-  const revealAiText = useCallback((text: string, nextStatus?: string, durationMs = 1600) => {
+  const revealAiText = useCallback((text: string, nextStatus?: string, durationMs = 1600, serverMessageId?: string | number) => {
+    const stableMessageId = serverMessageId ? `msg-${serverMessageId}` : ''
+    if (stableMessageId) {
+      if (renderedMessageIdsRef.current.has(stableMessageId)) {
+        if (nextStatus !== 'ENDED') setCanAnswer(true)
+        finishIfEnded(nextStatus)
+        return
+      }
+      renderedMessageIdsRef.current.add(stableMessageId)
+    }
+
     if (!rememberRecentMessage('AI', text)) {
+      if (nextStatus !== 'ENDED') setCanAnswer(true)
       finishIfEnded(nextStatus)
       return
     }
@@ -140,7 +154,7 @@ export function InterviewSessionPage() {
       revealTimerRef.current = null
     }
 
-    const messageId = `ai-${Date.now()}-${messageSeqRef.current++}`
+    const messageId = stableMessageId || `ai-${Date.now()}-${messageSeqRef.current++}`
     setMessages((prev) => [...prev, { id: messageId, sender: 'AI', text: '' }])
 
     const cleanText = text || ''
@@ -185,7 +199,7 @@ export function InterviewSessionPage() {
           })
         }
         const historyMessages = (session.messages || []).map((msg: any) => ({
-          id: String(msg.id || `history-${messageSeqRef.current++}`),
+          id: msg.id ? `msg-${msg.id}` : `history-${messageSeqRef.current++}`,
           sender: msg.role === 'ai' ? 'AI' : (msg.sender || session.candidate_name || 'Bạn'),
           text: msg.text || '',
         }))
@@ -202,6 +216,9 @@ export function InterviewSessionPage() {
             return true
           })
           return prev.length ? [...incoming, ...prev] : incoming
+        })
+        historyMessages.forEach((msg: Message) => {
+          if (msg.id.startsWith('msg-')) renderedMessageIdsRef.current.add(msg.id)
         })
         historyMessages.forEach((msg: Message) => rememberRecentMessage(msg.sender, msg.text, 0))
         startSession({ sessionId, candidateName: session.candidate_name || 'Candidate' })
@@ -282,16 +299,20 @@ export function InterviewSessionPage() {
       setIsSpeaking(true)
       setCanAnswer(false)
       source.start(0)
+      if (pendingAudioFallbackTimerRef.current) {
+        window.clearTimeout(pendingAudioFallbackTimerRef.current)
+        pendingAudioFallbackTimerRef.current = null
+      }
       if (pending?.text && !pending.revealed) {
         pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', pending.text))
-        revealAiText(pending.text, pending.status, durationMs)
+        revealAiText(pending.text, pending.status, durationMs, pending.message_id)
       }
     } catch (error) {
       console.error('Audio playback error:', error)
       setIsSpeaking(false)
       if (pending?.text) {
         pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', pending.text))
-        revealAiText(pending.text, pending.status, 1400)
+        revealAiText(pending.text, pending.status, 1400, pending.message_id)
       }
     }
   }
@@ -324,27 +345,47 @@ export function InterviewSessionPage() {
         if (data.status) setStatus(data.status)
 
         if (data.sender && data.sender !== 'AI') {
+          const stableMessageId = data.message_id ? `msg-${data.message_id}` : ''
+          if (stableMessageId && renderedMessageIdsRef.current.has(stableMessageId)) return
+          if (stableMessageId) renderedMessageIdsRef.current.add(stableMessageId)
           if (!rememberRecentMessage(data.sender, data.text || '')) return
-          setMessages((prev) => [...prev, { id: `user-${Date.now()}-${messageSeqRef.current++}`, sender: data.sender, text: data.text || '' }])
+          setMessages((prev) => [...prev, { id: stableMessageId || `user-${Date.now()}-${messageSeqRef.current++}`, sender: data.sender, text: data.text || '' }])
           scrollToBottom()
           return
         }
 
-        if (data.text) {
-          setCanAnswer(false)
-          if (data.retry_answer) setCanAnswer(true)
-          if (data.has_audio) {
-            pendingAudioMessageKeysRef.current.add(getMessageKey('AI', data.text))
-            pendingAiRef.current = data
-          } else {
-            pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', data.text))
+      if (data.text) {
+        setCanAnswer(false)
+        if (data.retry_answer) setCanAnswer(true)
+        if (data.has_audio) {
+          pendingAudioMessageKeysRef.current.add(getMessageKey('AI', data.text))
+          pendingAiRef.current = data
+          if (pendingAudioFallbackTimerRef.current) window.clearTimeout(pendingAudioFallbackTimerRef.current)
+          pendingAudioFallbackTimerRef.current = window.setTimeout(() => {
+            const pending = pendingAiRef.current
+            if (!pending || pending.text !== data.text) return
             pendingAiRef.current = null
-            revealAiText(data.text, data.status, 1400)
+            pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', pending.text))
+            setIsSpeaking(false)
+            revealAiText(pending.text, pending.status, 1400, pending.message_id)
+          }, 5000)
+        } else {
+          if (pendingAudioFallbackTimerRef.current) {
+            window.clearTimeout(pendingAudioFallbackTimerRef.current)
+            pendingAudioFallbackTimerRef.current = null
+          }
+          pendingAudioMessageKeysRef.current.delete(getMessageKey('AI', data.text))
+          pendingAiRef.current = null
+          revealAiText(data.text, data.status, 1400, data.message_id)
           }
         }
       } else {
         const pending = pendingAiRef.current
         pendingAiRef.current = null
+        if (pendingAudioFallbackTimerRef.current) {
+          window.clearTimeout(pendingAudioFallbackTimerRef.current)
+          pendingAudioFallbackTimerRef.current = null
+        }
         const arrayBuffer = await event.data.arrayBuffer()
         await playDecodedAudio(arrayBuffer, pending)
       }
@@ -372,6 +413,7 @@ export function InterviewSessionPage() {
       shouldReconnectRef.current = false
       if (reconnectTimerRef.current) window.clearTimeout(reconnectTimerRef.current)
       if (revealTimerRef.current) window.clearInterval(revealTimerRef.current)
+      if (pendingAudioFallbackTimerRef.current) window.clearTimeout(pendingAudioFallbackTimerRef.current)
       wsRef.current?.close()
       audioSourceRef.current?.stop()
       audioContextRef.current?.close()
@@ -582,10 +624,10 @@ export function InterviewSessionPage() {
               Nội dung hội thoại sẽ hiển thị ở đây...
             </div>
           ) : (
-            messages.map((msg, idx) => {
+            messages.map((msg) => {
               const isAI = msg.sender === 'AI' || msg.sender === 'Alex'
               return (
-                <div key={idx} className="flex flex-col">
+                <div key={msg.id} className="flex flex-col">
                   <div className="text-xs text-gray-500 mb-1.5 ml-1">{isAI ? 'Alex' : candidateName}</div>
                   <div className={`p-4 rounded-[1.25rem] text-[15px] leading-relaxed max-w-[90%] ${
                     isAI

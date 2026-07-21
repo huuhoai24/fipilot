@@ -10,7 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-accent text-white hover:bg-accent-hover shadow-[0_0_0_1px_rgba(99,102,241,0.4)]',
+  primary: 'bg-accent text-white hover:bg-accent-hover shadow-[0_0_0_1px_var(--color-accent)]',
   secondary: 'bg-surface-raised text-text-primary border border-border hover:border-accent/50',
   ghost: 'bg-transparent text-text-muted hover:text-text-primary hover:bg-surface-raised',
   danger: 'bg-danger/10 text-danger border border-danger/30 hover:bg-danger/20',
@@ -30,7 +30,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap',
+          'inline-flex items-center justify-center rounded-md font-medium transition-colors duration-150 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap',
           variantClasses[variant],
           sizeClasses[size],
           className

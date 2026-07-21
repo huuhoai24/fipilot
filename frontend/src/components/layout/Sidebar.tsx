@@ -45,7 +45,7 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border bg-surface transition-[width] duration-150',
+        'fixed left-0 top-0 z-40 hidden h-screen flex-col border-r border-border bg-surface transition-[width] duration-150 md:flex',
         sidebarCollapsed ? 'w-16' : 'w-60'
       )}
     >
@@ -56,7 +56,7 @@ export function Sidebar() {
         </div>
         {!sidebarCollapsed && (
           <span className="font-display text-sm font-bold tracking-tight-display text-text-primary">
-            Interview<span className="text-accent">AI</span>
+            Interview<span className="text-accent">OS</span>
           </span>
         )}
       </div>

@@ -30,6 +30,19 @@ const difficultyLabel: Record<string, string> = {
   hard: 'Khó',
 }
 
+const correctnessLabel: Record<string, string> = {
+  Correct: 'Đúng',
+  Partial: 'Một phần',
+  Wrong: 'Sai',
+}
+
+const rubricLabel: Record<string, string> = {
+  technical_accuracy: 'Độ chính xác kỹ thuật',
+  depth: 'Độ sâu',
+  clarity: 'Độ rõ ràng',
+  relevance: 'Độ liên quan',
+}
+
 function getRecommendation(score: number, fallback?: string) {
   if (fallback) return fallback
   if (score >= 8) return 'strong_hire'
@@ -287,7 +300,7 @@ export function EvaluationReportPage() {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <div className="text-xs text-text-muted">
-                          Câu {item.question_id || index + 1} · {difficultyLabel[item.difficulty] || item.difficulty || 'Chuẩn'} · {item.correctness || 'N/A'}
+                          Câu {item.question_id || index + 1} · {difficultyLabel[item.difficulty] || item.difficulty || 'Chuẩn'} · {correctnessLabel[item.correctness] || item.correctness || 'N/A'}
                         </div>
                         <p className="mt-1 text-sm font-medium text-text-primary">{item.question_text}</p>
                       </div>
@@ -302,7 +315,7 @@ export function EvaluationReportPage() {
                       <div className="mt-3 grid grid-cols-2 gap-2 text-xs md:grid-cols-4">
                         {Object.entries(item.rubric).map(([key, value]) => (
                           <div key={key} className="rounded-md border border-border bg-surface px-2 py-1.5">
-                            <div className="text-text-muted">{key.replace(/_/g, ' ')}</div>
+                            <div className="text-text-muted">{rubricLabel[key] || key.replace(/_/g, ' ')}</div>
                             <div className="font-mono text-text-primary">{String(value)}/10</div>
                           </div>
                         ))}

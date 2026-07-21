@@ -19,7 +19,7 @@ export function AuthPage() {
             <Mic className="h-6 w-6 text-white" />
           </div>
           <span className="font-display text-lg font-bold tracking-tight-display text-text-primary">
-            Interview<span className="text-accent">AI</span>
+            Interview<span className="text-accent">OS</span>
           </span>
         </div>
 
