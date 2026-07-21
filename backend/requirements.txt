@@ -18,3 +18,9 @@ torch
 pypdf
 python-docx
 static-ffmpeg
+faster-whisper
+google-genai
+langgraph
+langchain-core
+google-cloud-aiplatform
+pydantic-settings

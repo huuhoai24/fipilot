@@ -10,12 +10,16 @@ from tts_service import tts_service
 from ai_services import ai_services
 from cv_parser import cv_extractor
 from template_service import template_service
+from rag_service import rag_service
+from transcript_corrector import transcript_corrector
 import json
 import os
 import re
 import tempfile
 import shutil
 import zipfile
+import unicodedata
+import asyncio
 
 import pypdf
 
@@ -72,6 +76,24 @@ Base.metadata.create_all(bind=engine)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Application startup")
+    if os.environ.get("LOCAL_STT_PRELOAD", "true").lower() in {"1", "true", "yes"} and getattr(ai_services, "stt_provider", "") == "local":
+        async def preload_local_stt():
+            try:
+                await asyncio.to_thread(ai_services._get_local_whisper_model)
+                print("Local STT model preloaded and kept in memory.")
+            except Exception as preload_error:
+                print(f"Local STT preload failed: {preload_error}")
+
+        asyncio.create_task(preload_local_stt())
+    if os.environ.get("LOCAL_TTS_PRELOAD", "true").lower() in {"1", "true", "yes"} and getattr(tts_service, "provider", "") == "local":
+        async def preload_local_tts():
+            try:
+                await tts_service.preload()
+                print("Local VieNeu-TTS preloaded and kept in memory.")
+            except Exception as preload_error:
+                print(f"Local VieNeu-TTS preload failed: {preload_error}")
+
+        asyncio.create_task(preload_local_tts())
     yield
     print("Application shutdown")
 
@@ -160,6 +182,34 @@ def get_session_questions(session):
         except Exception as e:
             print(f"Invalid question_plan_json for session {getattr(session, 'id', None)}: {e}")
     return template_service.get_template_questions(session.template_id) if session and session.template_id else []
+
+def build_interview_speech_context(db: Session, session):
+    try:
+        template_questions = get_session_questions(session)
+        history = crud.get_session_messages(db, session.id, limit=80)
+        return rag_service.build_session_context(session, template_questions=template_questions, history=history)
+    except Exception as error:
+        print(f"Could not build interview speech context: {error}")
+        return {"glossary": [], "retrieved_context": ""}
+
+async def transcribe_interview_audio(audio_bytes: bytes, session, db: Session):
+    speech_context = build_interview_speech_context(db, session)
+    raw_text = await ai_services.stt(
+        audio_bytes,
+        session.language,
+        glossary=speech_context.get("glossary", []),
+    )
+    corrected_text = await transcript_corrector.correct(
+        raw_text,
+        role=session.role,
+        level=session.level,
+        glossary=speech_context.get("glossary", []),
+        retrieved_context=speech_context.get("retrieved_context", ""),
+        llm_chat=ai_services._core_llm_chat,
+    )
+    if corrected_text != raw_text:
+        print(f"Transcript corrected: {raw_text} -> {corrected_text}")
+    return corrected_text, raw_text
 
 async def prepare_adaptive_question_plan_background(
     session_id: int,
@@ -375,6 +425,11 @@ async def create_new_session(
         "skills": session_data.skills or [],
         "education": session_data.education,
     }
+    question_plan = ai_services.generate_contextual_question_plan(
+        profile=profile_context,
+        template_questions=template_questions,
+        role=session_data.role,
+    ) or template_questions
 
     new_session = models.Session(
         candidate_name=session_data.name,
@@ -387,7 +442,7 @@ async def create_new_session(
         follow_up_count=0,
         completed_question_ids="[]",
         state="GREETING",
-        question_plan_json=json.dumps(template_questions, ensure_ascii=False),
+        question_plan_json=json.dumps(question_plan, ensure_ascii=False),
     )
     db.add(new_session)
     db.commit()
@@ -623,6 +678,69 @@ def clean_words(text: str):
     words = re.findall(r'\b\w+\b', text.lower())
     return set(words)
 
+KEYWORD_HINT_ALIASES = {
+    "hoc co giam sat": "Học có giám sát",
+    "hoc khong giam sat": "Học không giám sát",
+    "hoc ban giam sat": "Học bán giám sát",
+    "hoc tang cuong": "Học tăng cường",
+    "du lieu gan nhan": "Dữ liệu gán nhãn",
+    "du lieu khong gan nhan": "Dữ liệu không gán nhãn",
+    "nhan du lieu": "Nhãn dữ liệu",
+    "phan loai": "Phân loại",
+    "hoi quy": "Hồi quy",
+    "phan cum": "Phân cụm",
+    "giam chieu du lieu": "Giảm chiều dữ liệu",
+    "mo hinh": "Mô hình",
+    "huan luyen": "Huấn luyện",
+    "tap huan luyen": "Tập huấn luyện",
+    "tap kiem tra": "Tập kiểm tra",
+    "tap xac thuc": "Tập xác thực",
+    "danh gia mo hinh": "Đánh giá mô hình",
+    "do chinh xac": "Độ chính xác",
+    "do phu hop": "Độ phù hợp",
+    "qua khop": "Quá khớp",
+    "thieu khop": "Thiếu khớp",
+    "ham mat mat": "Hàm mất mát",
+    "toi uu hoa": "Tối ưu hóa",
+    "gradient descent": "Gradient descent",
+    "cay quyet dinh": "Cây quyết định",
+    "rung ngau nhien": "Rừng ngẫu nhiên",
+    "mang no ron": "Mạng nơ-ron",
+    "mang neural": "Mạng nơ-ron",
+    "logic mo": "Logic mờ",
+    "he chuyen gia": "Hệ chuyên gia",
+    "tra cuu co so du lieu": "Tra cứu cơ sở dữ liệu",
+    "co so du lieu": "Cơ sở dữ liệu",
+    "tien xu ly du lieu": "Tiền xử lý dữ liệu",
+    "trich chon dac trung": "Trích chọn đặc trưng",
+    "dac trung": "Đặc trưng",
+}
+
+def normalize_keyword_key(text: str):
+    normalized = unicodedata.normalize("NFD", (text or "").strip().lower())
+    normalized = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
+    normalized = normalized.replace("đ", "d")
+    normalized = re.sub(r"[^a-z0-9+#.\-\s]+", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+def canonicalize_keyword_hint(keyword: str):
+    normalized = normalize_keyword_key(keyword)
+    return KEYWORD_HINT_ALIASES.get(normalized, (keyword or "").strip())
+
+def normalize_keyword_hints(keywords, limit: int = 8):
+    seen = set()
+    normalized_keywords = []
+    for keyword in keywords or []:
+        canonical = canonicalize_keyword_hint(str(keyword))
+        key = normalize_keyword_key(canonical)
+        if not canonical or not key or key in seen:
+            continue
+        seen.add(key)
+        normalized_keywords.append(canonical)
+        if len(normalized_keywords) >= limit:
+            break
+    return normalized_keywords
+
 def extract_keyword_hints(text: str, limit: int = 8):
     import re
     stop_words = {
@@ -630,14 +748,23 @@ def extract_keyword_hints(text: str, limit: int = 8):
         "you", "your", "can", "will", "have", "has", "had", "cua", "va", "la",
         "mot", "cac", "cho", "khi", "trong", "bang", "duoc", "khong", "nhung",
     }
-    words = re.findall(r"[A-Za-z][A-Za-z0-9+#.\-]{2,}", text or "")
+    normalized_text = normalize_keyword_key(text)
     seen = []
+    for alias, canonical in KEYWORD_HINT_ALIASES.items():
+        if alias in normalized_text and canonical not in seen:
+            seen.append(canonical)
+            if len(seen) >= limit:
+                return seen
+
+    words = re.findall(r"[A-Za-zÀ-ỹ][A-Za-zÀ-ỹ0-9+#.\-]{2,}", text or "")
     for word in words:
         normalized = word.strip(".,:;()[]{}").lower()
-        if normalized in stop_words or len(normalized) < 3:
+        normalized_key = normalize_keyword_key(normalized)
+        if normalized_key in stop_words or len(normalized_key) < 3:
             continue
-        if normalized not in seen:
-            seen.append(normalized)
+        keyword = canonicalize_keyword_hint(normalized)
+        if normalize_keyword_key(keyword) not in {normalize_keyword_key(item) for item in seen}:
+            seen.append(keyword)
     return seen[:limit]
 
 def match_question(ai_text: str, template_questions: list):
@@ -668,9 +795,18 @@ def get_segments(history, template_questions):
                     segments.append(current_segment)
                 current_segment = {
                     "question_id": matched_q["id"],
+                    "topic": matched_q.get("topic", ""),
+                    "difficulty": matched_q.get("difficulty", ""),
                     "template_question": matched_q["question"],
-                    "sample_answer": matched_q["answer"],
-                    "expected_keywords": extract_keyword_hints(matched_q.get("answer", "")),
+                    "sample_answer": matched_q.get("expected_answer") or matched_q.get("answer", ""),
+                    "expected_answer": matched_q.get("expected_answer") or matched_q.get("answer", ""),
+                    "score_rule": matched_q.get("score_rule", {}),
+                    "source_context": matched_q.get("source_context", {}),
+                    "expected_keywords": (
+                        matched_q.get("score_rule", {}).get("expected_keywords")
+                        if isinstance(matched_q.get("score_rule"), dict)
+                        else None
+                    ) or extract_keyword_hints(matched_q.get("expected_answer") or matched_q.get("answer", "")),
                     "initial_answer": "",
                     "follow_ups": []
                 }
@@ -690,6 +826,33 @@ def get_segments(history, template_questions):
     if current_segment:
         segments.append(current_segment)
     return segments
+
+def build_current_segment_from_latest_answer(history, current_question: dict):
+    if not history or not current_question:
+        return None
+    last_user = next((msg for msg in reversed(history) if msg.role == "user" and (msg.content or "").strip()), None)
+    if not last_user:
+        return None
+    last_ai = next((msg for msg in reversed(history) if msg.role == "ai" and (msg.content or "").strip()), None)
+    if last_ai and getattr(last_ai, "id", 0) > getattr(last_user, "id", 0):
+        return None
+    return {
+        "question_id": current_question["id"],
+        "topic": current_question.get("topic", ""),
+        "difficulty": current_question.get("difficulty", ""),
+        "template_question": current_question.get("question", ""),
+        "sample_answer": current_question.get("expected_answer") or current_question.get("answer", ""),
+        "expected_answer": current_question.get("expected_answer") or current_question.get("answer", ""),
+        "score_rule": current_question.get("score_rule", {}),
+        "source_context": current_question.get("source_context", {}),
+        "expected_keywords": (
+            current_question.get("score_rule", {}).get("expected_keywords")
+            if isinstance(current_question.get("score_rule"), dict)
+            else None
+        ) or extract_keyword_hints(current_question.get("expected_answer") or current_question.get("answer", "")),
+        "initial_answer": last_user.content,
+        "follow_ups": [],
+    }
 
 def normalize_difficulty(value: str):
     text = (value or "").lower()
@@ -752,8 +915,171 @@ def is_low_information_answer(text: str):
     ]
     return any(phrase in normalized for phrase in low_signal_phrases)
 
+def normalize_answer_signal(text: str):
+    normalized = (text or "").strip().lower()
+    normalized = unicodedata.normalize("NFD", normalized)
+    normalized = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
+    normalized = normalized.replace("đ", "d")
+    normalized = re.sub(r"[^a-z0-9\s]+", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+def is_non_answer(text: str):
+    normalized = normalize_answer_signal(text)
+    skip_phrases = [
+        "khong biet",
+        "khong tra loi",
+        "bo qua",
+        "chiu",
+        "di tiep",
+        "sang cau",
+        "sang cau khac",
+        "bat dau",
+        "bat dau di",
+        "tiep tuc",
+        "skip",
+        "next question",
+    ]
+    return any(phrase in normalized for phrase in skip_phrases)
+
+def is_unclear_transcript(text: str):
+    normalized = normalize_answer_signal(text)
+    if not normalized:
+        return True
+    unclear_phrases = [
+        "xin loi toi khong nghe ro",
+        "khong nghe ro",
+        "minh chua nghe ro",
+        "toi chua nghe ro",
+        "khong ro",
+        "khong noi gi",
+        "chua noi gi",
+        "im lang",
+        "no speech",
+        "no answer",
+        "silence",
+        "i could not hear",
+        "could not understand",
+    ]
+    return any(phrase in normalized for phrase in unclear_phrases)
+
+def is_low_information_answer(text: str):
+    normalized = normalize_answer_signal(text)
+    if not normalized:
+        return True
+    words = [word for word in normalized.split() if word.strip()]
+    filler_words = {"a", "ah", "uh", "um", "uhm", "ok", "okay", "vang", "da", "co", "khong", "roi"}
+    meaningful_words = [word for word in words if word not in filler_words]
+    if len(meaningful_words) <= 2:
+        return True
+    low_signal_phrases = [
+        "khong biet",
+        "khong tra loi",
+        "khong nghe ro",
+        "khong noi gi",
+        "chua noi gi",
+        "bo qua",
+        "chiu",
+        "im lang",
+        "bat dau",
+        "bat dau di",
+        "no answer",
+        "skip",
+        "silence",
+        "i do not know",
+        "i dont know",
+    ]
+    return any(phrase in normalized for phrase in low_signal_phrases)
+
 def is_meaningful_answer(text: str):
     return not is_unclear_transcript(text) and not is_non_answer(text) and not is_low_information_answer(text)
+
+def should_retry_answer(text: str):
+    if is_unclear_transcript(text):
+        return True
+    if is_non_answer(text):
+        return False
+    return is_low_information_answer(text)
+
+def classify_chitchat_reply(text: str):
+    normalized = normalize_answer_signal(text)
+    if not normalized:
+        return "unclear"
+
+    refusal_phrases = [
+        "toi khong quan tam",
+        "khong quan tam",
+        "khong muon",
+        "toi khong muon",
+        "khong phong van",
+        "khong can",
+        "huy",
+        "thoat",
+        "dung lai",
+        "stop",
+        "cancel",
+    ]
+    if any(phrase in normalized for phrase in refusal_phrases):
+        return "refusal"
+
+    not_ready_phrases = [
+        "chua san sang",
+        "doi chut",
+        "cho chut",
+        "de sau",
+        "lat nua",
+        "tam dung",
+    ]
+    if any(phrase in normalized for phrase in not_ready_phrases):
+        return "not_ready"
+
+    start_phrases = [
+        "bat dau",
+        "san sang",
+        "ready",
+        "ok",
+        "duoc",
+        "tiep tuc",
+        "vao phong van",
+    ]
+    if any(phrase in normalized for phrase in start_phrases):
+        return "start"
+
+    words = normalized.split()
+    intro_signals = [
+        "toi la",
+        "minh la",
+        "em la",
+        "kinh nghiem",
+        "du an",
+        "project",
+        "developer",
+        "engineer",
+        "python",
+        "javascript",
+        "ai",
+        "machine learning",
+    ]
+    if len(words) >= 6 or any(signal in normalized for signal in intro_signals):
+        return "start"
+    return "unclear"
+
+def render_chitchat_intent_response(intent: str, name: str, role: str):
+    candidate_name = (name or "bạn").strip()
+    role_text = (role or "vị trí này").strip()
+    if intent == "refusal":
+        return (
+            f"Mình hiểu, {candidate_name}. Nếu bạn chưa quan tâm đến buổi luyện phỏng vấn cho vị trí {role_text} "
+            "thì mình sẽ chưa bắt đầu phần kỹ thuật. Khi nào bạn muốn luyện tiếp, hãy nhắn rằng bạn đã sẵn sàng."
+        )
+    if intent == "not_ready":
+        return (
+            f"Không sao, {candidate_name}. Mình sẽ chờ. Khi bạn sẵn sàng, hãy nhắn hoặc nói ngắn gọn "
+            "\"bắt đầu\" để mình vào phần phỏng vấn."
+        )
+    return (
+        "Mình chưa rõ bạn muốn bắt đầu phỏng vấn hay muốn trao đổi thêm. "
+        "Bạn có thể giới thiệu ngắn về bản thân, hoặc nói \"bắt đầu\" khi đã sẵn sàng."
+    )
 
 def should_ask_follow_up(segment: dict, max_follow_ups: int = 1):
     answer = (segment.get("initial_answer") or "").strip()
@@ -790,6 +1116,8 @@ def render_template_question(question: dict, name: str, total_questions: int):
     difficulty = normalize_difficulty(question.get("difficulty", ""))
     candidate_name = (name or "").strip()
     name_phrase = f" {candidate_name}" if candidate_name else ""
+    if question_id <= 1 and question.get("source") in {"adaptive", "contextual_fallback"}:
+        return f"Cảm ơn{name_phrase}. Mình bắt đầu bằng một câu theo kinh nghiệm và kỹ năng của bạn nhé: {question_text}"
 
     if question_id <= 1:
         return f"Cảm ơn{name_phrase}. Mình bắt đầu bằng một câu nền tảng nhé: {question_text}"
@@ -817,6 +1145,14 @@ def render_next_question_with_feedback(eval_payload: dict, question: dict, total
             f"{next_question}"
         )
     return next_question
+
+def render_non_answer_transition(question: dict, total_questions: int):
+    next_question = render_template_question(question, "", total_questions)
+    return (
+        "Mình ghi nhận là bạn chưa biết phần này, nên mình sẽ chuyển sang câu tiếp theo. "
+        "Sau buổi phỏng vấn mình sẽ gợi ý keyword để bạn ôn lại nhé.\n\n"
+        f"{next_question}"
+    )
 
 def render_interview_greeting(session):
     candidate_name = session.candidate_name or "bạn"
@@ -861,14 +1197,51 @@ async def next_interview_turn(db: Session, session, history, template_questions)
     current_question = template_questions[session.current_question_id - 1]
 
     if not current_segment or not current_segment.get("initial_answer"):
+        current_segment = build_current_segment_from_latest_answer(history, current_question)
+        if not current_segment or not current_segment.get("initial_answer"):
+            return {
+                "text": render_template_question(current_question, session.candidate_name, total_questions),
+                "status": "INTERVIEWING",
+                "completed_segment": None,
+                "ended": False,
+            }
+
+    completed_segment = current_segment
+
+    if is_non_answer(completed_segment.get("initial_answer", "")):
+        await ensure_segment_evaluated(db, session.id, completed_segment, session.level, session.role)
+        completed_ids.add(int(session.current_question_id))
+        set_completed_ids(session, completed_ids)
+        session.follow_up_count = 0
+
+        if has_three_consecutive_wrong(db, session.id):
+            session.state = "EARLY_STOPPED"
+            return {
+                "text": "Buổi phỏng vấn tạm dừng tại đây vì bạn đang gặp khó khăn với nhiều câu liên tiếp. AI sẽ tổng hợp báo cáo và gợi ý keyword để bạn ôn tập.",
+                "status": "ENDED",
+                "completed_segment": completed_segment,
+                "ended": True,
+            }
+
+        if int(session.current_question_id) >= total_questions:
+            session.state = "COMPLETED"
+            return {
+                "text": "Cảm ơn bạn. Buổi phỏng vấn đã hoàn tất, AI đang tổng hợp báo cáo đánh giá cho bạn.",
+                "status": "ENDED",
+                "completed_segment": completed_segment,
+                "ended": True,
+            }
+
+        next_question = template_questions[int(session.current_question_id)]
+        session.current_question_id = next_question["id"]
+        session.state = "ASKING"
         return {
-            "text": render_template_question(current_question, session.candidate_name, total_questions),
+            "text": render_non_answer_transition(next_question, total_questions),
             "status": "INTERVIEWING",
-            "completed_segment": None,
+            "completed_segment": completed_segment,
             "ended": False,
         }
 
-    completed_segment = current_segment
     eval_record = await ensure_segment_evaluated(db, session.id, completed_segment, session.level, session.role)
     eval_payload = {}
     if eval_record and eval_record.rubric_json:
@@ -940,17 +1313,22 @@ def build_per_question_payload(db: Session, session_id: int, template_questions:
             except Exception:
                 rubric = {}
 
+        keyword_hints = rubric.get("keyword_hints") or extract_keyword_hints(template_question.get("answer", ""))
+
         payload.append({
             "question_id": str(question_id),
             "question_text": template_question.get("question", ""),
+            "topic": template_question.get("topic", ""),
             "difficulty": normalize_difficulty(template_question.get("difficulty", "")),
             "score": evaluation.score,
             "correctness": evaluation.correctness,
             "explanation": evaluation.explanation,
+            "expected_answer": template_question.get("expected_answer") or template_question.get("answer", ""),
+            "score_rule": template_question.get("score_rule", {}),
             "rubric": rubric.get("rubric", {}),
             "issues": rubric.get("issues", []),
             "suggestion": rubric.get("suggestion", ""),
-            "keyword_hints": rubric.get("keyword_hints") or extract_keyword_hints(template_question.get("answer", "")),
+            "keyword_hints": normalize_keyword_hints(keyword_hints),
             "evidence": rubric.get("evidence", []),
         })
 
@@ -968,15 +1346,15 @@ async def ensure_segment_evaluated(db: Session, session_id: int, segment: dict, 
         eval_result = {
             "correctness": "Wrong",
             "score": 0,
-            "explanation": "Ung vien khong cung cap cau tra loi hop le cho cau hoi nay.",
+            "explanation": "Ứng viên không cung cấp câu trả lời hợp lệ cho câu hỏi này.",
             "rubric": {
                 "technical_accuracy": 0,
                 "depth": 0,
                 "clarity": 0,
                 "relevance": 0,
             },
-            "issues": ["Khong co cau tra loi hop le."],
-            "suggestion": "Hay tra loi truc tiep vao cau hoi, neu chua chac hay neu cach hieu va gia dinh cua ban.",
+            "issues": ["Không có câu trả lời hợp lệ."],
+            "suggestion": "Hãy trả lời trực tiếp vào câu hỏi; nếu chưa chắc, hãy nêu cách hiểu và giả định của bạn.",
             "keyword_hints": segment.get("expected_keywords", []),
             "evidence": [],
         }
@@ -1038,9 +1416,9 @@ async def finalize_session_report(db: Session, session_id: int):
         report = {
             "overall_score": 0,
             "max_score": 10,
-            "strengths": ["Chua co du lieu phong van."],
-            "weaknesses": ["Ung vien chua cung cap cau tra loi nao."],
-            "final_feedback": "Phien phong van khong co cau tra loi hop le tu ung vien nen diem tong la 0.",
+            "strengths": ["Chưa có dữ liệu phỏng vấn."],
+            "weaknesses": ["Ứng viên chưa cung cấp câu trả lời nào."],
+            "final_feedback": "Phiên phỏng vấn không có câu trả lời hợp lệ từ ứng viên nên điểm tổng là 0.",
             "score_by_difficulty": {"easy": 0, "medium": 0, "hard": 0},
             "per_question": per_question,
             "skill_breakdown": [],
@@ -1102,6 +1480,13 @@ async def generate_report_background_task(session_id: int):
 active_connections = {}
 session_start_locks = {}
 
+async def synthesize_ai_audio(text: str, language: str):
+    try:
+        return await tts_service.synthesize(text, language=language)
+    except Exception as tts_error:
+        print(f"TTS error: {tts_error}")
+        raise
+
 async def evaluate_segment_background_task(session_id: int, segment: dict, level: str, role: str):
     db = SessionLocal()
     try:
@@ -1124,8 +1509,6 @@ async def evaluate_segment_background_task(session_id: int, segment: dict, level
     finally:
         db.close()
 
-import asyncio
-
 async def ai_processing_task(websocket: WebSocket, queue: asyncio.Queue, session_id: int, background_tasks: BackgroundTasks, db: Session, session: models.Session):
     while True:
         try:
@@ -1146,7 +1529,7 @@ async def ai_processing_task(websocket: WebSocket, queue: asyncio.Queue, session
                 crud.create_message(db, session_id, "user", user_text)
             else:
                 # STT
-                user_text = await ai_services.stt(input_data, session.language)
+                user_text, raw_text = await transcribe_interview_audio(input_data, session, db)
                 
                 # Gửi text về frontend
                 await websocket.send_json({"sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You", "text": user_text})
@@ -1222,7 +1605,7 @@ async def ai_processing_task(websocket: WebSocket, queue: asyncio.Queue, session
                     print(f"Error in segment evaluation task: {e}")
             
             # Synthesize Audio (TTS)
-            audio_response = await tts_service.synthesize(ai_text, language=session.language)
+            audio_response = await synthesize_ai_audio(ai_text, session.language)
             
             # Gửi kết quả về frontend
             await websocket.send_json({"text": ai_text, "status": session.status})
@@ -1251,7 +1634,13 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                 pass
             elif isinstance(input_data, dict) and input_data.get("type") == "text":
                 user_text = input_data.get("content", "")
-                if not is_meaningful_answer(user_text):
+                if not (session.status == "CHITCHAT" and classify_chitchat_reply(user_text) == "start") and should_retry_answer(user_text):
+                    user_message = crud.create_message(db, session_id, "user", user_text)
+                    await websocket.send_json({
+                        "message_id": user_message.id,
+                        "sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You",
+                        "text": user_text,
+                    })
                     await websocket.send_json({
                         "sender": "AI",
                         "text": "Câu trả lời của bạn đang quá ngắn hoặc chưa rõ ý. Bạn vui lòng trả lời đầy đủ hơn trước khi mình chấm câu này nhé.",
@@ -1262,13 +1651,15 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                     queue.task_done()
                     got_queue_item = False
                     continue
-                await websocket.send_json({
+                user_message = crud.create_message(db, session_id, "user", user_text)
+                user_payload = {
+                    "message_id": user_message.id,
                     "sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You",
                     "text": user_text,
-                })
-                crud.create_message(db, session_id, "user", user_text)
+                }
+                await websocket.send_json(user_payload)
             else:
-                user_text = await ai_services.stt(input_data, session.language)
+                user_text, raw_text = await transcribe_interview_audio(input_data, session, db)
                 if is_unclear_transcript(user_text):
                     await websocket.send_json({
                         "sender": "AI",
@@ -1281,18 +1672,40 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                     got_queue_item = False
                     continue
 
-                await websocket.send_json({
+                if not (session.status == "CHITCHAT" and classify_chitchat_reply(user_text) == "start") and should_retry_answer(user_text):
+                    user_message = crud.create_message(db, session_id, "user", user_text)
+                    await websocket.send_json({
+                        "message_id": user_message.id,
+                        "sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You",
+                        "text": user_text,
+                    })
+                    await websocket.send_json({
+                        "sender": "AI",
+                        "text": "Câu trả lời của bạn đang quá ngắn hoặc chưa có đủ thông tin để chấm. Bạn vui lòng trả lời cụ thể hơn nhé.",
+                        "status": session.status,
+                        "has_audio": False,
+                        "retry_answer": True,
+                    })
+                    queue.task_done()
+                    got_queue_item = False
+                    continue
+
+                user_message = crud.create_message(db, session_id, "user", user_text)
+                user_payload = {
+                    "message_id": user_message.id,
                     "sender": session.candidate_name.split(" ")[0] if session.candidate_name else "You",
                     "text": user_text,
-                })
-                crud.create_message(db, session_id, "user", user_text)
+                }
+                if raw_text != user_text:
+                    user_payload["raw_transcript"] = raw_text
+                await websocket.send_json(user_payload)
 
             if input_data == b"START_INTERVIEW":
                 start_lock = session_start_locks.setdefault(session_id, asyncio.Lock())
                 async with start_lock:
                     db.refresh(session)
                     history = crud.get_session_messages(db, session_id)
-                    if history or (session.state or "GREETING") != "GREETING":
+                    if history or (session.state or "GREETING") not in {"GREETING", "GREETING_SENT"}:
                         queue.task_done()
                         got_queue_item = False
                         continue
@@ -1305,6 +1718,26 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
 
             if input_data != b"START_INTERVIEW" and session.template_id:
                 if session.status == "CHITCHAT":
+                    intent = classify_chitchat_reply(user_text)
+                    if intent != "start":
+                        ai_text = render_chitchat_intent_response(intent, session.candidate_name, session.role)
+                        session.state = "GREETING_SENT"
+                        db.commit()
+                        db.refresh(session)
+                        ai_message = crud.create_message(db, session_id, "ai", ai_text)
+                        audio_response = await synthesize_ai_audio(ai_text, session.language)
+                        await websocket.send_json({
+                            "message_id": ai_message.id,
+                            "sender": "AI",
+                            "text": ai_text,
+                            "status": session.status,
+                            "has_audio": audio_response is not None,
+                        })
+                        if audio_response is not None:
+                            await websocket.send_bytes(audio_response)
+                        queue.task_done()
+                        got_queue_item = False
+                        continue
                     session.status = "INTERVIEWING"
                     db.commit()
                     db.refresh(session)
@@ -1325,8 +1758,9 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                 session.question_count = db.query(models.Evaluation).filter(models.Evaluation.session_id == session_id).count()
 
                 if turn.get("ended"):
-                    await finalize_session_report(db, session_id)
+                    db.commit()
                     db.refresh(session)
+                    schedule_report_generation(background_tasks, session_id)
                 else:
                     db.commit()
                     db.refresh(session)
@@ -1334,6 +1768,26 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                 if session.status == "CHITCHAT":
                     user_msgs = [msg for msg in history if msg.role == "user"]
                     if user_msgs:
+                        intent = classify_chitchat_reply(user_text)
+                        if intent != "start":
+                            ai_text = render_chitchat_intent_response(intent, session.candidate_name, session.role)
+                            session.state = "GREETING_SENT"
+                            db.commit()
+                            db.refresh(session)
+                            ai_message = crud.create_message(db, session_id, "ai", ai_text)
+                            audio_response = await synthesize_ai_audio(ai_text, session.language)
+                            await websocket.send_json({
+                                "message_id": ai_message.id,
+                                "sender": "AI",
+                                "text": ai_text,
+                                "status": session.status,
+                                "has_audio": audio_response is not None,
+                            })
+                            if audio_response is not None:
+                                await websocket.send_bytes(audio_response)
+                            queue.task_done()
+                            got_queue_item = False
+                            continue
                         session.status = "INTERVIEWING"
                         db.commit()
                         db.refresh(session)
@@ -1348,14 +1802,11 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
                     template_id=session.template_id,
                 )
 
-            crud.create_message(db, session_id, "ai", ai_text)
+            ai_message = crud.create_message(db, session_id, "ai", ai_text)
 
-            audio_response = None
-            try:
-                audio_response = await tts_service.synthesize(ai_text, language=session.language)
-            except Exception as tts_error:
-                print(f"TTS error: {tts_error}")
+            audio_response = await synthesize_ai_audio(ai_text, session.language)
             await websocket.send_json({
+                "message_id": ai_message.id,
                 "sender": "AI",
                 "text": ai_text,
                 "status": session.status,
@@ -1372,6 +1823,16 @@ async def ai_processing_task_v2(websocket: WebSocket, queue: asyncio.Queue, sess
             break
         except Exception as e:
             print(f"Error in ai_processing_task_v2: {e}")
+            try:
+                await websocket.send_json({
+                    "sender": "AI",
+                    "text": "Mình gặp lỗi khi xử lý câu trả lời vừa rồi. Bạn thử trả lời lại hoặc bấm nói lại giúp mình nhé.",
+                    "status": session.status,
+                    "has_audio": False,
+                    "retry_answer": True,
+                })
+            except Exception:
+                pass
             if got_queue_item:
                 queue.task_done()
 

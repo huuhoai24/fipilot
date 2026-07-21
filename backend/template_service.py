@@ -12,32 +12,30 @@ class TemplateService:
             print(f"Template directory not found: {self.templates_dir}")
             return templates
 
-        for filename in os.listdir(self.templates_dir):
-            if not filename.endswith(".md"):
-                continue
+        for file_path in self._iter_folder_template_files():
+            template_id = self._template_id_from_path(file_path)
 
-            file_path = os.path.join(self.templates_dir, filename)
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
 
                 title_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
-                title = title_match.group(1).strip() if title_match else filename.replace(".md", "")
-                questions = self.get_template_questions(filename)
+                title = title_match.group(1).strip() if title_match else template_id.replace(".md", "")
+                questions = self.get_template_questions(template_id)
 
                 templates.append(
                     {
-                        "template_id": filename,
+                        "template_id": template_id,
                         "title": title,
                         "question_count": len(questions) or 10,
-                        "role_target": self._role_from_filename(filename),
-                        "level": self._level_from_filename(filename),
+                        "role_target": self._role_from_template_id(template_id),
+                        "level": self._level_from_template_id(template_id),
                         "difficulty_mix": self._difficulty_mix(questions),
-                        "tags": self._extract_tags(content, filename),
+                        "tags": self._extract_tags(content, template_id),
                     }
                 )
             except Exception as e:
-                print(f"Error reading template {filename}: {e}")
+                print(f"Error reading template {template_id}: {e}")
 
         return templates
 
@@ -68,7 +66,17 @@ class TemplateService:
             )
 
         matched.sort(key=lambda item: item["score"], reverse=True)
-        return matched[:5]
+        deduped = []
+        seen_groups = set()
+        for item in matched:
+            group_key = (self._normalize_text(item.get("matched_role", "")), item.get("matched_level"))
+            if group_key in seen_groups:
+                continue
+            seen_groups.add(group_key)
+            deduped.append(item)
+            if len(deduped) >= 5:
+                break
+        return deduped
 
     def get_template_questions(self, template_id: str):
         if not template_id:
@@ -76,7 +84,10 @@ class TemplateService:
         if not template_id.endswith(".md"):
             template_id += ".md"
 
-        file_path = os.path.join(self.templates_dir, template_id)
+        file_path = os.path.abspath(os.path.join(self.templates_dir, template_id.replace("\\", os.sep).replace("/", os.sep)))
+        if not self._is_inside_templates_dir(file_path):
+            print(f"Template path outside directory rejected: {template_id}")
+            return []
         if not os.path.exists(file_path):
             print(f"Template file not found: {file_path}")
             return []
@@ -107,6 +118,23 @@ class TemplateService:
             print(f"Error parsing template questions: {e}")
             return []
 
+    def _iter_folder_template_files(self):
+        for root, _dirs, files in os.walk(self.templates_dir):
+            if os.path.abspath(root) == self.templates_dir:
+                continue
+            for filename in files:
+                if filename.lower().endswith(".md") and filename.lower() != "readme.md":
+                    yield os.path.join(root, filename)
+
+    def _template_id_from_path(self, file_path: str) -> str:
+        return os.path.relpath(file_path, self.templates_dir).replace(os.sep, "/")
+
+    def _is_inside_templates_dir(self, file_path: str) -> bool:
+        try:
+            return os.path.commonpath([self.templates_dir, file_path]) == self.templates_dir
+        except ValueError:
+            return False
+
     def _find_markdown_field(self, block: str, labels):
         for line in block.splitlines():
             normalized = self._strip_accents(line).lower()
@@ -122,7 +150,7 @@ class TemplateService:
         collecting = False
         for line in lines:
             normalized = self._strip_accents(line).lower()
-            if "dap an" in normalized or "sample answer" in normalized:
+            if "dap an" in normalized or "sample answer" in normalized or "expected_key_points" in normalized:
                 collecting = True
                 answer_lines.append(line.split(":", 1)[1].strip() if ":" in line else "")
                 continue
@@ -130,16 +158,46 @@ class TemplateService:
                 if line.startswith("### ") or line.strip() == "---":
                     break
                 answer_lines.append(line)
-        return "\n".join(answer_lines).replace("**", "").strip()
+        answer = "\n".join(answer_lines).replace("**", "").strip()
+        if answer:
+            return self._compact_expected_key_points(answer)
+        return ""
+
+    def _compact_expected_key_points(self, text: str):
+        lines = []
+        for raw_line in text.splitlines():
+            line = raw_line.strip()
+            if not line:
+                continue
+            normalized = self._strip_accents(line).lower()
+            if normalized.startswith("id:") or normalized.startswith("- id:") or normalized.startswith("keypoint_weight:"):
+                continue
+            if normalized.startswith("content:"):
+                lines.append("- " + line.split(":", 1)[1].strip())
+                continue
+            if normalized.startswith("description:"):
+                lines.append("  " + line.split(":", 1)[1].strip())
+                continue
+            lines.append(line)
+        return "\n".join(lines).strip()
 
     def _role_from_filename(self, filename: str) -> str:
-        base = filename.rsplit(".", 1)[0]
+        base = os.path.basename(filename).rsplit(".", 1)[0]
         base = re.sub(r"_lv\d+$", "", base, flags=re.IGNORECASE)
         return base.replace("_", " ").strip()
 
     def _level_from_filename(self, filename: str):
-        match = re.search(r"lv(\d+)", filename, re.IGNORECASE)
+        match = re.search(r"(?:lv|level[_/-]?)(\d+)", filename, re.IGNORECASE)
         return int(match.group(1)) if match else None
+
+    def _role_from_template_id(self, template_id: str) -> str:
+        parts = template_id.replace("\\", "/").split("/")
+        if len(parts) > 1:
+            return parts[0].replace("_", " ").strip()
+        return self._role_from_filename(template_id)
+
+    def _level_from_template_id(self, template_id: str):
+        return self._level_from_filename(template_id)
 
     def _normalize_text(self, text: str) -> str:
         normalized = re.sub(r"[^a-z0-9]+", " ", self._strip_accents(str(text)).lower()).strip()

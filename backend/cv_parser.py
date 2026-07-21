@@ -183,8 +183,11 @@ SECTION_ALIASES = {
         "education",
         "education certificate",
         "education and certificate",
+        "education and training",
         "educational background",
         "academic background",
+        "training",
+        "courses",
         "qualification",
         "qualifications",
     ],
@@ -279,6 +282,9 @@ MONTHS.update({name.lower(): index for index, name in enumerate(calendar.month_a
 class CVExtractor:
     def __init__(self):
         self.llm_model = os.environ.get("OLLAMA_CV_MODEL") or os.environ.get("CORE_MODEL", "gemma4:e2b")
+        self.llm_provider = os.environ.get("CV_LLM_PROVIDER", "ollama").lower()
+        self.remote_model_url = os.environ.get("REMOTE_MODEL_URL", "").rstrip("/")
+        self.remote_model_token = os.environ.get("REMOTE_MODEL_TOKEN", "")
         self.llm_client = AsyncOpenAI(
             api_key=os.environ.get("OLLAMA_API_KEY") or os.environ.get("CORE_API_KEY", "ollama"),
             base_url=os.environ.get("OLLAMA_BASE_URL") or os.environ.get("CORE_BASE_URL", "http://localhost:11434/v1"),
@@ -314,9 +320,9 @@ class CVExtractor:
         return self.parse_cv_sync(text)
 
     async def parse_cv_with_llm(self, text: str) -> dict:
-        resume_text = self._normalize_whitespace(text)[:18000]
+        resume_text = self._normalize_whitespace(text)[:12000]
         prompt = f"""
-Extract the candidate profile from this English CV and return only a valid JSON object.
+Extract the candidate profile from this CV and return only one valid JSON object.
 
 Required schema:
 {{
@@ -333,12 +339,40 @@ Required schema:
 Rules:
 - inferred_level must be 1 for fresher/junior, 2 for 2-4 years, 3 for senior/lead, 4 for principal/architect/manager.
 - role_fit should be one common IT role such as Software Engineer, Backend Developer, Frontend Developer, AI Engineer, Data Scientist, Data Engineer, DevOps Engineer, Tester, Business Analyst, Cybersecurity Analyst.
+- education must contain only school, university, college, academy, training center, degree, major, course, or expected graduation date. Do not put language proficiency, skills, work experience, or project names in education.
+- Keep education under 180 characters.
+- Keep recent_role under 180 characters.
+- Return at most 20 skills.
 - confidence must be between 0 and 1.
 - If a field is missing, infer conservatively from the CV text.
+- Do not include markdown, comments, or trailing text.
 
 CV:
 {resume_text}
 """
+        if self.llm_provider in {"remote", "model_server"}:
+            if not self.remote_model_url:
+                raise RuntimeError("REMOTE_MODEL_URL is not configured for CV_LLM_PROVIDER=remote")
+            headers = {}
+            if self.remote_model_token:
+                headers["Authorization"] = f"Bearer {self.remote_model_token}"
+            payload = {
+                "model": self.llm_model,
+                "messages": [
+                    {"role": "system", "content": "You are a precise resume extraction engine. Return JSON only."},
+                    {"role": "user", "content": prompt},
+                ],
+                "json_mode": True,
+                "temperature": 0.1,
+                "max_new_tokens": 700,
+            }
+            async with httpx.AsyncClient(timeout=180) as client:
+                response = await client.post(f"{self.remote_model_url}/llm", json=payload, headers=headers)
+                response.raise_for_status()
+                content = response.json().get("text") or "{}"
+            profile = await self._load_llm_profile_json(content, prompt, headers=headers)
+            return self._normalize_profile(profile, extraction_method=f"remote_llm:{self.llm_model}")
+
         response = await self.llm_client.chat.completions.create(
             model=self.llm_model,
             messages=[
@@ -349,7 +383,75 @@ CV:
             response_format={"type": "json_object"},
         )
         content = response.choices[0].message.content or "{}"
-        return self._normalize_profile(json.loads(content), extraction_method=f"llm:{self.llm_model}")
+        return self._normalize_profile(self._loads_json_object(content), extraction_method=f"llm:{self.llm_model}")
+
+    async def _load_llm_profile_json(self, content: str, original_prompt: str, headers: dict) -> dict:
+        try:
+            return self._loads_json_object(content)
+        except ValueError:
+            repair_prompt = (
+                "The previous answer was invalid JSON. Repair it and return only one valid JSON object "
+                "matching the candidate profile schema. Do not add markdown.\n\n"
+                f"Original extraction task:\n{original_prompt[:6000]}\n\nInvalid JSON/text:\n{content[:4000]}"
+            )
+            payload = {
+                "model": self.llm_model,
+                "messages": [
+                    {"role": "system", "content": "You repair malformed JSON for resume extraction. Return JSON only."},
+                    {"role": "user", "content": repair_prompt},
+                ],
+                "json_mode": True,
+                "temperature": 0.0,
+                "max_new_tokens": 700,
+            }
+            async with httpx.AsyncClient(timeout=180) as client:
+                response = await client.post(f"{self.remote_model_url}/llm", json=payload, headers=headers)
+                response.raise_for_status()
+                repaired = response.json().get("text") or "{}"
+            return self._loads_json_object(repaired)
+
+    def _loads_json_object(self, content: str) -> dict:
+        text = self._extract_json_object(content)
+        text = text.replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'")
+        text = re.sub(r",\s*([}\]])", r"\1", text)
+        try:
+            value = json.loads(text)
+        except json.JSONDecodeError as exc:
+            snippet = text[max(0, exc.pos - 120): exc.pos + 120]
+            raise ValueError(f"Invalid JSON from CV LLM near char {exc.pos}: {snippet}") from exc
+        if not isinstance(value, dict):
+            raise ValueError("CV LLM returned JSON, but it was not an object")
+        return value
+
+    def _extract_json_object(self, content: str) -> str:
+        text = (content or "").strip()
+        text = re.sub(r"^```(?:json)?\s*", "", text, flags=re.I)
+        text = re.sub(r"\s*```$", "", text)
+        start = text.find("{")
+        if start < 0:
+            raise ValueError("CV LLM did not return a JSON object")
+        depth = 0
+        in_string = False
+        escape = False
+        for index in range(start, len(text)):
+            char = text[index]
+            if in_string:
+                if escape:
+                    escape = False
+                elif char == "\\":
+                    escape = True
+                elif char == '"':
+                    in_string = False
+                continue
+            if char == '"':
+                in_string = True
+            elif char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    return text[start:index + 1]
+        raise ValueError("CV LLM returned an incomplete JSON object")
 
     def parse_cv_sync(self, text: str) -> dict:
         normalized_text = self._normalize_whitespace(text)
@@ -462,13 +564,64 @@ CV:
             "candidate_name": str(profile.get("candidate_name") or "Candidate").strip()[:120],
             "years_experience": round(max(years, 0.0), 1),
             "skills": clean_skills[:32] or ["Not Found"],
-            "education": str(profile.get("education") or "Not Found").strip()[:240],
+            "education": self._sanitize_education_summary(profile.get("education")),
             "recent_role": str(profile.get("recent_role") or "Not Found").strip()[:140],
             "inferred_level": max(1, min(level, 4)),
             "role_fit": str(profile.get("role_fit") or "Software Engineer").strip()[:80],
             "confidence": round(max(0.0, min(confidence, 0.99)), 2),
             "extraction_method": extraction_method or profile.get("extraction_method") or "rule_based",
         }
+
+    def _sanitize_education_summary(self, value) -> str:
+        text = str(value or "").strip()
+        if not text or text.lower() in {"not found", "none", "n/a", "null"}:
+            return "Not Found"
+
+        graduation = self._extract_expected_graduation(text)
+        text = re.sub(
+            r"\b(?:english|japanese|chinese|korean|french|german|spanish|vietnamese)\s*:?\s*"
+            r"(?:basic|beginner|intermediate|advanced|native|fluent|professional|business|n[1-5]|[a-c][1-2])"
+            r"(?:\s+level)?\b",
+            "",
+            text,
+            flags=re.I,
+        )
+        text = re.sub(r"\b(?:ielts|toeic|toefl|jlpt|gpa)\s*:?\s*[a-z0-9./+-]+\b", "", text, flags=re.I)
+        text = re.sub(r"\s*\(?\s*expected\s+graduation(?:\s+in|:)?\s*[0-9A-Za-z ./-]+\)?", "", text, flags=re.I)
+
+        education_terms = re.compile(
+            r"\b(?:university|college|institute|academy|school|center|centre|training|bootcamp|polytechnic|"
+            r"bachelor|master|phd|doctor|degree|diploma|certificate|certification|course|major|faculty|"
+            r"computer science|information technology|software engineering|graduat(?:e|ion))\b",
+            re.I,
+        )
+        reject_terms = re.compile(
+            r"\b(?:python|javascript|typescript|html|css|pytorch|cnn|transformer|ocr|rag|langchain|langgraph|"
+            r"fastapi|opencv|docker|github|aws|sql|linux|developer|engineer|project|experience|skill|"
+            r"english|japanese|chinese|korean|ielts|toeic|toefl|jlpt)\b",
+            re.I,
+        )
+        named_provider = re.compile(r"\b[A-Z]{2,}(?:\s+[A-Z][A-Za-z0-9&.-]+){0,3}\b")
+        parts = [
+            part.strip(" ,;|()-")
+            for part in re.split(r"\s*(?:\||;|\n|,)\s*", text)
+            if part.strip(" ,;|()-")
+        ]
+        kept = []
+        seen = set()
+        for part in parts:
+            normalized = self._clean_heading(part)
+            if not normalized or normalized in seen:
+                continue
+            looks_like_provider = bool(named_provider.search(part)) and len(part.split()) <= 6
+            if (education_terms.search(part) or looks_like_provider) and not reject_terms.search(part):
+                kept.append(part)
+                seen.add(normalized)
+
+        summary = ", ".join(kept[:2])
+        if summary and graduation:
+            summary = f"{summary} (Expected Graduation: {graduation})"
+        return summary[:240] if summary else "Not Found"
 
     def _coerce_float(self, value, default: float) -> float:
         try:
@@ -893,7 +1046,7 @@ def _clean_education_cell(self, cell: str) -> str:
     normalized = self._clean_heading(value)
     if normalized in {"education", "academic background", "qualification", "qualifications"}:
         return ""
-    if re.search(r"\benglish\s*:?\s*[a-z0-9.+-]+\b", value, re.I):
+    if re.search(r"\b(?:english|japanese|chinese|korean|french|german|spanish|vietnamese)\s*:?\s*[a-z0-9.+-]+(?:\s+level)?\b", value, re.I):
         return ""
     if re.search(r"\bfrom\s+\d{1,2}[/.-]\d{4}\s+to\s*$", value, re.I):
         return ""
