@@ -40,12 +40,33 @@ class FakeModels:
 
 
 class FakeClient:
-    def __init__(self, models):
+    def __init__(self, models, async_models=None):
         self.models = models
+        self.aio = SimpleNamespace(models=async_models)
+
+
+class FakeAsyncModels:
+    def __init__(self, responses=None, errors=None):
+        self.responses = list(responses or [])
+        self.errors = list(errors or [])
+        self.calls = []
+
+    async def generate_content_stream(self, **kwargs):
+        self.calls.append(kwargs)
+        if self.errors:
+            error = self.errors.pop(0)
+            if error is not None:
+                raise error
+
+        async def iterate():
+            for response in self.responses:
+                yield response
+
+        return iterate()
 
 
 class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
-    def make_service(self, models, **kwargs):
+    def make_service(self, models, *, async_models=None, **kwargs):
         settings = Settings(
             APP_ENV="test",
             GOOGLE_CLOUD_PROJECT="unit-test-project",
@@ -55,9 +76,9 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         retry_config = kwargs.pop("retry_config", RetryConfig(max_attempts=2, initial_backoff_seconds=0, jitter_seconds=0))
         return VertexGeminiService(
             settings=settings,
-            client=FakeClient(models),
+            client=FakeClient(models, async_models),
             retry_config=retry_config,
-            default_timeout_seconds=kwargs.pop("default_timeout_seconds", 1),
+            default_timeout_seconds=kwargs.pop("default_timeout_seconds", 5),
             **kwargs,
         )
 
@@ -87,6 +108,9 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.name, "Alice")
         self.assertEqual(result.score, 9)
         self.assertEqual(models.calls[0]["model"], "gemini-complex")
+        config = models.calls[0]["config"]
+        self.assertEqual(config.response_mime_type, "application/json")
+        self.assertEqual(config.response_json_schema["title"], "MockJSONOutput")
 
     async def test_generate_json_extracts_json_from_markdown(self):
         models = FakeModels(responses=[SimpleNamespace(text='```json\n{"name":"Bob","score":7}\n```')])
@@ -137,7 +161,39 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(LLMTimeoutError):
             await service.generate_text("Slow prompt")
 
+    async def test_stream_text_yields_ordered_vertex_deltas(self):
+        async_models = FakeAsyncModels(
+            responses=[
+                SimpleNamespace(text="Can you explain"),
+                SimpleNamespace(text=" YOLO architecture?"),
+            ]
+        )
+        service = self.make_service(
+            FakeModels(),
+            async_models=async_models,
+        )
+
+        deltas = [
+            delta
+            async for delta in service.stream_text(
+                "Generate one question",
+                task_type="complex",
+                output_schema=MockJSONOutput,
+            )
+        ]
+
+        self.assertEqual(
+            deltas,
+            ["Can you explain", " YOLO architecture?"],
+        )
+        self.assertEqual(
+            async_models.calls[0]["model"],
+            "gemini-complex",
+        )
+        config = async_models.calls[0]["config"]
+        self.assertEqual(config.response_mime_type, "application/json")
+        self.assertEqual(config.response_json_schema["title"], "MockJSONOutput")
+
 
 if __name__ == "__main__":
     unittest.main()
-

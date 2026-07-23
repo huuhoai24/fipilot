@@ -16,10 +16,22 @@ venv/
 node_modules/
 dist/
 dist-ssr/
+*.tsbuildinfo
+frontend/vite.config.d.ts
 *.local
 .DS_Store
+# Local environment and credential material
 .env
-.env.local
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+*.json
+service-account*
+credentials*
+*.pem
+
 *.log
 
 # Backend specifics

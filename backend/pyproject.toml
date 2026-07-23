@@ -1,27 +1,24 @@
 [project]
-name = "fipilot"
+name = "cv-driven-ai-interviewer"
 version = "0.1.0"
-description = "Add your description here"
+description = "V2 CV-driven text interview backend"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "groq>=1.0.0",
-    "ipykernel>=7.2.0",
-    "jinja2>=3.1.6",
-    "jupyter>=1.1.1",
-    "python-dotenv>=1.0.1",
-    "pymupdf>=1.27.2.3",
-    "torch>=2.12.0",
-    "transformers>=4.45.0",
-    "ultralytics>=8.4.67",
+    "fastapi[standard]",
+    "firebase-admin",
+    "google-cloud-firestore",
+    "google-genai",
+    "pydantic",
+    "pydantic-settings",
+    "pypdf",
+    "python-docx",
+    "python-dotenv",
+    "python-multipart",
+    "sqlalchemy",
+    "uvicorn",
 ]
 
 [build-system]
 requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-py-modules = ["config"]
-
-[tool.setuptools.packages.find]
-where = ["src"]

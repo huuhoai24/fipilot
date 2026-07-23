@@ -1,113 +1,129 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import type {
+  InterviewHistoryResponse,
+  InterviewMode,
+  InterviewReportResponse,
+  ResumeUploadResponse,
+  V2InterviewSessionResponse,
+} from '@/types'
+import { firebaseAuth } from '@/lib/firebase'
 
-export interface CreateSessionData {
-  name: string;
-  role: string;
-  level: string;
-  language?: string;
-  template_id?: string;
-  skills?: string[];
-  recent_role?: string;
-  years_experience?: number;
-  education?: string;
+const configuredApiUrl = import.meta.env.VITE_API_BASE_URL
+const API_ROOT_URL = configuredApiUrl
+  ? configuredApiUrl.replace(/\/api\/?$/, '').replace(/\/$/, '')
+  : import.meta.env.DEV
+    ? 'http://127.0.0.1:8000'
+    : ''
+
+function voiceWebSocketUrl(sessionId: string | number): string {
+  const baseUrl = API_ROOT_URL || window.location.origin
+  const url = new URL(`/api/v2/voice/interview/${encodeURIComponent(String(sessionId))}`, baseUrl)
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  return url.toString()
 }
 
-export interface TemplateMatchData {
-  role_fit: string;
-  inferred_level: number;
-  skills: string[];
-  target_role?: string;
+export class ApiError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message)
+    this.name = 'ApiError'
+  }
+}
+
+async function requestJson<T>(
+  url: string,
+  init?: RequestInit,
+  refreshedToken = false
+): Promise<T> {
+  const user = firebaseAuth.currentUser
+  if (!user) throw new ApiError('Authentication is required. Please sign in again.', 401)
+
+  const token = await user.getIdToken(refreshedToken)
+  const headers = new Headers(init?.headers)
+  headers.set('Authorization', `Bearer ${token}`)
+  const response = await fetch(url, { ...init, headers })
+  if (response.status === 401 && !refreshedToken) {
+    return requestJson<T>(url, init, true)
+  }
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    const message = response.status === 401
+      ? 'Authentication expired or is invalid. Please sign in again.'
+      : error.detail || 'Request failed'
+    throw new ApiError(message, response.status)
+  }
+  return response.json() as Promise<T>
+}
+
+export interface StartV2InterviewData {
+  candidate_id: string
+  interview_config: {
+    mode?: InterviewMode
+    language: 'vi' | 'en'
+    experience_level: 'intern' | 'junior' | 'middle' | 'senior'
+    duration_minutes?: number
+    interview_style?: 'technical' | 'behavioral' | 'mixed'
+    question_count?: number
+    objective?: string
+    interviewer_personality?: 'professional' | 'friendly' | 'challenging' | 'supportive'
+  }
+}
+
+async function uploadResume(file: File): Promise<ResumeUploadResponse> {
+  const formData = new FormData()
+  formData.append('file', file)
+  return requestJson<ResumeUploadResponse>(`${API_ROOT_URL}/api/v2/resume/upload`, {
+    method: 'POST',
+    body: formData,
+  })
 }
 
 export const api = {
-  createSession: async (data: CreateSessionData) => {
-    const response = await fetch(`${API_URL}/sessions`, {
+  uploadResume,
+  uploadV2Resume: uploadResume,
+  getVoiceInterviewWebSocketUrl: voiceWebSocketUrl,
+
+  startV2Interview: async (data: StartV2InterviewData): Promise<V2InterviewSessionResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/start`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || 'Failed to create session');
-    }
-    return response.json();
+    })
   },
 
-  endSession: async (sessionId: string | number) => {
-    const response = await fetch(`${API_URL}/sessions/${sessionId}/end`, {
-      method: 'POST',
-    });
-    if (!response.ok) throw new Error('Failed to end session');
-    return response.json();
-  },
-
-  getSessions: async () => {
-    const response = await fetch(`${API_URL}/sessions`);
-    if (!response.ok) throw new Error('Failed to fetch sessions');
-    return response.json();
-  },
-
-  getSession: async (sessionId: string | number) => {
-    const response = await fetch(`${API_URL}/sessions/${sessionId}`);
-    if (!response.ok) throw new Error('Failed to fetch session');
-    return response.json();
-  },
-
-  getReport: async (sessionId: string | number) => {
-    const response = await fetch(`${API_URL}/sessions/${sessionId}/report`);
-    if (!response.ok) throw new Error('Failed to fetch report');
-    return response.json();
-  },
-
-  extractCv: async (file: File, parserMode: 'workflow' | 'llm' = 'workflow') => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('parser_mode', parserMode);
-    const response = await fetch(`${API_URL}/cv/extract`, {
-      method: 'POST',
-      body: formData,
-    });
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      const detail = error.detail;
-      throw new Error(
-        typeof detail === 'string'
-          ? detail
-          : detail?.message || 'Failed to extract CV'
-      );
-    }
-    return response.json();
-  },
-
-  recordProctoringEvent: async (
+  submitV2InterviewAnswer: async (
     sessionId: string | number,
-    event: {
-      event_type: 'tab_hidden' | 'window_blur';
-      reason?: string;
-      occurred_at?: string;
-      visible?: boolean;
-      focus_state?: string;
-    }
-  ) => {
-    const response = await fetch(`${API_URL}/sessions/${sessionId}/proctoring-events`, {
+    answer: string
+  ): Promise<V2InterviewSessionResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/answer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event),
-    });
-    if (!response.ok) throw new Error('Failed to record proctoring event');
-    return response.json();
+      body: JSON.stringify({ answer }),
+    })
   },
 
-  matchTemplates: async (data: TemplateMatchData) => {
-    const response = await fetch(`${API_URL}/templates/match`, {
+  getV2InterviewSession: async (sessionId: string | number): Promise<V2InterviewSessionResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}`)
+  },
+
+  generateInterviewReport: async (sessionId: string | number): Promise<InterviewReportResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/report`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.detail || 'Failed to match templates');
-    }
-    return response.json();
-  }
-};
+    })
+  },
+
+  getInterviewReport: async (sessionId: string | number): Promise<InterviewReportResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/report`)
+  },
+
+  listInterviewSessions: async (params: {
+    candidate_id?: string
+    limit?: number
+    offset?: number
+  } = {}): Promise<InterviewHistoryResponse> => {
+    const search = new URLSearchParams()
+    if (params.candidate_id) search.set('candidate_id', params.candidate_id)
+    if (params.limit !== undefined) search.set('limit', String(params.limit))
+    if (params.offset !== undefined) search.set('offset', String(params.offset))
+    const query = search.toString()
+    return requestJson(`${API_ROOT_URL}/api/v2/interviews${query ? `?${query}` : ''}`)
+  },
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Settings, LogOut } from 'lucide-react'
 import { useUIStore } from '@/store/useAppStore'
-import { useAuthStore } from '@/store/useAuthStore'
+import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
 interface UserMenuProps {
@@ -12,7 +12,7 @@ interface UserMenuProps {
 export function UserMenu({ sidebarCollapsed }: UserMenuProps) {
   const navigate = useNavigate()
   const { userMenuOpen, closeUserMenu } = useUIStore()
-  const { logout } = useAuthStore()
+  const { logout } = useAuth()
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -40,9 +40,10 @@ export function UserMenu({ sidebarCollapsed }: UserMenuProps) {
     navigate('/settings')
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     closeUserMenu()
-    logout()
+    await logout()
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -63,7 +64,7 @@ export function UserMenu({ sidebarCollapsed }: UserMenuProps) {
       </button>
       <div className="my-1 border-t border-border" />
       <button
-        onClick={handleLogout}
+        onClick={() => void handleLogout()}
         className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm text-danger hover:bg-danger/10 transition-colors duration-150"
       >
         <LogOut className="h-4 w-4" />

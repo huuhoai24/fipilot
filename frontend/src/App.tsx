@@ -1,52 +1,40 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { AdminRoute } from '@/components/AdminRoute'
-import { AuthPage } from '@/pages/AuthPage'
-import { DashboardPage } from '@/pages/DashboardPage'
-import { InterviewFlowPage } from '@/pages/InterviewFlowPage'
-import { InterviewSessionPage } from '@/pages/InterviewSessionPage'
-import { TemplateManagerPage } from '@/pages/TemplateManagerPage'
-import { HistoryPage } from '@/pages/HistoryPage'
-import { EvaluationReportPage } from '@/pages/EvaluationReportPage'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { LoginPage } from '@/pages/LoginPage'
+import { TextInterviewPage } from '@/pages/TextInterviewPage'
+import { SpeechInterviewPage } from '@/pages/SpeechInterviewPage'
+import { InterviewHistoryPage } from '@/pages/InterviewHistoryPage'
+import { InterviewReportPage } from '@/pages/InterviewReportPage'
 import { SettingsPage } from '@/pages/SettingsPage'
-import { useAuthStore } from '@/store/useAuthStore'
 
 const queryClient = new QueryClient()
 
 export default function App() {
-  const currentUser = useAuthStore((s) => s.currentUser)
-
-  if (!currentUser) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <AuthPage />
-      </QueryClientProvider>
-    )
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/interview-flow" element={<InterviewFlowPage />} />
-            <Route path="/interview-flow/session/:sessionId" element={<InterviewSessionPage />} />
-            <Route
-              path="/templates"
-              element={
-                <AdminRoute>
-                  <TemplateManagerPage />
-                </AdminRoute>
-              }
-            />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/history/:sessionId" element={<EvaluationReportPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Navigate to="/text-interview" replace />} />
+                <Route path="/text-interview" element={<TextInterviewPage mode="text" />} />
+                <Route path="/text-interview/:sessionId" element={<TextInterviewPage mode="text" />} />
+                <Route path="/text-interview/:sessionId/report" element={<InterviewReportPage />} />
+                <Route path="/speech-interview" element={<TextInterviewPage mode="voice" />} />
+                <Route path="/speech-interview/:sessionId" element={<SpeechInterviewPage />} />
+                <Route path="/interview-history" element={<InterviewHistoryPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="*" element={<Navigate to="/text-interview" replace />} />
+              </Route>
+            </Route>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   )

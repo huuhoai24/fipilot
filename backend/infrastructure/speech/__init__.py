@@ -1,0 +1,1 @@
+"""Speech infrastructure adapters."""

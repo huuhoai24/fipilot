@@ -1,27 +1,20 @@
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { FileText, History, LayoutDashboard, Mic } from 'lucide-react'
+import { History, MessageSquareText, Mic, Settings } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { useUIStore } from '@/store/useAppStore'
-import { useAuthStore } from '@/store/useAuthStore'
+import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
 export function AppLayout() {
   const { sidebarCollapsed } = useUIStore()
-  const currentUser = useAuthStore((s) => s.currentUser)
-  const isAdmin = currentUser?.role === 'admin'
-  const mobileNav = isAdmin
-    ? [
-        { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/interview-flow', label: 'Interview', icon: Mic },
-        { to: '/templates', label: 'Templates', icon: FileText },
-        { to: '/history', label: 'History', icon: History },
-      ]
-    : [
-        { to: '/', label: 'Dashboard', icon: LayoutDashboard },
-        { to: '/interview-flow', label: 'Interview', icon: Mic },
-        { to: '/history', label: 'History', icon: History },
-      ]
+  const { user } = useAuth()
+  const mobileNav = [
+    { to: '/text-interview', label: 'Text', icon: MessageSquareText },
+    { to: '/speech-interview', label: 'Speech', icon: Mic },
+    { to: '/interview-history', label: 'History', icon: History },
+    { to: '/settings', label: 'Settings', icon: Settings },
+  ]
 
   return (
     <div className="min-h-screen bg-bg">
@@ -36,7 +29,7 @@ export function AppLayout() {
               Interview<span className="text-accent">OS</span>
             </span>
           </div>
-          <span className="max-w-[38vw] truncate text-xs text-text-muted">{currentUser?.username}</span>
+          <span className="max-w-[38vw] truncate text-xs text-text-muted">{user?.displayName || user?.email}</span>
         </div>
         <nav className="flex gap-1 overflow-x-auto">
           {mobileNav.map(({ to, label, icon: Icon }) => (

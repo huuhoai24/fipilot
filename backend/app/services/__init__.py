@@ -1,13 +1,12 @@
-"""Service modules for the V2 architecture."""
+"""Compatibility exports for previous app.services import paths."""
 
-from app.services.base_llm_service import BaseLLMService, LLMTaskType
-from app.services.vertex_gemini_service import (
+from infrastructure.llm import BaseLLMService, LLMTaskType, VertexGeminiService
+from infrastructure.llm.vertex_gemini import (
     LLMConfigurationError,
     LLMResponseValidationError,
     LLMServiceError,
     LLMTimeoutError,
     RetryConfig,
-    VertexGeminiService,
 )
 
 __all__ = [

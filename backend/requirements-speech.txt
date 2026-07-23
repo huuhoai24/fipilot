@@ -1,0 +1,5 @@
+# Optional Phase 4 speech runtime. Tests use injected mocks and do not load models.
+faster-whisper>=1.1,<2
+silero-vad>=5.1,<7
+numpy>=1.26,<3
+vieneu>=3,<4

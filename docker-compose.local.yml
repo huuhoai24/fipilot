@@ -1,0 +1,87 @@
+name: ai-interview-local
+
+services:
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    env_file:
+      - ./frontend/.env.local
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command:
+      - python
+      - -m
+      - uvicorn
+      - gateway.main:app
+      - --reload
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+    env_file:
+      - ./backend/.env.local
+    environment:
+      SPEECH_SERVICE_URL: http://speech-service:9000
+    volumes:
+      - ./backend:/app
+      - ${GOOGLE_ADC_DIR}:/home/app/.config/gcloud:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      speech-service:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  speech-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.speech
+    working_dir: /app
+    command:
+      - python
+      - -m
+      - speech_service.main
+    env_file:
+      - ./backend/.env.speech
+    volumes:
+      - ./backend:/app
+      - speech-model-cache:/home/app/.cache
+    ports:
+      - "9000:9000"
+    gpus: all
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:9000/ready')"
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  frontend-node-modules:
+  speech-model-cache:

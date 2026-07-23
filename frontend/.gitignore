@@ -1,6 +1,9 @@
 node_modules
 dist
 dist-ssr
+.firebase/
+*.tsbuildinfo
+vite.config.d.ts
 *.local
 .DS_Store
 .env

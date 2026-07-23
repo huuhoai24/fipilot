@@ -3,11 +3,18 @@ from sqlalchemy.orm import relationship
 from database import Base
 import datetime
 
+
+def utc_now() -> datetime.datetime:
+    return datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+
 class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(String, index=True, nullable=True)
     name = Column(String, index=True, nullable=True)
+    profile_json = Column(Text, nullable=True)
+    raw_resume_text = Column(Text, nullable=True)
     
     sessions = relationship("Session", back_populates="user")
 
@@ -15,8 +22,9 @@ class Session(Base):
     __tablename__ = "sessions"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    status = Column(String, default="CHITCHAT") # CHITCHAT, INTERVIEWING, ENDED
+    candidate_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(String, index=True, nullable=True)
+    status = Column(String, default="created")
     role = Column(String, nullable=True) # e.g. AI, DE, DA
     level = Column(String, nullable=True) # e.g. Fresher, Junior, Senior
     language = Column(String, default="vi") # en, vi
@@ -29,7 +37,9 @@ class Session(Base):
     state = Column(String, default="GREETING")
     question_plan_json = Column(Text, nullable=True)
     proctoring_events_json = Column(Text, default="[]")
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
+    completed_at = Column(DateTime, nullable=True)
+    report_id = Column(String, nullable=True)
     report_data = Column(Text, nullable=True)
 
     user = relationship("User", back_populates="sessions")
@@ -43,7 +53,7 @@ class Message(Base):
     session_id = Column(Integer, ForeignKey("sessions.id"))
     role = Column(String) # user or ai
     content = Column(Text)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     session = relationship("Session", back_populates="messages")
 

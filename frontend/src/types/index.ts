@@ -1,120 +1,231 @@
-// Core domain types — mirrors Section 3 data models in the spec.
-
 export type Difficulty = 'easy' | 'medium' | 'hard'
-export type Language = 'vi' | 'en'
-export type Role = 'data-ai' | 'backend' | 'frontend' | 'mobile' | 'devops'
-export type SessionStatus = 'completed' | 'interrupted' | 'no_show' | 'scheduled' | 'in_progress'
-export type HireRecommendation = 'strong_hire' | 'hire' | 'consider' | 'reject'
+export type InterviewLanguage = 'vi' | 'en'
+export type ExperienceLevel = 'intern' | 'junior' | 'middle' | 'senior'
+export type InterviewStyle = 'technical' | 'behavioral' | 'mixed'
+export type InterviewMode = 'text' | 'voice'
+export type InterviewTurnStatus = 'created' | 'answered' | 'evaluated'
+export type InterviewStatus = 'created' | 'in_progress' | 'completed' | 'report_generated'
+export type HiringRecommendation = 'strong_hire' | 'hire' | 'consider' | 'no_hire'
 
-export interface DifficultyMix {
-  easy: number
-  medium: number
-  hard: number
+export enum VoiceInterviewState {
+  IDLE = 'IDLE',
+  AI_THINKING = 'AI_THINKING',
+  AI_SPEAKING = 'AI_SPEAKING',
+  WAITING_FOR_USER = 'WAITING_FOR_USER',
+  USER_SPEAKING = 'USER_SPEAKING',
+  TRANSCRIBING = 'TRANSCRIBING',
+  EVALUATING = 'EVALUATING',
+  INTERRUPTED = 'INTERRUPTED',
 }
 
-export interface InterviewConfig {
-  id: string
+export interface SkillEvidence {
+  skill: string
+  evidence: string[]
+  source_section?: string | null
+}
+
+export interface CandidateProject {
   name: string
-  role: Role
-  level: number
-  duration_minutes: number
-  difficulty_mix: DifficultyMix
-  voice_enabled: boolean
-  avatar_enabled: boolean
-  auto_evaluate: boolean
-  scoring_rubric: string
-  language: Language
-  created_by: string
-  created_at: string
+  description: string
+  technologies: string[]
+  role?: string | null
 }
 
-export interface QnAQuestion {
-  id: string
-  difficulty: Difficulty
-  question: string
-  sample_answer: string
-  tags: string[]
-  score_weight: number
-}
-
-export interface QnATemplate {
-  id: string
+export interface CandidateExperience {
+  company: string
   title: string
-  role: Role
-  level: number
-  version: string
-  questions: QnAQuestion[]
-  used_count: number
-  last_used_at: string | null
-  created_by: string
-  updated_at: string
+  start_date?: string | null
+  end_date?: string | null
+  description: string
+  technologies: string[]
 }
 
-export interface TemplateMatch {
-  template_id: string
-  title: string
-  score: number
-  question_count: number
-  difficulty_mix: DifficultyMix
-  duration_minutes: number
+export interface CandidateEducation {
+  institution: string
+  degree?: string | null
+  field_of_study?: string | null
+  start_date?: string | null
+  end_date?: string | null
 }
 
 export interface CandidateProfile {
-  candidate_name: string
-  years_experience: number
+  candidate_id?: string | null
+  name: string
+  years_experience?: number | null
+  recent_role?: string | null
   skills: string[]
-  education: string
-  recent_role: string
-  inferred_level: number
-  role_fit: string
+  skill_evidence: SkillEvidence[]
+  projects: CandidateProject[]
+  experiences: CandidateExperience[]
+  education?: string | CandidateEducation[] | null
+  specialization?: string | null
+  seniority_signal?: string | null
   confidence: number
-  extraction_method?: string
-  parser_warning?: string
+  confidence_score: number
+  extraction_method?: string | null
 }
 
-export interface TranscriptEntry {
-  question_id: string
-  question_text: string
-  answer_text: string
-  answer_audio_url?: string
-  duration_ms: number
-  difficulty: Difficulty
-  score?: number
-}
+export type V2SkillEvidence = SkillEvidence
+export type V2CandidateProfile = CandidateProfile
 
-export interface InterviewSession {
-  id: string
+export interface ResumeUploadResponse {
   candidate_id: string
-  candidate_name: string
-  template_id: string
-  template_title: string
-  config_id: string
-  role: Role
-  level: number
-  interviewer_email: string
-  started_at: string
-  ended_at: string | null
-  status: SessionStatus
-  transcript: TranscriptEntry[]
-  overall_score?: number
+  profile: CandidateProfile
+  confidence_score: number
 }
 
-export interface PerQuestionEvaluation {
-  question_id: string
-  question_text: string
+export interface V2InterviewConfig {
+  mode: InterviewMode
+  language: InterviewLanguage
+  experience_level: ExperienceLevel
+  duration_minutes: number
+  interview_style: InterviewStyle
+  question_count: number
+  objective: string
+  interviewer_personality?: 'professional' | 'friendly' | 'challenging' | 'supportive'
+}
+
+export interface V2InterviewRound {
+  round_id: string
+  topic: string
+  objective: string
   difficulty: Difficulty
-  score: number
-  issues: string[]
-  suggestion: string
+  reasoning: string
+  recommended_question_areas: string[]
+  weight: number
+  target_skills: string[]
+  question_budget: number
 }
 
-export interface InterviewEvaluation {
+export interface V2InterviewPlan {
+  duration_minutes: number
+  rounds: V2InterviewRound[]
+  coverage_goals: string[]
+  risk_areas: string[]
+  planner_summary: string
+}
+
+export interface V2InterviewQuestion {
+  question: string
+  language: InterviewLanguage
+  topic: string
+  difficulty: Difficulty
+  reasoning: string
+  expected_answer_points: string[]
+  follow_up_questions: string[]
+}
+
+export interface V2AnswerEvaluation {
+  turn_id: string
+  overall_score: number
+  technical_score: number
+  communication_score: number
+  correctness_score: number
+  strengths: string[]
+  weaknesses: string[]
+  missing_concepts: string[]
+  follow_up_needed: boolean
+  follow_up_reason?: string | null
+  feedback: string
+}
+
+export interface V2InterviewTurn {
+  turn_id: string
+  round_id?: string | null
+  question: V2InterviewQuestion | string
+  answer?: string | null
+  status: InterviewTurnStatus
+  evaluation?: V2AnswerEvaluation | null
+  difficulty: Difficulty
+  topic: string
+  expected_signal: string[]
+  candidate_answer?: string | null
+}
+
+export interface V2InterviewMemoryState {
+  previous_topics: string[]
+  covered_skills: string[]
+  weaknesses: string[]
+  follow_up_points: string[]
+}
+
+export interface V2VoiceAnalytics {
+  speaking_duration_ms: number
+  response_latencies_ms: number[]
+  interruption_count: number
+}
+
+export interface V2InterviewSessionState {
+  candidate_profile: V2CandidateProfile
+  interview_config: V2InterviewConfig
+  interview_plan: V2InterviewPlan
+  current_turn?: V2InterviewTurn | null
+  completed_turns: V2InterviewTurn[]
+  current_question_index: number
+  memory?: V2InterviewMemoryState
+  voice_analytics?: V2VoiceAnalytics
+}
+
+export interface V2InterviewSessionResponse {
+  session_id: string
+  state: V2InterviewSessionState
+}
+
+export interface SkillAssessment {
+  skill: string
+  score: number
+  evidence: string[]
+  feedback: string
+}
+
+export interface LearningPlanItem {
+  topic: string
+  priority: string
+  reason: string
+  recommended_action: string
+}
+
+export interface InterviewReport {
+  id: string
   session_id: string
   overall_score: number
-  max_score: number
-  score_by_difficulty: Record<Difficulty, number>
-  per_question: PerQuestionEvaluation[]
+  technical_score: number
+  communication_score: number
+  correctness_score: number
   summary: string
-  hire_recommendation: HireRecommendation
+  strengths: string[]
+  weaknesses: string[]
+  demonstrated_skills: string[]
+  missing_skills: string[]
+  skill_assessments: SkillAssessment[]
+  recommendations: string[]
+  learning_plan: LearningPlanItem[]
+  hiring_recommendation: HiringRecommendation
+  confidence_score: number
   generated_at: string
+}
+
+export interface InterviewReportResponse {
+  session_id: string
+  report: InterviewReport
+}
+
+export interface InterviewSessionSummary {
+  session_id: string
+  candidate_id: string
+  status: InterviewStatus
+  language: InterviewLanguage
+  experience_level: ExperienceLevel
+  question_count: number
+  answered_question_count: number
+  overall_score?: number | null
+  started_at: string
+  completed_at?: string | null
+}
+
+export interface InterviewHistoryResponse {
+  items: InterviewSessionSummary[]
+  total: number
+  limit: number
+  offset: number
 }

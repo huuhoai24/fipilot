@@ -7,15 +7,15 @@ def get_user(db: Session, user_id: int):
 def get_user_by_name(db: Session, name: str):
     return db.query(models.User).filter(models.User.name == name).first()
 
-def create_user(db: Session, name: str):
-    db_user = models.User(name=name)
+def create_user(db: Session, name: str, user_id: str | None = None):
+    db_user = models.User(name=name, user_id=user_id)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
 
-def create_session(db: Session, user_id: int):
-    db_session = models.Session(user_id=user_id)
+def create_session(db: Session, candidate_id: int, user_id: str | None = None):
+    db_session = models.Session(candidate_id=candidate_id, user_id=user_id)
     db.add(db_session)
     db.commit()
     db.refresh(db_session)

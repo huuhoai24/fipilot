@@ -1,6 +1,0 @@
-- `[x]` Install `"vieneu[gpu]"` in virtual environment (VieNeu installed, GPU dependencies use standard PyTorch)
-- `[x]` Configure `tts_service.py` to use `Vieneu` with try-except GPU-to-CPU fallback
-- `[x]` Configure `ai_services.py` to use `cuda:0` for PhoWhisper with try-except CPU fallback
-- `[x]` Revert `backend/.env` models to `gemma4:e2b` to leverage Ollama's native GPU/CPU auto-offloading
-- `[x]` Create and run `test_vieneu.py` to verify the fallback logic
-- `[x]` Verify that backend server starts and runs correctly
