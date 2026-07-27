@@ -1,4 +1,6 @@
 import type {
+  CandidateProfileReadResult,
+  CandidateProfileResponse,
   InterviewHistoryResponse,
   InterviewMode,
   InterviewReportResponse,
@@ -22,17 +24,27 @@ function voiceWebSocketUrl(sessionId: string | number): string {
 }
 
 export class ApiError extends Error {
-  constructor(message: string, public readonly status: number) {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly code = 'request_failed',
+    public readonly issues: unknown[] = [],
+    public readonly retryable = false,
+  ) {
     super(message)
     this.name = 'ApiError'
   }
 }
 
-async function requestJson<T>(
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
+async function requestJsonResponse<T>(
   url: string,
   init?: RequestInit,
   refreshedToken = false
-): Promise<T> {
+): Promise<{ data: T; response: Response }> {
   const user = firebaseAuth.currentUser
   if (!user) throw new ApiError('Authentication is required. Please sign in again.', 401)
 
@@ -41,16 +53,41 @@ async function requestJson<T>(
   headers.set('Authorization', `Bearer ${token}`)
   const response = await fetch(url, { ...init, headers })
   if (response.status === 401 && !refreshedToken) {
-    return requestJson<T>(url, init, true)
+    return requestJsonResponse<T>(url, init, true)
   }
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}))
+    const body: unknown = await response.json().catch(() => ({}))
+    const structuredError = isRecord(body) && isRecord(body.error)
+      ? body.error
+      : undefined
     const message = response.status === 401
       ? 'Authentication expired or is invalid. Please sign in again.'
-      : error.detail || 'Request failed'
-    throw new ApiError(message, response.status)
+      : typeof structuredError?.message === 'string'
+        ? structuredError.message
+        : isRecord(body) && typeof body.detail === 'string'
+          ? body.detail
+          : 'Request failed'
+    throw new ApiError(
+      message,
+      response.status,
+      typeof structuredError?.code === 'string'
+        ? structuredError.code
+        : 'request_failed',
+      Array.isArray(structuredError?.issues) ? structuredError.issues : [],
+      structuredError?.retryable === true,
+    )
   }
-  return response.json() as Promise<T>
+  return {
+    data: await response.json() as T,
+    response,
+  }
+}
+
+async function requestJson<T>(
+  url: string,
+  init?: RequestInit,
+): Promise<T> {
+  return (await requestJsonResponse<T>(url, init)).data
 }
 
 export interface StartV2InterviewData {
@@ -80,6 +117,23 @@ export const api = {
   uploadResume,
   uploadV2Resume: uploadResume,
   getVoiceInterviewWebSocketUrl: voiceWebSocketUrl,
+
+  getCandidateProfile: async (
+    candidateId: string | number
+  ): Promise<CandidateProfileReadResult> => {
+    const result = await requestJsonResponse<CandidateProfileResponse>(
+      `${API_ROOT_URL}/api/v2/candidates/${encodeURIComponent(String(candidateId))}/profile`
+    )
+    const etag = result.response.headers.get('ETag')
+    if (!etag) {
+      throw new ApiError(
+        'Candidate Profile response did not include a Profile Version.',
+        502,
+        'invalid_profile_response',
+      )
+    }
+    return { ...result.data, etag }
+  },
 
   startV2Interview: async (data: StartV2InterviewData): Promise<V2InterviewSessionResponse> => {
     return requestJson(`${API_ROOT_URL}/api/v2/interview/start`, {

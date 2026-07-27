@@ -33,32 +33,32 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'glass-panel fixed left-4 top-4 z-40 hidden h-[calc(100vh-2rem)] flex-col overflow-hidden rounded-[24px] border border-border shadow-2xl shadow-black/20 transition-[width] duration-300 md:flex',
-        sidebarCollapsed ? 'w-16' : 'w-[260px]'
+        'fixed left-0 top-0 z-40 hidden h-screen flex-col border-r border-border bg-surface transition-[width] duration-150 md:flex',
+        sidebarCollapsed ? 'w-16' : 'w-60'
       )}
     >
-      <div className={cn('flex h-[76px] items-center gap-3 border-b border-border px-5', sidebarCollapsed && 'justify-center px-0')}>
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/10">
-          <Mic className="h-4 w-4 text-[#07110d]" />
+      <div className={cn('flex h-16 items-center gap-2.5 border-b border-border px-4', sidebarCollapsed && 'justify-center px-0')}>
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent">
+          <Mic className="h-4 w-4 text-white" />
         </div>
         {!sidebarCollapsed && (
-          <span className="font-display text-base font-bold tracking-tight-display text-text-primary">
+          <span className="font-display text-sm font-bold tracking-tight-display text-text-primary">
             Interview<span className="text-accent">OS</span>
           </span>
         )}
       </div>
 
-      <nav className="flex-1 space-y-1.5 overflow-y-auto px-3 py-5" aria-label="Primary navigation">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Primary navigation">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
               cn(
-                'group relative flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-300',
+                'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150',
                 isActive
-                  ? 'bg-accent text-[#07110d] shadow-lg shadow-accent/10'
-                  : 'text-text-muted hover:translate-x-0.5 hover:bg-surface-raised hover:text-text-primary',
+                  ? 'bg-accent-soft text-accent'
+                  : 'text-text-muted hover:bg-surface-raised hover:text-text-primary',
                 sidebarCollapsed && 'justify-center px-0'
               )
             }
@@ -66,7 +66,7 @@ export function Sidebar() {
             {({ isActive }) => (
               <>
                 {isActive && (
-                  <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-[#07110d]/50" />
+                  <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-accent" />
                 )}
                 <Icon className="h-[18px] w-[18px] shrink-0" />
                 {!sidebarCollapsed && <span>{label}</span>}
@@ -78,7 +78,7 @@ export function Sidebar() {
 
       <button
         onClick={toggleSidebar}
-        className="flex items-center gap-2 border-t border-border px-4 py-3.5 text-xs font-medium text-text-faint transition-colors duration-200 hover:bg-surface-raised hover:text-text-muted"
+        className="flex items-center gap-2 border-t border-border px-3 py-3 text-xs text-text-faint transition-colors duration-150 hover:text-text-muted"
       >
         {sidebarCollapsed ? (
           <ChevronsRight className="mx-auto h-4 w-4" />
@@ -140,7 +140,7 @@ export function Sidebar() {
           aria-expanded={userMenuOpen}
           aria-controls={userMenuOpen ? 'account-menu' : undefined}
           className={cn(
-            'flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-200',
+            'flex w-full items-center gap-2.5 px-4 py-3 text-left transition-colors duration-150',
             userMenuOpen ? 'bg-surface-raised' : 'hover:bg-surface-raised',
             sidebarCollapsed && 'justify-center px-0'
           )}
@@ -155,7 +155,7 @@ export function Sidebar() {
           {!sidebarCollapsed && (
             <>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[13px] font-semibold text-text-primary">{displayName}</div>
+                <div className="truncate text-xs font-medium text-text-primary">{displayName}</div>
                 <div className="truncate text-[11px] text-text-faint">{displayRole}</div>
               </div>
               <ChevronDown

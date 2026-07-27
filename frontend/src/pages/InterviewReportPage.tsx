@@ -26,10 +26,10 @@ const recommendationLabels: Record<HiringRecommendation, string> = {
 
 function ScoreItem({ label, score }: { label: string; score: number }) {
   return (
-    <div className="border-b border-border px-5 py-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
-      <div className="text-xs font-semibold uppercase tracking-[0.14em] text-text-faint">{label}</div>
-      <div className="mt-3 flex items-baseline gap-1">
-        <span className="font-display text-4xl font-semibold tracking-tight-display text-text-primary">{score.toFixed(1)}</span>
+    <div className="border-b border-border px-4 py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+      <div className="text-xs font-medium uppercase text-text-faint">{label}</div>
+      <div className="mt-2 flex items-baseline gap-1">
+        <span className="font-display text-3xl font-bold text-text-primary">{score.toFixed(1)}</span>
         <span className="text-sm text-text-faint">/10</span>
       </div>
     </div>
@@ -119,15 +119,15 @@ export function InterviewReportPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <Button variant="ghost" size="sm" className="mb-2 -ml-3" onClick={() => navigate('/interview-history')}>
             <ArrowLeft className="h-4 w-4" />
             Interview History
           </Button>
-          <h1 className="font-display text-4xl font-semibold tracking-tight-display text-text-primary sm:text-5xl">Your interview report</h1>
-          <p className="mt-3 text-sm text-text-muted">
+          <h1 className="font-display text-2xl font-bold text-text-primary">Final Interview Report</h1>
+          <p className="mt-1 text-sm text-text-muted">
             Generated {new Date(report.generated_at).toLocaleString()}
           </p>
         </div>
@@ -136,16 +136,16 @@ export function InterviewReportPage() {
         </Badge>
       </div>
 
-      <div className="hairline grid overflow-hidden rounded-[24px] border border-border bg-surface shadow-2xl shadow-black/10 sm:grid-cols-4">
+      <div className="grid overflow-hidden rounded-lg border border-border bg-surface sm:grid-cols-4">
         <ScoreItem label="Overall" score={report.overall_score} />
         <ScoreItem label="Technical" score={report.technical_score} />
         <ScoreItem label="Communication" score={report.communication_score} />
         <ScoreItem label="Correctness" score={report.correctness_score} />
       </div>
 
-      <section className="rounded-[24px] border border-border bg-surface p-6 sm:p-8">
-        <h2 className="font-display text-2xl font-semibold tracking-tight-display text-text-primary">What the interview showed</h2>
-        <p className="mt-4 max-w-5xl text-base leading-8 text-text-muted">{report.summary}</p>
+      <section className="border-y border-border py-5">
+        <h2 className="text-sm font-semibold text-text-primary">Summary</h2>
+        <p className="mt-3 max-w-4xl text-sm leading-7 text-text-muted">{report.summary}</p>
         <div className="mt-4 flex items-center gap-2 text-xs text-text-faint">
           <Target className="h-4 w-4 text-accent" />
           Confidence {Math.round(report.confidence_score * 100)}%
@@ -153,7 +153,7 @@ export function InterviewReportPage() {
       </section>
 
       <div className="grid gap-5 lg:grid-cols-2">
-        <Card className="border-success/20">
+        <Card>
           <CardHeader><CardTitle>Strengths</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {report.strengths.map((item) => (
@@ -164,7 +164,7 @@ export function InterviewReportPage() {
             ))}
           </CardContent>
         </Card>
-        <Card className="border-warning/20">
+        <Card>
           <CardHeader><CardTitle>Development Areas</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {report.weaknesses.map((item) => (
@@ -179,7 +179,7 @@ export function InterviewReportPage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between gap-3">
-          <h2 className="font-display text-2xl font-semibold tracking-tight-display text-text-primary">Skill assessments</h2>
+          <h2 className="text-sm font-semibold text-text-primary">Skill Assessments</h2>
           <div className="flex flex-wrap justify-end gap-2">
             {report.demonstrated_skills.map((skill) => <Badge key={skill} variant="success">{skill}</Badge>)}
             {report.missing_skills.map((skill) => <Badge key={skill} variant="warning">{skill}</Badge>)}
@@ -187,7 +187,7 @@ export function InterviewReportPage() {
         </div>
         <div className="grid gap-3 lg:grid-cols-2">
           {report.skill_assessments.map((assessment) => (
-            <Card key={assessment.skill} className="group transition-all duration-500 hover:-translate-y-1 hover:border-accent/30">
+            <Card key={assessment.skill}>
               <CardHeader>
                 <CardTitle>{assessment.skill}</CardTitle>
                 <Badge variant="accent">{assessment.score.toFixed(1)}/10</Badge>

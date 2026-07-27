@@ -28,6 +28,8 @@ describe('TextInterviewPage interview mode', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: 'Text Interview' })).toBeInTheDocument()
     expect(screen.getByText('Text', { selector: 'span' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Language')).toBeInTheDocument()
+    expect(screen.queryByText('Set up my interview')).not.toBeInTheDocument()
 
     rerender(
       <MemoryRouter>

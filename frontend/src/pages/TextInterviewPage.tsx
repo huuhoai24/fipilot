@@ -11,7 +11,6 @@ import {
   History,
   Loader2,
   MessageSquareText,
-  Mic,
   Send,
   Upload,
   UserRound,
@@ -20,7 +19,6 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
-import { InterviewExperienceIntro } from '@/components/interview/InterviewExperienceIntro'
 import { api } from '@/lib/api'
 import { loadInterviewPreferences } from '@/lib/interviewPreferences'
 import type {
@@ -387,26 +385,24 @@ export function TextInterviewPage({
   }
 
   return (
-    <div className="space-y-8">
-      {!state ? (
-        <InterviewExperienceIntro mode={interviewMode} />
-      ) : (
-        <div className="flex flex-col gap-3 rounded-[24px] border border-border bg-surface px-6 py-5 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="font-display text-3xl font-semibold tracking-tight-display text-text-primary">
-              {interviewMode === 'voice' ? 'Speech Interview' : 'Text Interview'}
-            </h1>
-            <p className="mt-1 text-sm text-text-muted">
-              {interviewMode === 'voice'
-                ? 'CV-driven conversational interview with realtime speech.'
-                : 'Stay specific, show your reasoning, and use evidence from your experience.'}
-            </p>
-          </div>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight-display text-text-primary">
+            {interviewMode === 'voice' ? 'Speech Interview' : 'Text Interview'}
+          </h1>
+          <p className="mt-1 text-sm text-text-muted">
+            {interviewMode === 'voice'
+              ? 'CV-driven conversational interview with realtime speech.'
+              : 'CV-driven interview room using adaptive V2 APIs.'}
+          </p>
+        </div>
+        {sessionId && (
           <Badge variant={isFinished ? 'success' : 'accent'}>
             {isFinished ? 'Completed' : `Session ${sessionId}`}
           </Badge>
-        </div>
-      )}
+        )}
+      </div>
 
       {error && (
         <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
@@ -415,25 +411,12 @@ export function TextInterviewPage({
       )}
 
       {!state ? (
-        <div id="interview-setup" className="scroll-mt-8 space-y-6 pb-20 pt-10 md:pb-24 md:pt-14">
-          <div className="max-w-4xl">
-            <h2 className="font-display text-4xl font-semibold tracking-tight-display text-text-primary sm:text-5xl">
-              Build your interview.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
-              Start with your CV. We will extract a candidate profile for your review before creating any questions.
-            </p>
-          </div>
-
-          <Card className="overflow-hidden">
+        <div className="space-y-5">
+          <Card>
             <CardHeader>
-              <div>
-                <CardTitle>Candidate Profile</CardTitle>
-                <p className="mt-1 text-xs text-text-faint">PDF or DOCX, maximum 10 MB</p>
-              </div>
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-sm font-semibold text-accent">1</span>
+              <CardTitle>Candidate Profile</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
+            <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
                 <div className="min-w-0">
                   <Label htmlFor="resume-file">Resume file</Label>
@@ -446,7 +429,9 @@ export function TextInterviewPage({
                     aria-describedby="resume-file-help resume-upload-status"
                     className="file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-text-primary"
                   />
-                  <p id="resume-file-help" className="mt-2 text-xs text-text-faint">Choose the most current version of your CV.</p>
+                  <p id="resume-file-help" className="mt-1.5 text-xs text-text-faint">
+                    PDF or DOCX, up to 10 MB.
+                  </p>
                 </div>
                 <Button
                   type="button"
@@ -466,7 +451,7 @@ export function TextInterviewPage({
               </div>
 
               {selectedFile && (
-                <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-accent/25 bg-accent-soft px-4 py-3">
+                <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2.5">
                   <FileText className="h-4 w-4 shrink-0 text-accent" />
                   <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{selectedFile.name}</span>
                   <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedFile.size)}</span>
@@ -500,20 +485,17 @@ export function TextInterviewPage({
             <CandidateProfilePreview profile={candidateProfile} confidenceScore={profileConfidence} />
           )}
 
-          <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <Card className="overflow-hidden">
+          <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <Card>
               <CardHeader>
-                <div>
-                  <CardTitle>Interview Setup</CardTitle>
-                  <p className="mt-1 text-xs text-text-faint">Tune the session to the role you are preparing for.</p>
-                </div>
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-sm font-semibold text-accent">2</span>
+                <CardTitle>Interview Setup</CardTitle>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <Label>Language</Label>
+                    <Label htmlFor="interview-language">Language</Label>
                     <Select
+                      id="interview-language"
                       value={language}
                       onChange={(event) => setLanguage(event.target.value as InterviewLanguage)}
                       disabled={loading || uploading}
@@ -523,8 +505,9 @@ export function TextInterviewPage({
                     </Select>
                   </div>
                   <div>
-                    <Label>Experience Level</Label>
+                    <Label htmlFor="interview-experience-level">Experience Level</Label>
                     <Select
+                      id="interview-experience-level"
                       value={experienceLevel}
                       onChange={(event) => setExperienceLevel(event.target.value as ExperienceLevel)}
                       disabled={loading || uploading}
@@ -536,8 +519,9 @@ export function TextInterviewPage({
                     </Select>
                   </div>
                   <div>
-                    <Label>Interview Style</Label>
+                    <Label htmlFor="interview-style">Interview Style</Label>
                     <Select
+                      id="interview-style"
                       value={interviewStyle}
                       onChange={(event) => setInterviewStyle(event.target.value as InterviewStyle)}
                       disabled={loading || uploading}
@@ -548,8 +532,9 @@ export function TextInterviewPage({
                     </Select>
                   </div>
                   <div>
-                    <Label>Duration</Label>
+                    <Label htmlFor="interview-duration">Duration</Label>
                     <Input
+                      id="interview-duration"
                       type="number"
                       min={5}
                       max={180}
@@ -559,8 +544,9 @@ export function TextInterviewPage({
                     />
                   </div>
                   <div>
-                    <Label>Question Count</Label>
+                    <Label htmlFor="interview-question-count">Question Count</Label>
                     <Input
+                      id="interview-question-count"
                       type="number"
                       min={1}
                       value={questionCount}
@@ -570,19 +556,19 @@ export function TextInterviewPage({
                   </div>
                 </div>
                 <div>
-                  <Label>Objective</Label>
+                  <Label htmlFor="interview-objective">Objective</Label>
                   <Textarea
+                    id="interview-objective"
                     rows={3}
                     value={objective}
                     onChange={(event) => setObjective(event.target.value)}
                     disabled={loading || uploading}
                   />
                 </div>
-                <div className="flex justify-end border-t border-border pt-5">
+                <div className="flex justify-end">
                   <Button
                     type="submit"
                     disabled={loading || uploading || !candidateId}
-                    size="lg"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                     Start
@@ -591,12 +577,12 @@ export function TextInterviewPage({
               </CardContent>
             </Card>
 
-            <div className="hairline h-fit rounded-card border border-border bg-surface px-6 py-6 lg:sticky lg:top-8">
+            <div className="rounded-lg border border-border bg-surface px-5 py-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
                 <ClipboardList className="h-4 w-4 text-accent" />
                 Session Setup
               </div>
-              <div className="mt-5 space-y-4 text-sm text-text-muted">
+              <div className="mt-4 space-y-3 text-sm text-text-muted">
                 <div className="flex justify-between gap-3">
                   <span>Mode</span>
                   <span className="font-medium text-text-primary">
@@ -625,9 +611,6 @@ export function TextInterviewPage({
                   <span>Minutes</span>
                   <span className="font-medium text-text-primary">{durationMinutes}</span>
                 </div>
-              </div>
-              <div className="mt-6 rounded-2xl bg-surface-raised p-4 text-xs leading-5 text-text-muted">
-                Your first question is generated only after the candidate profile is ready.
               </div>
             </div>
           </form>
@@ -700,8 +683,9 @@ export function TextInterviewPage({
 
                     <form onSubmit={submitAnswer} className="space-y-3">
                       <div>
-                        <Label>Answer</Label>
+                        <Label htmlFor="interview-answer">Answer</Label>
                         <Textarea
+                          id="interview-answer"
                           rows={8}
                           value={answer}
                           onChange={(event) => setAnswer(event.target.value)}

@@ -68,6 +68,35 @@ export interface CandidateProfile {
 export type V2SkillEvidence = SkillEvidence
 export type V2CandidateProfile = CandidateProfile
 
+export interface PersistedCandidateProfile extends CandidateProfile {
+  candidate_id: string
+  profile_version: number
+}
+
+export type ProfileIssueOrigin =
+  | 'profile_validity'
+  | 'interview_readiness'
+
+export interface ProfileIssue {
+  code: string
+  origin: ProfileIssueOrigin
+  field_path?: string | null
+}
+
+export interface InterviewReadiness {
+  is_ready: boolean
+  issues: ProfileIssue[]
+}
+
+export interface CandidateProfileResponse {
+  profile: PersistedCandidateProfile
+  readiness: InterviewReadiness
+}
+
+export interface CandidateProfileReadResult extends CandidateProfileResponse {
+  etag: string
+}
+
 export interface ResumeUploadResponse {
   candidate_id: string
   profile: CandidateProfile

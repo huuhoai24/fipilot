@@ -10,6 +10,7 @@ import { SpeechInterviewPage } from '@/pages/SpeechInterviewPage'
 import { InterviewHistoryPage } from '@/pages/InterviewHistoryPage'
 import { InterviewReportPage } from '@/pages/InterviewReportPage'
 import { SettingsPage } from '@/pages/SettingsPage'
+import { CandidateProfilePage } from '@/pages/CandidateProfilePage'
 
 const queryClient = new QueryClient()
 
@@ -30,6 +31,7 @@ export default function App() {
                 <Route path="/speech-interview/:sessionId" element={<SpeechInterviewPage />} />
                 <Route path="/interview-history" element={<InterviewHistoryPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/candidate-profile/:candidateId" element={<CandidateProfilePage />} />
                 <Route path="*" element={<Navigate to="/text-interview" replace />} />
               </Route>
             </Route>

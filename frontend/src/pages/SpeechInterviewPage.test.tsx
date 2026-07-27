@@ -305,6 +305,7 @@ describe('SpeechInterviewPage realtime transport', () => {
     renderPage()
     const socket = await connectServer()
 
+    expect(socket.sent).toContain(JSON.stringify({ type: 'speak_question' }))
     await waitFor(() => expect(getUserMedia).toHaveBeenCalledWith({
       audio: {
         echoCancellation: true,
@@ -334,6 +335,9 @@ describe('SpeechInterviewPage realtime transport', () => {
     })
     act(() => socket.serverEvent({ type: 'audio_ack', sequence: 0, bytes_received: 4 }))
     expect(screen.getByText('1 audio chunk delivered')).toBeInTheDocument()
+
+    act(() => socket.serverEvent({ type: 'audio_dropped', dropped: 1 }))
+    expect(screen.getByText(/Some audio was skipped/)).toBeInTheDocument()
 
     act(() => {
       socket.serverEvent({

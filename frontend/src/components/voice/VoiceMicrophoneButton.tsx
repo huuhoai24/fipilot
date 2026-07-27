@@ -64,7 +64,7 @@ export function VoiceMicrophoneButton({
             'relative flex h-28 w-28 items-center justify-center rounded-full border shadow-lg transition-transform sm:h-32 sm:w-32',
             'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus',
             isListening && 'border-danger bg-danger text-white hover:scale-[1.03]',
-            state === VoiceInterviewState.IDLE && 'border-accent bg-accent text-[#07110d] hover:scale-[1.03] hover:bg-accent-hover',
+            state === VoiceInterviewState.IDLE && 'border-accent bg-accent text-white hover:scale-[1.03] hover:bg-accent-hover',
             isReady && 'border-accent bg-accent-soft text-accent',
             isProcessing && 'cursor-not-allowed border-border bg-surface-raised text-text-muted',
             isSpeaking && 'cursor-not-allowed border-accent/40 bg-accent-soft text-accent',

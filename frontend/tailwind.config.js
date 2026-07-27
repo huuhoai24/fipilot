@@ -24,12 +24,12 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Satoshi', '"Segoe UI"', 'sans-serif'],
-        body: ['Satoshi', '"Segoe UI"', 'sans-serif'],
-        mono: ['ui-monospace', '"Cascadia Code"', '"SFMono-Regular"', 'monospace'],
+        display: ['Inter', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       borderRadius: {
-        card: '20px',
+        card: '8px',
       },
       keyframes: {
         'pulse-ring': {
@@ -42,18 +42,13 @@ export default {
           '50%': { transform: 'scaleY(1)' },
         },
         'fade-in': {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        'ambient-float': {
-          '0%, 100%': { transform: 'translate3d(0, 0, 0) scale(1)' },
-          '50%': { transform: 'translate3d(0, -18px, 0) scale(1.04)' },
         },
       },
       animation: {
         'pulse-ring': 'pulse-ring 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'fade-in': '320ms cubic-bezier(0.22, 1, 0.36, 1) fade-in',
-        'ambient-float': '8s ease-in-out infinite ambient-float',
+        'fade-in': '150ms ease-out fade-in',
       },
       transitionDuration: {
         DEFAULT: '150ms',

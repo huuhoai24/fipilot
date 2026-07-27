@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Check, Save, SlidersHorizontal } from 'lucide-react'
+import { Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
@@ -33,36 +33,28 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h1 className="font-display text-4xl font-semibold tracking-tight-display text-text-primary sm:text-5xl">Practice preferences</h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-text-muted">Choose the defaults used whenever you prepare a new text or voice interview.</p>
+        <h1 className="font-display text-2xl font-bold tracking-tight-display text-text-primary">Settings</h1>
+        <p className="mt-1 text-sm text-text-muted">Default controls for the V2 text interview experience.</p>
       </div>
 
-      <Card className="max-w-4xl overflow-hidden">
+      <Card className="max-w-3xl">
         <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-soft">
-              <SlidersHorizontal className="h-5 w-5 text-accent" />
-            </div>
-            <div>
-              <CardTitle>Interview defaults</CardTitle>
-              <p className="mt-1 text-xs text-text-faint">Stored only on this browser.</p>
-            </div>
-          </div>
+          <CardTitle>Interview Defaults</CardTitle>
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <Label>Language</Label>
-              <Select value={language} onChange={(event) => setLanguage(event.target.value as InterviewLanguage)}>
+              <Label htmlFor="settings-language">Language</Label>
+              <Select id="settings-language" value={language} onChange={(event) => setLanguage(event.target.value as InterviewLanguage)}>
                 <option value="vi">Vietnamese</option>
                 <option value="en">English</option>
               </Select>
             </div>
             <div>
-              <Label>Experience Level</Label>
-              <Select value={experienceLevel} onChange={(event) => setExperienceLevel(event.target.value as ExperienceLevel)}>
+              <Label htmlFor="settings-experience-level">Experience Level</Label>
+              <Select id="settings-experience-level" value={experienceLevel} onChange={(event) => setExperienceLevel(event.target.value as ExperienceLevel)}>
                 <option value="intern">Intern</option>
                 <option value="junior">Junior</option>
                 <option value="middle">Middle</option>
@@ -70,16 +62,17 @@ export function SettingsPage() {
               </Select>
             </div>
             <div>
-              <Label>Interview Style</Label>
-              <Select value={interviewStyle} onChange={(event) => setInterviewStyle(event.target.value as InterviewStyle)}>
+              <Label htmlFor="settings-interview-style">Interview Style</Label>
+              <Select id="settings-interview-style" value={interviewStyle} onChange={(event) => setInterviewStyle(event.target.value as InterviewStyle)}>
                 <option value="technical">Technical</option>
                 <option value="behavioral">Behavioral</option>
                 <option value="mixed">Mixed</option>
               </Select>
             </div>
             <div>
-              <Label>Duration</Label>
+              <Label htmlFor="settings-duration">Duration</Label>
               <Input
+                id="settings-duration"
                 type="number"
                 min={5}
                 max={180}
@@ -88,8 +81,9 @@ export function SettingsPage() {
               />
             </div>
             <div>
-              <Label>Question Count</Label>
+              <Label htmlFor="settings-question-count">Question Count</Label>
               <Input
+                id="settings-question-count"
                 type="number"
                 min={1}
                 value={questionCount}
@@ -99,8 +93,8 @@ export function SettingsPage() {
           </div>
 
           <div>
-            <Label>Objective</Label>
-            <Textarea rows={4} value={objective} onChange={(event) => setObjective(event.target.value)} />
+            <Label htmlFor="settings-objective">Objective</Label>
+            <Textarea id="settings-objective" rows={4} value={objective} onChange={(event) => setObjective(event.target.value)} />
           </div>
 
           <div className="flex items-center justify-end gap-3 border-t border-border pt-5">
@@ -108,13 +102,12 @@ export function SettingsPage() {
               {saved ? 'Preferences saved on this device.' : 'Changes apply to new interviews.'}
             </span>
             <Button type="button" onClick={handleSave}>
-              {saved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+              <Save className="h-4 w-4" />
               {saved ? 'Saved' : 'Save preferences'}
             </Button>
           </div>
         </CardContent>
       </Card>
-
     </div>
   )
 }
