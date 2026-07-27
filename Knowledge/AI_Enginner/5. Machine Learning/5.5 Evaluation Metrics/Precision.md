@@ -1,0 +1,26 @@
+# Precision
+
+- **Intern**
+  - Understand positive predictive value derived from true and false positives.
+  - Recognize fundamental assumptions and terminology in the context of **Precision**.
+  - Describe basic model behavior and expected outputs in the context of **Precision**.
+  - Distinguish primary evaluation concepts in the context of **Precision**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Precision**.
+- **Junior**
+  - Explain and compare threshold, prevalence, and class-definition effects.
+  - Explain hyperparameter roles and regularization effects in the context of **Precision**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Precision**.
+  - Evaluate interpretation of errors and model outputs in the context of **Precision**.
+  - Relate limitations relative to alternative methods in the context of **Precision**.
+- **Middle**
+  - Analyze precision-recall trade-offs, confidence intervals, and segment analysis.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Precision**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Precision**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Precision**.
+  - Assess production constraints affecting model choice in the context of **Precision**.
+- **Senior**
+  - Define and govern business-cost alignment and operating-point governance.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Precision**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Precision**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Precision**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Precision**.

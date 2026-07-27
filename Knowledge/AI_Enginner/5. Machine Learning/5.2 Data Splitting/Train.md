@@ -1,0 +1,26 @@
+# Train
+
+- **Intern**
+  - Understand definition, objective, inputs, and outputs.
+  - Recognize fundamental assumptions and terminology in the context of **Train**.
+  - Describe basic model behavior and expected outputs in the context of **Train**.
+  - Distinguish primary evaluation concepts in the context of **Train**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Train**.
+- **Junior**
+  - Explain and compare algorithm-selection criteria and inductive bias.
+  - Explain hyperparameter roles and regularization effects in the context of **Train**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Train**.
+  - Evaluate interpretation of errors and model outputs in the context of **Train**.
+  - Relate limitations relative to alternative methods in the context of **Train**.
+- **Middle**
+  - Analyze bias-variance, calibration, robustness, and shift implications.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Train**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Train**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Train**.
+  - Assess production constraints affecting model choice in the context of **Train**.
+- **Senior**
+  - Define and govern problem formulation and business-objective alignment.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Train**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Train**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Train**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Train**.

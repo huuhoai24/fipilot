@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+  <title id="title">AI Interview Platform - Container and Component Architecture</title>
+  <desc id="desc">Sơ đồ container React, FastAPI modular monolith, speech service và managed services.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#13233d"/></linearGradient>
+    <linearGradient id="gateway" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#172554"/><stop offset="1" stop-color="#312e81"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity=".35"/></filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#7dd3fc"/></marker>
+    <style>
+      .t{font:700 36px Inter,Segoe UI,sans-serif;fill:#f8fafc}.s{font:400 16px Inter,Segoe UI,sans-serif;fill:#94a3b8}
+      .h{font:700 20px Inter,Segoe UI,sans-serif;fill:#f8fafc}.b{font:400 14px Inter,Segoe UI,sans-serif;fill:#cbd5e1}
+      .small{font:600 12px Inter,Segoe UI,sans-serif;fill:#bae6fd}.line{stroke:#7dd3fc;stroke-width:2.2;fill:none;marker-end:url(#arrow)}
+      .dash{stroke-dasharray:7 6}.card{fill:#10243b;stroke:#3b82f6;stroke-width:1.5}.inner{fill:#0f172a;stroke:#475569;stroke-width:1.2}
+    </style>
+  </defs>
+  <rect width="1600" height="980" rx="28" fill="url(#bg)"/>
+  <text x="64" y="65" class="t">Container &amp; Component Architecture</text>
+  <text x="64" y="97" class="s">Deployable units, runtime boundaries, and dependency direction</text>
+
+  <g filter="url(#shadow)">
+    <rect x="55" y="160" width="330" height="650" rx="26" class="card"/>
+    <text x="220" y="205" text-anchor="middle" class="h">Web Client</text>
+    <text x="220" y="231" text-anchor="middle" class="s">React + TypeScript</text>
+    <rect x="85" y="270" width="270" height="76" rx="14" class="inner"/><text x="220" y="302" text-anchor="middle" class="h">Auth &amp; Routing</text><text x="220" y="327" text-anchor="middle" class="b">Firebase SDK · protected routes</text>
+    <rect x="85" y="370" width="270" height="92" rx="14" class="inner"/><text x="220" y="402" text-anchor="middle" class="h">Interview UI</text><text x="220" y="427" text-anchor="middle" class="b">Upload · text room · history</text><text x="220" y="450" text-anchor="middle" class="b">report view</text>
+    <rect x="85" y="486" width="270" height="112" rx="14" class="inner"/><text x="220" y="520" text-anchor="middle" class="h">Voice Client</text><text x="220" y="545" text-anchor="middle" class="b">Microphone PCM · WebSocket</text><text x="220" y="568" text-anchor="middle" class="b">AudioWorklet · playback</text><text x="220" y="590" text-anchor="middle" class="b">backpressure</text>
+    <rect x="85" y="622" width="270" height="76" rx="14" class="inner"/><text x="220" y="654" text-anchor="middle" class="h">API Client</text><text x="220" y="679" text-anchor="middle" class="b">Bearer token · REST retry 401</text>
+    <rect x="85" y="722" width="270" height="58" rx="14" fill="#172554" stroke="#60a5fa"/><text x="220" y="758" text-anchor="middle" class="b">Firebase Hosting / Vite :5173</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="465" y="125" width="680" height="755" rx="30" fill="url(#gateway)" stroke="#818cf8" stroke-width="2"/>
+    <text x="805" y="169" text-anchor="middle" class="h">FastAPI Gateway — Modular Monolith</text>
+    <text x="805" y="195" text-anchor="middle" class="s">Cloud Run / Uvicorn · REST + WebSocket</text>
+    <rect x="500" y="230" width="610" height="84" rx="16" class="inner"/>
+    <text x="805" y="262" text-anchor="middle" class="h">Gateway Adapters</text>
+    <text x="805" y="289" text-anchor="middle" class="b">Auth · Resume · Interview · Voice · Report · Health APIs</text>
+
+    <rect x="500" y="340" width="610" height="102" rx="16" fill="#111c3b" stroke="#a78bfa"/>
+    <text x="805" y="375" text-anchor="middle" class="h">Interview Orchestrator</text>
+    <text x="805" y="402" text-anchor="middle" class="b">start / submit_answer · adaptive decision</text>
+    <text x="805" y="426" text-anchor="middle" class="b">bounded memory · follow-up selection</text>
+
+    <rect x="500" y="468" width="290" height="164" rx="16" class="inner"/>
+    <text x="645" y="501" text-anchor="middle" class="h">AI Domain Services</text>
+    <text x="645" y="530" text-anchor="middle" class="b">Profile Scanner</text><text x="645" y="554" text-anchor="middle" class="b">Interview Planner</text>
+    <text x="645" y="578" text-anchor="middle" class="b">Question Generator</text><text x="645" y="602" text-anchor="middle" class="b">Evaluator · Report Generator</text>
+
+    <rect x="820" y="468" width="290" height="164" rx="16" class="inner"/>
+    <text x="965" y="501" text-anchor="middle" class="h">Voice Session</text>
+    <text x="965" y="530" text-anchor="middle" class="b">Connection manager</text><text x="965" y="554" text-anchor="middle" class="b">Audio bounded queues</text>
+    <text x="965" y="578" text-anchor="middle" class="b">Transcript / answer service</text><text x="965" y="602" text-anchor="middle" class="b">Question + TTS streaming</text>
+
+    <rect x="500" y="658" width="610" height="94" rx="16" class="inner"/>
+    <text x="805" y="691" text-anchor="middle" class="h">Infrastructure Ports &amp; Adapters</text>
+    <text x="805" y="719" text-anchor="middle" class="b">Firebase Auth · Vertex Gemini · Firestore/SQLite · PDF/DOCX · Remote Speech</text>
+    <rect x="500" y="778" width="610" height="65" rx="16" fill="#111827" stroke="#64748b"/>
+    <text x="805" y="817" text-anchor="middle" class="b">Pydantic shared schemas · typed settings · structured logging</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1235" y="160" width="310" height="300" rx="24" fill="#2b1635" stroke="#f472b6" stroke-width="2"/>
+    <text x="1390" y="202" text-anchor="middle" class="h">Speech Service</text>
+    <text x="1390" y="228" text-anchor="middle" class="s">Independent GPU process</text>
+    <rect x="1265" y="260" width="250" height="60" rx="12" class="inner"/><text x="1390" y="297" text-anchor="middle" class="b">Silero VAD / endpointing</text>
+    <rect x="1265" y="337" width="250" height="60" rx="12" class="inner"/><text x="1390" y="374" text-anchor="middle" class="b">faster-whisper STT</text>
+    <rect x="1265" y="414" width="250" height="60" rx="12" class="inner"/><text x="1390" y="451" text-anchor="middle" class="b">VieNeu-TTS PCM stream</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1235" y="520" width="310" height="96" rx="18" fill="#153448" stroke="#38bdf8"/>
+    <text x="1390" y="557" text-anchor="middle" class="h">Firebase Auth</text><text x="1390" y="585" text-anchor="middle" class="b">Identity provider</text>
+    <rect x="1235" y="642" width="310" height="96" rx="18" fill="#153448" stroke="#34d399"/>
+    <text x="1390" y="679" text-anchor="middle" class="h">Firestore / SQLite</text><text x="1390" y="707" text-anchor="middle" class="b">Repository implementations</text>
+    <rect x="1235" y="764" width="310" height="96" rx="18" fill="#153448" stroke="#fbbf24"/>
+    <text x="1390" y="801" text-anchor="middle" class="h">Vertex AI Gemini</text><text x="1390" y="829" text-anchor="middle" class="b">Structured + streaming AI</text>
+  </g>
+
+  <path class="line" d="M385 425H458"/><text x="421" y="408" text-anchor="middle" class="small">HTTPS/WSS</text>
+  <path class="line dash" d="M1145 395H1228"/><text x="1186" y="378" text-anchor="middle" class="small">Internal WSS</text>
+  <path class="line" d="M1145 550H1228"/><text x="1186" y="535" text-anchor="middle" class="small">Verify</text>
+  <path class="line" d="M1145 690H1228"/><text x="1186" y="675" text-anchor="middle" class="small">Persist</text>
+  <path class="line" d="M1145 812H1228"/><text x="1186" y="797" text-anchor="middle" class="small">Generate</text>
+
+  <text x="65" y="930" class="s">Solid arrows: application dependencies · Dashed arrow: isolated speech runtime boundary</text>
+</svg>

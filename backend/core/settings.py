@@ -46,6 +46,12 @@ class LLMRoutingSettings(BaseModel):
 
     simple_model: str = Field(default="gemini-2.5-flash", description="Reads GEMINI_SIMPLE_MODEL.")
     complex_model: str = Field(default="gemini-2.5-pro", description="Reads GEMINI_COMPLEX_MODEL.")
+    # The evaluator runs while a voice candidate waits in silence. Measured
+    # ~25 s on the complex model versus ~13.5 s on the simple one. Kept on the
+    # stronger model by default because the score is the product's output.
+    evaluator_task_type: Literal["simple", "complex"] = Field(
+        default="complex", description="Reads EVALUATOR_TASK_TYPE."
+    )
 
 
 class DatabaseSettings(BaseModel):
@@ -67,10 +73,18 @@ class DevelopmentSettings(BaseModel):
 
 
 class SpeechSettings(BaseModel):
-    """Streaming speech recognition, VAD, and synthesis settings."""
+    """Streaming speech recognition, VAD, and synthesis settings.
 
-    stt_model: str = "medium"
+    Defaults are sized for a single-GPU developer laptop (~4 GB VRAM). See
+    backend/.env.speech.example for the CUDA-specific overrides.
+    """
+
+    # large-v3-turbo is a distilled large-v3: far better on Vietnamese mixed with
+    # English technical terms than `medium`, and small enough for 4 GB VRAM
+    # (~1.0 GB at int8_float16, ~1.6 GB at float16).
+    stt_model: str = "large-v3-turbo"
     stt_device: str = "cpu"
+    # int8 is the portable choice. On CUDA prefer int8_float16 (see env example).
     stt_compute_type: str = "int8"
     stt_language: str = "vi"
     stt_vocabulary_profile: Literal[
@@ -82,10 +96,21 @@ class SpeechSettings(BaseModel):
         "devops",
     ] = "auto"
     stt_hotwords: list[str] = Field(default_factory=list)
-    audio_queue_size: int = 64
-    partial_interval_ms: int = 1000
+    # 800 frames of 512 samples is ~25 s of audio for under 1 MB of RAM. The old
+    # 64-frame (2 s) buffer could not absorb a single transcription pass, so any
+    # normal-length answer overflowed it.
+    audio_queue_size: int = 800
+    # Each partial re-transcribes the utterance so far; 1 s was more often than a
+    # laptop GPU can finish, which starved the audio consumer.
+    partial_interval_ms: int = 2500
+    # Stop spending GPU on partials past this much buffered speech and save it
+    # for the final transcript, which is the one that gets scored.
+    partial_max_audio_ms: int = 20000
+    # Partials run greedy; the final transcript gets a real beam search.
+    final_beam_size: int = 5
     vad_threshold: float = 0.5
-    vad_min_silence_ms: int = 500
+    # 500 ms endpointed on ordinary mid-sentence pauses, cutting answers in half.
+    vad_min_silence_ms: int = 900
     vad_speech_pad_ms: int = 120
     tts_mode: str = "v3turbo"
     tts_device: str = "auto"
@@ -212,6 +237,9 @@ class Settings(BaseSettings):
 
         llm_data.setdefault("simple_model", os.getenv("GEMINI_SIMPLE_MODEL", "gemini-2.5-flash"))
         llm_data.setdefault("complex_model", os.getenv("GEMINI_COMPLEX_MODEL", "gemini-2.5-pro"))
+        llm_data.setdefault(
+            "evaluator_task_type", os.getenv("EVALUATOR_TASK_TYPE", "complex")
+        )
 
         database_data.setdefault("url", os.getenv("DATABASE_URL", os.getenv("SQLITE_DATABASE_URL", "sqlite:///./interview_app.db")))
 
@@ -229,7 +257,9 @@ class Settings(BaseSettings):
         development_data.setdefault(
             "max_voice_message_chars", _env_int("MAX_VOICE_MESSAGE_CHARS", 4096)
         )
-        speech_data.setdefault("stt_model", os.getenv("STT_MODEL", "medium"))
+        speech_data.setdefault(
+            "stt_model", os.getenv("STT_MODEL", SpeechSettings.model_fields["stt_model"].default)
+        )
         speech_data.setdefault("stt_device", os.getenv("STT_DEVICE", "cpu"))
         speech_data.setdefault("stt_compute_type", os.getenv("STT_COMPUTE_TYPE", "int8"))
         speech_data.setdefault("stt_language", os.getenv("STT_LANGUAGE", "vi"))
@@ -242,14 +272,20 @@ class Settings(BaseSettings):
             _env_list("STT_HOTWORDS", []),
         )
         speech_data.setdefault(
-            "audio_queue_size", _env_int("STT_AUDIO_QUEUE_SIZE", 64)
+            "audio_queue_size", _env_int("STT_AUDIO_QUEUE_SIZE", 800)
         )
         speech_data.setdefault(
-            "partial_interval_ms", _env_int("STT_PARTIAL_INTERVAL_MS", 1000)
+            "partial_interval_ms", _env_int("STT_PARTIAL_INTERVAL_MS", 2500)
+        )
+        speech_data.setdefault(
+            "partial_max_audio_ms", _env_int("STT_PARTIAL_MAX_AUDIO_MS", 20000)
+        )
+        speech_data.setdefault(
+            "final_beam_size", _env_int("STT_FINAL_BEAM_SIZE", 5)
         )
         speech_data.setdefault("vad_threshold", _env_float("VAD_THRESHOLD", 0.5))
         speech_data.setdefault(
-            "vad_min_silence_ms", _env_int("VAD_MIN_SILENCE_MS", 500)
+            "vad_min_silence_ms", _env_int("VAD_MIN_SILENCE_MS", 900)
         )
         speech_data.setdefault(
             "vad_speech_pad_ms", _env_int("VAD_SPEECH_PAD_MS", 120)
@@ -327,6 +363,9 @@ class Settings(BaseSettings):
         complex_model = _take(data, "gemini_complex_model", "GEMINI_COMPLEX_MODEL")
         if complex_model is not None:
             llm_data["complex_model"] = complex_model
+        evaluator_task_type = _take(data, "evaluator_task_type", "EVALUATOR_TASK_TYPE")
+        if evaluator_task_type is not None:
+            llm_data["evaluator_task_type"] = evaluator_task_type
 
         database_url = _take(data, "database_url", "DATABASE_URL", "sqlite_database_url")
         if database_url is not None:
@@ -475,6 +514,10 @@ class Settings(BaseSettings):
         return self.llm_routing.complex_model
 
     @property
+    def evaluator_task_type(self) -> str:
+        return self.llm_routing.evaluator_task_type
+
+    @property
     def database_url(self) -> str:
         return self.database.url
 
@@ -537,6 +580,14 @@ class Settings(BaseSettings):
     @property
     def stt_partial_interval_ms(self) -> int:
         return self.speech.partial_interval_ms
+
+    @property
+    def stt_partial_max_audio_ms(self) -> int:
+        return self.speech.partial_max_audio_ms
+
+    @property
+    def stt_final_beam_size(self) -> int:
+        return self.speech.final_beam_size
 
     @property
     def vad_threshold(self) -> float:

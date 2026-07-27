@@ -1,0 +1,28 @@
+# Response
+
+- **Intern**
+  - Understand serving terminology and request-response concepts.
+  - Recognize basic container and runtime concepts in the context of **Response**.
+  - Describe CPU, GPU, and accelerator roles in the context of **Response**.
+  - Distinguish batch versus online inference distinctions in the context of **Response**.
+  - Interpret common latency and compatibility issues in the context of **Response**.
+- **Junior**
+  - Explain and compare API contracts, serialization, and validation concerns.
+  - Explain container isolation and dependency compatibility in the context of **Response**.
+  - Distinguish model-format and runtime selection criteria in the context of **Response**.
+  - Evaluate throughput, batching, and concurrency trade-offs in the context of **Response**.
+  - Relate basic security and observability requirements in the context of **Response**.
+- **Middle**
+  - Analyze scaling, autoscaling, queueing, and backpressure implications.
+  - Analyze GPU memory, precision, and optimization trade-offs in the context of **Response**.
+  - Diagnose resilience, rollback, and degraded-mode design in the context of **Response**.
+  - Evaluate performance profiling and bottleneck attribution in the context of **Response**.
+  - Assess deployment topology and cost considerations in the context of **Response**.
+- **Senior**
+  - Define and govern serving architecture across workloads and regions.
+  - Establish SLO, capacity, resilience, and disaster-recovery strategy in the context of **Response**.
+  - Evaluate security, compliance, and tenancy isolation in the context of **Response**.
+  - Govern hardware-software co-design and cost governance in the context of **Response**.
+  - Set platform standardization and technology selection in the context of **Response**.
+
+---

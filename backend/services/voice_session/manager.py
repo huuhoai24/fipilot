@@ -51,6 +51,8 @@ class _ManagedVoiceSession:
     analytics: VoiceAnalytics = field(default_factory=VoiceAnalytics)
     waiting_for_user_at: float | None = None
     user_speech_started_at: float | None = None
+    dropped_chunks: int = 0
+    late_chunks: int = 0
 
 
 class VoiceSessionManager:
@@ -354,7 +356,14 @@ class VoiceSessionManager:
 
     async def announce_audio_chunk(
         self, session_id: str, user_id: str, sequence: int
-    ) -> None:
+    ) -> bool:
+        """Register the metadata for the next binary frame.
+
+        Returns False when the session has already stopped listening. The VAD
+        can endpoint mid-sentence, and the browser keeps capturing until it sees
+        the state change, so a burst of late frames is normal and must not be
+        reported as a protocol error per frame.
+        """
         async with self._lock:
             managed = self._get(session_id, user_id)
             if (
@@ -368,7 +377,9 @@ class VoiceSessionManager:
                     and managed.barge_in_monitoring
                 )
             ):
-                raise VoiceSessionProtocolError("Audio is only accepted while listening.")
+                managed.pending_sequence = None
+                managed.late_chunks += 1
+                return False
             if managed.pending_sequence is not None:
                 raise VoiceSessionProtocolError(
                     "The previous audio chunk has no binary payload."
@@ -376,14 +387,26 @@ class VoiceSessionManager:
             if sequence <= managed.last_sequence:
                 raise VoiceSessionProtocolError("Audio chunk sequence is out of order.")
             managed.pending_sequence = sequence
+            return True
 
     async def receive_audio_chunk(
         self, session_id: str, user_id: str, payload: bytes
-    ) -> tuple[int, int]:
+    ) -> tuple[int, int] | None:
+        """Accept one binary PCM frame.
+
+        Returns None when the frame arrived after the session stopped listening;
+        those are expected in-flight frames, not protocol errors.
+        """
         async with self._lock:
             managed = self._get(session_id, user_id)
             sequence = managed.pending_sequence
             if sequence is None:
+                if managed.state.state not in {
+                    VoiceSessionStatus.WAITING_FOR_USER,
+                    VoiceSessionStatus.USER_SPEAKING,
+                }:
+                    managed.late_chunks += 1
+                    return None
                 raise VoiceSessionProtocolError(
                     "Binary audio requires audio_chunk metadata."
                 )
@@ -411,17 +434,25 @@ class VoiceSessionManager:
 
         if pipeline is not None:
             try:
-                pipeline.enqueue(payload)
-            except AudioQueueFullError as error:
-                raise AudioChunkError(
-                    "Audio processing queue is full.",
-                    code="audio_queue_full",
-                ) from error
+                accepted = pipeline.enqueue(payload)
+            except AudioQueueFullError:
+                # Older pipelines still raise. Treat it the same as a drop:
+                # tearing down the socket would end the interview outright.
+                accepted = False
             except RuntimeError as error:
                 raise VoiceSessionProtocolError(
                     "Audio pipeline is not available."
                 ) from error
+            if accepted is False:
+                async with self._lock:
+                    managed = self._sessions.get((user_id, session_id))
+                    if managed is not None:
+                        managed.dropped_chunks += 1
         return sequence, chunk_size
+
+    async def dropped_chunk_count(self, session_id: str, user_id: str) -> int:
+        async with self._lock:
+            return self._get(session_id, user_id).dropped_chunks
 
     async def active_session_count(self) -> int:
         async with self._lock:

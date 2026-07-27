@@ -1,0 +1,26 @@
+# Model Interpretability
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **Model Interpretability**.
+  - Describe basic measurement or interpretation in the context of **Model Interpretability**.
+  - Distinguish common causes of misuse in the context of **Model Interpretability**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Model Interpretability**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **Model Interpretability**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Model Interpretability**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Model Interpretability**.
+  - Relate common edge cases and failure modes in the context of **Model Interpretability**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Model Interpretability**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Model Interpretability**.
+  - Evaluate robust evaluation and governance requirements in the context of **Model Interpretability**.
+  - Assess decision criteria under conflicting constraints in the context of **Model Interpretability**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **Model Interpretability**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Model Interpretability**.
+  - Govern architecture and platform implications in the context of **Model Interpretability**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Model Interpretability**.

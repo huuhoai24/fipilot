@@ -1,0 +1,26 @@
+# LightGBM
+
+- **Intern**
+  - Understand histogram-based gradient boosting and leaf-wise tree growth.
+  - Recognize fundamental assumptions and terminology in the context of **LightGBM**.
+  - Describe basic model behavior and expected outputs in the context of **LightGBM**.
+  - Distinguish primary evaluation concepts in the context of **LightGBM**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **LightGBM**.
+- **Junior**
+  - Explain and compare categorical handling, binning, regularization, and sampling controls.
+  - Explain hyperparameter roles and regularization effects in the context of **LightGBM**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **LightGBM**.
+  - Evaluate interpretation of errors and model outputs in the context of **LightGBM**.
+  - Relate limitations relative to alternative methods in the context of **LightGBM**.
+- **Middle**
+  - Analyze speed-memory-accuracy trade-offs, overfitting risks, and distributed behavior.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **LightGBM**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **LightGBM**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **LightGBM**.
+  - Assess production constraints affecting model choice in the context of **LightGBM**.
+- **Senior**
+  - Define and govern selection standards for large-scale tabular learning.
+  - Establish offline-online evaluation strategy and decision policy in the context of **LightGBM**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **LightGBM**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **LightGBM**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **LightGBM**.

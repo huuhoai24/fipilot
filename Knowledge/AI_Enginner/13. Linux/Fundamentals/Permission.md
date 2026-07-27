@@ -1,0 +1,26 @@
+# Permission
+
+- **Intern**
+  - Understand command or concept purpose.
+  - Recognize filesystem and process terminology in the context of **Permission**.
+  - Describe permission and environment basics in the context of **Permission**.
+  - Distinguish common error conditions in the context of **Permission**.
+  - Interpret safe interpretation of command effects in the context of **Permission**.
+- **Junior**
+  - Explain and compare process, signal, pipe, and redirection semantics.
+  - Explain permission and remote-access security implications in the context of **Permission**.
+  - Distinguish resource and log inspection concepts in the context of **Permission**.
+  - Evaluate shell portability and quoting concerns in the context of **Permission**.
+  - Relate common operational troubleshooting patterns in the context of **Permission**.
+- **Middle**
+  - Analyze performance, networking, and resource-isolation implications.
+  - Analyze service lifecycle and system-level diagnostics in the context of **Permission**.
+  - Diagnose security hardening and least-privilege considerations in the context of **Permission**.
+  - Evaluate automation reliability and idempotency in the context of **Permission**.
+  - Assess failure analysis across host, process, and filesystem layers in the context of **Permission**.
+- **Senior**
+  - Define and govern operating-system standards for AI infrastructure.
+  - Establish capacity, security, and reliability governance in the context of **Permission**.
+  - Evaluate kernel, container, and hardware interaction awareness in the context of **Permission**.
+  - Govern incident-response and forensic requirements in the context of **Permission**.
+  - Set fleet-level lifecycle and configuration strategy in the context of **Permission**.

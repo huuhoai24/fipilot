@@ -27,10 +27,20 @@ frontend/vite.config.d.ts
 **/.env.*
 !**/.env.example
 !**/.env.*.example
-*.json
+# Credential material only. Do not ignore *.json wholesale: that silently hides
+# real config (package.json, tsconfig.json, firebase.json) from git.
+service-account*.json
+*service-account*.json
+*credential*.json
+*client_secret*.json
+application_default_credentials.json
+adc.json
+gha-creds-*.json
 service-account*
 credentials*
 *.pem
+*.p12
+*.key
 
 *.log
 

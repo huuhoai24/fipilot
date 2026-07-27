@@ -24,7 +24,7 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(settings.llm_routing.complex_model, "gemini-2.5-pro")
         self.assertEqual(settings.database_url, "sqlite:///./interview_app.db")
         self.assertGreater(settings.max_resume_bytes, 0)
-        self.assertEqual(settings.stt_model, "medium")
+        self.assertEqual(settings.stt_model, "large-v3-turbo")
         self.assertEqual(settings.stt_device, "cpu")
         self.assertEqual(settings.stt_compute_type, "int8")
         self.assertEqual(settings.stt_language, "vi")
@@ -234,6 +234,42 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(evaluation.missing_concepts, [])
         self.assertFalse(evaluation.follow_up_needed)
         self.assertIsNone(evaluation.follow_up_reason)
+
+
+class SettingsDefaultConsistencyTests(unittest.TestCase):
+    """Every setting is declared twice: once as a model field default and once as
+    the fallback in Settings.__init__'s os.getenv call. They silently drifted
+    (stt_model said large-v3-turbo on the model and medium in __init__), so the
+    running service used a value nobody had chosen. This pins them together.
+    """
+
+    def test_speech_defaults_match_the_model_fields(self):
+        from core.settings import Settings, SpeechSettings
+
+        settings = Settings()
+        for field_name, field in SpeechSettings.model_fields.items():
+            if field.default_factory is not None:
+                continue
+            with self.subTest(field=field_name):
+                self.assertEqual(
+                    getattr(settings.speech, field_name),
+                    field.default,
+                    f"SpeechSettings.{field_name} default disagrees with the "
+                    f"fallback used in Settings.__init__",
+                )
+
+    def test_llm_routing_defaults_match_the_model_fields(self):
+        from core.settings import LLMRoutingSettings, Settings
+
+        settings = Settings()
+        for field_name, field in LLMRoutingSettings.model_fields.items():
+            if field.default_factory is not None:
+                continue
+            with self.subTest(field=field_name):
+                self.assertEqual(
+                    getattr(settings.llm_routing, field_name),
+                    field.default,
+                )
 
 
 if __name__ == "__main__":

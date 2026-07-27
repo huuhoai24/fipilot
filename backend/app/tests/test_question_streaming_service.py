@@ -67,8 +67,13 @@ class QuestionStreamingServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(question.question, "".join(deltas))
         self.assertEqual(question.topic, "Computer Vision")
         self.assertIn('"question"', llm.calls[0][0])
-        self.assertEqual(llm.calls[0][1]["task_type"], "complex")
-        self.assertIs(llm.calls[0][1]["output_schema"], InterviewQuestion)
+        # The voice path deliberately uses the fast model: the candidate is
+        # waiting in silence while this runs.
+        self.assertEqual(llm.calls[0][1]["task_type"], "simple")
+        # No response schema is requested. Schema-constrained generation makes
+        # Gemini buffer the whole object and emit it as one chunk, which removes
+        # the incremental streaming this service exists to provide.
+        self.assertNotIn("output_schema", llm.calls[0][1])
 
     async def test_rejects_incomplete_streamed_json(self):
         service = QuestionStreamingService(

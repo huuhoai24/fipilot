@@ -17,6 +17,10 @@ class ClientVoiceEvent(BaseModel):
         "confirm_answer",
         "start_barge_in",
         "playback_complete",
+        # Ask the server to read the current question aloud. The first question
+        # is produced by the REST /start call, so without this the candidate saw
+        # question 1 as text and heard nothing. Also used after a reconnect.
+        "speak_question",
     ]
     sequence: int | None = Field(default=None, ge=0)
     encoding: Literal["pcm_s16le"] | None = None

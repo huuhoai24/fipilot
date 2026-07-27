@@ -1,0 +1,9 @@
+# Senior
+
+- Establish enterprise event-streaming architecture and governance standards for At Most Once.
+- Evaluate strategic trade-offs among Kafka, alternative brokers, and managed streaming platforms.
+- Resolve cross-domain schema, ownership, ordering, replay, and reliability challenges.
+- Define organization-wide service levels, tenancy, capacity, security, and retention policies.
+- Assess platform maturity, cost, and long-term evolution associated with At Most Once.
+
+---

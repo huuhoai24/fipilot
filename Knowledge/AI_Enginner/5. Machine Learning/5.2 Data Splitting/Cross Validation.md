@@ -1,0 +1,26 @@
+# Cross Validation
+
+- **Intern**
+  - Understand resampling-based estimation of generalization performance.
+  - Recognize fundamental assumptions and terminology in the context of **Cross Validation**.
+  - Describe basic model behavior and expected outputs in the context of **Cross Validation**.
+  - Distinguish primary evaluation concepts in the context of **Cross Validation**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Cross Validation**.
+- **Junior**
+  - Explain and compare K-fold, stratified, grouped, and time-aware validation choices.
+  - Explain hyperparameter roles and regularization effects in the context of **Cross Validation**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Cross Validation**.
+  - Evaluate interpretation of errors and model outputs in the context of **Cross Validation**.
+  - Relate limitations relative to alternative methods in the context of **Cross Validation**.
+- **Middle**
+  - Analyze nested validation, variance estimation, leakage control, and model selection bias.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Cross Validation**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Cross Validation**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Cross Validation**.
+  - Assess production constraints affecting model choice in the context of **Cross Validation**.
+- **Senior**
+  - Define and govern organization-wide validation standards by data-generating process.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Cross Validation**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Cross Validation**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Cross Validation**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Cross Validation**.

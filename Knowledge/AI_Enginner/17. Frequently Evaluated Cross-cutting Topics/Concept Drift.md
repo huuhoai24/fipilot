@@ -1,0 +1,26 @@
+# Concept Drift
+
+- **Intern**
+  - Understand change in the relationship between inputs and target.
+  - Recognize direct effect on model or system behavior in the context of **Concept Drift**.
+  - Describe basic measurement or interpretation in the context of **Concept Drift**.
+  - Distinguish common causes of misuse in the context of **Concept Drift**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Concept Drift**.
+- **Junior**
+  - Explain and compare real, virtual, sudden, gradual, and recurring drift distinctions.
+  - Explain trade-offs among common approaches in the context of **Concept Drift**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Concept Drift**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Concept Drift**.
+  - Relate common edge cases and failure modes in the context of **Concept Drift**.
+- **Middle**
+  - Analyze detection limits, delayed labels, adaptation, and retraining decisions.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Concept Drift**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Concept Drift**.
+  - Evaluate robust evaluation and governance requirements in the context of **Concept Drift**.
+  - Assess decision criteria under conflicting constraints in the context of **Concept Drift**.
+- **Senior**
+  - Define and govern business-risk governance and lifecycle strategy under changing concepts.
+  - Establish risk, compliance, and lifecycle governance in the context of **Concept Drift**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Concept Drift**.
+  - Govern architecture and platform implications in the context of **Concept Drift**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Concept Drift**.

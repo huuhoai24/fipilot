@@ -1,0 +1,26 @@
+# ROC-AUC
+
+- **Intern**
+  - Understand ranking quality across true-positive and false-positive rates.
+  - Recognize fundamental assumptions and terminology in the context of **ROC-AUC**.
+  - Describe basic model behavior and expected outputs in the context of **ROC-AUC**.
+  - Distinguish primary evaluation concepts in the context of **ROC-AUC**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **ROC-AUC**.
+- **Junior**
+  - Explain and compare threshold independence, probabilistic interpretation, and imbalance limitations.
+  - Explain hyperparameter roles and regularization effects in the context of **ROC-AUC**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **ROC-AUC**.
+  - Evaluate interpretation of errors and model outputs in the context of **ROC-AUC**.
+  - Relate limitations relative to alternative methods in the context of **ROC-AUC**.
+- **Middle**
+  - Analyze confidence intervals, partial AUC, subgroup behavior, and shift sensitivity.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **ROC-AUC**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **ROC-AUC**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **ROC-AUC**.
+  - Assess production constraints affecting model choice in the context of **ROC-AUC**.
+- **Senior**
+  - Define and govern appropriate governance for ranking-oriented evaluation.
+  - Establish offline-online evaluation strategy and decision policy in the context of **ROC-AUC**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **ROC-AUC**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **ROC-AUC**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **ROC-AUC**.

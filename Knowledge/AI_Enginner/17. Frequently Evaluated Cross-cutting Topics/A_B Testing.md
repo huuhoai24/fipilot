@@ -1,0 +1,26 @@
+# A/B Testing
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **A/B Testing**.
+  - Describe basic measurement or interpretation in the context of **A/B Testing**.
+  - Distinguish common causes of misuse in the context of **A/B Testing**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **A/B Testing**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **A/B Testing**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **A/B Testing**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **A/B Testing**.
+  - Relate common edge cases and failure modes in the context of **A/B Testing**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **A/B Testing**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **A/B Testing**.
+  - Evaluate robust evaluation and governance requirements in the context of **A/B Testing**.
+  - Assess decision criteria under conflicting constraints in the context of **A/B Testing**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **A/B Testing**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **A/B Testing**.
+  - Govern architecture and platform implications in the context of **A/B Testing**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **A/B Testing**.

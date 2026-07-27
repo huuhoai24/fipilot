@@ -20,6 +20,8 @@ def get_speech_runtime() -> tuple[AudioPipelineFactory, VieneuStreamingTTS]:
             partial_interval_ms=settings.stt_partial_interval_ms,
             vocabulary_profile=settings.stt_vocabulary_profile,
             custom_hotwords=settings.stt_hotwords,
+            partial_max_audio_ms=settings.stt_partial_max_audio_ms,
+            final_beam_size=settings.stt_final_beam_size,
         ),
         vad_factory=SileroVADFactory(
             threshold=settings.vad_threshold,

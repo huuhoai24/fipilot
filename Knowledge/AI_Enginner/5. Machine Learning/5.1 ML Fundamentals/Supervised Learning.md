@@ -1,0 +1,26 @@
+# Supervised Learning
+
+- **Intern**
+  - Understand learning a mapping from labeled inputs to targets.
+  - Recognize fundamental assumptions and terminology in the context of **Supervised Learning**.
+  - Describe basic model behavior and expected outputs in the context of **Supervised Learning**.
+  - Distinguish primary evaluation concepts in the context of **Supervised Learning**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Supervised Learning**.
+- **Junior**
+  - Explain and compare task formulation, baseline selection, validation, and metric alignment.
+  - Explain hyperparameter roles and regularization effects in the context of **Supervised Learning**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Supervised Learning**.
+  - Evaluate interpretation of errors and model outputs in the context of **Supervised Learning**.
+  - Relate limitations relative to alternative methods in the context of **Supervised Learning**.
+- **Middle**
+  - Analyze generalization, calibration, leakage, shift, and cost-sensitive evaluation.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Supervised Learning**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Supervised Learning**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Supervised Learning**.
+  - Assess production constraints affecting model choice in the context of **Supervised Learning**.
+- **Senior**
+  - Define and govern business-aligned problem formulation, governance, and model lifecycle.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Supervised Learning**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Supervised Learning**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Supervised Learning**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Supervised Learning**.

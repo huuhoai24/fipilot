@@ -108,6 +108,7 @@ class VertexGeminiService(BaseLLMService):
         temperature: float = 0.2,
         timeout_seconds: float | None = None,
         output_schema: type[BaseModel] | None = None,
+        thinking_budget: int | None = None,
     ) -> AsyncIterator[str]:
         selected_model = self.route_model(task_type=task_type, model=model)
         timeout = timeout_seconds or self.default_timeout_seconds
@@ -123,6 +124,7 @@ class VertexGeminiService(BaseLLMService):
                         system_instruction=system_instruction,
                         temperature=temperature,
                         output_schema=output_schema,
+                        thinking_budget=thinking_budget,
                     )
                     async for response in stream:
                         text = self._extract_text(response)
@@ -309,6 +311,7 @@ class VertexGeminiService(BaseLLMService):
         system_instruction: str | None,
         temperature: float,
         output_schema: type[BaseModel] | None,
+        thinking_budget: int | None = None,
     ) -> AsyncIterator[Any]:
         config = self._build_generation_config(
             system_instruction=system_instruction,
@@ -321,6 +324,7 @@ class VertexGeminiService(BaseLLMService):
                 if output_schema is not None
                 else None
             ),
+            thinking_budget=thinking_budget,
         )
         kwargs = {"model": model, "contents": prompt}
         if config is not None:
@@ -334,6 +338,7 @@ class VertexGeminiService(BaseLLMService):
         temperature: float,
         response_mime_type: str | None,
         response_json_schema: dict[str, Any] | None,
+        thinking_budget: int | None = None,
     ) -> Any:
         config_values = {"temperature": temperature}
         if system_instruction:
@@ -346,8 +351,16 @@ class VertexGeminiService(BaseLLMService):
         try:
             from google.genai import types
 
+            if thinking_budget is not None:
+                # Gemini 2.5 thinks before emitting any token. On the voice path
+                # that shows up as dead silence for the candidate, so callers can
+                # trade reasoning depth for time-to-first-token.
+                config_values["thinking_config"] = types.ThinkingConfig(
+                    thinking_budget=thinking_budget
+                )
             return types.GenerateContentConfig(**config_values)
         except Exception:
+            config_values.pop("thinking_config", None)
             return config_values
 
     def _build_json_prompt(self, prompt: str) -> str:

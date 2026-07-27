@@ -1,0 +1,26 @@
+# SSD
+
+- **Intern**
+  - Understand definition and task objective.
+  - Recognize image representation and coordinate conventions in the context of **SSD**.
+  - Describe core output format and terminology in the context of **SSD**.
+  - Distinguish basic evaluation concepts in the context of **SSD**.
+  - Interpret common dataset and annotation issues in the context of **SSD**.
+- **Junior**
+  - Explain and compare model-family differences and selection criteria.
+  - Explain augmentation, preprocessing, and label-quality implications in the context of **SSD**.
+  - Distinguish metric interpretation and localization/classification trade-offs in the context of **SSD**.
+  - Evaluate resolution, receptive-field, and scale considerations in the context of **SSD**.
+  - Relate common visual failure modes in the context of **SSD**.
+- **Middle**
+  - Analyze domain shift, long-tail, occlusion, and calibration analysis.
+  - Analyze latency, memory, and throughput implications in the context of **SSD**.
+  - Diagnose error decomposition by object, scene, and annotation conditions in the context of **SSD**.
+  - Evaluate dataset design and evaluation protocol robustness in the context of **SSD**.
+  - Assess trade-offs among accuracy, complexity, and deployability in the context of **SSD**.
+- **Senior**
+  - Define and govern vision-system architecture and task decomposition.
+  - Establish data-governance and annotation strategy at scale in the context of **SSD**.
+  - Evaluate safety, privacy, fairness, and misuse considerations in the context of **SSD**.
+  - Govern deployment strategy across cloud, edge, and embedded environments in the context of **SSD**.
+  - Set portfolio-level model and platform standardization in the context of **SSD**.

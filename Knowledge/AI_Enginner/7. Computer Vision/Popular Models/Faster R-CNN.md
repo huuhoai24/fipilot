@@ -1,0 +1,26 @@
+# Faster R-CNN
+
+- **Intern**
+  - Understand definition and task objective.
+  - Recognize image representation and coordinate conventions in the context of **Faster R-CNN**.
+  - Describe core output format and terminology in the context of **Faster R-CNN**.
+  - Distinguish basic evaluation concepts in the context of **Faster R-CNN**.
+  - Interpret common dataset and annotation issues in the context of **Faster R-CNN**.
+- **Junior**
+  - Explain and compare model-family differences and selection criteria.
+  - Explain augmentation, preprocessing, and label-quality implications in the context of **Faster R-CNN**.
+  - Distinguish metric interpretation and localization/classification trade-offs in the context of **Faster R-CNN**.
+  - Evaluate resolution, receptive-field, and scale considerations in the context of **Faster R-CNN**.
+  - Relate common visual failure modes in the context of **Faster R-CNN**.
+- **Middle**
+  - Analyze domain shift, long-tail, occlusion, and calibration analysis.
+  - Analyze latency, memory, and throughput implications in the context of **Faster R-CNN**.
+  - Diagnose error decomposition by object, scene, and annotation conditions in the context of **Faster R-CNN**.
+  - Evaluate dataset design and evaluation protocol robustness in the context of **Faster R-CNN**.
+  - Assess trade-offs among accuracy, complexity, and deployability in the context of **Faster R-CNN**.
+- **Senior**
+  - Define and govern vision-system architecture and task decomposition.
+  - Establish data-governance and annotation strategy at scale in the context of **Faster R-CNN**.
+  - Evaluate safety, privacy, fairness, and misuse considerations in the context of **Faster R-CNN**.
+  - Govern deployment strategy across cloud, edge, and embedded environments in the context of **Faster R-CNN**.
+  - Set portfolio-level model and platform standardization in the context of **Faster R-CNN**.

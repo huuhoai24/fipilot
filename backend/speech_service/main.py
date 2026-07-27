@@ -3,16 +3,70 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+from contextlib import asynccontextmanager
+from secrets import compare_digest
 
-from fastapi import Depends, FastAPI, WebSocket
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from pydantic import ValidationError
 
+from core.exceptions import ConfigurationError
 from core.settings import Settings, get_settings
+from services.voice_session.audio_pipeline import AudioQueueFullError
 from speech_service.contracts import SpeechControlMessage
 from speech_service.dependencies import get_speech_runtime
 
 
-app = FastAPI(title="AI Interview Speech Inference Service")
+# Environments where an unauthenticated internal socket is tolerated. Anything
+# else (development, staging, production) must configure SPEECH_SERVICE_TOKEN.
+TOKENLESS_ENVIRONMENTS = {"local", "test"}
+
+
+def validate_speech_service_settings(settings: Settings) -> None:
+    if not settings.speech_service_token and settings.app_env not in TOKENLESS_ENVIRONMENTS:
+        raise ConfigurationError(
+            "SPEECH_SERVICE_TOKEN is required when APP_ENV is "
+            f"'{settings.app_env}'. The internal inference socket would "
+            "otherwise accept unauthenticated connections."
+        )
+
+
+async def warm_up_models(application: FastAPI | None = None) -> None:
+    """Load STT/VAD weights before the first session.
+
+    Model weights used to load lazily inside the audio consumer loop on the
+    first utterance. That took tens of seconds while PCM kept arriving, so the
+    bounded audio queue overflowed and the first interview of every fresh
+    process died. Paying the cost here keeps the request path warm.
+    """
+    # Honour a dependency override so tests warm the injected fake runtime
+    # instead of downloading real weights.
+    provider = get_speech_runtime
+    if application is not None:
+        provider = application.dependency_overrides.get(
+            get_speech_runtime, get_speech_runtime
+        )
+    pipeline_factory, _ = provider()
+    stt_factory = getattr(pipeline_factory, "stt_factory", None)
+    vad_factory = getattr(pipeline_factory, "vad_factory", None)
+    if stt_factory is not None and hasattr(stt_factory, "warm_up"):
+        await asyncio.to_thread(stt_factory.warm_up)
+    if vad_factory is not None and hasattr(vad_factory, "provider"):
+        await asyncio.to_thread(vad_factory.provider.get_model)
+
+
+@asynccontextmanager
+async def lifespan(application: FastAPI):
+    validate_speech_service_settings(get_settings())
+    application.state.models_ready = False
+    try:
+        await warm_up_models(application)
+        application.state.models_ready = True
+    except Exception as error:  # pragma: no cover - depends on local model files
+        application.state.warm_up_error = repr(error)
+    yield
+
+
+app = FastAPI(title="AI Interview Speech Inference Service", lifespan=lifespan)
 
 
 @app.get("/health")
@@ -22,13 +76,27 @@ def health() -> dict[str, str]:
 
 
 @app.get("/ready")
-def ready(settings: Settings = Depends(get_settings)) -> dict[str, str]:
-    return {
-        "status": "ready",
+def ready(
+    request: Request,
+    settings: Settings = Depends(get_settings),
+) -> dict[str, str]:
+    models_ready = bool(getattr(request.app.state, "models_ready", False))
+    payload = {
+        "status": "ready" if models_ready else "loading",
         "service": "speech-inference",
         "stt_model": settings.stt_model,
         "stt_device": settings.stt_device,
+        "stt_compute_type": settings.stt_compute_type,
+        "models_loaded": "true" if models_ready else "false",
     }
+    if models_ready:
+        return payload
+    # Report not-ready until the weights are actually resident, otherwise an
+    # orchestrator routes traffic to a process that cannot keep up yet.
+    error = getattr(request.app.state, "warm_up_error", None)
+    if error:
+        payload["error"] = str(error)
+    raise HTTPException(status_code=503, detail=payload)
 
 
 @app.websocket("/internal/v1/inference")
@@ -56,6 +124,7 @@ async def inference(
         stt_final_callback=lambda: send_json({"type": "stt_final"}),
     )
     pipeline_started = False
+    dropped = 0
     await websocket.accept()
     try:
         while True:
@@ -73,7 +142,23 @@ async def inference(
                         {"type": "error", "code": "invalid_audio"}
                     )
                     continue
-                pipeline.enqueue(payload)
+                # Never let backpressure escape this handler: an exception here
+                # tears down the socket and ends the interview. Dropping frames
+                # degrades one utterance instead.
+                try:
+                    accepted = pipeline.enqueue(payload)
+                except (AudioQueueFullError, RuntimeError):
+                    accepted = False
+                if accepted is False:
+                    dropped += 1
+                    if dropped in (1, 10, 100) or dropped % 500 == 0:
+                        await send_json(
+                            {
+                                "type": "audio_dropped",
+                                "code": "audio_queue_full",
+                                "dropped": dropped,
+                            }
+                        )
                 continue
             if message.get("text") is None:
                 continue
@@ -122,8 +207,11 @@ async def _stream_tts(websocket: WebSocket, tts_service, text: str) -> None:
 def _authorized(websocket: WebSocket, settings: Settings) -> bool:
     expected = settings.speech_service_token
     if not expected:
-        return settings.app_env != "production"
-    return websocket.headers.get("authorization") == f"Bearer {expected}"
+        return settings.app_env in TOKENLESS_ENVIRONMENTS
+    return compare_digest(
+        websocket.headers.get("authorization", ""),
+        f"Bearer {expected}",
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,26 @@
+# Decision Tree
+
+- **Intern**
+  - Understand recursive feature splits, impurity, leaves, and decision paths.
+  - Recognize fundamental assumptions and terminology in the context of **Decision Tree**.
+  - Describe basic model behavior and expected outputs in the context of **Decision Tree**.
+  - Distinguish primary evaluation concepts in the context of **Decision Tree**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Decision Tree**.
+- **Junior**
+  - Explain and compare split criteria, depth control, pruning, and categorical/numerical behavior.
+  - Explain hyperparameter roles and regularization effects in the context of **Decision Tree**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Decision Tree**.
+  - Evaluate interpretation of errors and model outputs in the context of **Decision Tree**.
+  - Relate limitations relative to alternative methods in the context of **Decision Tree**.
+- **Middle**
+  - Analyze instability, bias-variance trade-offs, calibration, and interpretability limits.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Decision Tree**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Decision Tree**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Decision Tree**.
+  - Assess production constraints affecting model choice in the context of **Decision Tree**.
+- **Senior**
+  - Define and govern governance of explainable tree-based decisions and risk controls.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Decision Tree**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Decision Tree**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Decision Tree**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Decision Tree**.

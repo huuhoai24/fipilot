@@ -1,0 +1,7 @@
+# Intern
+
+- Define API Integration Testing and understand its role in client-server integration.
+- Recognize the resource, endpoint, request, response, schema, or cache concepts involved.
+- Distinguish API Integration Testing from related API and data-fetching concepts.
+- Understand basic serialization, authentication, and error implications.
+- Identify common contract and state-management risks.

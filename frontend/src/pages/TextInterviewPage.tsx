@@ -20,7 +20,9 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
+import { InterviewExperienceIntro } from '@/components/interview/InterviewExperienceIntro'
 import { api } from '@/lib/api'
+import { loadInterviewPreferences } from '@/lib/interviewPreferences'
 import type {
   CandidateEducation,
   CandidateProfile,
@@ -34,7 +36,6 @@ import type {
   V2InterviewTurn,
 } from '@/types'
 
-const defaultObjective = 'Evaluate technical knowledge and practical experience'
 const MAX_RESUME_BYTES = 10 * 1024 * 1024
 const RESUME_EXTENSIONS = new Set(['pdf', 'docx'])
 const RESUME_MIME_TYPES = new Set([
@@ -235,6 +236,7 @@ interface TextInterviewPageProps {
 export function TextInterviewPage({
   mode = 'text',
 }: TextInterviewPageProps) {
+  const preferences = useMemo(() => loadInterviewPreferences(), [])
   const { sessionId: routeSessionId } = useParams()
   const navigate = useNavigate()
   const [candidateId, setCandidateId] = useState('')
@@ -244,12 +246,12 @@ export function TextInterviewPage({
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
-  const [language, setLanguage] = useState<InterviewLanguage>('vi')
-  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>('junior')
-  const [interviewStyle, setInterviewStyle] = useState<InterviewStyle>('technical')
-  const [durationMinutes, setDurationMinutes] = useState(30)
-  const [questionCount, setQuestionCount] = useState(10)
-  const [objective, setObjective] = useState(defaultObjective)
+  const [language, setLanguage] = useState<InterviewLanguage>(preferences.language)
+  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>(preferences.experienceLevel)
+  const [interviewStyle, setInterviewStyle] = useState<InterviewStyle>(preferences.interviewStyle)
+  const [durationMinutes, setDurationMinutes] = useState(preferences.durationMinutes)
+  const [questionCount, setQuestionCount] = useState(preferences.questionCount)
+  const [objective, setObjective] = useState(preferences.objective)
   const [sessionId, setSessionId] = useState(routeSessionId ?? '')
   const [state, setState] = useState<V2InterviewSessionState | null>(null)
   const [answer, setAnswer] = useState('')
@@ -385,24 +387,26 @@ export function TextInterviewPage({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight-display text-text-primary">
-            {interviewMode === 'voice' ? 'Speech Interview' : 'Text Interview'}
-          </h1>
-          <p className="mt-1 text-sm text-text-muted">
-            {interviewMode === 'voice'
-              ? 'CV-driven conversational interview with realtime speech.'
-              : 'CV-driven interview room using adaptive V2 APIs.'}
-          </p>
-        </div>
-        {sessionId && (
+    <div className="space-y-8">
+      {!state ? (
+        <InterviewExperienceIntro mode={interviewMode} />
+      ) : (
+        <div className="flex flex-col gap-3 rounded-[24px] border border-border bg-surface px-6 py-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-semibold tracking-tight-display text-text-primary">
+              {interviewMode === 'voice' ? 'Speech Interview' : 'Text Interview'}
+            </h1>
+            <p className="mt-1 text-sm text-text-muted">
+              {interviewMode === 'voice'
+                ? 'CV-driven conversational interview with realtime speech.'
+                : 'Stay specific, show your reasoning, and use evidence from your experience.'}
+            </p>
+          </div>
           <Badge variant={isFinished ? 'success' : 'accent'}>
             {isFinished ? 'Completed' : `Session ${sessionId}`}
           </Badge>
-        )}
-      </div>
+        </div>
+      )}
 
       {error && (
         <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
@@ -411,12 +415,25 @@ export function TextInterviewPage({
       )}
 
       {!state ? (
-        <div className="space-y-5">
-          <Card>
+        <div id="interview-setup" className="scroll-mt-8 space-y-6 pb-20 pt-10 md:pb-24 md:pt-14">
+          <div className="max-w-4xl">
+            <h2 className="font-display text-4xl font-semibold tracking-tight-display text-text-primary sm:text-5xl">
+              Build your interview.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted">
+              Start with your CV. We will extract a candidate profile for your review before creating any questions.
+            </p>
+          </div>
+
+          <Card className="overflow-hidden">
             <CardHeader>
-              <CardTitle>Candidate Profile</CardTitle>
+              <div>
+                <CardTitle>Candidate Profile</CardTitle>
+                <p className="mt-1 text-xs text-text-faint">PDF or DOCX, maximum 10 MB</p>
+              </div>
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-sm font-semibold text-accent">1</span>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5">
               <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
                 <div className="min-w-0">
                   <Label htmlFor="resume-file">Resume file</Label>
@@ -429,9 +446,7 @@ export function TextInterviewPage({
                     aria-describedby="resume-file-help resume-upload-status"
                     className="file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-text-primary"
                   />
-                  <p id="resume-file-help" className="mt-1.5 text-xs text-text-faint">
-                    PDF or DOCX, up to 10 MB.
-                  </p>
+                  <p id="resume-file-help" className="mt-2 text-xs text-text-faint">Choose the most current version of your CV.</p>
                 </div>
                 <Button
                   type="button"
@@ -451,7 +466,7 @@ export function TextInterviewPage({
               </div>
 
               {selectedFile && (
-                <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2.5">
+                <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-accent/25 bg-accent-soft px-4 py-3">
                   <FileText className="h-4 w-4 shrink-0 text-accent" />
                   <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{selectedFile.name}</span>
                   <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedFile.size)}</span>
@@ -485,10 +500,14 @@ export function TextInterviewPage({
             <CandidateProfilePreview profile={candidateProfile} confidenceScore={profileConfidence} />
           )}
 
-          <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <Card>
+          <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <Card className="overflow-hidden">
               <CardHeader>
-                <CardTitle>Interview Setup</CardTitle>
+                <div>
+                  <CardTitle>Interview Setup</CardTitle>
+                  <p className="mt-1 text-xs text-text-faint">Tune the session to the role you are preparing for.</p>
+                </div>
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-sm font-semibold text-accent">2</span>
               </CardHeader>
               <CardContent className="space-y-5">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -559,10 +578,11 @@ export function TextInterviewPage({
                     disabled={loading || uploading}
                   />
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-end border-t border-border pt-5">
                   <Button
                     type="submit"
                     disabled={loading || uploading || !candidateId}
+                    size="lg"
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                     Start
@@ -571,12 +591,12 @@ export function TextInterviewPage({
               </CardContent>
             </Card>
 
-            <div className="rounded-lg border border-border bg-surface px-5 py-4">
+            <div className="hairline h-fit rounded-card border border-border bg-surface px-6 py-6 lg:sticky lg:top-8">
               <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
                 <ClipboardList className="h-4 w-4 text-accent" />
                 Session Setup
               </div>
-              <div className="mt-4 space-y-3 text-sm text-text-muted">
+              <div className="mt-5 space-y-4 text-sm text-text-muted">
                 <div className="flex justify-between gap-3">
                   <span>Mode</span>
                   <span className="font-medium text-text-primary">
@@ -605,6 +625,9 @@ export function TextInterviewPage({
                   <span>Minutes</span>
                   <span className="font-medium text-text-primary">{durationMinutes}</span>
                 </div>
+              </div>
+              <div className="mt-6 rounded-2xl bg-surface-raised p-4 text-xs leading-5 text-text-muted">
+                Your first question is generated only after the candidate profile is ready.
               </div>
             </div>
           </form>

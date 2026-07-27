@@ -1,0 +1,26 @@
+# Quantization
+
+- **Intern**
+  - Understand reduced-precision representation of weights and activations.
+  - Recognize direct effect on model or system behavior in the context of **Quantization**.
+  - Describe basic measurement or interpretation in the context of **Quantization**.
+  - Distinguish common causes of misuse in the context of **Quantization**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Quantization**.
+- **Junior**
+  - Explain and compare post-training versus quantization-aware approaches and calibration data.
+  - Explain trade-offs among common approaches in the context of **Quantization**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Quantization**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Quantization**.
+  - Relate common edge cases and failure modes in the context of **Quantization**.
+- **Middle**
+  - Analyze accuracy, latency, memory, hardware, and operator-coverage trade-offs.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Quantization**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Quantization**.
+  - Evaluate robust evaluation and governance requirements in the context of **Quantization**.
+  - Assess decision criteria under conflicting constraints in the context of **Quantization**.
+- **Senior**
+  - Define and govern hardware-aware optimization standards and validation policy.
+  - Establish risk, compliance, and lifecycle governance in the context of **Quantization**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Quantization**.
+  - Govern architecture and platform implications in the context of **Quantization**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Quantization**.

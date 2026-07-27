@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1120" viewBox="0 0 1700 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Voice Interview Streaming Sequence</title>
+  <desc id="desc">Luồng WebSocket voice interview từ microphone qua gateway, speech service, Gemini và TTS.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#201633"/></linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#67e8f9"/></marker>
+    <marker id="pink" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#f9a8d4"/></marker>
+    <style>
+      .t{font:700 36px Inter,Segoe UI,sans-serif;fill:#f8fafc}.s{font:400 16px Inter,Segoe UI,sans-serif;fill:#94a3b8}
+      .h{font:700 17px Inter,Segoe UI,sans-serif;fill:#f8fafc}.b{font:500 13px Inter,Segoe UI,sans-serif;fill:#dbeafe}
+      .life{stroke:#475569;stroke-width:2;stroke-dasharray:7 7}.call{stroke:#67e8f9;stroke-width:2;marker-end:url(#arrow)}
+      .audio{stroke:#f9a8d4;stroke-width:2.3;marker-end:url(#pink)}.dash{stroke-dasharray:6 5}
+      .phase{fill:#172554;stroke:#818cf8;stroke-width:1.2}.note{fill:#2b1635;stroke:#f472b6;stroke-width:1.3}
+    </style>
+  </defs>
+  <rect width="1700" height="1120" rx="28" fill="url(#bg)"/>
+  <text x="60" y="62" class="t">Voice Interview — Realtime Streaming Sequence</text>
+  <text x="60" y="94" class="s">Binary PCM uses pink paths · control/transcript/state uses cyan paths</text>
+
+  <rect x="45" y="130" width="190" height="66" rx="14" fill="#1d4ed8"/><text x="140" y="171" text-anchor="middle" class="h">Browser</text>
+  <rect x="330" y="130" width="220" height="66" rx="14" fill="#4338ca"/><text x="440" y="159" text-anchor="middle" class="h">Gateway Voice API</text><text x="440" y="181" text-anchor="middle" class="b">WebSocket</text>
+  <rect x="660" y="130" width="220" height="66" rx="14" fill="#6d28d9"/><text x="770" y="159" text-anchor="middle" class="h">Voice Manager</text><text x="770" y="181" text-anchor="middle" class="b">bounded queue</text>
+  <rect x="990" y="130" width="220" height="66" rx="14" fill="#9d174d"/><text x="1100" y="159" text-anchor="middle" class="h">Speech Service</text><text x="1100" y="181" text-anchor="middle" class="b">VAD · STT · TTS</text>
+  <rect x="1320" y="130" width="220" height="66" rx="14" fill="#b45309"/><text x="1430" y="159" text-anchor="middle" class="h">Orchestrator</text><text x="1430" y="181" text-anchor="middle" class="b">Gemini + repository</text>
+  <path d="M140 196V1060M440 196V1060M770 196V1060M1100 196V1060M1430 196V1060" class="life"/>
+
+  <rect x="40" y="222" width="1500" height="42" rx="10" class="phase"/><text x="62" y="249" class="h">A. Secure connection</text>
+  <line x1="140" y1="300" x2="430" y2="300" class="call"/><text x="285" y="287" text-anchor="middle" class="b">WSS + Firebase token subprotocol</text>
+  <rect x="505" y="277" width="420" height="55" rx="11" class="note"/><text x="715" y="299" text-anchor="middle" class="b">Verify token · origin · owner · voice mode</text><text x="715" y="320" text-anchor="middle" class="b">enforce one active connection / session</text>
+  <line x1="440" y1="354" x2="760" y2="354" class="call"/><text x="600" y="341" text-anchor="middle" class="b">connect(uid, session_id)</text>
+  <line x1="440" y1="391" x2="150" y2="391" class="call"/><text x="295" y="378" text-anchor="middle" class="b">connected + current state</text>
+
+  <rect x="40" y="423" width="1500" height="42" rx="10" class="phase"/><text x="62" y="450" class="h">B. Speech-to-text</text>
+  <line x1="140" y1="500" x2="430" y2="500" class="call"/><text x="285" y="487" text-anchor="middle" class="b">start_listening</text>
+  <line x1="770" y1="535" x2="1090" y2="535" class="call"/><text x="930" y="522" text-anchor="middle" class="b">internal WSS: stt_start</text>
+  <line x1="140" y1="575" x2="430" y2="575" class="audio"/><text x="285" y="562" text-anchor="middle" class="b">PCM chunks</text>
+  <line x1="440" y1="610" x2="760" y2="610" class="audio"/><text x="600" y="597" text-anchor="middle" class="b">validate + enqueue</text>
+  <line x1="770" y1="645" x2="1090" y2="645" class="audio"/><text x="930" y="632" text-anchor="middle" class="b">forward bounded stream</text>
+  <line x1="1100" y1="685" x2="450" y2="685" class="call dash"/><text x="775" y="672" text-anchor="middle" class="b">speech_started · partial · final · endpoint</text>
+  <line x1="440" y1="720" x2="150" y2="720" class="call"/><text x="295" y="707" text-anchor="middle" class="b">live transcript events</text>
+
+  <rect x="40" y="753" width="1500" height="42" rx="10" class="phase"/><text x="62" y="780" class="h">C. Evaluate, generate and speak next question</text>
+  <line x1="770" y1="828" x2="1420" y2="828" class="call"/><text x="1095" y="815" text-anchor="middle" class="b">final transcript → submit answer</text>
+  <rect x="1235" y="850" width="390" height="60" rx="11" class="note"/><text x="1430" y="874" text-anchor="middle" class="b">Evaluate → adaptive decision → persist</text><text x="1430" y="896" text-anchor="middle" class="b">stream next question text</text>
+  <line x1="1430" y1="930" x2="450" y2="930" class="call dash"/><text x="940" y="917" text-anchor="middle" class="b">question_start / delta / complete</text>
+  <line x1="770" y1="968" x2="1090" y2="968" class="call"/><text x="930" y="955" text-anchor="middle" class="b">sentence chunks → tts_synthesize</text>
+  <line x1="1100" y1="1006" x2="450" y2="1006" class="audio"/><text x="775" y="993" text-anchor="middle" class="b">audio_format + streaming PCM</text>
+  <line x1="440" y1="1043" x2="150" y2="1043" class="audio"/><text x="295" y="1030" text-anchor="middle" class="b">play question audio</text>
+
+  <rect x="625" y="1065" width="780" height="38" rx="9" fill="#3b1636" stroke="#f472b6"/>
+  <text x="1015" y="1090" text-anchor="middle" class="b">Barge-in: speech_started while TTS is playing → cancel TTS immediately</text>
+</svg>

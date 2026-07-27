@@ -62,7 +62,7 @@ class InterviewOrchestrator:
             candidate_profile=candidate_profile,
             interview_config=interview_config,
             interview_plan=interview_plan,
-            current_turn=self._create_turn(first_question, first_round),
+            current_turn=self._create_turn(first_question, first_round, turn_number=1),
             completed_turns=[],
             current_question_index=0,
         )
@@ -130,6 +130,7 @@ class InterviewOrchestrator:
                 memory=memory,
                 evaluation=evaluation,
                 question_provider=question_provider,
+                turn_number=len(completed_turns) + 1,
             )
             return session_state.model_copy(
                 update={
@@ -153,7 +154,11 @@ class InterviewOrchestrator:
             )
             return session_state.model_copy(
                 update={
-                    "current_turn": self._create_turn(next_question, current_round),
+                    "current_turn": self._create_turn(
+                        next_question,
+                        current_round,
+                        turn_number=len(completed_turns) + 1,
+                    ),
                     "completed_turns": completed_turns,
                     "memory": memory,
                 }
@@ -180,7 +185,11 @@ class InterviewOrchestrator:
         )
         return session_state.model_copy(
             update={
-                "current_turn": self._create_turn(next_question, next_round),
+                "current_turn": self._create_turn(
+                    next_question,
+                    next_round,
+                    turn_number=len(completed_turns) + 1,
+                ),
                 "completed_turns": completed_turns,
                 "current_question_index": next_index,
                 "memory": memory,
@@ -195,21 +204,35 @@ class InterviewOrchestrator:
         memory: InterviewMemoryState,
         evaluation: AnswerEvaluation,
         question_provider: QuestionProvider | None = None,
+        turn_number: int,
     ) -> InterviewTurn:
-        if current_question.follow_up_questions:
-            follow_up = current_question.follow_up_questions[0]
+        asked = self._asked_questions(session_state)
+        remaining = [
+            probe
+            for probe in current_question.follow_up_questions
+            if probe.strip() and probe.strip() not in asked
+        ]
+        if remaining:
+            follow_up = remaining[0]
             if session_state.interview_config.mode == InterviewMode.VOICE:
-                follow_up = self.follow_up_service.select(
-                    current_question.follow_up_questions,
-                    evaluation,
-                )
+                follow_up = self.follow_up_service.select(remaining, evaluation)
             follow_up_question = current_question.model_copy(
                 update={
                     "question": follow_up,
                     "reasoning": "Follow-up requested by evaluation decision.",
+                    # Drop the probe we just used. Carrying the full list forward
+                    # meant the same follow-up got re-selected every turn and the
+                    # candidate was asked one question over and over.
+                    "follow_up_questions": [
+                        probe for probe in remaining if probe != follow_up
+                    ],
                 }
             )
-            return self._create_turn(follow_up_question, question_type="follow_up")
+            return self._create_turn(
+                follow_up_question,
+                question_type="follow_up",
+                turn_number=turn_number,
+            )
 
         current_round = session_state.interview_plan.rounds[session_state.current_question_index]
         current_round = self._round_with_memory(
@@ -217,13 +240,55 @@ class InterviewOrchestrator:
             current_round,
             memory,
         )
+        current_round = self._round_avoiding_asked(current_round, asked)
         generated_question = await self._generate_question(
             session_state.candidate_profile,
             current_round,
             session_state.interview_config,
             question_provider=question_provider,
         )
-        return self._create_turn(generated_question, current_round, question_type="follow_up")
+        return self._create_turn(
+            generated_question,
+            current_round,
+            question_type="follow_up",
+            turn_number=turn_number,
+        )
+
+    @staticmethod
+    def _round_avoiding_asked(
+        interview_round: InterviewRound,
+        asked: set[str],
+    ) -> InterviewRound:
+        """Tell the generator which questions were already asked.
+
+        Without this the follow-up path regenerated from an unchanged round and
+        produced the same question again, so a candidate could be asked one
+        question several times in a row.
+        """
+        if not asked:
+            return interview_round
+        avoid = [f"Do not ask again: {question}" for question in sorted(asked)[-5:]]
+        return interview_round.model_copy(
+            update={
+                "recommended_question_areas": [
+                    *interview_round.recommended_question_areas,
+                    *avoid,
+                ]
+            }
+        )
+
+    @staticmethod
+    def _asked_questions(session_state: InterviewSessionState) -> set[str]:
+        asked: set[str] = set()
+        turns = [*session_state.completed_turns]
+        if session_state.current_turn is not None:
+            turns.append(session_state.current_turn)
+        for turn in turns:
+            question = turn.question
+            text = question if isinstance(question, str) else question.question
+            if text and text.strip():
+                asked.add(text.strip())
+        return asked
 
     async def _generate_question(
         self,
@@ -293,9 +358,14 @@ class InterviewOrchestrator:
         interview_round: InterviewRound | None = None,
         *,
         question_type: str = "conceptual",
+        turn_number: int = 1,
     ) -> InterviewTurn:
+        # turn_number keeps this unique. Deriving the id from topic + difficulty
+        # alone collided across every turn of a round (follow-ups reuse both),
+        # and repositories look turns up by this id.
+        slug = question.topic.lower().replace(" ", "-") or "general"
         return InterviewTurn(
-            turn_id=f"turn-{question.topic.lower().replace(' ', '-')}-{question.difficulty}",
+            turn_id=f"turn-{turn_number}-{slug}-{question.difficulty}",
             round_id=interview_round.round_id if interview_round is not None else None,
             question=question,
             question_type=question_type,

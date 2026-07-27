@@ -1,0 +1,26 @@
+# Concept Drift
+
+- **Intern**
+  - Understand change in the relationship between inputs and target.
+  - Recognize fundamental assumptions and terminology in the context of **Concept Drift**.
+  - Describe basic model behavior and expected outputs in the context of **Concept Drift**.
+  - Distinguish primary evaluation concepts in the context of **Concept Drift**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Concept Drift**.
+- **Junior**
+  - Explain and compare real, virtual, sudden, gradual, and recurring drift distinctions.
+  - Explain hyperparameter roles and regularization effects in the context of **Concept Drift**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Concept Drift**.
+  - Evaluate interpretation of errors and model outputs in the context of **Concept Drift**.
+  - Relate limitations relative to alternative methods in the context of **Concept Drift**.
+- **Middle**
+  - Analyze detection limits, delayed labels, adaptation, and retraining decisions.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Concept Drift**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Concept Drift**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Concept Drift**.
+  - Assess production constraints affecting model choice in the context of **Concept Drift**.
+- **Senior**
+  - Define and govern business-risk governance and lifecycle strategy under changing concepts.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Concept Drift**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Concept Drift**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Concept Drift**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Concept Drift**.

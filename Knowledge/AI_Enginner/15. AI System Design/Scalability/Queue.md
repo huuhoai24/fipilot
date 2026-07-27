@@ -1,0 +1,26 @@
+# Queue
+
+- **Intern**
+  - Understand component roles and data flow.
+  - Recognize basic functional and non-functional requirements in the context of **Queue**.
+  - Describe batch and online processing distinctions in the context of **Queue**.
+  - Distinguish fundamental reliability and security terminology in the context of **Queue**.
+  - Interpret common bottlenecks and failure points in the context of **Queue**.
+- **Junior**
+  - Explain and compare interface, storage, queue, cache, and serving trade-offs.
+  - Explain latency, throughput, consistency, and availability concepts in the context of **Queue**.
+  - Distinguish data and model versioning requirements in the context of **Queue**.
+  - Evaluate basic monitoring and failure-recovery design in the context of **Queue**.
+  - Relate capacity and cost implications in the context of **Queue**.
+- **Middle**
+  - Analyze end-to-end architecture and failure-domain analysis.
+  - Analyze scalability, backpressure, and consistency trade-offs in the context of **Queue**.
+  - Diagnose training-serving skew and lifecycle integration in the context of **Queue**.
+  - Evaluate security, privacy, and multi-tenancy considerations in the context of **Queue**.
+  - Assess SLO-driven observability and resilience design in the context of **Queue**.
+- **Senior**
+  - Define and govern architecture strategy aligned with business and risk.
+  - Establish organization-wide platform boundaries and standards in the context of **Queue**.
+  - Evaluate capacity, cost, reliability, and governance decisions in the context of **Queue**.
+  - Govern technology selection and migration strategy in the context of **Queue**.
+  - Set cross-team ownership and long-term evolution in the context of **Queue**.

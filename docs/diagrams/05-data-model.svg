@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1540" height="960" viewBox="0 0 1540 960" role="img" aria-labelledby="title desc">
+  <title id="title">AI Interview Platform Data Model</title>
+  <desc id="desc">Mô hình dữ liệu logic cho user, candidate, interview session, turns, evaluations và reports.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#13283b"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-opacity=".35"/></filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0 0L10 5 0 10Z" fill="#7dd3fc"/></marker>
+    <style>
+      .t{font:700 36px Inter,Segoe UI,sans-serif;fill:#f8fafc}.s{font:400 16px Inter,Segoe UI,sans-serif;fill:#94a3b8}
+      .h{font:700 19px Inter,Segoe UI,sans-serif;fill:#f8fafc}.b{font:500 14px Inter,Segoe UI,sans-serif;fill:#cbd5e1}
+      .pk{font:700 13px Inter,Segoe UI,sans-serif;fill:#fbbf24}.type{font:400 12px Inter,Segoe UI,sans-serif;fill:#94a3b8}
+      .line{stroke:#7dd3fc;stroke-width:2.2;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:7 6}
+      .card{fill:#10243b;stroke:#38bdf8;stroke-width:1.5}.head{fill:#173b57}
+    </style>
+  </defs>
+  <rect width="1540" height="960" rx="28" fill="url(#bg)"/>
+  <text x="64" y="62" class="t">Logical Data Model</text>
+  <text x="64" y="94" class="s">Firestore hierarchy in production · repository abstraction also supports SQLite locally</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="180" width="290" height="220" rx="18" class="card"/><path d="M70 198a18 18 0 0118-18h254a18 18 0 0118 18v42H70Z" class="head"/>
+    <text x="215" y="218" text-anchor="middle" class="h">User</text>
+    <text x="92" y="272" class="pk">uid</text><text x="325" y="272" text-anchor="end" class="type">Firebase subject</text>
+    <text x="92" y="306" class="b">created_at</text><text x="325" y="306" text-anchor="end" class="type">timestamp</text>
+    <text x="92" y="340" class="b">provider</text><text x="325" y="340" text-anchor="end" class="type">string</text>
+    <text x="92" y="374" class="b">metadata</text><text x="325" y="374" text-anchor="end" class="type">map</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="505" y="130" width="330" height="300" rx="18" class="card"/><path d="M505 148a18 18 0 0118-18h294a18 18 0 0118 18v42H505Z" class="head"/>
+    <text x="670" y="168" text-anchor="middle" class="h">Candidate</text>
+    <text x="527" y="222" class="pk">candidate_id</text><text x="800" y="222" text-anchor="end" class="type">document id</text>
+    <text x="527" y="256" class="b">owner_uid</text><text x="800" y="256" text-anchor="end" class="type">tenant key</text>
+    <text x="527" y="290" class="b">profile</text><text x="800" y="290" text-anchor="end" class="type">CandidateProfile</text>
+    <text x="527" y="324" class="b">raw_resume_text</text><text x="800" y="324" text-anchor="end" class="type">sensitive text</text>
+    <text x="527" y="358" class="b">confidence_score</text><text x="800" y="358" text-anchor="end" class="type">float</text>
+    <text x="527" y="392" class="b">skills / experience</text><text x="800" y="392" text-anchor="end" class="type">nested data</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="980" y="125" width="410" height="350" rx="18" class="card"/><path d="M980 143a18 18 0 0118-18h374a18 18 0 0118 18v42H980Z" class="head"/>
+    <text x="1185" y="163" text-anchor="middle" class="h">Interview Session</text>
+    <text x="1004" y="218" class="pk">session_id</text><text x="1355" y="218" text-anchor="end" class="type">document id</text>
+    <text x="1004" y="252" class="b">candidate_id / owner_uid</text><text x="1355" y="252" text-anchor="end" class="type">references</text>
+    <text x="1004" y="286" class="b">status / state</text><text x="1355" y="286" text-anchor="end" class="type">lifecycle</text>
+    <text x="1004" y="320" class="b">role / level / language</text><text x="1355" y="320" text-anchor="end" class="type">configuration</text>
+    <text x="1004" y="354" class="b">state_payload</text><text x="1355" y="354" text-anchor="end" class="type">durable snapshot</text>
+    <text x="1004" y="388" class="b">started_at / completed_at</text><text x="1355" y="388" text-anchor="end" class="type">timestamps</text>
+    <text x="1004" y="422" class="b">report_id</text><text x="1355" y="422" text-anchor="end" class="type">nullable</text>
+    <text x="1004" y="452" class="b">version</text><text x="1355" y="452" text-anchor="end" class="type">recommended</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="215" y="585" width="315" height="270" rx="18" class="card"/><path d="M215 603a18 18 0 0118-18h279a18 18 0 0118 18v42H215Z" class="head"/>
+    <text x="372" y="623" text-anchor="middle" class="h">Interview Turn</text>
+    <text x="237" y="677" class="pk">turn_id</text><text x="495" y="677" text-anchor="end" class="type">logical id</text>
+    <text x="237" y="711" class="b">question</text><text x="495" y="711" text-anchor="end" class="type">structured object</text>
+    <text x="237" y="745" class="b">candidate_answer</text><text x="495" y="745" text-anchor="end" class="type">text</text>
+    <text x="237" y="779" class="b">topic / difficulty</text><text x="495" y="779" text-anchor="end" class="type">string</text>
+    <text x="237" y="813" class="b">status / timing</text><text x="495" y="813" text-anchor="end" class="type">metadata</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="635" y="585" width="315" height="270" rx="18" class="card"/><path d="M635 603a18 18 0 0118-18h279a18 18 0 0118 18v42H635Z" class="head"/>
+    <text x="792" y="623" text-anchor="middle" class="h">Evaluation</text>
+    <text x="657" y="677" class="pk">evaluation_id</text><text x="915" y="677" text-anchor="end" class="type">logical id</text>
+    <text x="657" y="711" class="b">scores</text><text x="915" y="711" text-anchor="end" class="type">structured rubric</text>
+    <text x="657" y="745" class="b">strengths / weaknesses</text><text x="915" y="745" text-anchor="end" class="type">string[]</text>
+    <text x="657" y="779" class="b">missing_topics</text><text x="915" y="779" text-anchor="end" class="type">string[]</text>
+    <text x="657" y="813" class="b">follow_up_needed</text><text x="915" y="813" text-anchor="end" class="type">boolean</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1055" y="585" width="355" height="270" rx="18" class="card"/><path d="M1055 603a18 18 0 0118-18h319a18 18 0 0118 18v42H1055Z" class="head"/>
+    <text x="1232" y="623" text-anchor="middle" class="h">Interview Report</text>
+    <text x="1077" y="677" class="pk">report_id</text><text x="1375" y="677" text-anchor="end" class="type">UUID</text>
+    <text x="1077" y="711" class="b">session_id</text><text x="1375" y="711" text-anchor="end" class="type">unique owner</text>
+    <text x="1077" y="745" class="b">overall_score</text><text x="1375" y="745" text-anchor="end" class="type">number</text>
+    <text x="1077" y="779" class="b">skill_assessments</text><text x="1375" y="779" text-anchor="end" class="type">nested[]</text>
+    <text x="1077" y="813" class="b">recommendation / plan</text><text x="1375" y="813" text-anchor="end" class="type">structured data</text>
+  </g>
+
+  <path d="M360 265H498" class="line"/><text x="429" y="249" text-anchor="middle" class="b">1 : N</text>
+  <path d="M835 280H973" class="line"/><text x="904" y="264" text-anchor="middle" class="b">1 : N</text>
+  <path d="M1125 475C1040 540 530 520 390 578" class="line"/><text x="765" y="529" text-anchor="middle" class="b">contains completed_turns[]</text>
+  <path d="M530 720H628" class="line"/><text x="579" y="703" text-anchor="middle" class="b">1 : 1</text>
+  <path d="M1225 475V578" class="line"/><text x="1250" y="532" class="b">0..1</text>
+
+  <rect x="70" y="885" width="1340" height="45" rx="11" fill="#0f172a" stroke="#475569"/>
+  <text x="740" y="913" text-anchor="middle" class="b">Firestore path: users/{uid}/candidates/{candidateId}  ·  users/{uid}/interviews/{sessionId}</text>
+</svg>

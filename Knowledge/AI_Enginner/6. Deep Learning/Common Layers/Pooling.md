@@ -1,0 +1,26 @@
+# Pooling
+
+- **Intern**
+  - Understand core architecture and computational role.
+  - Recognize tensor shapes and data-flow terminology in the context of **Pooling**.
+  - Describe fundamental training concepts in the context of **Pooling**.
+  - Distinguish major strengths and limitations in the context of **Pooling**.
+  - Interpret relationship to loss functions and optimization in the context of **Pooling**.
+- **Junior**
+  - Explain and compare architectural variants and selection criteria.
+  - Explain gradient-flow and initialization implications in the context of **Pooling**.
+  - Distinguish regularization and normalization behavior in the context of **Pooling**.
+  - Evaluate capacity, data, and compute trade-offs in the context of **Pooling**.
+  - Relate common instability and generalization issues in the context of **Pooling**.
+- **Middle**
+  - Analyze optimization dynamics and failure diagnosis.
+  - Analyze memory, throughput, and numerical-precision implications in the context of **Pooling**.
+  - Diagnose architecture adaptation to task constraints in the context of **Pooling**.
+  - Evaluate ablation and representation-analysis principles in the context of **Pooling**.
+  - Assess robustness and distribution-shift considerations in the context of **Pooling**.
+- **Senior**
+  - Define and govern architecture strategy under product and infrastructure constraints.
+  - Establish scaling-law, data-quality, and compute-budget trade-offs in the context of **Pooling**.
+  - Evaluate reliability and governance of deep-learning systems in the context of **Pooling**.
+  - Govern standardization of evaluation and reproducibility in the context of **Pooling**.
+  - Set long-term model and platform lifecycle decisions in the context of **Pooling**.

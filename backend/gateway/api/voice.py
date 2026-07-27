@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from typing import Coroutine
 
@@ -52,7 +53,7 @@ from services.voice_session.manager import (
     VoiceSessionManager,
     VoiceSessionProtocolError,
 )
-from shared.schemas import InterviewSessionState
+from shared.schemas import CurrentUser, InterviewSessionState
 
 
 router = APIRouter(tags=["v2-voice"])
@@ -120,9 +121,13 @@ class _VoiceConnectionRuntime:
             task.result()
 
 
-def _firebase_token(websocket: WebSocket) -> str | None:
+def _offered_protocols(websocket: WebSocket) -> list[str]:
     header = websocket.headers.get("sec-websocket-protocol", "")
-    protocols = [item.strip() for item in header.split(",") if item.strip()]
+    return [item.strip() for item in header.split(",") if item.strip()]
+
+
+def _firebase_token(websocket: WebSocket) -> str | None:
+    protocols = _offered_protocols(websocket)
     if len(protocols) != 2 or protocols[0] != AUTH_SUBPROTOCOL:
         return None
     return protocols[1]
@@ -161,18 +166,29 @@ async def voice_interview(
         await _reject(websocket, 4403, "Origin is not allowed.")
         return
 
-    token = _firebase_token(websocket)
-    if token is None:
-        await _reject(websocket, 4401, "Authentication is required.")
-        return
-    try:
-        current_user = auth_service.verify_id_token(token)
-    except AuthenticationError:
-        await _reject(websocket, 4401, "Authentication failed.")
-        return
-    except Exception:
-        await _reject(websocket, 1011, "Authentication service unavailable.")
-        return
+    if not settings.auth_enabled:
+        # Mirror core.dependencies.get_current_user: with authentication off the
+        # REST routes fall back to the development identity, so the voice socket
+        # has to as well or local development cannot use voice at all.
+        current_user = CurrentUser(
+            uid=settings.auth_dev_user_id,
+            name="Local Development User",
+            email_verified=False,
+            claims={"auth_provider": "development"},
+        )
+    else:
+        token = _firebase_token(websocket)
+        if token is None:
+            await _reject(websocket, 4401, "Authentication is required.")
+            return
+        try:
+            current_user = auth_service.verify_id_token(token)
+        except AuthenticationError:
+            await _reject(websocket, 4401, "Authentication failed.")
+            return
+        except Exception:
+            await _reject(websocket, 1011, "Authentication service unavailable.")
+            return
 
     session = repository.get_session(session_id, user_id=current_user.uid)
     if session is None:
@@ -226,9 +242,37 @@ async def voice_interview(
         await _reject(websocket, 4429, "Voice session is already connected.")
         return
 
-    await websocket.accept(subprotocol=AUTH_SUBPROTOCOL)
+    # Only echo the subprotocol the client actually offered. With auth disabled a
+    # dev client may connect without one, and echoing an unoffered subprotocol
+    # makes browsers drop the connection.
+    await websocket.accept(
+        subprotocol=(
+            AUTH_SUBPROTOCOL
+            if AUTH_SUBPROTOCOL in _offered_protocols(websocket)
+            else None
+        )
+    )
     await runtime.send_json(connected_event(session_id))
     await runtime.send_json(state_event(state.state))
+
+    async def speak_current_question() -> None:
+        # Re-read the session so a reconnect mid-interview speaks the question
+        # the candidate is actually on, not the one from connect time.
+        record = repository.get_session(session_id, user_id=current_user.uid)
+        latest = persisted_state
+        if record is not None and record.state_payload:
+            try:
+                latest = InterviewSessionState.model_validate(record.state_payload)
+            except ValidationError:
+                latest = persisted_state
+        await _speak_pending_question(
+            latest,
+            manager,
+            session_id,
+            current_user.uid,
+            question_speech_factory,
+            runtime,
+        )
 
     try:
         while True:
@@ -247,6 +291,7 @@ async def voice_interview(
                     question_speech_factory,
                     runtime,
                     settings.max_voice_message_chars,
+                    speak_current_question,
                 )
                 if not should_continue:
                     break
@@ -268,6 +313,63 @@ async def voice_interview(
         await manager.disconnect(session_id, current_user.uid)
 
 
+async def _speak_pending_question(
+    state: InterviewSessionState,
+    manager: VoiceSessionManager,
+    session_id: str,
+    user_id: str,
+    question_speech_factory: QuestionSpeechStreamerFactory,
+    runtime: _VoiceConnectionRuntime,
+) -> None:
+    """Read the already-generated current question aloud.
+
+    The first question comes from the REST /start call, so nothing on the socket
+    ever synthesised it: candidates saw question 1 as text but heard silence,
+    while every later question was spoken. This also covers reconnects.
+    """
+    turn = state.current_turn
+    if turn is None:
+        return
+    question = turn.question
+    question_text = question if isinstance(question, str) else question.question
+    if not question_text.strip():
+        return
+
+    send_json = runtime.send_json
+    speech = question_speech_factory.create(
+        start_publisher=lambda: _start_tts(manager, session_id, user_id, send_json),
+        format_publisher=lambda chunk: send_json(
+            audio_format_event(chunk.sample_rate, chunk.format)
+        ),
+        audio_publisher=runtime.send_audio,
+        complete_publisher=lambda: send_json(tts_complete_event()),
+        error_publisher=lambda: send_json(
+            error_event("Question audio could not be generated.", "tts_failed")
+        ),
+        first_audio_publisher=lambda: _mark_tts_first_audio(
+            manager, session_id, user_id
+        ),
+    )
+    runtime.bind_speech(speech)
+    try:
+        # mark_ai_speaking (driven by the TTS start publisher) only accepts
+        # EVALUATING / AI_THINKING / AI_SPEAKING, and a fresh connection sits in
+        # WAITING_FOR_USER, so move through AI_THINKING first.
+        await manager.mark_ai_thinking(session_id, user_id)
+        await send_json(question_start_event())
+        await send_json(question_delta_event(question_text))
+        await speech.feed_text_delta(question_text)
+        speech.mark_question_complete()
+        await send_json(question_complete_event(question_text))
+        await speech.finish()
+    except Exception:
+        await speech.cancel()
+        logger.exception(
+            "Could not speak the pending interview question.",
+            extra={"event": "voice_pending_question_failed", "session_id": session_id},
+        )
+
+
 async def _handle_text_message(
     websocket: WebSocket,
     raw_message: str,
@@ -279,6 +381,7 @@ async def _handle_text_message(
     question_speech_factory: QuestionSpeechStreamerFactory,
     runtime: _VoiceConnectionRuntime,
     max_message_chars: int,
+    speak_current_question: Callable[[], Awaitable[None]] | None = None,
 ) -> bool:
     if len(raw_message) > max_message_chars:
         await runtime.send_json(error_event("Control message is too large.", "message_too_large"))
@@ -306,6 +409,9 @@ async def _handle_text_message(
             state = await manager.complete_playback(session_id, user_id)
             runtime.question_speech = None
             await runtime.send_json(state_event(state.state))
+        elif event.type == "speak_question":
+            if speak_current_question is not None:
+                await speak_current_question()
         else:
             started = runtime.start_answer(_handle_confirm_answer(
                 session_id,
@@ -536,9 +642,13 @@ async def _handle_binary_message(
     runtime: _VoiceConnectionRuntime,
 ) -> bool:
     try:
-        sequence, chunk_size = await manager.receive_audio_chunk(
-            session_id, user_id, payload
-        )
+        accepted = await manager.receive_audio_chunk(session_id, user_id, payload)
+        if accepted is None:
+            # Frame arrived after the session stopped listening. Expected while
+            # the client drains its capture buffer; acknowledging or erroring on
+            # each one only produced noise.
+            return True
+        sequence, chunk_size = accepted
         await runtime.send_json(audio_ack_event(sequence, chunk_size))
         return True
     except AudioChunkError as error:

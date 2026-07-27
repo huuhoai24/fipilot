@@ -108,6 +108,7 @@ class RemoteAudioPipeline:
         self._sender: asyncio.Task[None] | None = None
         self._reader: asyncio.Task[None] | None = None
         self._complete = asyncio.Event()
+        self.dropped_chunks = 0
 
     async def start(self) -> None:
         if self._websocket is not None:
@@ -133,13 +134,16 @@ class RemoteAudioPipeline:
         self._sender = asyncio.create_task(self._send_audio())
         self._reader = asyncio.create_task(self._read_events())
 
-    def enqueue(self, audio_bytes: bytes) -> None:
+    def enqueue(self, audio_bytes: bytes) -> bool:
+        """Buffer one PCM frame; returns False when it was dropped."""
         if self._queue is None:
             raise RuntimeError("Remote audio pipeline is not active.")
         try:
             self._queue.put_nowait(audio_bytes)
-        except asyncio.QueueFull as error:
-            raise AudioQueueFullError("Audio processing queue is full.") from error
+        except asyncio.QueueFull:
+            self.dropped_chunks += 1
+            return False
+        return True
 
     async def finish(self) -> None:
         if self._queue is None or self._websocket is None:
@@ -171,17 +175,22 @@ class RemoteAudioPipeline:
             await context.__aexit__(None, None, None)
 
     async def _send_audio(self) -> None:
-        assert self._queue is not None
-        assert self._websocket is not None
+        # Bind the queue and socket locally: close() clears the attributes while
+        # this task is still draining, so re-reading self._queue here would raise
+        # AttributeError on every shutdown.
+        queue = self._queue
+        websocket = self._websocket
+        assert queue is not None
+        assert websocket is not None
         while True:
-            item = await self._queue.get()
+            item = await queue.get()
             try:
                 if item is self._STOP:
                     return
                 assert isinstance(item, bytes)
-                await self._websocket.send(item)
+                await websocket.send(item)
             finally:
-                self._queue.task_done()
+                queue.task_done()
 
     async def _read_events(self) -> None:
         assert self._websocket is not None

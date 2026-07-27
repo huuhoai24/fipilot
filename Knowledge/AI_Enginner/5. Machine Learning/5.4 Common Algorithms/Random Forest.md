@@ -1,0 +1,26 @@
+# Random Forest
+
+- **Intern**
+  - Understand bagging, bootstrap samples, randomized features, and ensemble voting.
+  - Recognize fundamental assumptions and terminology in the context of **Random Forest**.
+  - Describe basic model behavior and expected outputs in the context of **Random Forest**.
+  - Distinguish primary evaluation concepts in the context of **Random Forest**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Random Forest**.
+- **Junior**
+  - Explain and compare tree correlation, out-of-bag estimation, feature importance, and tuning.
+  - Explain hyperparameter roles and regularization effects in the context of **Random Forest**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Random Forest**.
+  - Evaluate interpretation of errors and model outputs in the context of **Random Forest**.
+  - Relate limitations relative to alternative methods in the context of **Random Forest**.
+- **Middle**
+  - Analyze calibration, class imbalance, high-dimensional behavior, and error analysis.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Random Forest**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Random Forest**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Random Forest**.
+  - Assess production constraints affecting model choice in the context of **Random Forest**.
+- **Senior**
+  - Define and govern selection criteria, interpretability policy, and production lifecycle.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Random Forest**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Random Forest**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Random Forest**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Random Forest**.

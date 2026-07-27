@@ -1,0 +1,26 @@
+# Shell
+
+- **Intern**
+  - Understand command or concept purpose.
+  - Recognize filesystem and process terminology in the context of **Shell**.
+  - Describe permission and environment basics in the context of **Shell**.
+  - Distinguish common error conditions in the context of **Shell**.
+  - Interpret safe interpretation of command effects in the context of **Shell**.
+- **Junior**
+  - Explain and compare process, signal, pipe, and redirection semantics.
+  - Explain permission and remote-access security implications in the context of **Shell**.
+  - Distinguish resource and log inspection concepts in the context of **Shell**.
+  - Evaluate shell portability and quoting concerns in the context of **Shell**.
+  - Relate common operational troubleshooting patterns in the context of **Shell**.
+- **Middle**
+  - Analyze performance, networking, and resource-isolation implications.
+  - Analyze service lifecycle and system-level diagnostics in the context of **Shell**.
+  - Diagnose security hardening and least-privilege considerations in the context of **Shell**.
+  - Evaluate automation reliability and idempotency in the context of **Shell**.
+  - Assess failure analysis across host, process, and filesystem layers in the context of **Shell**.
+- **Senior**
+  - Define and govern operating-system standards for AI infrastructure.
+  - Establish capacity, security, and reliability governance in the context of **Shell**.
+  - Evaluate kernel, container, and hardware interaction awareness in the context of **Shell**.
+  - Govern incident-response and forensic requirements in the context of **Shell**.
+  - Set fleet-level lifecycle and configuration strategy in the context of **Shell**.

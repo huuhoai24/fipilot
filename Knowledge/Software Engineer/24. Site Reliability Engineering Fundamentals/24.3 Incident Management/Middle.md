@@ -1,0 +1,7 @@
+# Middle
+
+- Analyze On-call across distributed dependencies, incidents, and changing workloads.
+- Evaluate trade-offs involving reliability, cost, release velocity, and operational burden.
+- Define reliability standards, incident roles, and service-level governance.
+- Identify systemic failure patterns and toil.
+- Relate On-call to observability, capacity planning, and change management.

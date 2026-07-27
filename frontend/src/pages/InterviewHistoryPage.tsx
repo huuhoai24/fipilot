@@ -45,6 +45,7 @@ function SessionAction({ session }: { session: InterviewSessionSummary }) {
 }
 
 export function InterviewHistoryPage() {
+  const navigate = useNavigate()
   const [data, setData] = useState<InterviewHistoryResponse | null>(null)
   const [offset, setOffset] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -67,11 +68,11 @@ export function InterviewHistoryPage() {
   }, [offset])
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-end justify-between gap-3">
+    <div className="space-y-8">
+      <div className="flex items-end justify-between gap-5">
         <div>
-          <h1 className="font-display text-2xl font-bold text-text-primary">Interview History</h1>
-          <p className="mt-1 text-sm text-text-muted">{data ? `${data.total} interview sessions` : 'Previous interview sessions'}</p>
+          <h1 className="font-display text-4xl font-semibold tracking-tight-display text-text-primary sm:text-5xl">Your interview history</h1>
+          <p className="mt-3 text-base text-text-muted">{data ? `${data.total} practice sessions and reports` : 'Resume where you left off or review your progress.'}</p>
         </div>
         <Button variant="secondary" size="icon" title="Refresh history" onClick={() => void load()} disabled={loading}>
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -85,14 +86,14 @@ export function InterviewHistoryPage() {
       {loading && !data ? (
         <div className="flex min-h-64 items-center justify-center"><Loader2 className="h-7 w-7 animate-spin text-accent" /></div>
       ) : data?.items.length ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {data.items.map((session) => {
             const progress = session.question_count
               ? Math.round((session.answered_question_count / session.question_count) * 100)
               : 0
             return (
-              <Card key={session.session_id}>
-                <CardContent className="grid gap-4 p-4 md:grid-cols-[minmax(150px,1.2fr)_100px_120px_minmax(160px,1fr)_90px_auto] md:items-center">
+              <Card key={session.session_id} className="group overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:border-accent/30 hover:shadow-2xl hover:shadow-black/15">
+                <CardContent className="grid gap-5 p-5 md:grid-cols-[minmax(150px,1.2fr)_100px_120px_minmax(160px,1fr)_90px_auto] md:items-center lg:p-6">
                   <div>
                     <div className="text-sm font-medium text-text-primary">
                       {new Date(session.started_at).toLocaleDateString(undefined, { dateStyle: 'medium' })}
@@ -112,7 +113,7 @@ export function InterviewHistoryPage() {
                       <span>Progress</span>
                       <span>{session.answered_question_count}/{session.question_count}</span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-surface-raised">
+                    <div className="h-2 overflow-hidden rounded-full bg-surface-raised">
                       <div className="h-full bg-accent" style={{ width: `${Math.min(progress, 100)}%` }} />
                     </div>
                   </div>
@@ -133,10 +134,16 @@ export function InterviewHistoryPage() {
           })}
         </div>
       ) : (
-        <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-border bg-surface text-center">
-          <History className="h-7 w-7 text-text-faint" />
-          <h2 className="mt-3 text-sm font-semibold text-text-primary">No interview sessions</h2>
-          <p className="mt-1 text-sm text-text-muted">Completed and active interviews will appear here.</p>
+        <div className="hairline flex min-h-[420px] flex-col items-center justify-center rounded-[28px] border border-border bg-surface px-6 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-soft">
+            <History className="h-6 w-6 text-accent" />
+          </div>
+          <h2 className="mt-5 font-display text-2xl font-semibold tracking-tight-display text-text-primary">Your first session starts with a CV</h2>
+          <p className="mt-2 max-w-md text-sm leading-6 text-text-muted">Choose text or voice practice, set your target role, and the history will build from there.</p>
+          <Button className="mt-6" onClick={() => navigate('/text-interview')}>
+            Start an interview
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       )}
 

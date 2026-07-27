@@ -21,6 +21,13 @@ class TranscriptEvent(BaseModel):
 
 
 class StreamingSTT(ABC):
+    # Implementations whose partial transcription is expensive should set this to
+    # True and implement append_audio/partial_due/transcribe_partial. The audio
+    # pipeline then runs partials off the consumer path, so buffering audio never
+    # waits on inference. Implementations that leave it False keep the simple
+    # inline process_audio_chunk contract.
+    supports_deferred_partials: bool = False
+
     @abstractmethod
     async def start_session(self) -> None:
         raise NotImplementedError
@@ -33,6 +40,18 @@ class StreamingSTT(ABC):
 
     @abstractmethod
     async def finish_session(self) -> TranscriptEvent | None:
+        raise NotImplementedError
+
+    async def append_audio(self, audio_bytes: bytes) -> None:
+        """Buffer audio without running inference."""
+        raise NotImplementedError
+
+    def partial_due(self) -> bool:
+        """True when enough new audio has arrived to justify a partial."""
+        return False
+
+    async def transcribe_partial(self) -> TranscriptEvent | None:
+        """Transcribe the buffer for a partial result."""
         raise NotImplementedError
 
 

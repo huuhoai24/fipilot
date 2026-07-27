@@ -1,0 +1,26 @@
+# Unit Test
+
+- **Intern**
+  - Understand core concept and terminology.
+  - Recognize basic correctness and maintainability principles in the context of **Unit Test**.
+  - Describe common workflow and collaboration expectations in the context of **Unit Test**.
+  - Distinguish typical defects prevented by the concept in the context of **Unit Test**.
+  - Interpret relationship to code quality in the context of **Unit Test**.
+- **Junior**
+  - Explain and compare trade-offs among common design alternatives.
+  - Explain testing and review implications in the context of **Unit Test**.
+  - Distinguish dependency and interface concerns in the context of **Unit Test**.
+  - Evaluate readability, changeability, and backward compatibility in the context of **Unit Test**.
+  - Relate common failure and maintenance risks in the context of **Unit Test**.
+- **Middle**
+  - Analyze architectural coupling and scalability implications.
+  - Analyze quality strategy across modules and services in the context of **Unit Test**.
+  - Diagnose refactoring and technical-debt assessment in the context of **Unit Test**.
+  - Evaluate reliability, performance, and security interactions in the context of **Unit Test**.
+  - Assess review standards for complex changes in the context of **Unit Test**.
+- **Senior**
+  - Define and govern organization-wide engineering standards.
+  - Establish architecture governance and exception criteria in the context of **Unit Test**.
+  - Evaluate long-term maintainability and migration strategy in the context of **Unit Test**.
+  - Govern risk, ownership, and operational accountability in the context of **Unit Test**.
+  - Set balancing delivery speed with platform quality in the context of **Unit Test**.

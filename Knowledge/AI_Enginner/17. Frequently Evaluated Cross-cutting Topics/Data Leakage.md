@@ -1,0 +1,26 @@
+# Data Leakage
+
+- **Intern**
+  - Understand unintended use of information unavailable at prediction time.
+  - Recognize direct effect on model or system behavior in the context of **Data Leakage**.
+  - Describe basic measurement or interpretation in the context of **Data Leakage**.
+  - Distinguish common causes of misuse in the context of **Data Leakage**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Data Leakage**.
+- **Junior**
+  - Explain and compare target, temporal, preprocessing, and split leakage patterns.
+  - Explain trade-offs among common approaches in the context of **Data Leakage**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Data Leakage**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Data Leakage**.
+  - Relate common edge cases and failure modes in the context of **Data Leakage**.
+- **Middle**
+  - Analyze pipeline audits, causal timing, group leakage, and hidden proxy detection.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Data Leakage**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Data Leakage**.
+  - Evaluate robust evaluation and governance requirements in the context of **Data Leakage**.
+  - Assess decision criteria under conflicting constraints in the context of **Data Leakage**.
+- **Senior**
+  - Define and govern organizational controls for leakage prevention and review.
+  - Establish risk, compliance, and lifecycle governance in the context of **Data Leakage**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Data Leakage**.
+  - Govern architecture and platform implications in the context of **Data Leakage**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Data Leakage**.

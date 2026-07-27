@@ -1,0 +1,26 @@
+# find
+
+- **Intern**
+  - Understand command or concept purpose.
+  - Recognize filesystem and process terminology in the context of **find**.
+  - Describe permission and environment basics in the context of **find**.
+  - Distinguish common error conditions in the context of **find**.
+  - Interpret safe interpretation of command effects in the context of **find**.
+- **Junior**
+  - Explain and compare process, signal, pipe, and redirection semantics.
+  - Explain permission and remote-access security implications in the context of **find**.
+  - Distinguish resource and log inspection concepts in the context of **find**.
+  - Evaluate shell portability and quoting concerns in the context of **find**.
+  - Relate common operational troubleshooting patterns in the context of **find**.
+- **Middle**
+  - Analyze performance, networking, and resource-isolation implications.
+  - Analyze service lifecycle and system-level diagnostics in the context of **find**.
+  - Diagnose security hardening and least-privilege considerations in the context of **find**.
+  - Evaluate automation reliability and idempotency in the context of **find**.
+  - Assess failure analysis across host, process, and filesystem layers in the context of **find**.
+- **Senior**
+  - Define and govern operating-system standards for AI infrastructure.
+  - Establish capacity, security, and reliability governance in the context of **find**.
+  - Evaluate kernel, container, and hardware interaction awareness in the context of **find**.
+  - Govern incident-response and forensic requirements in the context of **find**.
+  - Set fleet-level lifecycle and configuration strategy in the context of **find**.

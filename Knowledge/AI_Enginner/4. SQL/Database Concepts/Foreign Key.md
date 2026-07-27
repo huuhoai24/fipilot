@@ -1,0 +1,26 @@
+# Foreign Key
+
+- **Intern**
+  - Understand syntax and relational meaning.
+  - Recognize result-set semantics in the context of **Foreign Key**.
+  - Describe basic key and table relationships in the context of **Foreign Key**.
+  - Distinguish common logical mistakes in the context of **Foreign Key**.
+  - Interpret effect of NULL and duplicate rows in the context of **Foreign Key**.
+- **Junior**
+  - Explain and compare query planning implications of common constructs.
+  - Explain correctness across joins, aggregation, and filtering in the context of **Foreign Key**.
+  - Distinguish index and transaction awareness in the context of **Foreign Key**.
+  - Evaluate readability and maintainability of analytical SQL in the context of **Foreign Key**.
+  - Relate data-quality and cardinality considerations in the context of **Foreign Key**.
+- **Middle**
+  - Analyze performance diagnosis through execution plans.
+  - Analyze concurrency, isolation, and consistency trade-offs in the context of **Foreign Key**.
+  - Diagnose warehouse versus transactional workload considerations in the context of **Foreign Key**.
+  - Evaluate large-scale query optimization and partitioning implications in the context of **Foreign Key**.
+  - Assess governance of reusable datasets and semantic definitions in the context of **Foreign Key**.
+- **Senior**
+  - Define and govern database architecture and workload placement decisions.
+  - Establish organization-wide data modeling standards in the context of **Foreign Key**.
+  - Evaluate reliability, security, and cost governance in the context of **Foreign Key**.
+  - Govern migration and compatibility strategies in the context of **Foreign Key**.
+  - Set criteria for balancing correctness, latency, and operational complexity in the context of **Foreign Key**.

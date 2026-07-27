@@ -217,6 +217,8 @@ def get_audio_pipeline_factory():
             partial_interval_ms=settings.stt_partial_interval_ms,
             vocabulary_profile=settings.stt_vocabulary_profile,
             custom_hotwords=settings.stt_hotwords,
+            partial_max_audio_ms=settings.stt_partial_max_audio_ms,
+            final_beam_size=settings.stt_final_beam_size,
         ),
         vad_factory=SileroVADFactory(
             threshold=settings.vad_threshold,
@@ -266,7 +268,10 @@ def get_question_generator_agent():
 def get_evaluator_agent():
     from services.answer_evaluator.agent import EvaluatorAgent
 
-    return EvaluatorAgent(llm_service=get_llm_service())
+    return EvaluatorAgent(
+        llm_service=get_llm_service(),
+        task_type=get_app_settings().evaluator_task_type,
+    )
 
 
 def get_decision_service():

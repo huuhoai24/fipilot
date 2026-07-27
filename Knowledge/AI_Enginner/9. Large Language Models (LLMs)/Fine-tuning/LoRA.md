@@ -1,0 +1,26 @@
+# LoRA
+
+- **Intern**
+  - Understand low-rank parameter updates for efficient model adaptation.
+  - Recognize token, context, probability, and decoding terminology in the context of **LoRA**.
+  - Describe basic prompting and output-control concepts in the context of **LoRA**.
+  - Distinguish known limitations including hallucination and context limits in the context of **LoRA**.
+  - Interpret basic evaluation dimensions in the context of **LoRA**.
+- **Junior**
+  - Explain and compare rank, target modules, scaling, merging, and memory implications.
+  - Explain decoding-parameter effects and structured-output constraints in the context of **LoRA**.
+  - Distinguish context-window, chunking, and embedding implications in the context of **LoRA**.
+  - Evaluate quality, latency, and cost trade-offs in the context of **LoRA**.
+  - Relate common safety and grounding failure modes in the context of **LoRA**.
+- **Middle**
+  - Analyze quality-efficiency trade-offs, catastrophic forgetting, and adapter management.
+  - Analyze faithfulness, robustness, and adversarial failure analysis in the context of **LoRA**.
+  - Diagnose retrieval quality and generation quality decomposition in the context of **LoRA**.
+  - Evaluate model routing, caching, and cost-control principles in the context of **LoRA**.
+  - Assess privacy, prompt-injection, and data-boundary risks in the context of **LoRA**.
+- **Senior**
+  - Define and govern adapter governance, portfolio strategy, and deployment standards.
+  - Establish governance, safety, compliance, and human-oversight requirements in the context of **LoRA**.
+  - Evaluate evaluation frameworks linked to product outcomes in the context of **LoRA**.
+  - Govern vendor, open-model, and build-versus-buy decisions in the context of **LoRA**.
+  - Set lifecycle strategy for prompts, knowledge, models, and guardrails in the context of **LoRA**.

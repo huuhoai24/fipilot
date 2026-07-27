@@ -1,0 +1,7 @@
+# Junior
+
+- Explain how IndexedDB affects user interaction, browser state, networking, or background work.
+- Analyze origin, permission, lifecycle, event propagation, and quota implications where relevant.
+- Understand privacy, security, and cross-browser limitations.
+- Recognize memory leaks, stale state, blocking, and permission failures.
+- Evaluate whether IndexedDB is suitable for a defined user experience.

@@ -5,6 +5,7 @@ import json
 import logging
 import re
 import sys
+import traceback
 from datetime import datetime, timezone
 from typing import Any
 
@@ -41,7 +42,14 @@ class StructuredJsonFormatter(logging.Formatter):
                 payload[field] = value
         payload.setdefault("request_id", get_request_id())
         if record.exc_info:
-            payload["exception"] = record.exc_info[0].__name__
+            exc_type, exc_value, _ = record.exc_info
+            payload["exception"] = exc_type.__name__ if exc_type else "Exception"
+            # Keep the message and stack: recording only the class name made
+            # production failures effectively undebuggable.
+            payload["exception_message"] = _redact(str(exc_value or ""))
+            payload["stacktrace"] = _redact(
+                "".join(traceback.format_exception(*record.exc_info))
+            )
         return json.dumps(payload, ensure_ascii=True, default=str)
 
 

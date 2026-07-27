@@ -1,0 +1,28 @@
+# DETR
+
+- **Intern**
+  - Understand definition and task objective.
+  - Recognize image representation and coordinate conventions in the context of **DETR**.
+  - Describe core output format and terminology in the context of **DETR**.
+  - Distinguish basic evaluation concepts in the context of **DETR**.
+  - Interpret common dataset and annotation issues in the context of **DETR**.
+- **Junior**
+  - Explain and compare model-family differences and selection criteria.
+  - Explain augmentation, preprocessing, and label-quality implications in the context of **DETR**.
+  - Distinguish metric interpretation and localization/classification trade-offs in the context of **DETR**.
+  - Evaluate resolution, receptive-field, and scale considerations in the context of **DETR**.
+  - Relate common visual failure modes in the context of **DETR**.
+- **Middle**
+  - Analyze domain shift, long-tail, occlusion, and calibration analysis.
+  - Analyze latency, memory, and throughput implications in the context of **DETR**.
+  - Diagnose error decomposition by object, scene, and annotation conditions in the context of **DETR**.
+  - Evaluate dataset design and evaluation protocol robustness in the context of **DETR**.
+  - Assess trade-offs among accuracy, complexity, and deployability in the context of **DETR**.
+- **Senior**
+  - Define and govern vision-system architecture and task decomposition.
+  - Establish data-governance and annotation strategy at scale in the context of **DETR**.
+  - Evaluate safety, privacy, fairness, and misuse considerations in the context of **DETR**.
+  - Govern deployment strategy across cloud, edge, and embedded environments in the context of **DETR**.
+  - Set portfolio-level model and platform standardization in the context of **DETR**.
+
+---

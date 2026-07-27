@@ -1,0 +1,26 @@
+# Scaling
+
+- **Intern**
+  - Understand definition and role in the data workflow.
+  - Recognize core data structures and terminology in the context of **Scaling**.
+  - Describe basic transformation semantics in the context of **Scaling**.
+  - Distinguish common data-quality issues in the context of **Scaling**.
+  - Interpret effect on downstream model inputs in the context of **Scaling**.
+- **Junior**
+  - Explain and compare schema, dtype, missing-value, and indexing implications.
+  - Explain selection among common transformation methods in the context of **Scaling**.
+  - Distinguish data leakage and reproducibility concerns in the context of **Scaling**.
+  - Evaluate memory and computational considerations in the context of **Scaling**.
+  - Relate validation requirements for transformed data in the context of **Scaling**.
+- **Middle**
+  - Analyze pipeline consistency across training and inference.
+  - Analyze scalability and performance bottlenecks in the context of **Scaling**.
+  - Diagnose data contracts and lineage requirements in the context of **Scaling**.
+  - Evaluate failure modes caused by skew, corruption, or invalid assumptions in the context of **Scaling**.
+  - Assess trade-offs between statistical quality and operational cost in the context of **Scaling**.
+- **Senior**
+  - Define and govern enterprise data standards and governance.
+  - Establish architecture for reusable and auditable feature pipelines in the context of **Scaling**.
+  - Evaluate privacy, security, and compliance implications in the context of **Scaling**.
+  - Govern ownership and lifecycle of data contracts in the context of **Scaling**.
+  - Set criteria for platform-level standardization in the context of **Scaling**.

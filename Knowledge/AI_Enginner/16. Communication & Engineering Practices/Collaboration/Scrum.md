@@ -1,0 +1,26 @@
+# Scrum
+
+- **Intern**
+  - Understand core terminology and expected professional behavior.
+  - Recognize clear explanation of technical facts in the context of **Scrum**.
+  - Describe basic documentation and collaboration principles in the context of **Scrum**.
+  - Distinguish distinction between observation, assumption, and conclusion in the context of **Scrum**.
+  - Interpret awareness of feedback and escalation paths in the context of **Scrum**.
+- **Junior**
+  - Explain and compare structured technical communication and trade-off articulation.
+  - Explain effective review, documentation, and status reporting in the context of **Scrum**.
+  - Distinguish evidence-based debugging and root-cause reasoning in the context of **Scrum**.
+  - Evaluate collaboration within iterative delivery processes in the context of **Scrum**.
+  - Relate clear ownership and follow-through expectations in the context of **Scrum**.
+- **Middle**
+  - Analyze facilitation of design and incident discussions.
+  - Analyze communication of uncertainty, risk, and alternatives in the context of **Scrum**.
+  - Diagnose cross-functional alignment and decision documentation in the context of **Scrum**.
+  - Evaluate systematic root-cause and corrective-action analysis in the context of **Scrum**.
+  - Assess mentoring and review quality in the context of **Scrum**.
+- **Senior**
+  - Define and govern decision-making frameworks and stakeholder alignment.
+  - Establish communication of complex technical risk to non-specialists in the context of **Scrum**.
+  - Evaluate organizational learning and engineering-culture standards in the context of **Scrum**.
+  - Govern conflict resolution and accountability structures in the context of **Scrum**.
+  - Set strategic prioritization across teams and systems in the context of **Scrum**.

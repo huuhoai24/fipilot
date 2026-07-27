@@ -1,0 +1,26 @@
+# ACID
+
+- **Intern**
+  - Understand syntax and relational meaning.
+  - Recognize result-set semantics in the context of **ACID**.
+  - Describe basic key and table relationships in the context of **ACID**.
+  - Distinguish common logical mistakes in the context of **ACID**.
+  - Interpret effect of NULL and duplicate rows in the context of **ACID**.
+- **Junior**
+  - Explain and compare query planning implications of common constructs.
+  - Explain correctness across joins, aggregation, and filtering in the context of **ACID**.
+  - Distinguish index and transaction awareness in the context of **ACID**.
+  - Evaluate readability and maintainability of analytical SQL in the context of **ACID**.
+  - Relate data-quality and cardinality considerations in the context of **ACID**.
+- **Middle**
+  - Analyze performance diagnosis through execution plans.
+  - Analyze concurrency, isolation, and consistency trade-offs in the context of **ACID**.
+  - Diagnose warehouse versus transactional workload considerations in the context of **ACID**.
+  - Evaluate large-scale query optimization and partitioning implications in the context of **ACID**.
+  - Assess governance of reusable datasets and semantic definitions in the context of **ACID**.
+- **Senior**
+  - Define and govern database architecture and workload placement decisions.
+  - Establish organization-wide data modeling standards in the context of **ACID**.
+  - Evaluate reliability, security, and cost governance in the context of **ACID**.
+  - Govern migration and compatibility strategies in the context of **ACID**.
+  - Set criteria for balancing correctness, latency, and operational complexity in the context of **ACID**.

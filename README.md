@@ -77,3 +77,7 @@ cd frontend && npm run dev -- --host localhost
 See [Local Development](docs/local-development.md) for Firebase, CUDA, Docker,
 health checks, and end-to-end verification. See
 [Local Architecture](docs/local-architecture.md) for service boundaries.
+
+For the full current-state and target architecture, data model, security,
+scaling plan, and visual diagrams, see
+[System Design (Vietnamese)](docs/SYSTEM_DESIGN_VI.md).

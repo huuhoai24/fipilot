@@ -1,0 +1,26 @@
+# Online Evaluation
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **Online Evaluation**.
+  - Describe basic measurement or interpretation in the context of **Online Evaluation**.
+  - Distinguish common causes of misuse in the context of **Online Evaluation**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Online Evaluation**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **Online Evaluation**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Online Evaluation**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Online Evaluation**.
+  - Relate common edge cases and failure modes in the context of **Online Evaluation**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Online Evaluation**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Online Evaluation**.
+  - Evaluate robust evaluation and governance requirements in the context of **Online Evaluation**.
+  - Assess decision criteria under conflicting constraints in the context of **Online Evaluation**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **Online Evaluation**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Online Evaluation**.
+  - Govern architecture and platform implications in the context of **Online Evaluation**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Online Evaluation**.

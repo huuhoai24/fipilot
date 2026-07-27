@@ -1,0 +1,26 @@
+# Data Processing
+
+- **Intern**
+  - Understand component roles and data flow.
+  - Recognize basic functional and non-functional requirements in the context of **Data Processing**.
+  - Describe batch and online processing distinctions in the context of **Data Processing**.
+  - Distinguish fundamental reliability and security terminology in the context of **Data Processing**.
+  - Interpret common bottlenecks and failure points in the context of **Data Processing**.
+- **Junior**
+  - Explain and compare interface, storage, queue, cache, and serving trade-offs.
+  - Explain latency, throughput, consistency, and availability concepts in the context of **Data Processing**.
+  - Distinguish data and model versioning requirements in the context of **Data Processing**.
+  - Evaluate basic monitoring and failure-recovery design in the context of **Data Processing**.
+  - Relate capacity and cost implications in the context of **Data Processing**.
+- **Middle**
+  - Analyze end-to-end architecture and failure-domain analysis.
+  - Analyze scalability, backpressure, and consistency trade-offs in the context of **Data Processing**.
+  - Diagnose training-serving skew and lifecycle integration in the context of **Data Processing**.
+  - Evaluate security, privacy, and multi-tenancy considerations in the context of **Data Processing**.
+  - Assess SLO-driven observability and resilience design in the context of **Data Processing**.
+- **Senior**
+  - Define and govern architecture strategy aligned with business and risk.
+  - Establish organization-wide platform boundaries and standards in the context of **Data Processing**.
+  - Evaluate capacity, cost, reliability, and governance decisions in the context of **Data Processing**.
+  - Govern technology selection and migration strategy in the context of **Data Processing**.
+  - Set cross-team ownership and long-term evolution in the context of **Data Processing**.

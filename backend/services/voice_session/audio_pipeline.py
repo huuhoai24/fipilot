@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable
+from contextlib import suppress
 from dataclasses import dataclass
 from threading import Lock
 from typing import Any
@@ -184,8 +185,10 @@ class AudioPipeline:
         self.stt_final_callback = stt_final_callback
         self._queue: asyncio.Queue[bytes | object] | None = None
         self._worker: asyncio.Task[None] | None = None
+        self._partial_task: asyncio.Task[None] | None = None
         self._endpoint_detected = False
         self._final_published = False
+        self.dropped_chunks = 0
 
     async def start(self) -> None:
         if self._worker is not None and not self._worker.done():
@@ -193,17 +196,27 @@ class AudioPipeline:
         self._queue = asyncio.Queue(maxsize=self.queue_size)
         self._endpoint_detected = False
         self._final_published = False
+        self.dropped_chunks = 0
+        await self._cancel_partial()
         await self.vad.reset()
         await self.stt.start_session()
         self._worker = asyncio.create_task(self._run())
 
-    def enqueue(self, audio_bytes: bytes) -> None:
+    def enqueue(self, audio_bytes: bytes) -> bool:
+        """Buffer one PCM frame.
+
+        Returns False when the frame was dropped because the queue is full.
+        Dropping a frame degrades one utterance; raising here used to tear down
+        the whole WebSocket and end the interview, which is far worse.
+        """
         if self._queue is None or self._worker is None or self._worker.done():
             raise RuntimeError("Audio pipeline is not active.")
         try:
             self._queue.put_nowait(audio_bytes)
-        except asyncio.QueueFull as error:
-            raise AudioQueueFullError("Audio processing queue is full.") from error
+        except asyncio.QueueFull:
+            self.dropped_chunks += 1
+            return False
+        return True
 
     async def finish(self) -> None:
         if self._queue is None or self._worker is None:
@@ -223,6 +236,7 @@ class AudioPipeline:
         worker = self._worker
         self._queue = None
         self._worker = None
+        await self._cancel_partial()
         if worker is not None and not worker.done():
             worker.cancel()
             try:
@@ -230,10 +244,49 @@ class AudioPipeline:
             except asyncio.CancelledError:
                 pass
 
+    async def _consume_speech(self, audio_bytes: bytes) -> None:
+        """Buffer speech audio and emit partials without stalling the consumer."""
+        if not self.stt.supports_deferred_partials:
+            partial = await self.stt.process_audio_chunk(audio_bytes)
+            if partial is not None:
+                await self.transcript_service.publish(partial)
+            return
+
+        await self.stt.append_audio(audio_bytes)
+        if not self.stt.partial_due():
+            return
+        if self._partial_task is not None and not self._partial_task.done():
+            # Inference is still busy. Skip this partial instead of queueing
+            # behind it: a backlog of partials is what used to starve the
+            # consumer and overflow the audio queue.
+            return
+        self._partial_task = asyncio.create_task(self._emit_partial())
+
+    async def _emit_partial(self) -> None:
+        try:
+            partial = await self.stt.transcribe_partial()
+        except Exception:
+            return
+        if partial is None or self._endpoint_detected or self._final_published:
+            return
+        await self.transcript_service.publish(partial)
+
+    async def _cancel_partial(self) -> None:
+        task = self._partial_task
+        self._partial_task = None
+        if task is not None and not task.done():
+            task.cancel()
+            with suppress(asyncio.CancelledError):
+                await task
+
     async def _run(self) -> None:
-        assert self._queue is not None
+        # Bind the queue locally: close() clears self._queue while this task may
+        # still be inside the loop, so re-reading the attribute in `finally`
+        # would raise AttributeError on every shutdown.
+        queue = self._queue
+        assert queue is not None
         while True:
-            item = await self._queue.get()
+            item = await queue.get()
             try:
                 if item is self._STOP:
                     return
@@ -248,9 +301,7 @@ class AudioPipeline:
                 ):
                     await self.speech_started_callback()
                 if vad_result.is_speech:
-                    partial = await self.stt.process_audio_chunk(audio_bytes)
-                    if partial is not None:
-                        await self.transcript_service.publish(partial)
+                    await self._consume_speech(audio_bytes)
                 if vad_result.speech_ended:
                     self._endpoint_detected = True
                     if self.speech_end_callback is not None:
@@ -260,9 +311,12 @@ class AudioPipeline:
                         await self.endpoint_callback()
                     return
             finally:
-                self._queue.task_done()
+                queue.task_done()
 
     async def _publish_final(self) -> None:
+        # Stop any in-flight partial first so a stale partial can never be
+        # published after the final transcript.
+        await self._cancel_partial()
         final = await self.stt.finish_session()
         self._final_published = True
         if self.stt_final_callback is not None:

@@ -36,6 +36,35 @@ class LoggingTests(unittest.TestCase):
         self.assertNotIn("user@example.com", payload["message"])
         self.assertNotIn("secret-token", payload["message"])
 
+    def test_exceptions_keep_message_and_stacktrace(self):
+        # The formatter used to record only the exception class name, which made
+        # a crash in production impossible to diagnose from the logs.
+        stream = StringIO()
+        handler = logging.StreamHandler(stream)
+        handler.setFormatter(StructuredJsonFormatter())
+        logger = logging.getLogger("structured-exception-test")
+        logger.handlers = [handler]
+        logger.propagate = False
+        logger.setLevel(logging.INFO)
+
+        def failing_call():
+            raise ValueError("queue went missing for user@example.com")
+
+        try:
+            failing_call()
+        except ValueError:
+            logger.exception("Voice turn failed", extra={"event": "voice_failed"})
+
+        payload = json.loads(stream.getvalue())
+
+        self.assertEqual(payload["exception"], "ValueError")
+        self.assertIn("queue went missing", payload["exception_message"])
+        self.assertIn("failing_call", payload["stacktrace"])
+        self.assertIn("ValueError", payload["stacktrace"])
+        # Redaction must still apply to the new fields.
+        self.assertNotIn("user@example.com", payload["exception_message"])
+        self.assertNotIn("user@example.com", payload["stacktrace"])
+
     def test_request_id_is_accepted_or_generated_and_returned(self):
         app = FastAPI()
         app.middleware("http")(request_correlation_middleware)

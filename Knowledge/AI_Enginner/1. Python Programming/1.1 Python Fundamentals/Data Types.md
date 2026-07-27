@@ -1,0 +1,26 @@
+# Data Types
+
+- **Intern**
+  - Understand built-in scalar and container types and their semantics.
+  - Recognize fundamental syntax and semantics in the context of **Data Types**.
+  - Describe common terminology and basic constraints in the context of **Data Types**.
+  - Distinguish typical error categories and their causes in the context of **Data Types**.
+  - Interpret relationship to adjacent Python concepts in the context of **Data Types**.
+- **Junior**
+  - Explain and compare type selection, coercion, precision, and mixed-type behavior.
+  - Explain correct selection among common alternatives in the context of **Data Types**.
+  - Distinguish readability, type-safety, and maintainability implications in the context of **Data Types**.
+  - Evaluate error handling and debugging considerations in the context of **Data Types**.
+  - Relate standard-library conventions and compatibility concerns in the context of **Data Types**.
+- **Middle**
+  - Analyze memory footprint, numerical precision, and schema compatibility.
+  - Analyze interaction with concurrency, packaging, and larger codebases in the context of **Data Types**.
+  - Diagnose failure modes in production-oriented Python systems in the context of **Data Types**.
+  - Evaluate trade-offs among alternative language mechanisms in the context of **Data Types**.
+  - Assess review criteria and maintainability risks in the context of **Data Types**.
+- **Senior**
+  - Define and govern type contracts and cross-component data-model standards.
+  - Establish architectural implications in large Python platforms in the context of **Data Types**.
+  - Evaluate compatibility, migration, and dependency risks in the context of **Data Types**.
+  - Govern security, reliability, and operability considerations in the context of **Data Types**.
+  - Set criteria for standardization and exception handling in the context of **Data Types**.

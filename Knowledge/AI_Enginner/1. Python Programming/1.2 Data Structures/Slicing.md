@@ -1,0 +1,26 @@
+# Slicing
+
+- **Intern**
+  - Understand core definition and purpose.
+  - Recognize fundamental syntax and semantics in the context of **Slicing**.
+  - Describe common terminology and basic constraints in the context of **Slicing**.
+  - Distinguish typical error categories and their causes in the context of **Slicing**.
+  - Interpret relationship to adjacent Python concepts in the context of **Slicing**.
+- **Junior**
+  - Explain and compare language-specific behavior and edge cases.
+  - Explain correct selection among common alternatives in the context of **Slicing**.
+  - Distinguish readability, type-safety, and maintainability implications in the context of **Slicing**.
+  - Evaluate error handling and debugging considerations in the context of **Slicing**.
+  - Relate standard-library conventions and compatibility concerns in the context of **Slicing**.
+- **Middle**
+  - Analyze runtime behavior, memory, and performance implications.
+  - Analyze interaction with concurrency, packaging, and larger codebases in the context of **Slicing**.
+  - Diagnose failure modes in production-oriented Python systems in the context of **Slicing**.
+  - Evaluate trade-offs among alternative language mechanisms in the context of **Slicing**.
+  - Assess review criteria and maintainability risks in the context of **Slicing**.
+- **Senior**
+  - Define and govern organization-wide coding and API conventions.
+  - Establish architectural implications in large Python platforms in the context of **Slicing**.
+  - Evaluate compatibility, migration, and dependency risks in the context of **Slicing**.
+  - Govern security, reliability, and operability considerations in the context of **Slicing**.
+  - Set criteria for standardization and exception handling in the context of **Slicing**.

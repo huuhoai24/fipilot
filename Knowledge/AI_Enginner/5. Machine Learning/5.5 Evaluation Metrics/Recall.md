@@ -1,0 +1,26 @@
+# Recall
+
+- **Intern**
+  - Understand sensitivity derived from true positives and false negatives.
+  - Recognize fundamental assumptions and terminology in the context of **Recall**.
+  - Describe basic model behavior and expected outputs in the context of **Recall**.
+  - Distinguish primary evaluation concepts in the context of **Recall**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Recall**.
+- **Junior**
+  - Explain and compare threshold, prevalence, and class-definition effects.
+  - Explain hyperparameter roles and regularization effects in the context of **Recall**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Recall**.
+  - Evaluate interpretation of errors and model outputs in the context of **Recall**.
+  - Relate limitations relative to alternative methods in the context of **Recall**.
+- **Middle**
+  - Analyze recall-precision trade-offs, confidence intervals, and segment analysis.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Recall**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Recall**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Recall**.
+  - Assess production constraints affecting model choice in the context of **Recall**.
+- **Senior**
+  - Define and govern miss-cost alignment and operating-point governance.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Recall**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Recall**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Recall**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Recall**.

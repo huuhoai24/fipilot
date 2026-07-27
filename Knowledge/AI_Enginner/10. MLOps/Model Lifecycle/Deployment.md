@@ -1,0 +1,26 @@
+# Deployment
+
+- **Intern**
+  - Understand model-lifecycle terminology.
+  - Recognize roles of tracking, registry, deployment, and monitoring in the context of **Deployment**.
+  - Describe basic reproducibility concepts in the context of **Deployment**.
+  - Distinguish distinction between code, data, and model versions in the context of **Deployment**.
+  - Interpret common operational failure categories in the context of **Deployment**.
+- **Junior**
+  - Explain and compare experiment metadata and lineage requirements.
+  - Explain promotion, rollback, and environment-consistency concepts in the context of **Deployment**.
+  - Distinguish monitoring dimensions and alert interpretation in the context of **Deployment**.
+  - Evaluate CI/CD and testing boundaries for ML assets in the context of **Deployment**.
+  - Relate retraining triggers and approval considerations in the context of **Deployment**.
+- **Middle**
+  - Analyze pipeline orchestration, reliability, and idempotency trade-offs.
+  - Analyze drift, performance, and infrastructure monitoring design in the context of **Deployment**.
+  - Diagnose model governance and auditability requirements in the context of **Deployment**.
+  - Evaluate multi-environment and multi-model lifecycle complexity in the context of **Deployment**.
+  - Assess operational cost and platform scalability considerations in the context of **Deployment**.
+- **Senior**
+  - Define and govern organization-wide ML platform and governance strategy.
+  - Establish service ownership, SLOs, and incident-management principles in the context of **Deployment**.
+  - Evaluate standardization of lineage, approvals, and compliance controls in the context of **Deployment**.
+  - Govern portfolio-level cost, capacity, and lifecycle governance in the context of **Deployment**.
+  - Set build-versus-buy decisions for MLOps capabilities in the context of **Deployment**.

@@ -1,0 +1,26 @@
+# Image
+
+- **Intern**
+  - Understand serving terminology and request-response concepts.
+  - Recognize basic container and runtime concepts in the context of **Image**.
+  - Describe CPU, GPU, and accelerator roles in the context of **Image**.
+  - Distinguish batch versus online inference distinctions in the context of **Image**.
+  - Interpret common latency and compatibility issues in the context of **Image**.
+- **Junior**
+  - Explain and compare API contracts, serialization, and validation concerns.
+  - Explain container isolation and dependency compatibility in the context of **Image**.
+  - Distinguish model-format and runtime selection criteria in the context of **Image**.
+  - Evaluate throughput, batching, and concurrency trade-offs in the context of **Image**.
+  - Relate basic security and observability requirements in the context of **Image**.
+- **Middle**
+  - Analyze scaling, autoscaling, queueing, and backpressure implications.
+  - Analyze GPU memory, precision, and optimization trade-offs in the context of **Image**.
+  - Diagnose resilience, rollback, and degraded-mode design in the context of **Image**.
+  - Evaluate performance profiling and bottleneck attribution in the context of **Image**.
+  - Assess deployment topology and cost considerations in the context of **Image**.
+- **Senior**
+  - Define and govern serving architecture across workloads and regions.
+  - Establish SLO, capacity, resilience, and disaster-recovery strategy in the context of **Image**.
+  - Evaluate security, compliance, and tenancy isolation in the context of **Image**.
+  - Govern hardware-software co-design and cost governance in the context of **Image**.
+  - Set platform standardization and technology selection in the context of **Image**.

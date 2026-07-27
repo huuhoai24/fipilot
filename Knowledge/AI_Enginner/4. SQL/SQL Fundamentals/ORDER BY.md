@@ -1,0 +1,26 @@
+# ORDER BY
+
+- **Intern**
+  - Understand syntax and relational meaning.
+  - Recognize result-set semantics in the context of **ORDER BY**.
+  - Describe basic key and table relationships in the context of **ORDER BY**.
+  - Distinguish common logical mistakes in the context of **ORDER BY**.
+  - Interpret effect of NULL and duplicate rows in the context of **ORDER BY**.
+- **Junior**
+  - Explain and compare query planning implications of common constructs.
+  - Explain correctness across joins, aggregation, and filtering in the context of **ORDER BY**.
+  - Distinguish index and transaction awareness in the context of **ORDER BY**.
+  - Evaluate readability and maintainability of analytical SQL in the context of **ORDER BY**.
+  - Relate data-quality and cardinality considerations in the context of **ORDER BY**.
+- **Middle**
+  - Analyze performance diagnosis through execution plans.
+  - Analyze concurrency, isolation, and consistency trade-offs in the context of **ORDER BY**.
+  - Diagnose warehouse versus transactional workload considerations in the context of **ORDER BY**.
+  - Evaluate large-scale query optimization and partitioning implications in the context of **ORDER BY**.
+  - Assess governance of reusable datasets and semantic definitions in the context of **ORDER BY**.
+- **Senior**
+  - Define and govern database architecture and workload placement decisions.
+  - Establish organization-wide data modeling standards in the context of **ORDER BY**.
+  - Evaluate reliability, security, and cost governance in the context of **ORDER BY**.
+  - Govern migration and compatibility strategies in the context of **ORDER BY**.
+  - Set criteria for balancing correctness, latency, and operational complexity in the context of **ORDER BY**.

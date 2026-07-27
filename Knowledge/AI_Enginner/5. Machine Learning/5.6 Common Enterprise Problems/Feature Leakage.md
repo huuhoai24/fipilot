@@ -1,0 +1,26 @@
+# Feature Leakage
+
+- **Intern**
+  - Understand features that directly or indirectly reveal the target.
+  - Recognize fundamental assumptions and terminology in the context of **Feature Leakage**.
+  - Describe basic model behavior and expected outputs in the context of **Feature Leakage**.
+  - Distinguish primary evaluation concepts in the context of **Feature Leakage**.
+  - Interpret common sources of underfitting, overfitting, or misleading results in the context of **Feature Leakage**.
+- **Junior**
+  - Explain and compare proxy variables, post-outcome fields, aggregation leakage, and timestamp misuse.
+  - Explain hyperparameter roles and regularization effects in the context of **Feature Leakage**.
+  - Distinguish validation, leakage, and metric-selection requirements in the context of **Feature Leakage**.
+  - Evaluate interpretation of errors and model outputs in the context of **Feature Leakage**.
+  - Relate limitations relative to alternative methods in the context of **Feature Leakage**.
+- **Middle**
+  - Analyze lineage analysis, availability contracts, and causal validation.
+  - Analyze advanced validation and cost-sensitive evaluation in the context of **Feature Leakage**.
+  - Diagnose failure-mode analysis across segments and operating conditions in the context of **Feature Leakage**.
+  - Evaluate feature, objective, and threshold trade-offs in the context of **Feature Leakage**.
+  - Assess production constraints affecting model choice in the context of **Feature Leakage**.
+- **Senior**
+  - Define and govern feature-governance standards and approval controls.
+  - Establish offline-online evaluation strategy and decision policy in the context of **Feature Leakage**.
+  - Evaluate model-risk, fairness, explainability, and governance requirements in the context of **Feature Leakage**.
+  - Govern portfolio-level model selection and lifecycle strategy in the context of **Feature Leakage**.
+  - Set criteria for build-versus-buy and model-complexity decisions in the context of **Feature Leakage**.

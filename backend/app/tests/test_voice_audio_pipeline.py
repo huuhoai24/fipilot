@@ -100,7 +100,7 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
             def __init__(self) -> None:
                 self.calls = 0
 
-            def transcribe(self, audio, language, hotwords):
+            def transcribe(self, audio, language, hotwords, beam_size=1):
                 self.calls += 1
                 self.assert_audio_size = len(audio)
                 self.hotwords = hotwords
@@ -126,7 +126,7 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_faster_whisper_receives_technical_vocabulary_hotwords(self):
         class MockModelProvider:
-            def transcribe(self, audio, language, hotwords):
+            def transcribe(self, audio, language, hotwords, beam_size=1):
                 self.hotwords = hotwords
                 return "FastAPI on Kubernetes", "en", 0.9
 

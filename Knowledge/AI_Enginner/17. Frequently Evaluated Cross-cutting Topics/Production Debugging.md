@@ -1,0 +1,26 @@
+# Production Debugging
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **Production Debugging**.
+  - Describe basic measurement or interpretation in the context of **Production Debugging**.
+  - Distinguish common causes of misuse in the context of **Production Debugging**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Production Debugging**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **Production Debugging**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Production Debugging**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Production Debugging**.
+  - Relate common edge cases and failure modes in the context of **Production Debugging**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Production Debugging**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Production Debugging**.
+  - Evaluate robust evaluation and governance requirements in the context of **Production Debugging**.
+  - Assess decision criteria under conflicting constraints in the context of **Production Debugging**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **Production Debugging**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Production Debugging**.
+  - Govern architecture and platform implications in the context of **Production Debugging**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Production Debugging**.

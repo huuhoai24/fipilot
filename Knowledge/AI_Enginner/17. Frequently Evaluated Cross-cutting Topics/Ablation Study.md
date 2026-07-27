@@ -1,0 +1,26 @@
+# Ablation Study
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **Ablation Study**.
+  - Describe basic measurement or interpretation in the context of **Ablation Study**.
+  - Distinguish common causes of misuse in the context of **Ablation Study**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **Ablation Study**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **Ablation Study**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **Ablation Study**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **Ablation Study**.
+  - Relate common edge cases and failure modes in the context of **Ablation Study**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **Ablation Study**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **Ablation Study**.
+  - Evaluate robust evaluation and governance requirements in the context of **Ablation Study**.
+  - Assess decision criteria under conflicting constraints in the context of **Ablation Study**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **Ablation Study**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **Ablation Study**.
+  - Govern architecture and platform implications in the context of **Ablation Study**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **Ablation Study**.

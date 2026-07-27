@@ -1,0 +1,26 @@
+# ONNX
+
+- **Intern**
+  - Understand definition and foundational terminology.
+  - Recognize direct effect on model or system behavior in the context of **ONNX**.
+  - Describe basic measurement or interpretation in the context of **ONNX**.
+  - Distinguish common causes of misuse in the context of **ONNX**.
+  - Interpret relationship to adjacent AI engineering concepts in the context of **ONNX**.
+- **Junior**
+  - Explain and compare selection criteria and operational implications.
+  - Explain trade-offs among common approaches in the context of **ONNX**.
+  - Distinguish correct evaluation and diagnostic interpretation in the context of **ONNX**.
+  - Evaluate reproducibility, reliability, and maintainability concerns in the context of **ONNX**.
+  - Relate common edge cases and failure modes in the context of **ONNX**.
+- **Middle**
+  - Analyze system-wide impact across data, model, and infrastructure.
+  - Analyze quantitative diagnosis and optimization principles in the context of **ONNX**.
+  - Diagnose interaction with scale, drift, security, and cost in the context of **ONNX**.
+  - Evaluate robust evaluation and governance requirements in the context of **ONNX**.
+  - Assess decision criteria under conflicting constraints in the context of **ONNX**.
+- **Senior**
+  - Define and govern organization-wide standards and ownership.
+  - Establish risk, compliance, and lifecycle governance in the context of **ONNX**.
+  - Evaluate portfolio-level prioritization and investment decisions in the context of **ONNX**.
+  - Govern architecture and platform implications in the context of **ONNX**.
+  - Set criteria for exceptions, escalation, and continuous improvement in the context of **ONNX**.

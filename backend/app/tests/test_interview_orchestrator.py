@@ -82,6 +82,80 @@ def orchestrator(evaluation, action, question_agent=None) -> InterviewOrchestrat
     )
 
 
+class InterviewTurnIdentityTests(unittest.IsolatedAsyncioTestCase):
+    """turn_id used to be topic+difficulty, which collided across a whole round.
+
+    Repositories look turns up by this id, so a collision pointed evaluations at
+    the wrong row, and every turn of a live interview shared one id.
+    """
+
+    async def test_turn_ids_are_unique_across_a_follow_up_chain(self):
+        evaluation = AnswerEvaluation(
+            turn_id="turn-1",
+            overall_score=3.0,
+            follow_up_needed=True,
+            follow_up_reason="Answer is too vague.",
+        )
+        service = orchestrator(evaluation, "follow_up")
+        state = await service.start_interview(candidate_profile(), interview_config())
+
+        seen = [state.current_turn.turn_id]
+        for _ in range(3):
+            state = await service.submit_answer(state, "Still vague.")
+            if state.current_turn is None:
+                break
+            seen.append(state.current_turn.turn_id)
+
+        self.assertGreaterEqual(len(seen), 3)
+        self.assertEqual(len(seen), len(set(seen)), f"duplicate turn ids: {seen}")
+
+    async def test_a_canned_follow_up_probe_is_never_reused(self):
+        evaluation = AnswerEvaluation(
+            turn_id="turn-1",
+            overall_score=3.0,
+            follow_up_needed=True,
+            follow_up_reason="Answer is too vague.",
+        )
+        service = orchestrator(evaluation, "follow_up")
+        state = await service.start_interview(candidate_profile(), interview_config())
+        probe = state.current_turn.question.follow_up_questions[0]
+
+        first = await service.submit_answer(state, "Still vague.")
+        second = await service.submit_answer(first, "Still vague.")
+
+        self.assertEqual(first.current_turn.question.question, probe)
+        # The used probe is consumed, so the next follow-up cannot be the same one.
+        self.assertNotIn(probe, first.current_turn.question.follow_up_questions)
+        self.assertNotEqual(second.current_turn.question.question, probe)
+
+    async def test_regenerated_follow_up_is_told_what_was_already_asked(self):
+        evaluation = AnswerEvaluation(
+            turn_id="turn-1",
+            overall_score=3.0,
+            follow_up_needed=True,
+            follow_up_reason="Answer is too vague.",
+        )
+        question_agent = MockQuestionGeneratorAgent()
+        service = orchestrator(evaluation, "follow_up", question_agent=question_agent)
+        state = await service.start_interview(candidate_profile(), interview_config())
+
+        # First answer consumes the canned probe; the second has to regenerate.
+        state = await service.submit_answer(state, "Still vague.")
+        await service.submit_answer(state, "Still vague.")
+
+        regenerated_round = question_agent.calls[-1]
+        avoid = [
+            area
+            for area in regenerated_round.recommended_question_areas
+            if area.startswith("Do not ask again:")
+        ]
+        self.assertTrue(avoid, regenerated_round.recommended_question_areas)
+        self.assertTrue(
+            any("Explain YOLO Optimization." in area for area in avoid),
+            avoid,
+        )
+
+
 class InterviewOrchestratorTests(unittest.IsolatedAsyncioTestCase):
     async def test_start_interview_creates_first_question(self):
         question_agent = MockQuestionGeneratorAgent()

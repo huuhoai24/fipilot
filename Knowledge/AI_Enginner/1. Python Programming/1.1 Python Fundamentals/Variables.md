@@ -1,0 +1,26 @@
+# Variables
+
+- **Intern**
+  - Understand name binding, object references, assignment, and scope.
+  - Recognize fundamental syntax and semantics in the context of **Variables**.
+  - Describe common terminology and basic constraints in the context of **Variables**.
+  - Distinguish typical error categories and their causes in the context of **Variables**.
+  - Interpret relationship to adjacent Python concepts in the context of **Variables**.
+- **Junior**
+  - Explain and compare aliasing, lifetime, shadowing, and state management.
+  - Explain correct selection among common alternatives in the context of **Variables**.
+  - Distinguish readability, type-safety, and maintainability implications in the context of **Variables**.
+  - Evaluate error handling and debugging considerations in the context of **Variables**.
+  - Relate standard-library conventions and compatibility concerns in the context of **Variables**.
+- **Middle**
+  - Analyze reference semantics, memory behavior, and maintainability impact.
+  - Analyze interaction with concurrency, packaging, and larger codebases in the context of **Variables**.
+  - Diagnose failure modes in production-oriented Python systems in the context of **Variables**.
+  - Evaluate trade-offs among alternative language mechanisms in the context of **Variables**.
+  - Assess review criteria and maintainability risks in the context of **Variables**.
+- **Senior**
+  - Define and govern state-management conventions and API-level invariants.
+  - Establish architectural implications in large Python platforms in the context of **Variables**.
+  - Evaluate compatibility, migration, and dependency risks in the context of **Variables**.
+  - Govern security, reliability, and operability considerations in the context of **Variables**.
+  - Set criteria for standardization and exception handling in the context of **Variables**.

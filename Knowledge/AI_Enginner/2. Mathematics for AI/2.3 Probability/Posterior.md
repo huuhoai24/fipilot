@@ -1,0 +1,26 @@
+# Posterior
+
+- **Intern**
+  - Understand formal definition and notation.
+  - Recognize geometric or probabilistic interpretation in the context of **Posterior**.
+  - Describe basic assumptions and properties in the context of **Posterior**.
+  - Distinguish connection to common machine-learning operations in the context of **Posterior**.
+  - Interpret ability to interpret simple results correctly in the context of **Posterior**.
+- **Junior**
+  - Explain and compare derivation logic and relationships among formulas.
+  - Explain conditions under which the concept is valid in the context of **Posterior**.
+  - Distinguish numerical stability and estimation considerations in the context of **Posterior**.
+  - Evaluate connection to loss functions and model behavior in the context of **Posterior**.
+  - Relate distinction from closely related mathematical concepts in the context of **Posterior**.
+- **Middle**
+  - Analyze implications for optimization, generalization, and identifiability.
+  - Analyze high-dimensional behavior and computational complexity in the context of **Posterior**.
+  - Diagnose failure cases caused by violated assumptions in the context of **Posterior**.
+  - Evaluate use in model diagnostics and algorithm selection in the context of **Posterior**.
+  - Assess trade-offs between exact and approximate methods in the context of **Posterior**.
+- **Senior**
+  - Define and govern mathematical assumptions behind system-level decisions.
+  - Establish risk of misuse or invalid inference in the context of **Posterior**.
+  - Evaluate selection of mathematically appropriate objectives and constraints in the context of **Posterior**.
+  - Govern governance of statistical validity and reproducibility in the context of **Posterior**.
+  - Set communication of uncertainty and limitations to stakeholders in the context of **Posterior**.
