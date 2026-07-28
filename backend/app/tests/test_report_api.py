@@ -98,6 +98,7 @@ class ReportApiTests(unittest.TestCase):
         self.assertEqual(body["limit"], 1)
         self.assertEqual(body["offset"], 1)
         self.assertEqual(len(body["items"]), 1)
+        self.assertEqual(body["items"][0]["mode"], "text")
 
 
 if __name__ == "__main__":

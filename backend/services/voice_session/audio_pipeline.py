@@ -18,6 +18,8 @@ from services.voice_session.transcript_service import TranscriptPublisher, Trans
 
 PCM_SAMPLE_RATE = 16_000
 PCM_SAMPLE_WIDTH_BYTES = 2
+SILERO_FRAME_SAMPLES = 512
+SILERO_FRAME_BYTES = SILERO_FRAME_SAMPLES * PCM_SAMPLE_WIDTH_BYTES
 EndpointCallback = Callable[[], Awaitable[None]]
 PipelineEventCallback = Callable[[], Awaitable[None]]
 
@@ -84,10 +86,12 @@ class SileroVoiceActivityDetector(VoiceActivityDetector):
         self.speech_pad_ms = speech_pad_ms
         self._iterator: Any | None = None
         self._speaking = False
+        self._pending_audio = bytearray()
 
     async def reset(self) -> None:
         self._iterator = await asyncio.to_thread(self._create_iterator)
         self._speaking = False
+        self._pending_audio.clear()
 
     async def process_audio_chunk(self, audio_bytes: bytes) -> VADFrameResult:
         if len(audio_bytes) % PCM_SAMPLE_WIDTH_BYTES:
@@ -112,6 +116,28 @@ class SileroVoiceActivityDetector(VoiceActivityDetector):
         )
 
     def _process(self, audio_bytes: bytes) -> VADFrameResult:
+        self._pending_audio.extend(audio_bytes)
+        speech_started = False
+        speech_ended = False
+        is_speech = False
+        processed_frame = False
+
+        while len(self._pending_audio) >= SILERO_FRAME_BYTES:
+            frame = bytes(self._pending_audio[:SILERO_FRAME_BYTES])
+            del self._pending_audio[:SILERO_FRAME_BYTES]
+            result = self._process_frame(frame)
+            processed_frame = True
+            speech_started = speech_started or result.speech_started
+            speech_ended = speech_ended or result.speech_ended
+            is_speech = is_speech or result.is_speech
+
+        return VADFrameResult(
+            is_speech=is_speech or (not processed_frame and self._speaking),
+            speech_started=speech_started,
+            speech_ended=speech_ended,
+        )
+
+    def _process_frame(self, audio_bytes: bytes) -> VADFrameResult:
         try:
             import numpy as np
             import torch

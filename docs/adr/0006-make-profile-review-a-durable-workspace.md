@@ -1,0 +1,5 @@
+# Make Profile Review a durable workspace
+
+Every accepted Resume upload opens Profile Review. The workspace presents identity and current role, skills and skill evidence, projects, work experience, and education in that order, with an Interview Readiness summary near the top that lists and links every unresolved requirement. Candidates may save any valid partial corrections without being interview-ready, leave, and later return to the latest persisted Candidate Profile.
+
+While corrections are unsaved, `Save corrections` is the primary action and interview start is unavailable. A successful save replaces local state with the server response and recalculates readiness from that response. When an unchanged profile is incomplete, `Complete missing details` focuses the first issue. Text and speech interview starts remain separate and are available only for the latest successfully saved, interview-ready profile. Partial Extraction remains visible until the first successful Profile Review save and is retained afterward only as metadata or history.

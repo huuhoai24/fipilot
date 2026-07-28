@@ -1,0 +1,7 @@
+# Separate Profile Validity from Interview Readiness
+
+A Candidate Profile may be valid and saved while still incomplete. Profile updates enforce field types, normalized and deduplicated skills, nonnegative experience, valid skill-evidence references, nonempty nested entries, and the strict editable-field allowlist, but they do not require Interview Readiness.
+
+The backend is authoritative for Interview Readiness and applies one shared readiness evaluator to text and speech interview starts. A profile is interview-ready only when it is valid and has a nonfallback name, at least one normalized skill, and at least one interviewable evidence item from skill evidence, a meaningful project or experience, or structured education with an institution and either a degree or field; start requests for non-ready profiles return all applicable structured issues.
+
+`missing_name`, `fallback_name`, `missing_skills`, and `missing_interviewable_evidence` describe missing Interview Readiness requirements. `invalid_years_experience`, `empty_nested_entry`, and `evidence_skill_not_found` originate in Profile Validity; they block a correction save and may also be returned by interview start if invalid legacy or extracted data is already persisted. Structured education uses the existing `field_of_study` key for the user-facing concept “field.” Professional experience and projects are not prerequisites, so students and interns can be interview-ready.

@@ -26,8 +26,9 @@ function statusVariant(status: InterviewStatus) {
 function SessionAction({ session }: { session: InterviewSessionSummary }) {
   const navigate = useNavigate()
   if (session.status === 'in_progress') {
+    const route = session.mode === 'voice' ? 'speech-interview' : 'text-interview'
     return (
-      <Button size="sm" onClick={() => navigate(`/text-interview/${session.session_id}`)}>
+      <Button size="sm" onClick={() => navigate(`/${route}/${session.session_id}`)}>
         <MessageSquareText className="h-4 w-4" />
         Continue Interview
       </Button>

@@ -144,9 +144,21 @@ class FirestoreRepositoryTests(unittest.TestCase):
         saved = self.repository.save_candidate("user-a", profile("Candidate A"))
 
         own = self.repository.get_candidate(saved.candidate_id, user_id="user-a")
+        owned_profile = self.repository.get_candidate_profile(
+            saved.candidate_id,
+            user_id="user-a",
+        )
         other = self.repository.get_candidate(saved.candidate_id, user_id="user-b")
 
         self.assertEqual(own.profile.name, "Candidate A")
+        self.assertEqual(owned_profile.candidate_id, saved.candidate_id)
+        self.assertEqual(owned_profile.profile_version, 1)
+        self.assertEqual(
+            self.client.documents[
+                ("users", "user-a", "candidates", saved.candidate_id)
+            ]["profile_version"],
+            1,
+        )
         self.assertIsNone(other)
         candidate_paths = [path for path in self.client.documents if "candidates" in path]
         self.assertEqual(candidate_paths[0][:2], ("users", "user-a"))
@@ -236,6 +248,15 @@ class FirestoreRepositoryTests(unittest.TestCase):
             self.repository._interview_collection("user-a").document(
                 session.session_id
             ).set({"started_at": base_time + timedelta(days=index)}, merge=True)
+        self.repository.update_session_state(
+            sessions[2].session_id,
+            "INTERVIEWING",
+            state(profile("A", candidate_a.candidate_id), mode="voice").model_dump(
+                mode="json"
+            ),
+            status="in_progress",
+            user_id="user-a",
+        )
 
         filtered = self.repository.list_interview_sessions(
             candidate_a.candidate_id, 10, 0, user_id="user-a"
@@ -249,6 +270,7 @@ class FirestoreRepositoryTests(unittest.TestCase):
 
         self.assertEqual(len(filtered), 2)
         self.assertEqual(filtered[0].session_id, sessions[2].session_id)
+        self.assertEqual(filtered[0].mode, "voice")
         self.assertEqual(first_page[0].session_id, sessions[2].session_id)
         self.assertEqual(second_page[0].session_id, sessions[1].session_id)
 

@@ -242,72 +242,73 @@ async def voice_interview(
         await _reject(websocket, 4429, "Voice session is already connected.")
         return
 
-    # Only echo the subprotocol the client actually offered. With auth disabled a
-    # dev client may connect without one, and echoing an unoffered subprotocol
-    # makes browsers drop the connection.
-    await websocket.accept(
-        subprotocol=(
-            AUTH_SUBPROTOCOL
-            if AUTH_SUBPROTOCOL in _offered_protocols(websocket)
-            else None
-        )
-    )
-    await runtime.send_json(connected_event(session_id))
-    await runtime.send_json(state_event(state.state))
-
-    async def speak_current_question() -> None:
-        # Re-read the session so a reconnect mid-interview speaks the question
-        # the candidate is actually on, not the one from connect time.
-        record = repository.get_session(session_id, user_id=current_user.uid)
-        latest = persisted_state
-        if record is not None and record.state_payload:
-            try:
-                latest = InterviewSessionState.model_validate(record.state_payload)
-            except ValidationError:
-                latest = persisted_state
-        await _speak_pending_question(
-            latest,
-            manager,
-            session_id,
-            current_user.uid,
-            question_speech_factory,
-            runtime,
-        )
-
     try:
-        while True:
-            message = await websocket.receive()
-            if message["type"] == "websocket.disconnect":
-                break
-            if message.get("text") is not None:
-                should_continue = await _handle_text_message(
-                    websocket,
-                    message["text"],
-                    session_id,
-                    current_user.uid,
-                    manager,
-                    answer_service,
-                    question_streaming_service,
-                    question_speech_factory,
-                    runtime,
-                    settings.max_voice_message_chars,
-                    speak_current_question,
-                )
-                if not should_continue:
+        # Only echo the subprotocol the client actually offered. With auth disabled a
+        # dev client may connect without one, and echoing an unoffered subprotocol
+        # makes browsers drop the connection.
+        await websocket.accept(
+            subprotocol=(
+                AUTH_SUBPROTOCOL
+                if AUTH_SUBPROTOCOL in _offered_protocols(websocket)
+                else None
+            )
+        )
+        await runtime.send_json(connected_event(session_id))
+        await runtime.send_json(state_event(state.state))
+
+        async def speak_current_question() -> None:
+            # Re-read the session so a reconnect mid-interview speaks the question
+            # the candidate is actually on, not the one from connect time.
+            record = repository.get_session(session_id, user_id=current_user.uid)
+            latest = persisted_state
+            if record is not None and record.state_payload:
+                try:
+                    latest = InterviewSessionState.model_validate(record.state_payload)
+                except ValidationError:
+                    latest = persisted_state
+            await _speak_pending_question(
+                latest,
+                manager,
+                session_id,
+                current_user.uid,
+                question_speech_factory,
+                runtime,
+            )
+
+        try:
+            while True:
+                message = await websocket.receive()
+                if message["type"] == "websocket.disconnect":
                     break
-            elif message.get("bytes") is not None:
-                should_continue = await _handle_binary_message(
-                    websocket,
-                    message["bytes"],
-                    session_id,
-                    current_user.uid,
-                    manager,
-                    runtime,
-                )
-                if not should_continue:
-                    break
-    except WebSocketDisconnect:
-        pass
+                if message.get("text") is not None:
+                    should_continue = await _handle_text_message(
+                        websocket,
+                        message["text"],
+                        session_id,
+                        current_user.uid,
+                        manager,
+                        answer_service,
+                        question_streaming_service,
+                        question_speech_factory,
+                        runtime,
+                        settings.max_voice_message_chars,
+                        speak_current_question,
+                    )
+                    if not should_continue:
+                        break
+                elif message.get("bytes") is not None:
+                    should_continue = await _handle_binary_message(
+                        websocket,
+                        message["bytes"],
+                        session_id,
+                        current_user.uid,
+                        manager,
+                        runtime,
+                    )
+                    if not should_continue:
+                        break
+        except WebSocketDisconnect:
+            pass
     finally:
         await runtime.close()
         await manager.disconnect(session_id, current_user.uid)

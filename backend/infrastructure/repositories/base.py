@@ -13,6 +13,7 @@ from shared.schemas import (
     InterviewReport,
     InterviewSessionSummary,
     InterviewTurn,
+    PersistedCandidateProfile,
 )
 
 
@@ -61,7 +62,7 @@ class CandidateRepository(ABC):
     @abstractmethod
     def get_candidate_profile(
         self, candidate_id: str, *, user_id: str | None = None
-    ) -> CandidateProfile | None:
+    ) -> PersistedCandidateProfile | None:
         raise NotImplementedError
 
     @abstractmethod

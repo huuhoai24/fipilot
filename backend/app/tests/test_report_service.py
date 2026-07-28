@@ -22,8 +22,15 @@ from shared.schemas import (
 )
 
 
-def interview_state(profile: CandidateProfile, *, completed: bool) -> InterviewSessionState:
-    config = InterviewConfig(language="en", experience_level="middle", question_count=1)
+def interview_state(
+    profile: CandidateProfile, *, completed: bool, mode: str = "text"
+) -> InterviewSessionState:
+    config = InterviewConfig(
+        mode=mode,
+        language="en",
+        experience_level="middle",
+        question_count=1,
+    )
     question = InterviewQuestion(
         question="Explain FastAPI dependency injection.",
         language="en",
@@ -97,11 +104,11 @@ class ReportServiceTests(unittest.IsolatedAsyncioTestCase):
     def tearDown(self):
         self.db.close()
 
-    def create_session(self, *, completed: bool):
+    def create_session(self, *, completed: bool, mode: str = "text"):
         session = self.repository.create_session(
             self.candidate_id, level="middle", language="en"
         )
-        state = interview_state(self.profile, completed=completed)
+        state = interview_state(self.profile, completed=completed, mode=mode)
         self.repository.update_session_state(
             session.session_id,
             "ENDED" if completed else "INTERVIEWING",
@@ -146,7 +153,7 @@ class ReportServiceTests(unittest.IsolatedAsyncioTestCase):
         await ReportService(
             agent=MockReportAgent(), repository=self.repository
         ).generate_for_session(completed_session.session_id)
-        self.create_session(completed=False)
+        voice_session = self.create_session(completed=False, mode="voice")
 
         first_page = self.repository.list_interview_sessions(None, limit=1, offset=0)
         second_page = self.repository.list_interview_sessions(None, limit=1, offset=1)
@@ -160,6 +167,12 @@ class ReportServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(report_summary.overall_score, 8.0)
         self.assertEqual(report_summary.answered_question_count, 1)
+        voice_summary = next(
+            item
+            for item in [*first_page, *second_page]
+            if item.session_id == voice_session.session_id
+        )
+        self.assertEqual(voice_summary.mode, "voice")
 
 
 if __name__ == "__main__":

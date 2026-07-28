@@ -243,6 +243,7 @@ export interface InterviewSessionSummary {
   session_id: string
   candidate_id: string
   status: InterviewStatus
+  mode: InterviewMode
   language: InterviewLanguage
   experience_level: ExperienceLevel
   question_count: number

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from datetime import datetime, timezone
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from infrastructure.speech.stt.base import (
@@ -14,6 +15,7 @@ from infrastructure.speech.stt.faster_whisper import FasterWhisperStreamingSTT
 from infrastructure.speech.stt.vocabulary import vocabulary_hotwords
 from services.voice_session.audio_pipeline import (
     AudioPipelineFactory,
+    SileroVoiceActivityDetector,
     VADFrameResult,
     VoiceActivityDetector,
     VoiceActivityDetectorFactory,
@@ -95,6 +97,40 @@ class MockVADFactory(VoiceActivityDetectorFactory):
 
 
 class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
+    async def test_silero_vad_splits_arbitrary_pcm_chunks_into_512_sample_frames(self):
+        frame_sizes: list[int] = []
+
+        class FakeIterator:
+            def __call__(self, samples, *, return_seconds):
+                frame_sizes.append(samples.numel())
+                if len(frame_sizes) == 1:
+                    return {"start": 0}
+                if len(frame_sizes) == 3:
+                    return {"end": 1536}
+                return {}
+
+        detector = SileroVoiceActivityDetector(
+            provider=object(),  # type: ignore[arg-type]
+            threshold=0.5,
+            min_silence_ms=900,
+            speech_pad_ms=120,
+        )
+        detector._iterator = FakeIterator()
+
+        fake_torch = SimpleNamespace(
+            from_numpy=lambda samples: SimpleNamespace(
+                numel=lambda: len(samples),
+            )
+        )
+        with patch.dict("sys.modules", {"torch": fake_torch}):
+            result = await detector.process_audio_chunk(b"\x01\x00" * 1600)
+            await detector.process_audio_chunk(b"\x00\x00" * 448)
+
+        self.assertEqual(frame_sizes, [512, 512, 512, 512])
+        self.assertTrue(result.speech_started)
+        self.assertTrue(result.speech_ended)
+        self.assertTrue(result.is_speech)
+
     async def test_faster_whisper_session_uses_injected_model_provider(self):
         class MockModelProvider:
             def __init__(self) -> None:

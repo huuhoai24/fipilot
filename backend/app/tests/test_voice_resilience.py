@@ -29,7 +29,7 @@ from core.dependencies import (
     get_voice_session_manager,
 )
 from core.settings import Settings
-from gateway.api.voice import router
+from gateway.api.voice import router, voice_interview
 from infrastructure.speech.remote import RemoteAudioPipeline
 from infrastructure.speech.stt.base import StreamingSTT
 from services.voice_session.audio_pipeline import (
@@ -50,6 +50,23 @@ from app.tests.test_voice_websocket import (
 )
 from services.voice_session.question_speech import QuestionSpeechStreamerFactory
 from services.voice_session.answer_service import VoiceAnswerSubmissionService
+
+
+class _AcceptFailingWebSocket:
+    def __init__(self, origin: str) -> None:
+        self.headers = {
+            "origin": origin,
+            "sec-websocket-protocol": "firebase-auth, user-a-token",
+        }
+
+    async def accept(self, *, subprotocol: str | None = None) -> None:
+        raise RuntimeError("client disconnected during handshake")
+
+    async def close(self, *, code: int, reason: str) -> None: ...
+
+    async def send_json(self, payload: dict) -> None: ...
+
+    async def send_bytes(self, payload: bytes) -> None: ...
 
 
 class _IdleSTT(StreamingSTT):
@@ -240,6 +257,47 @@ class LateAudioFrameTests(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(Exception):
             await self.manager.receive_audio_chunk("s1", "u1", b"\x00\x00" * 16)
+
+
+class VoiceHandshakeCleanupTests(unittest.IsolatedAsyncioTestCase):
+    async def test_accept_failure_releases_managed_session(self):
+        origin = "http://testserver"
+        repository = MockVoiceRepository()
+        manager = VoiceSessionManager(max_chunk_bytes=64, max_session_bytes=4096)
+        answer_service = VoiceAnswerSubmissionService(
+            repository=repository,
+            orchestrator=MockVoiceOrchestrator(),
+        )
+        speech_factory = QuestionSpeechStreamerFactory(
+            tts_service=MockVoiceTTS(),
+            queue_size=4,
+            chunk_min_words=3,
+            chunk_max_chars=80,
+        )
+
+        with self.assertRaisesRegex(
+            RuntimeError, "client disconnected during handshake"
+        ):
+            await voice_interview(
+                _AcceptFailingWebSocket(origin),
+                "voice-session",
+                settings=Settings(
+                    APP_ENV="test",
+                    AUTH_ENABLED=True,
+                    CORS_ALLOWED_ORIGINS=[origin],
+                    MAX_VOICE_MESSAGE_CHARS=256,
+                ),
+                auth_service=MockVoiceAuthService(),
+                repository=repository,
+                manager=manager,
+                answer_service=answer_service,
+                question_streaming_service=MockQuestionStreamingService(),
+                question_speech_factory=speech_factory,
+            )
+
+        reconnected = await manager.connect("voice-session", "user-a")
+        self.assertEqual(reconnected.session_id, "voice-session")
+        await manager.disconnect("voice-session", "user-a")
 
 
 class VoiceWebSocketBehaviourTests(unittest.TestCase):

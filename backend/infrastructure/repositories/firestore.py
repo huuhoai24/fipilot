@@ -10,10 +10,12 @@ from shared.schemas import (
     CandidateProfile,
     FinalReport,
     InterviewReport,
+    InterviewMode,
     InterviewSessionState,
     InterviewSessionSummary,
     InterviewStatus,
     InterviewTurn,
+    PersistedCandidateProfile,
 )
 
 
@@ -45,14 +47,16 @@ class FirestoreRepository(InterviewRepository):
         self._ensure_user_document(owner_id)
         reference = self._candidate_collection(owner_id).document(candidate_id)
         now = self._now()
+        snapshot = reference.get()
+        existing = snapshot.to_dict() if snapshot.exists else {}
         payload = {
             "candidate_id": reference.id,
             "name": candidate_profile.name,
             "profile": candidate_profile.model_dump(mode="json"),
+            "profile_version": (existing or {}).get("profile_version", 1),
             "raw_resume_text": raw_resume_text,
             "updated_at": now,
         }
-        snapshot = reference.get()
         if not snapshot.exists:
             payload["created_at"] = now
         reference.set(payload, merge=True)
@@ -100,6 +104,10 @@ class FirestoreRepository(InterviewRepository):
             {
                 "name": profile.name,
                 "profile": profile.model_dump(mode="json"),
+                "profile_version": (reference.get().to_dict() or {}).get(
+                    "profile_version",
+                    1,
+                ),
                 "updated_at": self._now(),
             },
             merge=True,
@@ -108,9 +116,28 @@ class FirestoreRepository(InterviewRepository):
 
     def get_candidate_profile(
         self, candidate_id: str, *, user_id: str | None = None
-    ) -> CandidateProfile | None:
-        candidate = self.get_candidate(candidate_id, user_id=user_id)
-        return candidate.profile if candidate is not None else None
+    ) -> PersistedCandidateProfile | None:
+        owner_id = self._require_user_id(user_id)
+        reference = self._candidate_collection(owner_id).document(candidate_id)
+        snapshot = reference.get()
+        if not snapshot.exists:
+            return None
+        data = snapshot.to_dict() or {}
+        profile_data = data.get("profile")
+        if not profile_data:
+            return None
+        profile_version = data.get("profile_version")
+        if profile_version is None:
+            # Ticket 01 keeps legacy profiles readable by performing the
+            # documented, idempotent unversioned-profile backfill on first read.
+            profile_version = 1
+            reference.set({"profile_version": profile_version}, merge=True)
+        profile = CandidateProfile.model_validate(profile_data)
+        return PersistedCandidateProfile(
+            **profile.model_dump(exclude={"candidate_id"}),
+            candidate_id=snapshot.id,
+            profile_version=profile_version,
+        )
 
     def save_candidate_resume_text(
         self,
@@ -469,6 +496,7 @@ class FirestoreRepository(InterviewRepository):
         state_payload = self._dict_value(data.get("state_payload"))
         question_count = 0
         answered_count = 0
+        mode = InterviewMode.TEXT
         language = self._normalize_language(data.get("language"))
         experience_level = self._normalize_level(data.get("level"))
         if state_payload:
@@ -476,6 +504,7 @@ class FirestoreRepository(InterviewRepository):
                 state = InterviewSessionState.model_validate(state_payload)
                 question_count = state.interview_config.question_count
                 answered_count = len(state.completed_turns)
+                mode = state.interview_config.mode
                 language = state.interview_config.language
                 experience_level = state.interview_config.experience_level
             except ValueError:
@@ -493,6 +522,7 @@ class FirestoreRepository(InterviewRepository):
             status=self._normalize_status(
                 data.get("status"), has_report=bool(report_data)
             ),
+            mode=mode,
             language=language,
             experience_level=experience_level,
             question_count=question_count,

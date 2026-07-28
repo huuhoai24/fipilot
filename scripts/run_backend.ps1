@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $backendRoot = Join-Path $repoRoot "backend"

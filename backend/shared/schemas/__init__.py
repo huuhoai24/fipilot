@@ -1,10 +1,14 @@
 """Public shared schemas preserved across architecture refactors."""
 
 from shared.schemas.candidate import (
+    CandidateProfileReadResponse,
     CandidateEducation,
     CandidateExperience,
     CandidateProfile,
     CandidateProject,
+    InterviewReadiness,
+    PersistedCandidateProfile,
+    ProfileIssue,
     ResumeUploadResult,
     SkillEvidence,
 )
@@ -52,7 +56,11 @@ __all__ = [
     "CandidateEducation",
     "CandidateExperience",
     "CandidateProfile",
+    "CandidateProfileReadResponse",
     "CandidateProject",
+    "InterviewReadiness",
+    "PersistedCandidateProfile",
+    "ProfileIssue",
     "CurrentUser",
     "DecisionAction",
     "Difficulty",

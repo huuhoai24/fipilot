@@ -129,6 +129,7 @@ class InterviewSessionSummary(BaseModel):
     session_id: str
     candidate_id: str
     status: InterviewStatus
+    mode: InterviewMode = InterviewMode.TEXT
     language: InterviewLanguage
     experience_level: ExperienceLevel
     question_count: int = Field(default=0, ge=0)

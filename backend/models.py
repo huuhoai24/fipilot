@@ -14,6 +14,7 @@ class User(Base):
     user_id = Column(String, index=True, nullable=True)
     name = Column(String, index=True, nullable=True)
     profile_json = Column(Text, nullable=True)
+    profile_version = Column(Integer, nullable=False, default=1)
     raw_resume_text = Column(Text, nullable=True)
     
     sessions = relationship("Session", back_populates="user")

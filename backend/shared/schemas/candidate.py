@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -67,3 +67,24 @@ class ResumeUploadResult(BaseModel):
     profile: CandidateProfile
     resume_text_preview: str = ""
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+
+
+class PersistedCandidateProfile(CandidateProfile):
+    candidate_id: str
+    profile_version: int = Field(ge=1)
+
+
+class ProfileIssue(BaseModel):
+    code: str
+    origin: Literal["profile_validity", "interview_readiness"]
+    field_path: str | None = None
+
+
+class InterviewReadiness(BaseModel):
+    is_ready: bool
+    issues: list[ProfileIssue] = Field(default_factory=list)
+
+
+class CandidateProfileReadResponse(BaseModel):
+    profile: PersistedCandidateProfile
+    readiness: InterviewReadiness

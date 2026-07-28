@@ -55,7 +55,12 @@ class SQLiteInterviewRepositoryTests(unittest.TestCase):
         saved_profile = another_repository.get_candidate_profile(candidate.candidate_id)
         saved_candidate = another_repository.get_candidate(candidate.candidate_id)
 
-        self.assertEqual(saved_profile, profile)
+        self.assertEqual(
+            saved_profile.model_dump(exclude={"candidate_id", "profile_version"}),
+            profile.model_dump(exclude={"candidate_id"}),
+        )
+        self.assertEqual(saved_profile.candidate_id, candidate.candidate_id)
+        self.assertEqual(saved_profile.profile_version, 1)
         self.assertEqual(saved_candidate.profile, profile)
 
     def test_candidate_resume_text_persists_across_repository_instances(self):

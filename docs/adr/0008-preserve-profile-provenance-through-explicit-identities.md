@@ -1,0 +1,5 @@
+# Preserve profile provenance through explicit identities
+
+Legacy string education remains readable and is never automatically mapped into invented structured fields; it changes only when the candidate explicitly submits structured `education`, and the original string is retained in immutable audit metadata. Every Skill Evidence entry receives a server-issued immutable UUID-style `evidence_id`, with extraction source metadata bound to that identity; existing entries are backfilled before editing, existing IDs may be echoed only as correlation keys, new entries omit the ID, and source or provenance fields remain prohibited in correction payloads.
+
+Every committed mutation appends a Profile Audit Event containing the new Profile Version, UTC timestamp, mutation source, and changed canonical fields without permitting ownership changes. Partial Extraction and its first successful Profile Review acknowledgement are stored separately so acknowledgement reduces warning prominence without deleting extraction history.

@@ -15,10 +15,12 @@ from shared.schemas import (
     CandidateProfile,
     FinalReport,
     InterviewReport,
+    InterviewMode,
     InterviewSessionState,
     InterviewSessionSummary,
     InterviewStatus,
     InterviewTurn,
+    PersistedCandidateProfile,
 )
 
 
@@ -67,11 +69,16 @@ class SQLiteInterviewRepository(InterviewRepository):
 
     def get_candidate_profile(
         self, candidate_id: str, *, user_id: str | None = None
-    ) -> CandidateProfile | None:
+    ) -> PersistedCandidateProfile | None:
         candidate = self._get_candidate_model(candidate_id, user_id)
         if candidate is None or not candidate.profile_json:
             return None
-        return CandidateProfile.model_validate_json(candidate.profile_json)
+        profile = CandidateProfile.model_validate_json(candidate.profile_json)
+        return PersistedCandidateProfile(
+            **profile.model_dump(exclude={"candidate_id"}),
+            candidate_id=str(candidate.id),
+            profile_version=candidate.profile_version,
+        )
 
     def save_candidate_resume_text(
         self,
@@ -370,6 +377,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         for column_name, column_type in {
             "user_id": "VARCHAR",
             "profile_json": "TEXT",
+            "profile_version": "INTEGER NOT NULL DEFAULT 1",
             "raw_resume_text": "TEXT",
         }.items():
             if column_name not in user_columns:
@@ -428,6 +436,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         payload = self._loads_json_object(session.question_plan_json)
         question_count = session.question_count or 0
         answered_count = 0
+        mode = InterviewMode.TEXT
         language = self._normalize_language(session.language)
         experience_level = self._normalize_level(session.level)
         if payload:
@@ -435,6 +444,7 @@ class SQLiteInterviewRepository(InterviewRepository):
                 state = InterviewSessionState.model_validate(payload)
                 question_count = state.interview_config.question_count
                 answered_count = len(state.completed_turns)
+                mode = state.interview_config.mode
                 language = state.interview_config.language
                 experience_level = state.interview_config.experience_level
             except ValueError:
@@ -458,6 +468,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             session_id=str(session.id),
             candidate_id=str(session.candidate_id),
             status=self._normalize_status(session.status, has_report=bool(session.report_data)),
+            mode=mode,
             language=language,
             experience_level=experience_level,
             question_count=question_count,
