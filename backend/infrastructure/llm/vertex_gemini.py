@@ -170,6 +170,7 @@ class VertexGeminiService(BaseLLMService):
         model: str | None = None,
         temperature: float = 0.1,
         timeout_seconds: float | None = None,
+        thinking_budget: int | None = None,
     ) -> SchemaT:
         selected_model = self.route_model(task_type=task_type, model=model)
         schema_prompt = self._build_json_prompt(prompt)
@@ -186,6 +187,7 @@ class VertexGeminiService(BaseLLMService):
                     response_mime_type="application/json",
                     response_json_schema=response_json_schema,
                     timeout_seconds=timeout_seconds,
+                    thinking_budget=thinking_budget,
                 )
                 return self._validate_json_response(response, output_schema)
             except (ValidationError, ValueError, json.JSONDecodeError) as error:
@@ -232,6 +234,7 @@ class VertexGeminiService(BaseLLMService):
         response_mime_type: str | None,
         response_json_schema: dict[str, Any] | None,
         timeout_seconds: float | None,
+        thinking_budget: int | None = None,
     ) -> Any:
         last_error: Exception | None = None
         for attempt in range(1, self.retry_config.max_attempts + 1):
@@ -244,6 +247,7 @@ class VertexGeminiService(BaseLLMService):
                     response_mime_type=response_mime_type,
                     response_json_schema=response_json_schema,
                     timeout_seconds=timeout_seconds,
+                    thinking_budget=thinking_budget,
                 )
             except Exception as error:
                 last_error = error
@@ -264,6 +268,7 @@ class VertexGeminiService(BaseLLMService):
         response_mime_type: str | None,
         response_json_schema: dict[str, Any] | None,
         timeout_seconds: float | None,
+        thinking_budget: int | None = None,
     ) -> Any:
         timeout = timeout_seconds or self.default_timeout_seconds
         try:
@@ -276,6 +281,7 @@ class VertexGeminiService(BaseLLMService):
                     temperature=temperature,
                     response_mime_type=response_mime_type,
                     response_json_schema=response_json_schema,
+                    thinking_budget=thinking_budget,
                 ),
                 timeout=timeout,
             )
@@ -291,12 +297,14 @@ class VertexGeminiService(BaseLLMService):
         temperature: float,
         response_mime_type: str | None,
         response_json_schema: dict[str, Any] | None,
+        thinking_budget: int | None = None,
     ) -> Any:
         config = self._build_generation_config(
             system_instruction=system_instruction,
             temperature=temperature,
             response_mime_type=response_mime_type,
             response_json_schema=response_json_schema,
+            thinking_budget=thinking_budget,
         )
         kwargs = {"model": model, "contents": prompt}
         if config is not None:

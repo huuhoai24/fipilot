@@ -263,6 +263,20 @@ class OwnershipTests(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
+    def test_user_cannot_prepare_another_users_candidate(self):
+        response = self.client.post(
+            "/api/v2/interview/prepare",
+            json={
+                "candidate_id": self.candidate_b.candidate_id,
+                "interview_config": {
+                    "language": "en",
+                    "experience_level": "junior",
+                },
+            },
+        )
+
+        self.assertEqual(response.status_code, 404)
+
     def test_legacy_unowned_rows_are_inaccessible_when_auth_enabled(self):
         legacy = crud.create_user(self.db, "Legacy Candidate", user_id=None)
         self.assertIsNone(

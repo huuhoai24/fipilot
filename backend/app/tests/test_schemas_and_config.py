@@ -22,6 +22,8 @@ class V2FoundationTests(unittest.TestCase):
         self.assertFalse(settings.debug)
         self.assertEqual(settings.gemini_simple_model, "gemini-2.5-flash")
         self.assertEqual(settings.llm_routing.complex_model, "gemini-2.5-pro")
+        self.assertEqual(settings.gemini_resume_model, "gemini-2.5-flash-lite")
+        self.assertEqual(settings.gemini_resume_location, "global")
         self.assertEqual(settings.database_url, "sqlite:///./interview_app.db")
         self.assertGreater(settings.max_resume_bytes, 0)
         self.assertEqual(settings.stt_model, "large-v3-turbo")
@@ -33,6 +35,8 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(settings.tts_mode, "v3turbo")
         self.assertEqual(settings.tts_device, "auto")
         self.assertEqual(settings.tts_sample_rate, 24000)
+        self.assertEqual(settings.interview_preparation_ttl_seconds, 300)
+        self.assertEqual(settings.interview_preparation_max_entries, 128)
 
     def test_settings_groups_accept_required_field_names(self):
         settings = Settings(
@@ -42,6 +46,8 @@ class V2FoundationTests(unittest.TestCase):
             GOOGLE_CLOUD_LOCATION="asia-southeast1",
             GEMINI_SIMPLE_MODEL="gemini-flash-test",
             GEMINI_COMPLEX_MODEL="gemini-pro-test",
+            GEMINI_RESUME_MODEL="gemini-resume-test",
+            GEMINI_RESUME_LOCATION="asia-southeast1",
             DATABASE_URL="sqlite:///./test.db",
             LOG_LEVEL="DEBUG",
             STT_MODEL="small",
@@ -56,6 +62,8 @@ class V2FoundationTests(unittest.TestCase):
             TTS_SAMPLE_RATE=24000,
             SPEECH_SERVICE_TOKEN="internal-secret",
             SPEECH_SERVICE_URL="https://speech.internal",
+            INTERVIEW_PREPARATION_TTL_SECONDS=600,
+            INTERVIEW_PREPARATION_MAX_ENTRIES=64,
         )
 
         self.assertEqual(settings.application.app_env, "test")
@@ -64,6 +72,8 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(settings.google_cloud.location, "asia-southeast1")
         self.assertEqual(settings.llm_routing.simple_model, "gemini-flash-test")
         self.assertEqual(settings.llm_routing.complex_model, "gemini-pro-test")
+        self.assertEqual(settings.gemini_resume_model, "gemini-resume-test")
+        self.assertEqual(settings.gemini_resume_location, "asia-southeast1")
         self.assertEqual(settings.database.url, "sqlite:///./test.db")
         self.assertEqual(settings.log_level, "DEBUG")
         self.assertEqual(settings.stt_model, "small")
@@ -77,6 +87,8 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(settings.tts_voice, "interviewer")
         self.assertEqual(settings.tts_sample_rate, 24000)
         self.assertEqual(settings.speech_service_token, "internal-secret")
+        self.assertEqual(settings.interview_preparation_ttl_seconds, 600)
+        self.assertEqual(settings.interview_preparation_max_entries, 64)
         self.assertEqual(
             settings.speech_service_url,
             "https://speech.internal",

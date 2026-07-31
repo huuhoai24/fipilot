@@ -104,6 +104,38 @@ class EvaluatorAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.overall_score, 9.0)
         self.assertIn("The interview language is English.", llm_service.prompt)
         self.assertIn('"language": "en"', llm_service.prompt)
+        self.assertEqual(llm_service.kwargs["task_type"], "complex")
+
+    async def test_voice_evaluation_uses_low_latency_model_route(self):
+        expected = AnswerEvaluation(
+            turn_id="",
+            overall_score=8.0,
+            technical_score=8.0,
+            communication_score=8.0,
+            correctness_score=8.0,
+            follow_up_needed=False,
+            feedback="Clear practical answer.",
+        )
+        llm_service = MockLLMService(expected)
+        agent = EvaluatorAgent(llm_service=llm_service)
+
+        await agent.evaluate_answer(
+            candidate_profile(),
+            interview_question(language="en"),
+            "I profile the service and validate latency under production load.",
+            InterviewConfig(
+                mode="voice",
+                language="en",
+                experience_level="middle",
+            ),
+        )
+
+        self.assertEqual(llm_service.kwargs["task_type"], "simple")
+        self.assertEqual(llm_service.kwargs["thinking_budget"], 0)
+        self.assertIn(
+            "Keep feedback to at most 2 concise sentences.",
+            llm_service.prompt,
+        )
 
     async def test_follow_up_needed_true(self):
         expected = AnswerEvaluation(

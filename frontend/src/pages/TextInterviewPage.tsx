@@ -19,6 +19,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
+import { InterviewPreparationScreen } from '@/components/interview/InterviewPreparationScreen'
 import { api } from '@/lib/api'
 import { loadInterviewPreferences } from '@/lib/interviewPreferences'
 import type {
@@ -254,6 +255,11 @@ export function TextInterviewPage({
   const [state, setState] = useState<V2InterviewSessionState | null>(null)
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
+  const [starting, setStarting] = useState(false)
+  const [showPreparationScreen, setShowPreparationScreen] = useState(false)
+  const [preparationStatus, setPreparationStatus] = useState<
+    'idle' | 'preparing' | 'ready'
+  >('idle')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -291,6 +297,62 @@ export function TextInterviewPage({
 
   const currentQuestion = getQuestion(state?.current_turn)
   const isFinished = Boolean(state && !state.current_turn)
+  const interviewStartData = useMemo(() => ({
+    candidate_id: candidateId.trim(),
+    interview_config: {
+      mode: interviewMode,
+      language,
+      experience_level: experienceLevel,
+      duration_minutes: durationMinutes,
+      interview_style: interviewStyle,
+      question_count: questionCount,
+      objective,
+    },
+  }), [
+    candidateId,
+    durationMinutes,
+    experienceLevel,
+    interviewMode,
+    interviewStyle,
+    language,
+    objective,
+    questionCount,
+  ])
+
+  useEffect(() => {
+    if (!candidateProfile || !interviewStartData.candidate_id || state) return
+
+    let active = true
+    setPreparationStatus('idle')
+    const timer = window.setTimeout(() => {
+      setPreparationStatus('preparing')
+      void api.prepareV2Interview(interviewStartData)
+        .then(() => {
+          if (active) setPreparationStatus('ready')
+        })
+        .catch(() => {
+          if (active) setPreparationStatus('idle')
+        })
+    }, 800)
+    return () => {
+      active = false
+      window.clearTimeout(timer)
+    }
+  }, [candidateProfile, interviewStartData, state])
+
+  useEffect(() => {
+    if (!starting) {
+      setShowPreparationScreen(false)
+      return
+    }
+    const timer = window.setTimeout(() => setShowPreparationScreen(true), 250)
+    return () => window.clearTimeout(timer)
+  }, [starting])
+
+  useEffect(() => {
+    if (!isFinished || !sessionId) return
+    void api.generateInterviewReport(sessionId).catch(() => undefined)
+  }, [isFinished, sessionId])
 
   const selectResume = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null
@@ -339,21 +401,13 @@ export function TextInterviewPage({
   const startInterview = async (event: FormEvent) => {
     event.preventDefault()
     if (!candidateId.trim()) return
+    setStarting(true)
     setLoading(true)
     setError(null)
     try {
-      const response: V2InterviewSessionResponse = await api.startV2Interview({
-        candidate_id: candidateId.trim(),
-        interview_config: {
-          mode: interviewMode,
-          language,
-          experience_level: experienceLevel,
-          duration_minutes: durationMinutes,
-          interview_style: interviewStyle,
-          question_count: questionCount,
-          objective,
-        },
-      })
+      const response: V2InterviewSessionResponse = await api.startV2Interview(
+        interviewStartData,
+      )
       setSessionId(response.session_id)
       setState(response.state)
       const interviewPath = interviewMode === 'voice'
@@ -363,6 +417,7 @@ export function TextInterviewPage({
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to start interview')
     } finally {
+      setStarting(false)
       setLoading(false)
     }
   }
@@ -382,6 +437,18 @@ export function TextInterviewPage({
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (showPreparationScreen && candidateProfile && !state) {
+    return (
+      <InterviewPreparationScreen
+        candidateName={candidateProfile.name}
+        mode={interviewMode}
+        experienceLevel={experienceLevel}
+        questionCount={questionCount}
+        preparationReady={preparationStatus === 'ready'}
+      />
+    )
   }
 
   return (

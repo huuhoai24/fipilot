@@ -22,6 +22,7 @@ class QuestionGeneratorAgent:
             build_question_generator_prompt(candidate_profile, interview_round, interview_config),
             InterviewQuestion,
             system_instruction=QUESTION_GENERATOR_SYSTEM_INSTRUCTION,
-            task_type="complex",
+            task_type="simple",
             temperature=0.2,
+            thinking_budget=0,
         )

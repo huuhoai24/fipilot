@@ -5,6 +5,8 @@ import {
   ArrowLeft,
   Bot,
   CheckCircle2,
+  FileText,
+  History,
   Loader2,
   Mic,
   RefreshCw,
@@ -22,7 +24,12 @@ import { Button } from '@/components/ui/Button'
 import { firebaseAuth } from '@/lib/firebase'
 import { api } from '@/lib/api'
 import { PcmAudioPlayer } from '@/lib/pcmAudioPlayer'
-import type { V2InterviewSessionResponse, V2InterviewSessionState, V2InterviewTurn } from '@/types'
+import type {
+  InterviewReport,
+  V2InterviewSessionResponse,
+  V2InterviewSessionState,
+  V2InterviewTurn,
+} from '@/types'
 import { VoiceInterviewState } from '@/types'
 
 const MAX_PENDING_CHUNKS = 8
@@ -32,6 +39,13 @@ const MAX_RECONNECT_ATTEMPTS = 3
 const AUTH_SUBPROTOCOL = 'firebase-auth'
 
 type VoiceConnectionState = 'connecting' | 'connected' | 'disconnected' | 'error'
+type FinalReportState = 'idle' | 'loading' | 'ready' | 'error'
+type MicrophonePermissionState =
+  | 'unknown'
+  | 'requesting'
+  | 'granted'
+  | 'denied'
+  | 'unavailable'
 
 interface VoiceServerEvent {
   type:
@@ -85,6 +99,16 @@ function microphoneErrorMessage(error: unknown): string {
   return 'The microphone could not be opened. Check your browser and device settings.'
 }
 
+function microphonePermissionAfterError(error: unknown): MicrophonePermissionState {
+  if (error instanceof DOMException && (
+    error.name === 'NotAllowedError'
+    || error.name === 'PermissionDeniedError'
+  )) {
+    return 'denied'
+  }
+  return 'unavailable'
+}
+
 function isVoiceState(value: unknown): value is VoiceInterviewState {
   return Object.values(VoiceInterviewState).includes(value as VoiceInterviewState)
 }
@@ -107,6 +131,8 @@ export function SpeechInterviewPage() {
   const sendQueueRef = useRef<Promise<void>>(Promise.resolve())
   const pendingChunksRef = useRef(0)
   const sequenceRef = useRef(0)
+  const turnProcessingStartedAtRef = useRef<number | null>(null)
+  const turnLatencyRecordedRef = useRef(false)
   const [session, setSession] = useState<V2InterviewSessionState | null>(null)
   const [voiceState, setVoiceState] = useState(VoiceInterviewState.IDLE)
   const [connectionState, setConnectionState] = useState<VoiceConnectionState>('connecting')
@@ -119,8 +145,39 @@ export function SpeechInterviewPage() {
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [microphoneError, setMicrophoneError] = useState('')
+  const [microphonePermission, setMicrophonePermission] =
+    useState<MicrophonePermissionState>('unknown')
+  const [localTurnLatencyMs, setLocalTurnLatencyMs] = useState<number | null>(null)
   const [transportError, setTransportError] = useState('')
   const [audioWarning, setAudioWarning] = useState('')
+  const [finalReport, setFinalReport] = useState<InterviewReport | null>(null)
+  const [finalReportState, setFinalReportState] = useState<FinalReportState>('idle')
+  const [finalReportError, setFinalReportError] = useState('')
+  const [finalReportRetry, setFinalReportRetry] = useState(0)
+  const interviewComplete = session !== null && session.current_turn === null
+
+  useEffect(() => {
+    if (!interviewComplete || !sessionId) return
+    let cancelled = false
+    setFinalReportState('loading')
+    setFinalReportError('')
+    void api.generateInterviewReport(sessionId)
+      .then((response) => {
+        if (cancelled) return
+        setFinalReport(response.report)
+        setFinalReportState('ready')
+      })
+      .catch((error) => {
+        if (cancelled) return
+        setFinalReportError(
+          error instanceof Error ? error.message : 'Final scores could not be generated.'
+        )
+        setFinalReportState('error')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [finalReportRetry, interviewComplete, sessionId])
 
   const releaseMedia = () => {
     if (audioWorkletRef.current) {
@@ -196,6 +253,10 @@ export function SpeechInterviewPage() {
     let cancelled = false
     setLoading(true)
     setLoadError('')
+    setSession(null)
+    setFinalReport(null)
+    setFinalReportState('idle')
+    setFinalReportError('')
     api.getV2InterviewSession(sessionId)
       .then((response: V2InterviewSessionResponse) => {
         if (!cancelled) setSession(response.state)
@@ -250,6 +311,16 @@ export function SpeechInterviewPage() {
           if (disposed) return
           if (message.data instanceof ArrayBuffer) {
             const payload = message.data
+            if (
+              ttsActiveRef.current
+              && turnProcessingStartedAtRef.current !== null
+              && !turnLatencyRecordedRef.current
+            ) {
+              turnLatencyRecordedRef.current = true
+              setLocalTurnLatencyMs(
+                Math.max(0, performance.now() - turnProcessingStartedAtRef.current)
+              )
+            }
             const player = ensurePlayback()
             queuePlayback(() => {
               player.enqueue(payload)
@@ -263,8 +334,11 @@ export function SpeechInterviewPage() {
               setConnectionState('connected')
               setTransportError('')
               setAudioWarning('')
-              socket.send(JSON.stringify({ type: 'speak_question' }))
-              if (hasConnectedRef.current) {
+              const reconnecting = hasConnectedRef.current
+              if (!reconnecting) {
+                socket.send(JSON.stringify({ type: 'speak_question' }))
+              }
+              if (reconnecting) {
                 void api.getV2InterviewSession(sessionId)
                   .then((response: V2InterviewSessionResponse) => {
                     if (disposed) return
@@ -299,6 +373,11 @@ export function SpeechInterviewPage() {
                 || event.value === VoiceInterviewState.EVALUATING
                 || event.value === VoiceInterviewState.AI_THINKING
               ) {
+                if (event.value === VoiceInterviewState.TRANSCRIBING) {
+                  turnProcessingStartedAtRef.current ??= performance.now()
+                  turnLatencyRecordedRef.current = false
+                  setLocalTurnLatencyMs(null)
+                }
                 releaseMedia()
               } else if (
                 event.value === VoiceInterviewState.USER_SPEAKING
@@ -307,8 +386,6 @@ export function SpeechInterviewPage() {
                 releasePlayback()
                 setTranscript('')
                 setElapsedSeconds(0)
-              } else if (event.value === VoiceInterviewState.WAITING_FOR_USER) {
-                void startListening()
               }
             } else if (
               (event.type === 'transcript_partial' || event.type === 'transcript_final')
@@ -577,11 +654,13 @@ export function SpeechInterviewPage() {
       || typeof AudioContext === 'undefined'
       || typeof AudioWorkletNode === 'undefined'
     ) {
+      setMicrophonePermission('unavailable')
       setMicrophoneError('This browser does not support streaming microphone capture.')
       return
     }
 
     try {
+      setMicrophonePermission('requesting')
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
@@ -593,6 +672,7 @@ export function SpeechInterviewPage() {
         stopMediaStream(stream)
         return
       }
+      setMicrophonePermission('granted')
 
       stopMediaStream(mediaStreamRef.current)
       mediaStreamRef.current = stream
@@ -628,11 +708,32 @@ export function SpeechInterviewPage() {
       await ensurePlayback().prepare()
     } catch (error) {
       releaseMedia()
-      if (mountedRef.current) setMicrophoneError(microphoneErrorMessage(error))
+      if (mountedRef.current) {
+        setMicrophonePermission(microphonePermissionAfterError(error))
+        setMicrophoneError(microphoneErrorMessage(error))
+      }
     }
   }
 
-  const startListening = () => startAudioCapture('start_listening')
+  const startListening = () => {
+    turnProcessingStartedAtRef.current = null
+    turnLatencyRecordedRef.current = false
+    setLocalTurnLatencyMs(null)
+    void startAudioCapture('start_listening')
+  }
+
+  const stopListening = async () => {
+    if (voiceState !== VoiceInterviewState.USER_SPEAKING) return
+    turnProcessingStartedAtRef.current = performance.now()
+    turnLatencyRecordedRef.current = false
+    setLocalTurnLatencyMs(null)
+    setVoiceState(VoiceInterviewState.TRANSCRIBING)
+    releaseMedia()
+    await sendQueueRef.current.catch(() => undefined)
+    if (!sendControl('stop_listening')) {
+      setVoiceState(VoiceInterviewState.WAITING_FOR_USER)
+    }
+  }
 
   const retryConnection = () => {
     setTransportError('')
@@ -692,6 +793,24 @@ export function SpeechInterviewPage() {
   const isConnected = connectionState === 'connected'
   const speaking = voiceState === VoiceInterviewState.AI_SPEAKING
     || voiceState === VoiceInterviewState.USER_SPEAKING
+  const microphoneActionable = isConnected
+    && !isComplete
+    && (
+      voiceState === VoiceInterviewState.WAITING_FOR_USER
+      || voiceState === VoiceInterviewState.USER_SPEAKING
+    )
+  const waveformLabel = voiceState === VoiceInterviewState.USER_SPEAKING
+    ? 'Your speaking waveform'
+    : voiceState === VoiceInterviewState.AI_SPEAKING
+      ? 'AI speaking waveform'
+      : 'Inactive voice waveform'
+  const microphonePermissionLabel = {
+    unknown: 'Microphone access pending',
+    requesting: 'Requesting microphone access',
+    granted: 'Microphone access granted',
+    denied: 'Microphone access denied',
+    unavailable: 'Microphone unavailable',
+  }[microphonePermission]
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
@@ -732,6 +851,64 @@ export function SpeechInterviewPage() {
               <div className="mt-4">
                 <CheckCircle2 className="mx-auto h-7 w-7 text-success" />
                 <p className="mt-3 text-lg font-semibold text-text-primary">Interview complete</p>
+                {finalReportState === 'loading' && (
+                  <div className="mt-5 flex items-center justify-center gap-2 text-sm text-text-muted" role="status">
+                    <Loader2 className="h-4 w-4 animate-spin text-accent" />
+                    Calculating final scores
+                  </div>
+                )}
+                {finalReport && (
+                  <div className="mx-auto mt-6 grid max-w-3xl overflow-hidden rounded-lg border border-border bg-surface-raised sm:grid-cols-4">
+                    {[
+                      ['Overall', finalReport.overall_score],
+                      ['Technical', finalReport.technical_score],
+                      ['Communication', finalReport.communication_score],
+                      ['Correctness', finalReport.correctness_score],
+                    ].map(([label, score]) => (
+                      <div
+                        key={label}
+                        className="border-b border-border px-4 py-4 text-left last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
+                      >
+                        <div className="text-xs font-medium uppercase text-text-faint">{label}</div>
+                        <div className="mt-2 flex items-baseline gap-1">
+                          <span className="font-display text-2xl font-bold text-text-primary">
+                            {(score as number).toFixed(1)}
+                          </span>
+                          <span className="text-xs text-text-faint">/10</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {finalReportState === 'error' && (
+                  <div className="mx-auto mt-5 max-w-xl rounded-lg border border-danger/30 bg-danger/10 p-4 text-left">
+                    <p className="text-sm text-danger" role="alert">{finalReportError}</p>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="danger"
+                      className="mt-3"
+                      onClick={() => setFinalReportRetry((value) => value + 1)}
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      Retry scores
+                    </Button>
+                  </div>
+                )}
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  <Button
+                    type="button"
+                    disabled={finalReportState === 'loading'}
+                    onClick={() => navigate(`/text-interview/${sessionId}/report`)}
+                  >
+                    <FileText className="h-4 w-4" />
+                    View Final Report
+                  </Button>
+                  <Button type="button" variant="secondary" onClick={() => navigate('/interview-history')}>
+                    <History className="h-4 w-4" />
+                    Back to History
+                  </Button>
+                </div>
               </div>
             ) : (
               <p className="mx-auto mt-4 max-w-3xl text-lg font-medium leading-8 text-text-primary sm:text-xl">
@@ -751,13 +928,30 @@ export function SpeechInterviewPage() {
           <section className="rounded-lg border border-border bg-surface px-4 py-6 sm:px-8">
             <VoiceWaveformPlaceholder
               active={speaking}
-              label={speaking ? 'AI speaking waveform' : 'Inactive voice waveform'}
+              label={waveformLabel}
             />
             <VoiceMicrophoneButton
               state={voiceState}
-              disabled
+              disabled={!microphoneActionable}
+              onClick={
+                voiceState === VoiceInterviewState.USER_SPEAKING
+                  ? () => void stopListening()
+                  : startListening
+              }
             />
             <VoiceStatusIndicator state={voiceState} elapsedSeconds={elapsedSeconds} />
+            <p
+              className="text-center text-xs text-text-faint"
+              role="status"
+              aria-live="polite"
+            >
+              {microphonePermissionLabel}
+            </p>
+            {import.meta.env.DEV && localTurnLatencyMs !== null && (
+              <p className="mt-1 text-center text-xs text-text-faint">
+                Processing latency after Stop: {Math.round(localTurnLatencyMs)} ms
+              </p>
+            )}
             {acknowledgedChunks > 0 && (
               <p className="text-center text-xs text-text-faint" aria-live="polite">
                 {acknowledgedChunks} audio {acknowledgedChunks === 1 ? 'chunk' : 'chunks'} delivered

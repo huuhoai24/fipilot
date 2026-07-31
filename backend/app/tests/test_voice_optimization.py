@@ -14,8 +14,8 @@ class VoiceLatencyTests(unittest.TestCase):
         registry.start_turn("session-1", "user-1")
         registry.mark("session-1", "user-1", "speech_end_time")
         registry.mark("session-1", "user-1", "stt_final_time")
-        registry.mark("session-1", "user-1", "evaluation_start")
-        registry.mark("session-1", "user-1", "question_first_token")
+        registry.mark("session-1", "user-1", "evaluation_completed_time")
+        registry.mark("session-1", "user-1", "question_generated_time")
         registry.mark("session-1", "user-1", "tts_first_audio")
 
         snapshot = registry.snapshot("session-1", "user-1")
@@ -24,15 +24,15 @@ class VoiceLatencyTests(unittest.TestCase):
         self.assertEqual(
             snapshot.durations_ms(),
             {
-                "speech_to_stt_final_ms": 200.0,
-                "stt_to_evaluation_start_ms": 800.0,
-                "evaluation_to_question_first_token_ms": 400.0,
-                "question_to_tts_first_audio_ms": 300.0,
-                "speech_to_tts_first_audio_ms": 1700.0,
+                "speech_to_transcript_ms": 200.0,
+                "transcript_to_evaluation_ms": 800.0,
+                "evaluation_to_question_ms": 400.0,
+                "question_to_tts_audio_ms": 300.0,
+                "total_turn_latency_ms": 1700.0,
             },
         )
         with self.assertLogs(
-            "services.voice_session.metrics", level="INFO"
+            "services.voice_session.metrics", level="DEBUG"
         ) as logs:
             registry.log_summary("session-1", "user-1")
         output = " ".join(logs.output)
@@ -103,4 +103,4 @@ class BargeInStateTests(unittest.IsolatedAsyncioTestCase):
 
         analytics = await manager.analytics_snapshot("session-1", "user-1")
         self.assertAlmostEqual(analytics.response_latencies_ms[0], 400.0)
-        self.assertAlmostEqual(analytics.speaking_duration_ms, 1200.0)
+        self.assertAlmostEqual(analytics.speaking_duration_ms, 400.0)

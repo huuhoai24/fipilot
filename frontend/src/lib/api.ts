@@ -5,6 +5,7 @@ import type {
   InterviewMode,
   InterviewReportResponse,
   ResumeUploadResponse,
+  V2InterviewPreparationResponse,
   V2InterviewSessionResponse,
 } from '@/types'
 import { firebaseAuth } from '@/lib/firebase'
@@ -113,6 +114,38 @@ async function uploadResume(file: File): Promise<ResumeUploadResponse> {
   })
 }
 
+const reportGenerationRequests = new Map<
+  string,
+  Promise<InterviewReportResponse>
+>()
+
+function generateInterviewReport(
+  sessionId: string | number
+): Promise<InterviewReportResponse> {
+  const key = String(sessionId)
+  const existing = reportGenerationRequests.get(key)
+  if (existing) return existing
+
+  const request = requestJson<InterviewReportResponse>(
+    `${API_ROOT_URL}/api/v2/interview/${encodeURIComponent(key)}/report`,
+    { method: 'POST' },
+  )
+  reportGenerationRequests.set(key, request)
+  void request.then(
+    () => {
+      if (reportGenerationRequests.get(key) === request) {
+        reportGenerationRequests.delete(key)
+      }
+    },
+    () => {
+      if (reportGenerationRequests.get(key) === request) {
+        reportGenerationRequests.delete(key)
+      }
+    },
+  )
+  return request
+}
+
 export const api = {
   uploadResume,
   uploadV2Resume: uploadResume,
@@ -143,6 +176,16 @@ export const api = {
     })
   },
 
+  prepareV2Interview: async (
+    data: StartV2InterviewData
+  ): Promise<V2InterviewPreparationResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/prepare`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  },
+
   submitV2InterviewAnswer: async (
     sessionId: string | number,
     answer: string
@@ -158,11 +201,7 @@ export const api = {
     return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}`)
   },
 
-  generateInterviewReport: async (sessionId: string | number): Promise<InterviewReportResponse> => {
-    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/report`, {
-      method: 'POST',
-    })
-  },
+  generateInterviewReport,
 
   getInterviewReport: async (sessionId: string | number): Promise<InterviewReportResponse> => {
     return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/report`)

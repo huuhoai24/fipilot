@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import unittest
 from datetime import datetime, timezone
 from types import SimpleNamespace
@@ -11,7 +12,10 @@ from infrastructure.speech.stt.base import (
     TranscriptEvent,
     TranscriptEventType,
 )
-from infrastructure.speech.stt.faster_whisper import FasterWhisperStreamingSTT
+from infrastructure.speech.stt.faster_whisper import (
+    FasterWhisperStreamingSTT,
+    _FasterWhisperModelProvider,
+)
 from infrastructure.speech.stt.vocabulary import vocabulary_hotwords
 from services.voice_session.audio_pipeline import (
     AudioPipelineFactory,
@@ -20,6 +24,8 @@ from services.voice_session.audio_pipeline import (
     VoiceActivityDetector,
     VoiceActivityDetectorFactory,
 )
+from services.voice_session.manager import VoiceSessionManager
+from services.voice_session.schemas import VoiceSessionStatus
 from services.voice_session.transcript_service import TranscriptService
 
 
@@ -97,6 +103,142 @@ class MockVADFactory(VoiceActivityDetectorFactory):
 
 
 class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
+    async def test_empty_stt_final_returns_to_listening_without_submission(self):
+        listening_again = asyncio.Event()
+        published_states: list[VoiceSessionStatus] = []
+        submitted_answers: list[str] = []
+
+        class EmptyFinalSTT(MockStreamingSTT):
+            async def process_audio_chunk(self, audio_bytes: bytes):
+                self.received_chunks.append(audio_bytes)
+                return None
+
+            async def finish_session(self):
+                self.finished = True
+                return None
+
+        class EmptyFinalSTTFactory(StreamingSTTFactory):
+            def create(self) -> StreamingSTT:
+                return EmptyFinalSTT()
+
+        async def publish_state(state: VoiceSessionStatus) -> None:
+            published_states.append(state)
+            if state == VoiceSessionStatus.WAITING_FOR_USER:
+                listening_again.set()
+
+        async def submit_answer(answer: str) -> None:
+            submitted_answers.append(answer)
+
+        manager = VoiceSessionManager(
+            max_chunk_bytes=2048,
+            max_session_bytes=8192,
+            pipeline_factory=AudioPipelineFactory(
+                stt_factory=EmptyFinalSTTFactory(),
+                vad_factory=MockVADFactory(),
+                queue_size=4,
+            ),
+        )
+        await manager.connect(
+            "session-1",
+            "user-1",
+            transcript_publisher=lambda _event: asyncio.sleep(0),
+            state_publisher=publish_state,
+            final_transcript_callback=submit_answer,
+        )
+        await manager.start_listening("session-1", "user-1")
+
+        for sequence, payload in enumerate(
+            (
+                b"\x00\x00" * 512,
+                b"\x01\x00" * 512,
+                b"\x02\x00" * 512,
+            )
+        ):
+            await manager.announce_audio_chunk("session-1", "user-1", sequence)
+            await manager.receive_audio_chunk(
+                "session-1",
+                "user-1",
+                payload,
+            )
+
+        await manager.stop_listening("session-1", "user-1")
+        await manager.finish_transcription("session-1", "user-1")
+        await asyncio.wait_for(listening_again.wait(), timeout=1)
+
+        self.assertEqual(published_states, [VoiceSessionStatus.WAITING_FOR_USER])
+        self.assertEqual(submitted_answers, [])
+        state = await manager.start_listening("session-1", "user-1")
+        self.assertEqual(state.state, VoiceSessionStatus.USER_SPEAKING)
+        await manager.disconnect("session-1", "user-1")
+
+    async def test_slow_stt_final_keeps_processing_and_completes_once(self):
+        final_started = asyncio.Event()
+        release_final = asyncio.Event()
+        published: list[dict] = []
+        speech_end_count = 0
+        stt_final_count = 0
+        endpoint_count = 0
+
+        class SlowFinalSTT(MockStreamingSTT):
+            async def finish_session(self):
+                final_started.set()
+                await release_final.wait()
+                return await super().finish_session()
+
+        class SlowFinalSTTFactory(StreamingSTTFactory):
+            def create(self) -> StreamingSTT:
+                return SlowFinalSTT()
+
+        async def on_speech_end() -> None:
+            nonlocal speech_end_count
+            speech_end_count += 1
+
+        async def on_stt_final() -> None:
+            nonlocal stt_final_count
+            stt_final_count += 1
+
+        async def on_endpoint() -> None:
+            nonlocal endpoint_count
+            endpoint_count += 1
+
+        async def publish(payload: dict) -> None:
+            published.append(payload)
+
+        pipeline = AudioPipelineFactory(
+            stt_factory=SlowFinalSTTFactory(),
+            vad_factory=MockVADFactory(),
+            queue_size=4,
+            auto_endpoint=True,
+            publish_partials=True,
+        ).create(
+            transcript_publisher=publish,
+            speech_end_callback=on_speech_end,
+            stt_final_callback=on_stt_final,
+            endpoint_callback=on_endpoint,
+        )
+
+        await pipeline.start()
+        pipeline.enqueue(b"\x00\x00" * 512)
+        pipeline.enqueue(b"\x01\x00" * 512)
+        pipeline.enqueue(b"\x02\x00" * 512)
+        await asyncio.wait_for(final_started.wait(), timeout=1)
+
+        self.assertEqual(speech_end_count, 1)
+        self.assertEqual(stt_final_count, 0)
+        self.assertEqual(endpoint_count, 0)
+        self.assertNotIn("transcript_final", [event["type"] for event in published])
+
+        finish_task = asyncio.create_task(pipeline.finish())
+        release_final.set()
+        await asyncio.wait_for(finish_task, timeout=1)
+
+        self.assertEqual(stt_final_count, 1)
+        self.assertEqual(endpoint_count, 1)
+        self.assertEqual(
+            [event["type"] for event in published].count("transcript_final"),
+            1,
+        )
+
     async def test_silero_vad_splits_arbitrary_pcm_chunks_into_512_sample_frames(self):
         frame_sizes: list[int] = []
 
@@ -181,6 +323,29 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("FastAPI", provider.hotwords)
         self.assertIn("Kubernetes", provider.hotwords)
 
+    def test_faster_whisper_does_not_duplicate_hotwords_as_initial_prompt(self):
+        class MockWhisperModel:
+            def __init__(self) -> None:
+                self.kwargs = {}
+
+            def transcribe(self, _audio, **kwargs):
+                self.kwargs = kwargs
+                segment = SimpleNamespace(text="FastAPI", avg_logprob=-0.1)
+                return iter([segment]), SimpleNamespace(language="vi")
+
+        provider = _FasterWhisperModelProvider(
+            model_name="mock",
+            device="cpu",
+            compute_type="int8",
+        )
+        model = MockWhisperModel()
+        provider._model = model
+
+        provider.transcribe([0.0], "vi", "FastAPI Kubernetes", beam_size=2)
+
+        self.assertEqual(model.kwargs["hotwords"], "FastAPI Kubernetes")
+        self.assertNotIn("initial_prompt", model.kwargs)
+
     def test_vocabulary_profiles_cover_supported_technical_roles(self):
         combined = vocabulary_hotwords("auto")
 
@@ -210,6 +375,8 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
             stt_factory=stt_factory,
             vad_factory=vad_factory,
             queue_size=4,
+            auto_endpoint=True,
+            publish_partials=True,
         ).create(
             transcript_publisher=publisher,
             endpoint_callback=endpoint,

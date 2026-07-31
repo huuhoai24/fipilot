@@ -99,6 +99,27 @@ def get_llm_service():
 
 
 @lru_cache
+def get_resume_llm_service():
+    from infrastructure.llm.vertex_gemini import RetryConfig, VertexGeminiService
+
+    settings = get_app_settings()
+    resume_settings = settings.model_copy(
+        update={
+            "google_cloud": settings.google_cloud.model_copy(
+                update={"location": settings.gemini_resume_location}
+            ),
+            "llm_routing": settings.llm_routing.model_copy(
+                update={"simple_model": settings.gemini_resume_model}
+            ),
+        }
+    )
+    return VertexGeminiService(
+        settings=resume_settings,
+        retry_config=RetryConfig(max_attempts=1),
+    )
+
+
+@lru_cache
 def get_question_streaming_service():
     from services.question_generator.streaming_service import (
         QuestionStreamingService,
@@ -244,7 +265,7 @@ def get_voice_session_manager():
 def get_resume_agent():
     from services.profile_scanner.agent import ResumeAgent
 
-    return ResumeAgent(llm_service=get_llm_service())
+    return ResumeAgent(llm_service=get_resume_llm_service())
 
 
 def get_profile_scanner_service():
@@ -292,6 +313,17 @@ def get_interview_orchestrator():
         decision_service=get_decision_service(),
         memory_service=InterviewMemoryService(),
         follow_up_service=FollowUpSelectionService(),
+    )
+
+
+@lru_cache
+def get_interview_preparation_cache():
+    from services.interview_preparation import InterviewPreparationCache
+
+    settings = get_app_settings()
+    return InterviewPreparationCache(
+        ttl_seconds=settings.interview_preparation_ttl_seconds,
+        max_entries=settings.interview_preparation_max_entries,
     )
 
 

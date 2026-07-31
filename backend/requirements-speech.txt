@@ -1,5 +1,14 @@
-# Optional Phase 4 speech runtime. Tests use injected mocks and do not load models.
+# Local speech runtime. Keep direct imports explicit; do not rely on the model
+# packages to pull audio-processing dependencies transitively.
 faster-whisper>=1.1,<2
+# CTranslate2 requires cuBLAS at runtime when STT_DEVICE=cuda. Pin the smaller
+# CUDA 12 Windows wheel so local setup does not require a system CUDA toolkit.
+nvidia-cublas-cu12==12.4.5.8; platform_system == "Windows"
 silero-vad>=5.1,<7
 numpy>=1.26,<3
+soxr>=1,<2
+# Torch and TorchAudio publish matched releases. Keep both within the latest
+# mutually available release range so a clean install cannot mix versions.
+torch>=2.5,<2.12
+torchaudio>=2.5,<2.12
 vieneu>=3,<4

@@ -24,7 +24,11 @@ from app.repositories import SQLiteInterviewRepository
 
 
 class MockInterviewOrchestrator:
+    def __init__(self):
+        self.start_calls = 0
+
     async def start_interview(self, candidate_profile, interview_config):
+        self.start_calls += 1
         question = InterviewQuestion(
             question="How would you optimize YOLOv8 inference?",
             language=interview_config.language,
@@ -94,7 +98,8 @@ class InterviewApiTests(unittest.TestCase):
             yield self.db
 
         self.app.dependency_overrides[get_db] = override_get_db
-        self.app.dependency_overrides[get_interview_orchestrator] = lambda: MockInterviewOrchestrator()
+        self.orchestrator = MockInterviewOrchestrator()
+        self.app.dependency_overrides[get_interview_orchestrator] = lambda: self.orchestrator
         self.app.dependency_overrides[get_current_user] = lambda: CurrentUser(uid="user-1")
         self.client = TestClient(self.app)
 
@@ -159,6 +164,30 @@ class InterviewApiTests(unittest.TestCase):
         repository = SQLiteInterviewRepository(self.db)
         session = repository.get_session(body["session_id"], user_id="user-1")
         self.assertEqual(session.state_payload["interview_config"]["mode"], "voice")
+
+    def test_prepared_interview_is_reused_by_start(self):
+        payload = {
+            "candidate_id": self.candidate.candidate_id,
+            "interview_config": {
+                "mode": "text",
+                "language": "en",
+                "experience_level": "middle",
+            },
+        }
+
+        prepare_response = self.client.post(
+            "/api/v2/interview/prepare",
+            json=payload,
+        )
+        start_response = self.client.post(
+            "/api/v2/interview/start",
+            json=payload,
+        )
+
+        self.assertEqual(prepare_response.status_code, 200)
+        self.assertEqual(prepare_response.json()["status"], "ready")
+        self.assertEqual(start_response.status_code, 200)
+        self.assertEqual(self.orchestrator.start_calls, 1)
 
     def test_submit_answer_updates_session_state(self):
         start_response = self.client.post(

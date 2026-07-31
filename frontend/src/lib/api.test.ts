@@ -146,3 +146,31 @@ describe('Candidate Profile API adapter', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 })
+
+describe('Interview report API adapter', () => {
+  it('deduplicates concurrent report generation requests for one session', async () => {
+    mocks.getIdToken.mockResolvedValue('firebase-token')
+    let resolveResponse: ((value: unknown) => void) | undefined
+    const responsePromise = new Promise((resolve) => {
+      resolveResponse = resolve
+    })
+    const fetchMock = vi.fn().mockReturnValue(responsePromise)
+    vi.stubGlobal('fetch', fetchMock)
+
+    const first = api.generateInterviewReport('session-1')
+    const second = api.generateInterviewReport('session-1')
+    resolveResponse?.({
+      ok: true,
+      status: 200,
+      headers: new Headers(),
+      json: async () => ({
+        session_id: 'session-1',
+        report: { id: 'report-1' },
+      }),
+    })
+
+    await Promise.all([first, second])
+
+    expect(fetchMock).toHaveBeenCalledOnce()
+  })
+})

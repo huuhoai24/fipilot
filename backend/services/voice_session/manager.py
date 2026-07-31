@@ -157,12 +157,22 @@ class VoiceSessionManager:
                 raise VoiceSessionProtocolError("Voice session is not ready to listen.")
             managed.pending_sequence = None
             managed.last_sequence = -1
-            managed.state.state = VoiceSessionStatus.WAITING_FOR_USER
+            now = self.clock()
+            if managed.waiting_for_user_at is not None:
+                response_latency_ms = max(
+                    0.0,
+                    (now - managed.waiting_for_user_at) * 1000,
+                )
+                managed.analytics.response_latencies_ms = [
+                    *managed.analytics.response_latencies_ms[-99:],
+                    response_latency_ms,
+                ]
+            managed.state.state = VoiceSessionStatus.USER_SPEAKING
             managed.barge_in_monitoring = False
-            managed.waiting_for_user_at = self.clock()
+            managed.user_speech_started_at = now
+            managed.waiting_for_user_at = None
             pipeline = managed.pipeline
             state = managed.state.model_copy(deep=True)
-            self.latency_registry.start_turn(session_id, user_id)
 
         if pipeline is not None:
             try:
@@ -181,16 +191,14 @@ class VoiceSessionManager:
     ) -> VoiceSessionState:
         async with self._lock:
             managed = self._get(session_id, user_id)
-            if managed.state.state not in {
-                VoiceSessionStatus.WAITING_FOR_USER,
-                VoiceSessionStatus.USER_SPEAKING,
-            }:
+            if managed.state.state != VoiceSessionStatus.USER_SPEAKING:
                 raise VoiceSessionProtocolError("Voice session is not listening.")
             if managed.pending_sequence is not None:
                 raise VoiceSessionProtocolError(
                     "An announced audio chunk is missing its binary payload."
                 )
             managed.state.state = VoiceSessionStatus.TRANSCRIBING
+            self.latency_registry.start_turn(session_id, user_id)
             self._record_speech_end(managed, session_id, user_id)
             return managed.state.model_copy(deep=True)
 
@@ -359,10 +367,9 @@ class VoiceSessionManager:
     ) -> bool:
         """Register the metadata for the next binary frame.
 
-        Returns False when the session has already stopped listening. The VAD
-        can endpoint mid-sentence, and the browser keeps capturing until it sees
-        the state change, so a burst of late frames is normal and must not be
-        reported as a protocol error per frame.
+        Returns False when the session has already stopped listening. A small
+        burst of frames can already be in flight when the user presses Stop, so
+        late frames are ignored instead of reported as protocol errors.
         """
         async with self._lock:
             managed = self._get(session_id, user_id)

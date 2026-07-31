@@ -1,5 +1,5 @@
 import React from 'react'
-import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -8,6 +8,7 @@ import type { V2InterviewSessionResponse } from '@/types'
 
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
+  generateReport: vi.fn(),
   getToken: vi.fn(),
   getWebSocketUrl: vi.fn(() => 'ws://voice.test/api/v2/voice/interview/session-1'),
 }))
@@ -15,6 +16,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock('@/lib/api', () => ({
   api: {
     getV2InterviewSession: mocks.getSession,
+    generateInterviewReport: mocks.generateReport,
     getVoiceInterviewWebSocketUrl: mocks.getWebSocketUrl,
   },
 }))
@@ -263,6 +265,7 @@ describe('SpeechInterviewPage realtime transport', () => {
     FakeAudioWorkletNode.instances = []
     FakePlaybackSource.instances = []
     mocks.getSession.mockResolvedValue(voiceSession)
+    mocks.generateReport.mockResolvedValue({ session_id: 'session-1' })
     mocks.getToken.mockResolvedValue('firebase-token')
     getUserMedia.mockResolvedValue(stream)
     stopTrack.mockClear()
@@ -301,11 +304,15 @@ describe('SpeechInterviewPage realtime transport', () => {
     vi.clearAllMocks()
   })
 
-  it('streams partial transcripts and advances without manual confirmation', async () => {
+  it('records only after Start and submits only after Stop', async () => {
     renderPage()
     const socket = await connectServer()
 
     expect(socket.sent).toContain(JSON.stringify({ type: 'speak_question' }))
+    expect(getUserMedia).not.toHaveBeenCalled()
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'start_listening' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
     await waitFor(() => expect(getUserMedia).toHaveBeenCalledWith({
       audio: {
         echoCancellation: true,
@@ -316,9 +323,15 @@ describe('SpeechInterviewPage realtime transport', () => {
     await waitFor(() => {
       expect(socket.sent).toContain(JSON.stringify({ type: 'start_listening' }))
     })
+    expect(screen.getByText('Microphone access granted')).toBeInTheDocument()
 
     act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
-    expect(screen.getByText('Listening')).toBeInTheDocument()
+    expect(screen.getByText('Recording your answer')).toBeInTheDocument()
+    expect(
+      screen
+        .getByRole('img', { name: 'Your speaking waveform' })
+        .querySelector('.animate-pulse')
+    ).toBeInTheDocument()
 
     const audioPayload = new Uint8Array([1, 2, 3, 4]).buffer
     act(() => {
@@ -350,8 +363,13 @@ describe('SpeechInterviewPage realtime transport', () => {
     expect(screen.getByRole('textbox', { name: 'Interview answer transcript' }))
       .toHaveValue('I built a YOLO')
 
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'stop_listening' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop and send answer' }))
+    await waitFor(() => {
+      expect(socket.sent).toContain(JSON.stringify({ type: 'stop_listening' }))
+    })
     act(() => socket.serverEvent({ type: 'state', value: 'TRANSCRIBING' }))
-    expect(screen.getByText('Transcribing your answer')).toBeInTheDocument()
+    expect(screen.getAllByText('Understanding your answer...')).toHaveLength(2)
     expect(stopTrack).toHaveBeenCalled()
 
     act(() => {
@@ -368,7 +386,7 @@ describe('SpeechInterviewPage realtime transport', () => {
     expect(transcript).toHaveValue('I built a YOLOv8 detection service.')
     expect(transcript).toHaveAttribute('readonly')
     expect(socket.sent).not.toContainEqual(expect.stringContaining('confirm_answer'))
-    expect(screen.getByText('Evaluating your answer')).toBeInTheDocument()
+    expect(screen.getAllByText('Evaluating your response...')).toHaveLength(2)
 
     mocks.getSession.mockResolvedValueOnce(nextVoiceSession)
     act(() => socket.serverEvent({ type: 'question_start' }))
@@ -400,8 +418,10 @@ describe('SpeechInterviewPage realtime transport', () => {
       socket.serverBinary(new Int16Array([100, 200, 300, 400]).buffer)
       socket.serverBinary(new Int16Array([500, 600, 700, 800]).buffer)
     })
-    expect(screen.getAllByText('AI interviewer is speaking')).toHaveLength(2)
-    expect(screen.getByRole('button', { name: 'AI interviewer is speaking' })).toBeDisabled()
+    expect(screen.getAllByText('AI interviewer speaking')).toHaveLength(2)
+    expect(screen.getByRole('button', { name: 'AI interviewer speaking' })).toBeDisabled()
+    expect(screen.getByRole('img', { name: 'AI speaking waveform' })).toBeInTheDocument()
+    expect(screen.getByText(/Processing latency after Stop:/)).toBeInTheDocument()
     await waitFor(() => {
       expect(socket.sent).toContain(JSON.stringify({ type: 'start_barge_in' }))
     })
@@ -414,9 +434,9 @@ describe('SpeechInterviewPage realtime transport', () => {
         text: 'How do you test an async API?',
       })
     })
-    expect(screen.getAllByText('AI interviewer is speaking')).toHaveLength(2)
+    expect(screen.getAllByText('AI interviewer speaking')).toHaveLength(2)
     act(() => socket.serverEvent({ type: 'tts_complete' }))
-    expect(screen.getAllByText('AI interviewer is speaking')).toHaveLength(2)
+    expect(screen.getAllByText('AI interviewer speaking')).toHaveLength(2)
     act(() => {
       FakePlaybackSource.instances.forEach((source) => source.finish())
     })
@@ -424,7 +444,7 @@ describe('SpeechInterviewPage realtime transport', () => {
       expect(socket.sent).toContain(JSON.stringify({ type: 'playback_complete' }))
     })
     act(() => socket.serverEvent({ type: 'state', value: 'WAITING_FOR_USER' }))
-    expect(await screen.findAllByText('Waiting for your answer')).toHaveLength(2)
+    expect(await screen.findAllByText('Ready for your answer')).toHaveLength(1)
     await waitFor(() => expect(mocks.getSession).toHaveBeenCalledTimes(2))
     expect(screen.getByRole('textbox', { name: 'Interview answer transcript' })).toHaveValue('')
   })
@@ -432,6 +452,15 @@ describe('SpeechInterviewPage realtime transport', () => {
   it('renders interview completion after the server completes evaluation', async () => {
     renderPage()
     const socket = await connectServer()
+    mocks.generateReport.mockResolvedValueOnce({
+      session_id: 'session-1',
+      report: {
+        overall_score: 8.4,
+        technical_score: 8.7,
+        communication_score: 8.1,
+        correctness_score: 8.3,
+      },
+    })
 
     act(() => {
       socket.serverEvent({
@@ -445,8 +474,33 @@ describe('SpeechInterviewPage realtime transport', () => {
     act(() => socket.serverEvent({ type: 'completed' }))
 
     expect(screen.getByText('Interview complete')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Start speaking' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Ready' })).toBeDisabled()
     await waitFor(() => expect(mocks.getSession).toHaveBeenCalledTimes(2))
+    expect(mocks.generateReport).toHaveBeenCalledWith('session-1')
+    expect(await screen.findByText('8.4')).toBeInTheDocument()
+    expect(screen.getByText('8.7')).toBeInTheDocument()
+    expect(screen.getByText('8.1')).toBeInTheDocument()
+    expect(screen.getByText('8.3')).toBeInTheDocument()
+  })
+
+  it('loads final scores when reopening a completed speech interview', async () => {
+    mocks.getSession.mockResolvedValue(completedVoiceSession)
+    mocks.generateReport.mockResolvedValueOnce({
+      session_id: 'session-1',
+      report: {
+        overall_score: 7.9,
+        technical_score: 8.2,
+        communication_score: 7.6,
+        correctness_score: 7.8,
+      },
+    })
+
+    renderPage()
+
+    expect(await screen.findByText('Interview complete')).toBeInTheDocument()
+    expect(await screen.findByText('7.9')).toBeInTheDocument()
+    expect(mocks.generateReport).toHaveBeenCalledWith('session-1')
+    expect(screen.getByRole('button', { name: 'View Final Report' })).toBeEnabled()
   })
 
   it('cancels buffered AI audio and keeps microphone capture on barge-in', async () => {
@@ -474,9 +528,9 @@ describe('SpeechInterviewPage realtime transport', () => {
       socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' })
     })
 
-    expect(await screen.findByText('Listening')).toBeInTheDocument()
+    expect(await screen.findByText('Recording your answer')).toBeInTheDocument()
     expect(FakePlaybackSource.instances[0].stop).toHaveBeenCalled()
-    expect(screen.getByRole('button', { name: 'Listening to your answer' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Stop and send answer' })).toBeEnabled()
   })
 
   it('shows a safe permission error when microphone access is denied', async () => {
@@ -484,10 +538,12 @@ describe('SpeechInterviewPage realtime transport', () => {
     renderPage()
     await connectServer()
 
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
     expect(await screen.findByText(/Microphone permission was denied/)).toBeInTheDocument()
+    expect(screen.getByText('Microphone access denied')).toBeInTheDocument()
   })
 
-  it('reconnects and resumes automatic listening', async () => {
+  it('reconnects without opening the microphone automatically', async () => {
     renderPage()
     const firstSocket = await connectServer()
     act(() => {
@@ -511,15 +567,15 @@ describe('SpeechInterviewPage realtime transport', () => {
       secondSocket.serverEvent({ type: 'state', value: 'WAITING_FOR_USER' })
     })
 
-    await waitFor(() => {
-      expect(secondSocket.sent).toContain(JSON.stringify({ type: 'start_listening' }))
-    })
-    expect(screen.queryByRole('button', { name: 'Confirm Answer' })).not.toBeInTheDocument()
+    expect(secondSocket.sent).not.toContain(JSON.stringify({ type: 'start_listening' }))
+    expect(secondSocket.sent).not.toContain(JSON.stringify({ type: 'speak_question' }))
+    expect(screen.getByRole('button', { name: 'Start answer' })).toBeEnabled()
   })
 
   it('closes transport resources when the page unmounts', async () => {
     const view = renderPage()
     const socket = await connectServer()
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
     await waitFor(() => expect(FakeAudioContext.instances[0]?.state).toBe('running'))
 
     act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))

@@ -462,7 +462,6 @@ async def _handle_confirm_answer(
             return
 
     await manager.mark_answer_processing(session_id, user_id)
-    manager.latency_registry.mark(session_id, user_id, "evaluation_start")
     await runtime.send_json(processing_event("evaluation"))
     question_stream_started = False
     question_speech: QuestionSpeechStreamer | None = None
@@ -509,6 +508,11 @@ async def _handle_confirm_answer(
     ):
         nonlocal question_stream_started
         question_stream_started = True
+        manager.latency_registry.mark(
+            session_id,
+            user_id,
+            "evaluation_completed_time",
+        )
         await manager.mark_ai_thinking(session_id, user_id)
         speech = get_question_speech()
         await send_json(question_start_event())
@@ -517,7 +521,7 @@ async def _handle_confirm_answer(
             manager.latency_registry.mark(
                 session_id,
                 user_id,
-                "question_first_token",
+                "question_generated_time",
             )
             await send_json(question_delta_event(text))
             await speech.feed_text_delta(text)
@@ -558,6 +562,11 @@ async def _handle_confirm_answer(
         )
         return
 
+    manager.latency_registry.mark(
+        session_id,
+        user_id,
+        "evaluation_completed_time",
+    )
     has_next_question = updated_state.current_turn is not None
     if not has_next_question:
         if question_speech is not None:
@@ -578,7 +587,7 @@ async def _handle_confirm_answer(
         manager.latency_registry.mark(
             session_id,
             user_id,
-            "question_first_token",
+            "question_generated_time",
         )
         await send_json(question_start_event())
         await send_json(question_delta_event(question_text))

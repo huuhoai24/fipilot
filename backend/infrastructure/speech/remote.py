@@ -129,10 +129,14 @@ class RemoteAudioPipeline:
         if started.get("type") != "stt_started":
             await self.close()
             raise RuntimeError("Remote speech recognition could not start.")
-        self._queue = asyncio.Queue(maxsize=self.queue_size)
+        queue: asyncio.Queue[bytes | object] = asyncio.Queue(
+            maxsize=self.queue_size
+        )
+        websocket = self._websocket
+        self._queue = queue
         self._complete.clear()
-        self._sender = asyncio.create_task(self._send_audio())
-        self._reader = asyncio.create_task(self._read_events())
+        self._sender = asyncio.create_task(self._send_audio(queue, websocket))
+        self._reader = asyncio.create_task(self._read_events(websocket))
 
     def enqueue(self, audio_bytes: bytes) -> bool:
         """Buffer one PCM frame; returns False when it was dropped."""
@@ -174,14 +178,11 @@ class RemoteAudioPipeline:
         if context is not None:
             await context.__aexit__(None, None, None)
 
-    async def _send_audio(self) -> None:
-        # Bind the queue and socket locally: close() clears the attributes while
-        # this task is still draining, so re-reading self._queue here would raise
-        # AttributeError on every shutdown.
-        queue = self._queue
-        websocket = self._websocket
-        assert queue is not None
-        assert websocket is not None
+    async def _send_audio(
+        self,
+        queue: asyncio.Queue[bytes | object],
+        websocket,
+    ) -> None:
         while True:
             item = await queue.get()
             try:
@@ -192,9 +193,8 @@ class RemoteAudioPipeline:
             finally:
                 queue.task_done()
 
-    async def _read_events(self) -> None:
-        assert self._websocket is not None
-        async for message in self._websocket:
+    async def _read_events(self, websocket) -> None:
+        async for message in websocket:
             if isinstance(message, bytes):
                 continue
             event = json.loads(message)

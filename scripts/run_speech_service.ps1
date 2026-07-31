@@ -37,4 +37,12 @@ if (-not $activate) {
 
 Set-Location $backendRoot
 . $activate
+
+$scriptsDir = Split-Path -Parent $activate
+$venvRoot = Split-Path -Parent $scriptsDir
+$cudaBin = Join-Path $venvRoot "Lib\site-packages\nvidia\cublas\bin"
+if (Test-Path -LiteralPath $cudaBin) {
+    $env:PATH = "$cudaBin;$env:PATH"
+}
+
 python -m speech_service.main

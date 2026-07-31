@@ -112,6 +112,21 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(config.response_mime_type, "application/json")
         self.assertEqual(config.response_json_schema["title"], "MockJSONOutput")
 
+    async def test_generate_json_can_disable_thinking(self):
+        models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])
+        service = self.make_service(models)
+
+        await service.generate_json(
+            "Return a score",
+            MockJSONOutput,
+            task_type="simple",
+            thinking_budget=0,
+        )
+
+        config = models.calls[0]["config"]
+        self.assertEqual(models.calls[0]["model"], "gemini-simple")
+        self.assertEqual(config.thinking_config.thinking_budget, 0)
+
     async def test_generate_json_extracts_json_from_markdown(self):
         models = FakeModels(responses=[SimpleNamespace(text='```json\n{"name":"Bob","score":7}\n```')])
         service = self.make_service(models)

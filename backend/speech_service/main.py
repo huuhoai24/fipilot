@@ -45,13 +45,15 @@ async def warm_up_models(application: FastAPI | None = None) -> None:
         provider = application.dependency_overrides.get(
             get_speech_runtime, get_speech_runtime
         )
-    pipeline_factory, _ = provider()
+    pipeline_factory, tts_service = provider()
     stt_factory = getattr(pipeline_factory, "stt_factory", None)
     vad_factory = getattr(pipeline_factory, "vad_factory", None)
     if stt_factory is not None and hasattr(stt_factory, "warm_up"):
         await asyncio.to_thread(stt_factory.warm_up)
     if vad_factory is not None and hasattr(vad_factory, "provider"):
         await asyncio.to_thread(vad_factory.provider.get_model)
+    if hasattr(tts_service, "warm_up"):
+        await tts_service.warm_up()
 
 
 @asynccontextmanager

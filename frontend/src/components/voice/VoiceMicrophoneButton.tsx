@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrainCircuit, Loader2, Mic, Radio, Volume2, Zap } from 'lucide-react'
+import { BrainCircuit, Loader2, Mic, Volume2, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { VoiceInterviewState } from '@/types'
 
@@ -10,13 +10,13 @@ interface VoiceMicrophoneButtonProps {
 }
 
 const buttonLabels: Record<VoiceInterviewState, string> = {
-  [VoiceInterviewState.IDLE]: 'Start speaking',
+  [VoiceInterviewState.IDLE]: 'Ready',
   [VoiceInterviewState.AI_THINKING]: 'AI interviewer is thinking',
-  [VoiceInterviewState.AI_SPEAKING]: 'AI interviewer is speaking',
-  [VoiceInterviewState.WAITING_FOR_USER]: 'Waiting for your answer',
-  [VoiceInterviewState.USER_SPEAKING]: 'Listening to your answer',
-  [VoiceInterviewState.TRANSCRIBING]: 'Transcribing answer',
-  [VoiceInterviewState.EVALUATING]: 'Evaluating answer',
+  [VoiceInterviewState.AI_SPEAKING]: 'AI interviewer speaking',
+  [VoiceInterviewState.WAITING_FOR_USER]: 'Start answer',
+  [VoiceInterviewState.USER_SPEAKING]: 'Stop and send answer',
+  [VoiceInterviewState.TRANSCRIBING]: 'Understanding your answer...',
+  [VoiceInterviewState.EVALUATING]: 'Evaluating your response...',
   [VoiceInterviewState.INTERRUPTED]: 'AI speech interrupted',
 }
 
@@ -42,7 +42,7 @@ export function VoiceMicrophoneButton({
           : isSpeaking
             ? Volume2
             : isReady
-              ? Radio
+              ? Mic
               : Mic
 
   return (

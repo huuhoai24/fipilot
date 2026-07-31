@@ -2,23 +2,26 @@ import unittest
 
 from app.agents.resume_agent import ResumeAgent
 from app.schemas import CandidateProfile
+from services.profile_scanner.schemas import ResumeExtractionResult
 
 
 class MockLLMService:
     def __init__(self):
         self.prompt = ""
         self.output_schema = None
+        self.kwargs = {}
 
     async def generate_json(self, prompt, output_schema, **kwargs):
         self.prompt = prompt
         self.output_schema = output_schema
-        return CandidateProfile(
+        self.kwargs = kwargs
+        return ResumeExtractionResult(
             name="Tran Thi B",
             skills=["Python"],
             skill_evidence=[
                 {
                     "skill": "Python",
-                    "evidence": ["Built an AI interview platform."],
+                    "evidence": "Built an AI interview platform.",
                     "source_section": "Projects",
                 }
             ],
@@ -35,7 +38,32 @@ class ResumeAgentTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(profile.skill_evidence[0].skill, "Python")
         self.assertIn("skill_evidence", llm_service.prompt)
-        self.assertEqual(llm_service.output_schema, CandidateProfile)
+        self.assertIn("at most 30", llm_service.prompt)
+        self.assertIn("at most 8", llm_service.prompt)
+        self.assertIn("one evidence string", llm_service.prompt)
+        self.assertIn("240 characters", llm_service.prompt)
+        self.assertIn("Do not return an empty", llm_service.prompt)
+        self.assertIn("target 20 to 30", llm_service.prompt)
+        self.assertEqual(llm_service.output_schema, ResumeExtractionResult)
+        self.assertEqual(llm_service.kwargs["task_type"], "simple")
+        self.assertEqual(llm_service.kwargs["thinking_budget"], 0)
+
+    def test_extraction_prioritizes_skills_with_evidence_within_limit(self):
+        extraction = ResumeExtractionResult(
+            skills=[f"Skill {index}" for index in range(35)],
+            skill_evidence=[
+                {
+                    "skill": "Skill 34",
+                    "evidence": "Used Skill 34 in a production project.",
+                }
+            ],
+        )
+
+        profile = extraction.to_candidate_profile()
+
+        self.assertEqual(len(profile.skills), 30)
+        self.assertIn("Skill 34", profile.skills)
+        self.assertEqual(profile.skill_evidence[0].skill, "Skill 34")
 
 
 if __name__ == "__main__":

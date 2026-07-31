@@ -70,7 +70,10 @@ class QuestionGeneratorAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("YOLOv8", question.question)
         self.assertIn("The interview language is Vietnamese.", llm_service.prompt)
         self.assertIn("keep technical terms", llm_service.prompt.lower())
+        self.assertIn("one or two short sentences", llm_service.prompt.lower())
         self.assertEqual(llm_service.output_schema, InterviewQuestion)
+        self.assertEqual(llm_service.kwargs["task_type"], "simple")
+        self.assertEqual(llm_service.kwargs["thinking_budget"], 0)
 
     async def test_english_question_generation(self):
         expected_question = InterviewQuestion(

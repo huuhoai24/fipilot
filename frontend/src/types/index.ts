@@ -200,6 +200,11 @@ export interface V2InterviewSessionResponse {
   state: V2InterviewSessionState
 }
 
+export interface V2InterviewPreparationResponse {
+  status: 'ready'
+  profile_version: number
+}
+
 export interface SkillAssessment {
   skill: string
   score: number

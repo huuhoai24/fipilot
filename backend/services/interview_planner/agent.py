@@ -22,6 +22,7 @@ class InterviewPlannerAgent:
             build_interview_planner_prompt(candidate_profile, config),
             InterviewPlan,
             system_instruction=INTERVIEW_PLANNER_SYSTEM_INSTRUCTION,
-            task_type="complex",
+            task_type="simple",
             temperature=0.1,
+            thinking_budget=0,
         )

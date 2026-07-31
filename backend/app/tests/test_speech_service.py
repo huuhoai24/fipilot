@@ -9,7 +9,7 @@ from core.exceptions import ConfigurationError
 from core.settings import Settings, get_settings
 from infrastructure.speech.tts.base import AudioChunk, StreamingTTS
 from speech_service.dependencies import get_speech_runtime
-from speech_service.main import app, validate_speech_service_settings
+from speech_service.main import app, validate_speech_service_settings, warm_up_models
 
 
 class FakePipeline:
@@ -34,6 +34,14 @@ class FakePipelineFactory:
 class FakeTTS(StreamingTTS):
     async def synthesize_stream(self, text: str):
         yield AudioChunk(bytes=b"\x01\x00" * 4, sample_rate=24000)
+
+
+class WarmableFakeTTS(FakeTTS):
+    def __init__(self) -> None:
+        self.warmed = False
+
+    async def warm_up(self) -> None:
+        self.warmed = True
 
 
 class SpeechServiceBoundaryTests(unittest.TestCase):
@@ -76,6 +84,17 @@ class SpeechServiceBoundaryTests(unittest.TestCase):
     def test_readiness_is_503_before_models_are_warm(self):
         response = self.client.get("/ready")
         self.assertEqual(response.status_code, 503)
+
+    def test_startup_warms_tts_before_marking_models_ready(self):
+        tts = WarmableFakeTTS()
+        app.dependency_overrides[get_speech_runtime] = lambda: (
+            FakePipelineFactory(),
+            tts,
+        )
+
+        __import__("asyncio").run(warm_up_models(app))
+
+        self.assertTrue(tts.warmed)
 
     def test_internal_websocket_requires_service_token(self):
         with self.assertRaises(WebSocketDisconnect) as context:

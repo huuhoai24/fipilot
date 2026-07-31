@@ -201,6 +201,15 @@ class RemoteAudioPipelineShutdownTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(context.exited)
 
+    async def test_immediate_close_does_not_race_worker_startup(self):
+        context = _FakeRemoteContext()
+        pipeline = self._pipeline(context)
+        await pipeline.start()
+
+        await pipeline.close()
+
+        self.assertTrue(context.exited)
+
     async def test_finish_then_close_does_not_raise(self):
         context = _FakeRemoteContext()
         pipeline = self._pipeline(context)

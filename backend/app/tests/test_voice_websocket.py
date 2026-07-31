@@ -383,8 +383,12 @@ class VoiceWebSocketTests(unittest.TestCase):
         )
         self.app.dependency_overrides[get_voice_session_manager] = lambda: self.manager
 
-    @staticmethod
-    def trigger_vad_answer(websocket, *, consume_initial: bool = True) -> list[dict]:
+    def trigger_manual_answer(
+        self,
+        websocket,
+        *,
+        consume_initial: bool = True,
+    ) -> list[dict]:
         if consume_initial:
             assert websocket.receive_json()["type"] == "connected"
             assert websocket.receive_json() == {
@@ -394,7 +398,7 @@ class VoiceWebSocketTests(unittest.TestCase):
         websocket.send_json({"type": "start_listening"})
         assert websocket.receive_json() == {
             "type": "state",
-            "value": "WAITING_FOR_USER",
+            "value": "USER_SPEAKING",
         }
         websocket.send_json(
             {
@@ -405,7 +409,14 @@ class VoiceWebSocketTests(unittest.TestCase):
             }
         )
         websocket.send_bytes(b"\x01\x00" * 4)
-        received: list[dict] = []
+        received: list[dict] = [websocket.receive_json()]
+        assert received[0]["type"] == "audio_ack"
+        self.assertEqual(
+            len(self.orchestrator.calls),
+            0,
+            "VAD silence must not auto-submit before the user presses Stop.",
+        )
+        websocket.send_json({"type": "stop_listening"})
         while not any(event.get("type") == "processing" for event in received):
             received.append(websocket.receive_json())
         return received
@@ -463,7 +474,7 @@ class VoiceWebSocketTests(unittest.TestCase):
             websocket.send_json({"type": "start_listening"})
             self.assertEqual(
                 websocket.receive_json(),
-                {"type": "state", "value": "WAITING_FOR_USER"},
+                {"type": "state", "value": "USER_SPEAKING"},
             )
 
             websocket.send_json({"type": "audio_chunk", "sequence": 1})
@@ -484,7 +495,7 @@ class VoiceWebSocketTests(unittest.TestCase):
             )
 
             websocket.send_json({"type": "start_listening"})
-            self.assertEqual(websocket.receive_json()["value"], "WAITING_FOR_USER")
+            self.assertEqual(websocket.receive_json()["value"], "USER_SPEAKING")
             websocket.send_json({"type": "audio_chunk", "sequence": 0})
             websocket.send_bytes(b"\x01\x00")
             self.assertEqual(websocket.receive_json()["type"], "audio_ack")
@@ -502,7 +513,7 @@ class VoiceWebSocketTests(unittest.TestCase):
             self.assertNotIn("secret", response["message"])
 
             websocket.send_json({"type": "start_listening"})
-            self.assertEqual(websocket.receive_json()["value"], "WAITING_FOR_USER")
+            self.assertEqual(websocket.receive_json()["value"], "USER_SPEAKING")
 
     def test_unannounced_binary_payload_is_rejected_without_disconnect(self) -> None:
         with self.connect() as websocket:
@@ -550,7 +561,7 @@ class VoiceWebSocketTests(unittest.TestCase):
         self.enable_audio_pipeline()
 
         with self.connect() as websocket:
-            received = self.trigger_vad_answer(websocket)
+            received = self.trigger_manual_answer(websocket)
             self.assertTrue(
                 any(event.get("type") == "transcript_partial" for event in received)
             )
@@ -573,12 +584,12 @@ class VoiceWebSocketTests(unittest.TestCase):
             )
             self.assertEqual(len(self.orchestrator.calls), 1)
 
-    def test_vad_endpoint_submits_once_and_emits_next_question(
+    def test_manual_stop_submits_once_and_emits_next_question(
         self,
     ) -> None:
         self.enable_audio_pipeline()
         with self.connect() as websocket:
-            received = self.trigger_vad_answer(websocket)
+            received = self.trigger_manual_answer(websocket)
             received.extend(self.receive_through_tts_complete(websocket))
             event_types = [event["type"] for event in received]
             self.assertLess(
@@ -654,7 +665,7 @@ class VoiceWebSocketTests(unittest.TestCase):
         self.orchestrator.complete = True
         self.enable_audio_pipeline()
         with self.connect() as websocket:
-            self.trigger_vad_answer(websocket)
+            self.trigger_manual_answer(websocket)
             self.assertEqual(
                 websocket.receive_json(),
                 {"type": "completed"},
@@ -677,7 +688,7 @@ class VoiceWebSocketTests(unittest.TestCase):
         )
 
         with self.connect() as websocket:
-            received = self.trigger_vad_answer(websocket)
+            received = self.trigger_manual_answer(websocket)
             while not any(event.get("type") == "tts_start" for event in received):
                 message = websocket.receive()
                 if message.get("text") is not None:
@@ -716,6 +727,7 @@ class VoiceWebSocketTests(unittest.TestCase):
                 {"type": "state", "value": "USER_SPEAKING"},
                 received,
             )
+            websocket.send_json({"type": "stop_listening"})
             processing_count = sum(
                 event.get("type") == "processing" for event in received
             )
@@ -740,7 +752,7 @@ class VoiceWebSocketTests(unittest.TestCase):
     def test_reconnects_after_streamed_question_completes(self) -> None:
         self.enable_audio_pipeline()
         with self.connect() as websocket:
-            received = self.trigger_vad_answer(websocket)
+            received = self.trigger_manual_answer(websocket)
             received.extend(self.receive_through_tts_complete(websocket))
             self.assertIn(
                 "question_complete",
@@ -768,7 +780,7 @@ class VoiceWebSocketTests(unittest.TestCase):
         )
         self.enable_audio_pipeline()
         with self.connect() as websocket:
-            self.trigger_vad_answer(websocket)
+            self.trigger_manual_answer(websocket)
             self.assertEqual(
                 websocket.receive_json(),
                 {"type": "state", "value": "WAITING_FOR_USER"},
@@ -793,7 +805,7 @@ class VoiceWebSocketTests(unittest.TestCase):
                 update={"user_id": "user-b"}
             )
 
-            self.trigger_vad_answer(websocket, consume_initial=False)
+            self.trigger_manual_answer(websocket, consume_initial=False)
             self.assertEqual(
                 websocket.receive_json(),
                 {"type": "state", "value": "WAITING_FOR_USER"},

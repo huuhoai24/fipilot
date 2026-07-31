@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Awaitable, Callable
 
 from services.answer_evaluator.agent import EvaluatorAgent
@@ -86,12 +87,21 @@ class InterviewOrchestrator:
                 "status": "answered",
             }
         )
-        evaluation = await self.evaluator_agent.evaluate_answer(
-            session_state.candidate_profile,
-            answered_turn.question,
-            answer,
-            session_state.interview_config,
+        prefetched_question = self._prefetch_text_next_question(
+            session_state,
+            completed_turn_count=len(session_state.completed_turns) + 1,
+            question_provider=question_provider,
         )
+        try:
+            evaluation = await self.evaluator_agent.evaluate_answer(
+                session_state.candidate_profile,
+                answered_turn.question,
+                answer,
+                session_state.interview_config,
+            )
+        except BaseException:
+            await self._discard_question_prefetch(prefetched_question)
+            raise
         evaluated_turn = answered_turn.with_evaluation(evaluation)
         completed_turns = [*session_state.completed_turns, evaluated_turn]
         memory = session_state.memory
@@ -105,6 +115,7 @@ class InterviewOrchestrator:
             )
 
         if len(completed_turns) >= session_state.interview_config.question_count:
+            await self._discard_question_prefetch(prefetched_question)
             return session_state.model_copy(
                 update={
                     "current_turn": None,
@@ -116,6 +127,7 @@ class InterviewOrchestrator:
         decision = self.decision_service.decide(evaluation, answered_turn.question, session_state)
 
         if decision.action == "finish":
+            await self._discard_question_prefetch(prefetched_question)
             return session_state.model_copy(
                 update={
                     "current_turn": None,
@@ -124,6 +136,7 @@ class InterviewOrchestrator:
                 }
             )
         if decision.action == "follow_up":
+            await self._discard_question_prefetch(prefetched_question)
             next_turn = await self._build_follow_up_turn(
                 session_state,
                 answered_turn.question,
@@ -140,6 +153,7 @@ class InterviewOrchestrator:
                 }
             )
         if decision.action == "increase_difficulty":
+            await self._discard_question_prefetch(prefetched_question)
             current_round = self._round_with_increased_difficulty(session_state)
             current_round = self._round_with_memory(
                 session_state,
@@ -166,6 +180,7 @@ class InterviewOrchestrator:
 
         next_index = session_state.current_question_index + 1
         if next_index >= len(session_state.interview_plan.rounds):
+            await self._discard_question_prefetch(prefetched_question)
             return session_state.model_copy(
                 update={
                     "current_turn": None,
@@ -177,12 +192,15 @@ class InterviewOrchestrator:
 
         next_round = session_state.interview_plan.rounds[next_index]
         next_round = self._round_with_memory(session_state, next_round, memory)
-        next_question = await self._generate_question(
-            session_state.candidate_profile,
-            next_round,
-            session_state.interview_config,
-            question_provider=question_provider,
-        )
+        if prefetched_question is not None:
+            next_question = await prefetched_question
+        else:
+            next_question = await self._generate_question(
+                session_state.candidate_profile,
+                next_round,
+                session_state.interview_config,
+                question_provider=question_provider,
+            )
         return session_state.model_copy(
             update={
                 "current_turn": self._create_turn(
@@ -195,6 +213,47 @@ class InterviewOrchestrator:
                 "memory": memory,
             }
         )
+
+    def _prefetch_text_next_question(
+        self,
+        session_state: InterviewSessionState,
+        *,
+        completed_turn_count: int,
+        question_provider: QuestionProvider | None,
+    ) -> asyncio.Task[InterviewQuestion] | None:
+        if (
+            session_state.interview_config.mode != InterviewMode.TEXT
+            or question_provider is not None
+            or completed_turn_count >= session_state.interview_config.question_count
+        ):
+            return None
+
+        next_index = session_state.current_question_index + 1
+        if next_index >= len(session_state.interview_plan.rounds):
+            return None
+
+        next_round = session_state.interview_plan.rounds[next_index]
+        return asyncio.create_task(
+            self.question_generator_agent.generate_question(
+                session_state.candidate_profile,
+                next_round,
+                session_state.interview_config,
+            )
+        )
+
+    @staticmethod
+    async def _discard_question_prefetch(
+        task: asyncio.Task[InterviewQuestion] | None,
+    ) -> None:
+        if task is None:
+            return
+        task.cancel()
+        try:
+            await task
+        except (asyncio.CancelledError, Exception):
+            # A speculative result is intentionally ignored when the adaptive
+            # decision selects another branch.
+            return
 
     async def _build_follow_up_turn(
         self,

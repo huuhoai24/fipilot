@@ -13,26 +13,26 @@ logger = get_logger(__name__)
 class VoiceLatencyMetrics:
     speech_end_time: float | None = None
     stt_final_time: float | None = None
-    evaluation_start: float | None = None
-    question_first_token: float | None = None
+    evaluation_completed_time: float | None = None
+    question_generated_time: float | None = None
     tts_first_audio: float | None = None
 
     def durations_ms(self) -> dict[str, float]:
         pairs = {
-            "speech_to_stt_final_ms": (self.speech_end_time, self.stt_final_time),
-            "stt_to_evaluation_start_ms": (
+            "speech_to_transcript_ms": (self.speech_end_time, self.stt_final_time),
+            "transcript_to_evaluation_ms": (
                 self.stt_final_time,
-                self.evaluation_start,
+                self.evaluation_completed_time,
             ),
-            "evaluation_to_question_first_token_ms": (
-                self.evaluation_start,
-                self.question_first_token,
+            "evaluation_to_question_ms": (
+                self.evaluation_completed_time,
+                self.question_generated_time,
             ),
-            "question_to_tts_first_audio_ms": (
-                self.question_first_token,
+            "question_to_tts_audio_ms": (
+                self.question_generated_time,
                 self.tts_first_audio,
             ),
-            "speech_to_tts_first_audio_ms": (
+            "total_turn_latency_ms": (
                 self.speech_end_time,
                 self.tts_first_audio,
             ),
@@ -81,12 +81,10 @@ class VoiceLatencyRegistry:
         durations = metrics.durations_ms()
         if not durations:
             return
-        logger.info(
+        logger.debug(
             "Voice turn latency measured.",
             extra={
                 "event": "voice_turn_latency",
-                "session_id": session_id,
-                "user_id": user_id,
                 **durations,
             },
         )

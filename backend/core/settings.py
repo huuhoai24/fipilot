@@ -46,6 +46,14 @@ class LLMRoutingSettings(BaseModel):
 
     simple_model: str = Field(default="gemini-2.5-flash", description="Reads GEMINI_SIMPLE_MODEL.")
     complex_model: str = Field(default="gemini-2.5-pro", description="Reads GEMINI_COMPLEX_MODEL.")
+    resume_model: str = Field(
+        default="gemini-2.5-flash-lite",
+        description="Low-latency structured extraction model. Reads GEMINI_RESUME_MODEL.",
+    )
+    resume_location: str = Field(
+        default="global",
+        description="Vertex endpoint used only for Resume extraction. Reads GEMINI_RESUME_LOCATION.",
+    )
     # The evaluator runs while a voice candidate waits in silence. Measured
     # ~25 s on the complex model versus ~13.5 s on the simple one. Kept on the
     # stronger model by default because the score is the product's output.
@@ -70,6 +78,8 @@ class DevelopmentSettings(BaseModel):
     max_voice_chunk_bytes: int = 256 * 1024
     max_voice_session_bytes: int = 64 * 1024 * 1024
     max_voice_message_chars: int = 4096
+    interview_preparation_ttl_seconds: int = Field(default=300, ge=30, le=3600)
+    interview_preparation_max_entries: int = Field(default=128, ge=1, le=4096)
 
 
 class SpeechSettings(BaseModel):
@@ -107,7 +117,7 @@ class SpeechSettings(BaseModel):
     # for the final transcript, which is the one that gets scored.
     partial_max_audio_ms: int = 20000
     # Partials run greedy; the final transcript gets a real beam search.
-    final_beam_size: int = 5
+    final_beam_size: int = 2
     vad_threshold: float = 0.5
     # 500 ms endpointed on ordinary mid-sentence pauses, cutting answers in half.
     vad_min_silence_ms: int = 900
@@ -238,6 +248,14 @@ class Settings(BaseSettings):
         llm_data.setdefault("simple_model", os.getenv("GEMINI_SIMPLE_MODEL", "gemini-2.5-flash"))
         llm_data.setdefault("complex_model", os.getenv("GEMINI_COMPLEX_MODEL", "gemini-2.5-pro"))
         llm_data.setdefault(
+            "resume_model",
+            os.getenv("GEMINI_RESUME_MODEL", "gemini-2.5-flash-lite"),
+        )
+        llm_data.setdefault(
+            "resume_location",
+            os.getenv("GEMINI_RESUME_LOCATION", "global"),
+        )
+        llm_data.setdefault(
             "evaluator_task_type", os.getenv("EVALUATOR_TASK_TYPE", "complex")
         )
 
@@ -256,6 +274,14 @@ class Settings(BaseSettings):
         )
         development_data.setdefault(
             "max_voice_message_chars", _env_int("MAX_VOICE_MESSAGE_CHARS", 4096)
+        )
+        development_data.setdefault(
+            "interview_preparation_ttl_seconds",
+            _env_int("INTERVIEW_PREPARATION_TTL_SECONDS", 300),
+        )
+        development_data.setdefault(
+            "interview_preparation_max_entries",
+            _env_int("INTERVIEW_PREPARATION_MAX_ENTRIES", 128),
         )
         speech_data.setdefault(
             "stt_model", os.getenv("STT_MODEL", SpeechSettings.model_fields["stt_model"].default)
@@ -281,7 +307,7 @@ class Settings(BaseSettings):
             "partial_max_audio_ms", _env_int("STT_PARTIAL_MAX_AUDIO_MS", 20000)
         )
         speech_data.setdefault(
-            "final_beam_size", _env_int("STT_FINAL_BEAM_SIZE", 5)
+            "final_beam_size", _env_int("STT_FINAL_BEAM_SIZE", 2)
         )
         speech_data.setdefault("vad_threshold", _env_float("VAD_THRESHOLD", 0.5))
         speech_data.setdefault(
@@ -363,6 +389,14 @@ class Settings(BaseSettings):
         complex_model = _take(data, "gemini_complex_model", "GEMINI_COMPLEX_MODEL")
         if complex_model is not None:
             llm_data["complex_model"] = complex_model
+        resume_model = _take(data, "gemini_resume_model", "GEMINI_RESUME_MODEL")
+        if resume_model is not None:
+            llm_data["resume_model"] = resume_model
+        resume_location = _take(
+            data, "gemini_resume_location", "GEMINI_RESUME_LOCATION"
+        )
+        if resume_location is not None:
+            llm_data["resume_location"] = resume_location
         evaluator_task_type = _take(data, "evaluator_task_type", "EVALUATOR_TASK_TYPE")
         if evaluator_task_type is not None:
             llm_data["evaluator_task_type"] = evaluator_task_type
@@ -377,6 +411,22 @@ class Settings(BaseSettings):
         max_answer_chars = _take(data, "max_answer_chars", "MAX_ANSWER_CHARS")
         if max_answer_chars is not None:
             development_data["max_answer_chars"] = max_answer_chars
+        preparation_ttl = _take(
+            data,
+            "interview_preparation_ttl_seconds",
+            "INTERVIEW_PREPARATION_TTL_SECONDS",
+        )
+        if preparation_ttl is not None:
+            development_data["interview_preparation_ttl_seconds"] = preparation_ttl
+        preparation_max_entries = _take(
+            data,
+            "interview_preparation_max_entries",
+            "INTERVIEW_PREPARATION_MAX_ENTRIES",
+        )
+        if preparation_max_entries is not None:
+            development_data["interview_preparation_max_entries"] = (
+                preparation_max_entries
+            )
 
         stt_model = _take(data, "stt_model", "STT_MODEL")
         if stt_model is not None:
@@ -514,6 +564,14 @@ class Settings(BaseSettings):
         return self.llm_routing.complex_model
 
     @property
+    def gemini_resume_model(self) -> str:
+        return self.llm_routing.resume_model
+
+    @property
+    def gemini_resume_location(self) -> str:
+        return self.llm_routing.resume_location
+
+    @property
     def evaluator_task_type(self) -> str:
         return self.llm_routing.evaluator_task_type
 
@@ -548,6 +606,14 @@ class Settings(BaseSettings):
     @property
     def max_voice_message_chars(self) -> int:
         return self.development.max_voice_message_chars
+
+    @property
+    def interview_preparation_ttl_seconds(self) -> int:
+        return self.development.interview_preparation_ttl_seconds
+
+    @property
+    def interview_preparation_max_entries(self) -> int:
+        return self.development.interview_preparation_max_entries
 
     @property
     def stt_model(self) -> str:

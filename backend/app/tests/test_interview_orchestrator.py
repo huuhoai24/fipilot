@@ -1,3 +1,4 @@
+import asyncio
 import unittest
 
 from app.schemas import (
@@ -183,6 +184,60 @@ class InterviewOrchestratorTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(updated_state.completed_turns[0].answer, "I use profiling and TensorRT.")
         self.assertEqual(updated_state.completed_turns[0].status, "evaluated")
         self.assertEqual(updated_state.completed_turns[0].evaluation.overall_score, 6.5)
+
+    async def test_text_evaluation_and_next_topic_question_run_concurrently(self):
+        evaluator_started = asyncio.Event()
+        question_started = asyncio.Event()
+
+        class ConcurrentEvaluatorAgent(MockEvaluatorAgent):
+            async def evaluate_answer(
+                self,
+                candidate_profile,
+                interview_question,
+                answer,
+                interview_config,
+            ):
+                evaluator_started.set()
+                await question_started.wait()
+                return self.evaluation
+
+        class ConcurrentQuestionGeneratorAgent(MockQuestionGeneratorAgent):
+            async def generate_question(
+                self,
+                candidate_profile,
+                interview_round,
+                interview_config,
+            ):
+                if interview_round.round_id == "round-2":
+                    question_started.set()
+                    await evaluator_started.wait()
+                return await super().generate_question(
+                    candidate_profile,
+                    interview_round,
+                    interview_config,
+                )
+
+        evaluation = AnswerEvaluation(
+            turn_id="turn-1",
+            overall_score=6.5,
+            follow_up_needed=False,
+        )
+        service = InterviewOrchestrator(
+            planner_agent=MockPlannerAgent(),
+            question_generator_agent=ConcurrentQuestionGeneratorAgent(),
+            evaluator_agent=ConcurrentEvaluatorAgent(evaluation),
+            decision_service=MockDecisionService("next_question"),
+        )
+        state = await service.start_interview(candidate_profile(), interview_config())
+
+        updated_state = await asyncio.wait_for(
+            service.submit_answer(state, "I use profiling and TensorRT."),
+            timeout=0.2,
+        )
+
+        self.assertTrue(evaluator_started.is_set())
+        self.assertTrue(question_started.is_set())
+        self.assertEqual(updated_state.current_turn.question.topic, "FastAPI Deployment")
 
     async def test_weak_answer_triggers_follow_up(self):
         evaluation = AnswerEvaluation(

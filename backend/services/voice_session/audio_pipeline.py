@@ -200,6 +200,8 @@ class AudioPipeline:
         speech_started_callback: PipelineEventCallback | None = None,
         speech_end_callback: PipelineEventCallback | None = None,
         stt_final_callback: PipelineEventCallback | None = None,
+        auto_endpoint: bool = True,
+        publish_partials: bool = True,
     ) -> None:
         self.stt = stt
         self.vad = vad
@@ -209,6 +211,8 @@ class AudioPipeline:
         self.speech_started_callback = speech_started_callback
         self.speech_end_callback = speech_end_callback
         self.stt_final_callback = stt_final_callback
+        self.auto_endpoint = auto_endpoint
+        self.publish_partials = publish_partials
         self._queue: asyncio.Queue[bytes | object] | None = None
         self._worker: asyncio.Task[None] | None = None
         self._partial_task: asyncio.Task[None] | None = None
@@ -279,6 +283,8 @@ class AudioPipeline:
             return
 
         await self.stt.append_audio(audio_bytes)
+        if not self.publish_partials:
+            return
         if not self.stt.partial_due():
             return
         if self._partial_task is not None and not self._partial_task.done():
@@ -328,7 +334,7 @@ class AudioPipeline:
                     await self.speech_started_callback()
                 if vad_result.is_speech:
                     await self._consume_speech(audio_bytes)
-                if vad_result.speech_ended:
+                if vad_result.speech_ended and self.auto_endpoint:
                     self._endpoint_detected = True
                     if self.speech_end_callback is not None:
                         await self.speech_end_callback()
@@ -361,10 +367,14 @@ class AudioPipelineFactory:
         stt_factory: StreamingSTTFactory,
         vad_factory: VoiceActivityDetectorFactory,
         queue_size: int,
+        auto_endpoint: bool = False,
+        publish_partials: bool = False,
     ) -> None:
         self.stt_factory = stt_factory
         self.vad_factory = vad_factory
         self.queue_size = queue_size
+        self.auto_endpoint = auto_endpoint
+        self.publish_partials = publish_partials
 
     def create(
         self,
@@ -384,4 +394,6 @@ class AudioPipelineFactory:
             speech_started_callback=speech_started_callback,
             speech_end_callback=speech_end_callback,
             stt_final_callback=stt_final_callback,
+            auto_endpoint=self.auto_endpoint,
+            publish_partials=self.publish_partials,
         )

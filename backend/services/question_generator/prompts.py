@@ -47,6 +47,8 @@ Question requirements:
 - For English interviews, ask in English.
 - Do not generate an evaluator response.
 - Do not generate multiple primary questions.
+- Write the primary question in one or two short sentences.
+- Ask for one main technical decision or experience; move extra probes to follow_up_questions.
 - Put possible probes in follow_up_questions only.
 - expected_answer_points should describe what a strong answer should cover.
 {f"- {personality_instruction}" if personality_instruction else ""}

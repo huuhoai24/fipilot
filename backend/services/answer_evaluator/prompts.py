@@ -17,6 +17,15 @@ def build_evaluator_prompt(
     answer: str,
     interview_config: InterviewConfig,
 ) -> str:
+    voice_latency_constraints = ""
+    if interview_config.mode.value == "voice":
+        voice_latency_constraints = """
+Voice response constraints:
+- Keep strengths, weaknesses, missing_topics, and missing_concepts to at most 2 short phrases each.
+- Keep follow_up_reason to one short sentence.
+- Keep feedback to at most 2 concise sentences.
+- Preserve scoring quality; omit explanatory repetition.
+"""
     agent_task = f"""
 Evaluate the candidate answer.
 
@@ -37,6 +46,7 @@ Scoring requirements:
 - Vietnamese mode: feedback in Vietnamese and keep technical terms in English.
 - English mode: feedback in English.
 - Set turn_id to an empty string if no turn id is available.
+{voice_latency_constraints}
 """
     return build_agent_prompt(
         task="answer_evaluation",

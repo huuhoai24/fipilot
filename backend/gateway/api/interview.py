@@ -6,10 +6,12 @@ from pydantic import BaseModel, Field
 from core.dependencies import (
     get_current_user,
     get_interview_orchestrator,
+    get_interview_preparation_cache,
     get_interview_repository,
 )
 from infrastructure.repositories import SQLiteInterviewRepository
 from orchestrator.interview_orchestrator import InterviewOrchestrator
+from services.interview_preparation import InterviewPreparationCache
 from shared.schemas import CurrentUser, InterviewConfig, InterviewSessionState, InterviewStatus
 
 
@@ -30,11 +32,53 @@ class InterviewSessionResponse(BaseModel):
     state: InterviewSessionState
 
 
+class InterviewPreparationResponse(BaseModel):
+    status: str = "ready"
+    profile_version: int
+
+
+@router.post("/prepare", response_model=InterviewPreparationResponse)
+async def prepare_interview(
+    request: InterviewStartRequest,
+    repository: SQLiteInterviewRepository = Depends(get_interview_repository),
+    orchestrator: InterviewOrchestrator = Depends(get_interview_orchestrator),
+    preparation_cache: InterviewPreparationCache = Depends(
+        get_interview_preparation_cache
+    ),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> InterviewPreparationResponse:
+    candidate_profile = repository.get_candidate_profile(
+        request.candidate_id,
+        user_id=current_user.uid,
+    )
+    if candidate_profile is None:
+        raise HTTPException(status_code=404, detail="Candidate profile not found.")
+
+    key = preparation_cache.key_for(
+        current_user.uid,
+        candidate_profile,
+        request.interview_config,
+    )
+    await preparation_cache.get_or_create(
+        key,
+        lambda: orchestrator.start_interview(
+            candidate_profile,
+            request.interview_config,
+        ),
+    )
+    return InterviewPreparationResponse(
+        profile_version=candidate_profile.profile_version,
+    )
+
+
 @router.post("/start", response_model=InterviewSessionResponse)
 async def start_interview(
     request: InterviewStartRequest,
     repository: SQLiteInterviewRepository = Depends(get_interview_repository),
     orchestrator: InterviewOrchestrator = Depends(get_interview_orchestrator),
+    preparation_cache: InterviewPreparationCache = Depends(
+        get_interview_preparation_cache
+    ),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
     candidate_profile = repository.get_candidate_profile(
@@ -43,7 +87,18 @@ async def start_interview(
     if candidate_profile is None:
         raise HTTPException(status_code=404, detail="Candidate profile not found.")
 
-    state = await orchestrator.start_interview(candidate_profile, request.interview_config)
+    key = preparation_cache.key_for(
+        current_user.uid,
+        candidate_profile,
+        request.interview_config,
+    )
+    state = await preparation_cache.get_or_create(
+        key,
+        lambda: orchestrator.start_interview(
+            candidate_profile,
+            request.interview_config,
+        ),
+    )
     session = repository.create_session(
         request.candidate_id,
         role=candidate_profile.specialization,

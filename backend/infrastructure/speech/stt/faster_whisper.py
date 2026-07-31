@@ -87,7 +87,6 @@ class _FasterWhisperModelProvider:
                 condition_on_previous_text=False,
                 word_timestamps=False,
                 hotwords=hotwords,
-                initial_prompt=hotwords,
             )
             materialized = list(segments)
 

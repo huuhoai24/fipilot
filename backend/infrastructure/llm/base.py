@@ -56,5 +56,6 @@ class BaseLLMService(ABC):
         model: str | None = None,
         temperature: float = 0.1,
         timeout_seconds: float | None = None,
+        thinking_budget: int | None = None,
     ) -> SchemaT:
         """Generate JSON and validate it with a Pydantic schema."""

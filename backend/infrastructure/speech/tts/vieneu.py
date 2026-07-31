@@ -92,6 +92,10 @@ class VieneuStreamingTTS(StreamingTTS):
                         sample_rate=self.sample_rate,
                     )
 
+    async def warm_up(self) -> None:
+        async for _ in self.synthesize_stream("Xin chao."):
+            pass
+
     def close(self) -> None:
         self._executor.shutdown(wait=False, cancel_futures=True)
 
