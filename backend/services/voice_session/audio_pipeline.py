@@ -20,6 +20,9 @@ PCM_SAMPLE_RATE = 16_000
 PCM_SAMPLE_WIDTH_BYTES = 2
 SILERO_FRAME_SAMPLES = 512
 SILERO_FRAME_BYTES = SILERO_FRAME_SAMPLES * PCM_SAMPLE_WIDTH_BYTES
+# Drain up to 256 ms from an existing backlog in one thread hop. Live audio is
+# still processed immediately when the queue contains only one browser frame.
+VAD_BATCH_BYTES = SILERO_FRAME_BYTES * 8
 EndpointCallback = Callable[[], Awaitable[None]]
 PipelineEventCallback = Callable[[], Awaitable[None]]
 
@@ -43,6 +46,15 @@ class VoiceActivityDetector(ABC):
     @abstractmethod
     async def process_audio_chunk(self, audio_bytes: bytes) -> VADFrameResult:
         raise NotImplementedError
+
+    async def process_audio_batch(
+        self,
+        audio_chunks: list[bytes],
+    ) -> list[VADFrameResult]:
+        return [
+            await self.process_audio_chunk(audio_bytes)
+            for audio_bytes in audio_chunks
+        ]
 
 
 class VoiceActivityDetectorFactory(ABC):
@@ -99,6 +111,18 @@ class SileroVoiceActivityDetector(VoiceActivityDetector):
         if self._iterator is None:
             await self.reset()
         return await asyncio.to_thread(self._process, audio_bytes)
+
+    async def process_audio_batch(
+        self,
+        audio_chunks: list[bytes],
+    ) -> list[VADFrameResult]:
+        if any(len(chunk) % PCM_SAMPLE_WIDTH_BYTES for chunk in audio_chunks):
+            raise ValueError("PCM16 audio chunk must contain complete samples.")
+        if self._iterator is None:
+            await self.reset()
+        return await asyncio.to_thread(
+            lambda: [self._process(chunk) for chunk in audio_chunks]
+        )
 
     def _create_iterator(self) -> Any:
         try:
@@ -199,6 +223,7 @@ class AudioPipeline:
         endpoint_callback: EndpointCallback | None = None,
         speech_started_callback: PipelineEventCallback | None = None,
         speech_end_callback: PipelineEventCallback | None = None,
+        stt_started_callback: PipelineEventCallback | None = None,
         stt_final_callback: PipelineEventCallback | None = None,
         auto_endpoint: bool = True,
         publish_partials: bool = True,
@@ -210,6 +235,7 @@ class AudioPipeline:
         self.endpoint_callback = endpoint_callback
         self.speech_started_callback = speech_started_callback
         self.speech_end_callback = speech_end_callback
+        self.stt_started_callback = stt_started_callback
         self.stt_final_callback = stt_final_callback
         self.auto_endpoint = auto_endpoint
         self.publish_partials = publish_partials
@@ -319,36 +345,60 @@ class AudioPipeline:
         assert queue is not None
         while True:
             item = await queue.get()
+            consumed_items = 1
             try:
                 if item is self._STOP:
                     return
                 if self._endpoint_detected:
                     continue
-                audio_bytes = item
-                assert isinstance(audio_bytes, bytes)
-                vad_result = await self.vad.process_audio_chunk(audio_bytes)
-                if (
-                    vad_result.speech_started
-                    and self.speech_started_callback is not None
-                ):
-                    await self.speech_started_callback()
-                if vad_result.is_speech:
-                    await self._consume_speech(audio_bytes)
-                if vad_result.speech_ended and self.auto_endpoint:
-                    self._endpoint_detected = True
-                    if self.speech_end_callback is not None:
-                        await self.speech_end_callback()
-                    await self._publish_final()
-                    if self.endpoint_callback is not None:
-                        await self.endpoint_callback()
+                assert isinstance(item, bytes)
+                batch = [item]
+                batch_size = len(item)
+                stop_after_batch = False
+                while batch_size < VAD_BATCH_BYTES:
+                    try:
+                        pending = queue.get_nowait()
+                    except asyncio.QueueEmpty:
+                        break
+                    consumed_items += 1
+                    if pending is self._STOP:
+                        stop_after_batch = True
+                        break
+                    assert isinstance(pending, bytes)
+                    batch.append(pending)
+                    batch_size += len(pending)
+
+                vad_results = await self.vad.process_audio_batch(batch)
+                if len(vad_results) != len(batch):
+                    raise RuntimeError("VAD batch result count does not match audio input.")
+                for audio_bytes, vad_result in zip(batch, vad_results, strict=True):
+                    if (
+                        vad_result.speech_started
+                        and self.speech_started_callback is not None
+                    ):
+                        await self.speech_started_callback()
+                    if vad_result.is_speech:
+                        await self._consume_speech(audio_bytes)
+                    if vad_result.speech_ended and self.auto_endpoint:
+                        self._endpoint_detected = True
+                        if self.speech_end_callback is not None:
+                            await self.speech_end_callback()
+                        await self._publish_final()
+                        if self.endpoint_callback is not None:
+                            await self.endpoint_callback()
+                        return
+                if stop_after_batch:
                     return
             finally:
-                queue.task_done()
+                for _ in range(consumed_items):
+                    queue.task_done()
 
     async def _publish_final(self) -> None:
         # Stop any in-flight partial first so a stale partial can never be
         # published after the final transcript.
         await self._cancel_partial()
+        if self.stt_started_callback is not None:
+            await self.stt_started_callback()
         final = await self.stt.finish_session()
         self._final_published = True
         if self.stt_final_callback is not None:
@@ -383,6 +433,7 @@ class AudioPipelineFactory:
         endpoint_callback: EndpointCallback | None = None,
         speech_started_callback: PipelineEventCallback | None = None,
         speech_end_callback: PipelineEventCallback | None = None,
+        stt_started_callback: PipelineEventCallback | None = None,
         stt_final_callback: PipelineEventCallback | None = None,
     ) -> AudioPipeline:
         return AudioPipeline(
@@ -393,6 +444,7 @@ class AudioPipelineFactory:
             endpoint_callback=endpoint_callback,
             speech_started_callback=speech_started_callback,
             speech_end_callback=speech_end_callback,
+            stt_started_callback=stt_started_callback,
             stt_final_callback=stt_final_callback,
             auto_endpoint=self.auto_endpoint,
             publish_partials=self.publish_partials,

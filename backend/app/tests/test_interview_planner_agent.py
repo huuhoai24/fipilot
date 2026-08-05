@@ -38,10 +38,22 @@ class MockLLMService:
         )
 
 
+class MockKnowledgeRetriever:
+    def retrieve_topics(self, candidate_profile, interview_config):
+        return [
+            "Domain: AI Engineer",
+            "Level guidance: explain mechanisms, trade-offs, and failure cases",
+            "Candidate-aligned topic: TensorRT inference optimization | anchors: quantization, latency, accuracy",
+        ]
+
+
 class InterviewPlannerAgentTests(unittest.IsolatedAsyncioTestCase):
     async def test_create_plan_uses_candidate_profile_evidence(self):
         llm_service = MockLLMService()
-        agent = InterviewPlannerAgent(llm_service=llm_service)
+        agent = InterviewPlannerAgent(
+            llm_service=llm_service,
+            knowledge_retriever=MockKnowledgeRetriever(),
+        )
         candidate_profile = CandidateProfile(
             name="Tran Thi B",
             skills=["Python", "FastAPI"],
@@ -62,6 +74,9 @@ class InterviewPlannerAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(llm_service.output_schema, InterviewPlan)
         self.assertIn("No job description", llm_service.prompt)
         self.assertIn("skill_evidence", llm_service.prompt)
+        self.assertIn("TensorRT inference optimization", llm_service.prompt)
+        self.assertIn("mechanisms, trade-offs, and failure cases", llm_service.prompt)
+        self.assertIn("Do not plan broad definition questions", llm_service.prompt)
         self.assertIn("The interview language is Vietnamese.", llm_service.prompt)
         self.assertIn('"language": "vi"', llm_service.prompt)
         self.assertEqual(llm_service.kwargs["system_instruction"].startswith("You are an interview planning agent"), True)

@@ -132,6 +132,9 @@ class VoiceSessionManager:
                     speech_end_callback=lambda: self._handle_speech_end(
                         session_id, user_id
                     ),
+                    stt_started_callback=lambda: self._mark_latency(
+                        session_id, user_id, "stt_started_time"
+                    ),
                     stt_final_callback=lambda: self._mark_latency(
                         session_id, user_id, "stt_final_time"
                     ),

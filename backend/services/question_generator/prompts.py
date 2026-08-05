@@ -40,6 +40,8 @@ Generate one adaptive interview question only.
 
 Question requirements:
 - Use CandidateProfile evidence, especially skill_evidence, projects, and experiences.
+- Do not ask broad definition questions such as "What is Machine Learning?" or "What is Deep Learning?" when candidate evidence exists.
+- Ground the question in one concrete piece of candidate evidence and ask about mechanisms, decisions, trade-offs, measurements, debugging, or failure cases.
 - Use the selected InterviewRound topic, difficulty, reasoning, target_skills, and recommended_question_areas.
 - Respect difficulty '{interview_round.difficulty}'.
 - The output question language must be '{interview_config.language}'.

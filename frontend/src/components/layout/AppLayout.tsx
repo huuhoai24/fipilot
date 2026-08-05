@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { History, Loader2, LogOut, MessageSquareText, Mic, Settings } from 'lucide-react'
 import { Sidebar } from './Sidebar'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { useUIStore } from '@/store/useAppStore'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
@@ -36,7 +37,7 @@ export function AppLayout() {
     <div className="min-h-screen bg-bg">
       <a
         href="#main-content"
-        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition-transform focus:translate-y-0"
+        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-contrast transition-transform focus:translate-y-0"
       >
         Skip to main content
       </a>
@@ -44,11 +45,9 @@ export function AppLayout() {
       <header className="sticky top-0 z-30 border-b border-border bg-surface/95 px-3 py-2 backdrop-blur md:hidden">
         <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent">
-              <Mic className="h-4 w-4 text-white" />
-            </div>
+            <BrandLogo className="h-8 w-8" />
             <span className="text-sm font-semibold text-text-primary">
-              Interview<span className="text-accent">OS</span>
+              Fi<span className="text-accent">pilot</span>
             </span>
           </div>
           <div className="flex min-w-0 items-center gap-2">

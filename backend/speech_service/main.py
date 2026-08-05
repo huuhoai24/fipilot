@@ -12,6 +12,7 @@ from pydantic import ValidationError
 from core.exceptions import ConfigurationError
 from core.settings import Settings, get_settings
 from services.voice_session.audio_pipeline import AudioQueueFullError
+from services.voice_session.warmup import warm_up_speech_runtime
 from speech_service.contracts import SpeechControlMessage
 from speech_service.dependencies import get_speech_runtime
 
@@ -46,14 +47,7 @@ async def warm_up_models(application: FastAPI | None = None) -> None:
             get_speech_runtime, get_speech_runtime
         )
     pipeline_factory, tts_service = provider()
-    stt_factory = getattr(pipeline_factory, "stt_factory", None)
-    vad_factory = getattr(pipeline_factory, "vad_factory", None)
-    if stt_factory is not None and hasattr(stt_factory, "warm_up"):
-        await asyncio.to_thread(stt_factory.warm_up)
-    if vad_factory is not None and hasattr(vad_factory, "provider"):
-        await asyncio.to_thread(vad_factory.provider.get_model)
-    if hasattr(tts_service, "warm_up"):
-        await tts_service.warm_up()
+    await warm_up_speech_runtime(pipeline_factory, tts_service)
 
 
 @asynccontextmanager

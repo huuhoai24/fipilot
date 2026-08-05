@@ -1,7 +1,0 @@
-# Intern
-
-- Define Data Validation and understand its role in evidence-based business analysis.
-- Recognize the data elements, measures, dimensions, and assumptions relevant to Data Validation.
-- Understand basic data quality concepts affecting the interpretation of Data Validation.
-- Distinguish descriptive measures from conclusions, causes, and business decisions.
-- Recognize common risks such as misleading aggregation, inconsistent definitions, and incomplete data.

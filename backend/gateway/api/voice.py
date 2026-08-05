@@ -5,6 +5,7 @@ import json
 from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from typing import Coroutine
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 from pydantic import ValidationError
@@ -19,7 +20,7 @@ from core.dependencies import (
     get_voice_session_manager,
 )
 from core.exceptions import AuthenticationError
-from core.logging import get_logger
+from core.logging import get_logger, set_request_id
 from core.settings import Settings
 from infrastructure.repositories.base import InterviewRepository
 from services.voice_session.events import (
@@ -162,6 +163,7 @@ async def voice_interview(
         get_question_speech_streamer_factory
     ),
 ) -> None:
+    set_request_id(f"voice-{uuid4().hex}")
     if not _origin_is_allowed(websocket, settings):
         await _reject(websocket, 4403, "Origin is not allowed.")
         return

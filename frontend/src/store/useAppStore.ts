@@ -7,13 +7,17 @@ function getInitialTheme(): Theme {
     const saved = localStorage.getItem('theme') as Theme | null
     if (saved === 'light' || saved === 'dark') return saved
   } catch {}
-  return 'dark'
+  return 'light'
 }
 
 function applyTheme(theme: Theme) {
   const html = document.documentElement
   html.classList.remove('dark', 'light')
   html.classList.add(theme)
+  html.dataset.theme = theme
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute('content', theme === 'dark' ? '#0e1513' : '#f4f7f6')
   try { localStorage.setItem('theme', theme) } catch {}
 }
 

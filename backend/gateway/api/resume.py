@@ -4,7 +4,8 @@ import os
 import shutil
 import tempfile
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi.responses import JSONResponse
 
 from core.dependencies import (
     get_current_user,
@@ -15,6 +16,7 @@ from core.dependencies import (
 from infrastructure.documents import DocumentService
 from infrastructure.repositories import SQLiteInterviewRepository
 from services.profile_scanner.agent import ResumeAgent
+from services.profile_scanner.exceptions import NonResumeDocumentError
 from shared.schemas import CurrentUser
 
 
@@ -26,6 +28,7 @@ ALLOWED_RESUME_EXTENSIONS = {"pdf", "docx"}
 
 @router.post("/upload")
 async def upload_resume(
+    request: Request,
     file: UploadFile = File(...),
     repository: SQLiteInterviewRepository = Depends(get_interview_repository),
     document_service: DocumentService = Depends(get_document_service),
@@ -53,7 +56,21 @@ async def upload_resume(
         if not resume_text or len(resume_text.strip()) < 50:
             raise HTTPException(status_code=422, detail="Could not extract enough resume text.")
 
-        profile = await resume_agent.extract_profile(resume_text)
+        try:
+            profile = await resume_agent.extract_profile(resume_text)
+        except NonResumeDocumentError as error:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "error": {
+                        "code": error.code,
+                        "message": error.safe_message,
+                        "retryable": False,
+                        "issues": [],
+                    },
+                    "request_id": request.state.request_id,
+                },
+            )
         candidate = repository.create_candidate(
             profile.name or "Candidate", user_id=current_user.uid
         )

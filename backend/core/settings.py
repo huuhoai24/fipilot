@@ -132,6 +132,8 @@ class SpeechSettings(BaseModel):
     tts_chunk_max_chars: int = 80
     service_token: str | None = None
     service_url: str | None = None
+    benchmark_mode: bool = False
+    prewarm_models: bool = False
 
 
 class AuthenticationSettings(BaseModel):
@@ -341,6 +343,12 @@ class Settings(BaseSettings):
         speech_data.setdefault(
             "service_url", os.getenv("SPEECH_SERVICE_URL") or None
         )
+        speech_data.setdefault(
+            "benchmark_mode", _env_bool("SPEECH_BENCHMARK_MODE", False)
+        )
+        speech_data.setdefault(
+            "prewarm_models", _env_bool("SPEECH_PREWARM_MODELS", False)
+        )
 
         auth_data.setdefault("enabled", _env_bool("AUTH_ENABLED", True))
         auth_data.setdefault("provider", os.getenv("AUTH_PROVIDER", "firebase"))
@@ -465,6 +473,8 @@ class Settings(BaseSettings):
             ("tts_chunk_max_chars", "TTS_CHUNK_MAX_CHARS"),
             ("service_token", "SPEECH_SERVICE_TOKEN"),
             ("service_url", "SPEECH_SERVICE_URL"),
+            ("benchmark_mode", "SPEECH_BENCHMARK_MODE"),
+            ("prewarm_models", "SPEECH_PREWARM_MODELS"),
         ):
             value = _take(data, field_name, env_name)
             if value is not None:
@@ -706,6 +716,14 @@ class Settings(BaseSettings):
     @property
     def speech_service_url(self) -> str | None:
         return self.speech.service_url
+
+    @property
+    def speech_benchmark_mode(self) -> bool:
+        return self.speech.benchmark_mode
+
+    @property
+    def speech_prewarm_models(self) -> bool:
+        return self.speech.prewarm_models
 
     @property
     def auth_enabled(self) -> bool:

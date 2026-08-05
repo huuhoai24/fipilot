@@ -113,6 +113,38 @@ describe('TextInterviewPage interview mode', () => {
     }, { timeout: 2500 })
   })
 
+  it('shows a non-resume rejection without rendering an extracted profile', async () => {
+    vi.mocked(api.uploadResume).mockRejectedValue(
+      new Error(
+        'This document does not appear to be a resume. Upload a CV or resume that summarizes your experience, skills, and education.',
+      ),
+    )
+    render(
+      <MemoryRouter>
+        <TextInterviewPage mode="text" />
+      </MemoryRouter>,
+    )
+    const report = new File(
+      ['capstone report'],
+      'AI_Interview_Platform_Capstone_Report.docx',
+      {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      },
+    )
+
+    fireEvent.change(screen.getByLabelText('Resume file'), {
+      target: { files: [report] },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'This document does not appear to be a resume.',
+    )
+    expect(screen.getByRole('button', { name: 'Upload and Analyze' })).toBeEnabled()
+    expect(screen.queryByText('Extracted Candidate Profile')).not.toBeInTheDocument()
+    expect(api.prepareV2Interview).not.toHaveBeenCalled()
+  })
+
   it('shows an informative preparation workspace while start is pending', async () => {
     vi.mocked(api.uploadResume).mockResolvedValue({
       candidate_id: 'candidate-1',

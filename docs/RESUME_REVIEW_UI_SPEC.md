@@ -292,6 +292,7 @@ A pending Replacement Upload does not disable starts for an existing ready profi
 | `invalid_document` | Upload Rejection | `This file is not a readable PDF or DOCX. Export it again or choose another file.` |
 | `no_extractable_text` | Upload Rejection | `No readable text was found. Upload a text-based PDF or DOCX.` |
 | `insufficient_text` | Upload Rejection | `This document does not contain enough resume text. Upload a more complete resume.` |
+| `not_a_resume` | Upload Rejection | `This document does not appear to be a resume. Upload a CV or resume that summarizes your experience, skills, and education.` |
 | `idempotency_key_reused` | Request conflict | `This upload attempt no longer matches the selected file. Choose the file again.` |
 | `upload_in_progress` | Processing response | `This resume is already being extracted.` |
 

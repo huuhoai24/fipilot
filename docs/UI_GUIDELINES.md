@@ -1,10 +1,10 @@
-# InterviewOS UI Guidelines
+# Fipilot UI Guidelines
 
 Status: design direction for future frontend work. This document does not change the current implementation.
 
 ## 1. Product principles
 
-InterviewOS is an AI interview platform for candidates and recruiters. The interface should feel trustworthy, focused, and professional. It should help a person complete an interview task, understand system status, or make a hiring decision without visual distraction.
+Fipilot is an AI interview platform for candidates and recruiters. The interface should feel trustworthy, focused, and professional. It should help a person complete an interview task, understand system status, or make a hiring decision without visual distraction.
 
 Use these priorities in order:
 
@@ -68,7 +68,7 @@ Extend these shared primitives before creating route-specific copies. A primitiv
 
 ### Existing brand assets and patterns to preserve
 
-- Product name: `InterviewOS`
+- Product name: `Fipilot`
 - Microphone mark used with the wordmark
 - One mint or deep-green accent, adjusted for light and dark themes
 - Satoshi as the product typeface
@@ -78,7 +78,7 @@ Extend these shared primitives before creating route-specific copies. A primitiv
 - Direct candidate copy such as `Upload your latest CV`, `Submit answer`, and `Generating final report`
 - Existing skip link, visible focus treatment, reduced-motion rule, semantic status messages, and live-region usage
 
-The favicon currently uses an older indigo color while the application uses mint green. Future brand asset work should resolve that mismatch without changing the InterviewOS identity.
+The favicon currently uses an older indigo color while the application uses mint green. Future brand asset work should resolve that mismatch without changing the Fipilot identity.
 
 ### Existing patterns to standardize or retire
 
@@ -568,14 +568,14 @@ Do not introduce:
 - Placeholder-only form labels
 - Disabled controls with no explanation
 - Toasts for errors that require user action
-- Default library styling that ignores InterviewOS tokens and branding
+- Default library styling that ignores Fipilot tokens and branding
 
 ## 16. Review checklist
 
 Before approving a new or changed screen, confirm:
 
 - [ ] The screen has one obvious primary action.
-- [ ] The action label names a real InterviewOS outcome.
+- [ ] The action label names a real Fipilot outcome.
 - [ ] The layout aligns to the shared 1280px frame.
 - [ ] All spacing uses the 8px scale.
 - [ ] Only 8px and full radii are used.
@@ -593,4 +593,4 @@ Before approving a new or changed screen, confirm:
 - [ ] Icons have functional meaning.
 - [ ] Copy uses real product terms and no invented claims or data.
 - [ ] Candidate evidence, AI interpretation, and human decisions are clearly separated.
-- [ ] The InterviewOS name, microphone mark, mint-green accent, and Satoshi type remain recognizable.
+- [ ] The Fipilot name, microphone mark, mint-green accent, and Satoshi type remain recognizable.

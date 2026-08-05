@@ -13,6 +13,7 @@ export default {
           DEFAULT: 'var(--color-accent)',
           soft: 'var(--color-accent-soft)',
           hover: 'var(--color-accent-hover)',
+          contrast: 'var(--color-on-accent)',
         },
         success: '#22C55E',
         warning: '#F59E0B',

@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { useUIStore } from '@/store/useAppStore'
 import { UserMenu } from './UserMenu'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 const navItems = [
   { to: '/text-interview', label: 'Text Interview', icon: MessageSquareText },
@@ -24,7 +25,7 @@ const navItems = [
 ]
 
 export function Sidebar() {
-  const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu, theme, toggleTheme } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu, theme, toggleTheme, setTheme } = useUIStore()
   const { user } = useAuth()
   const displayName = user?.displayName || user?.email || 'Member'
   const displayRole = 'Member'
@@ -38,12 +39,10 @@ export function Sidebar() {
       )}
     >
       <div className={cn('flex h-16 items-center gap-2.5 border-b border-border px-4', sidebarCollapsed && 'justify-center px-0')}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent">
-          <Mic className="h-4 w-4 text-white" />
-        </div>
+        <BrandLogo className="h-8 w-8" />
         {!sidebarCollapsed && (
           <span className="font-display text-sm font-bold tracking-tight-display text-text-primary">
-            Interview<span className="text-accent">OS</span>
+            Fi<span className="text-accent">pilot</span>
           </span>
         )}
       </div>
@@ -95,7 +94,8 @@ export function Sidebar() {
           <button
             onClick={toggleTheme}
             title={theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors duration-150 hover:bg-surface-raised hover:text-text-primary"
+            aria-label={theme === 'dark' ? 'Use light theme' : 'Use dark theme'}
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-text-muted transition-colors duration-150 hover:bg-surface-raised hover:text-text-primary"
           >
             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
@@ -105,28 +105,34 @@ export function Sidebar() {
               {theme === 'dark' ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
               <span>Theme</span>
             </div>
-            <button
-              onClick={toggleTheme}
-              role="switch"
-              aria-checked={theme === 'light'}
-              className={cn(
-                'relative flex h-6 w-[88px] items-center rounded-full border p-0.5 transition-colors duration-200',
-                theme === 'dark' ? 'border-border bg-surface-raised' : 'border-accent/40 bg-accent-soft'
-              )}
+            <div
+              className="grid h-10 w-28 grid-cols-2 overflow-hidden rounded-lg border border-border bg-surface-raised"
+              role="group"
+              aria-label="Website theme"
             >
-              <span className={cn('flex-1 text-center text-[10px] font-medium', theme === 'dark' ? 'text-accent' : 'text-text-faint')}>
-                Dark
-              </span>
-              <span className={cn('flex-1 text-center text-[10px] font-medium', theme === 'light' ? 'text-accent' : 'text-text-faint')}>
-                Light
-              </span>
-              <span
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                aria-pressed={theme === 'dark'}
                 className={cn(
-                  'absolute top-0.5 h-5 w-[42px] rounded-full bg-accent shadow transition-transform duration-200',
-                  theme === 'light' ? 'translate-x-[42px]' : 'translate-x-0'
+                  'text-xs font-medium transition-colors duration-150',
+                  theme === 'dark' ? 'bg-accent text-accent-contrast' : 'text-text-muted hover:text-text-primary'
                 )}
-              />
-            </button>
+              >
+                Dark
+              </button>
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                aria-pressed={theme === 'light'}
+                className={cn(
+                  'border-l border-border text-xs font-medium transition-colors duration-150',
+                  theme === 'light' ? 'bg-accent text-accent-contrast' : 'text-text-muted hover:text-text-primary'
+                )}
+              >
+                Light
+              </button>
+            </div>
           </div>
         )}
       </div>

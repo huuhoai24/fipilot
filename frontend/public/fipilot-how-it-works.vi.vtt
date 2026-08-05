@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00.100 --> 00:03.672
+Đây là một phiên kiểm thử thực tế của Fipilot.
+
+00:03.622 --> 00:09.859
+Hệ thống nhận CV DOCX và dùng Gemini để trích xuất hồ sơ, kỹ năng cùng dự án.
+
+00:09.859 --> 00:16.811
+Sau khi chọn cấp độ Junior và hai câu hỏi kỹ thuật, câu hỏi đầu tiên được tạo trực tiếp từ bằng chứng trong CV.
+
+00:16.811 --> 00:24.094
+Ứng viên trả lời trên giao diện; Evaluator chấm bảy phẩy năm điểm và tạo một câu hỏi follow-up về khó khăn triển khai.
+
+00:24.094 --> 00:30.471
+Câu trả lời thứ hai lệch trọng tâm, nên báo cáo cuối chỉ đạt năm trên mười với khuyến nghị Consider.
+
+00:30.471 --> 00:37.818
+Đây là kết quả thật từ Firebase, Firestore và Vertex Gemini, cho thấy hệ thống không tự nâng điểm cho ứng viên.

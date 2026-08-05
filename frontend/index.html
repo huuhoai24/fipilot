@@ -1,10 +1,28 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" class="light" data-theme="light">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="darkreader-lock" />
+    <meta name="theme-color" content="#f4f7f6" />
+    <script>
+      (() => {
+        let theme = 'light'
+        try {
+          const savedTheme = localStorage.getItem('theme')
+          if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme
+        } catch {}
+        document.documentElement.className = theme
+        document.documentElement.dataset.theme = theme
+        document.querySelector('meta[name="theme-color"]')?.setAttribute(
+          'content',
+          theme === 'dark' ? '#0e1513' : '#f4f7f6',
+        )
+      })()
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/fipilot-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Interview Platform</title>
+    <title>Fipilot | AI Interview Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

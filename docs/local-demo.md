@@ -1,6 +1,6 @@
 # Local Speech Interview Demo
 
-This guide runs the existing local InterviewOS architecture for a Speech
+This guide runs the existing local Fipilot architecture for a Speech
 Interview demo. It does not change the Text Interview, Firebase authentication,
 Gemini, Whisper, or VieNeu-TTS flows.
 

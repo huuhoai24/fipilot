@@ -253,12 +253,16 @@ def get_audio_pipeline_factory():
 @lru_cache
 def get_voice_session_manager():
     from services.voice_session.manager import VoiceSessionManager
+    from services.voice_session.metrics import VoiceLatencyRegistry
 
     settings = get_app_settings()
     return VoiceSessionManager(
         max_chunk_bytes=settings.max_voice_chunk_bytes,
         max_session_bytes=settings.max_voice_session_bytes,
         pipeline_factory=get_audio_pipeline_factory(),
+        latency_registry=VoiceLatencyRegistry(
+            benchmark_mode=settings.speech_benchmark_mode,
+        ),
     )
 
 
@@ -274,10 +278,20 @@ def get_profile_scanner_service():
     return ProfileScannerService(agent=get_resume_agent())
 
 
+@lru_cache
+def get_interview_knowledge_retriever():
+    from services.interview_knowledge import LocalKnowledgeRetriever
+
+    return LocalKnowledgeRetriever()
+
+
 def get_interview_planner_agent():
     from services.interview_planner.agent import InterviewPlannerAgent
 
-    return InterviewPlannerAgent(llm_service=get_llm_service())
+    return InterviewPlannerAgent(
+        llm_service=get_llm_service(),
+        knowledge_retriever=get_interview_knowledge_retriever(),
+    )
 
 
 def get_question_generator_agent():

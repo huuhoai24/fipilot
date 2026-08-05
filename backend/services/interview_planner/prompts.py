@@ -14,6 +14,7 @@ INTERVIEW_PLANNER_SYSTEM_INSTRUCTION = (
 def build_interview_planner_prompt(
     candidate_profile: CandidateProfile,
     interview_config: InterviewConfig,
+    knowledge_topics: list[str] | None = None,
 ) -> str:
     agent_task = f"""
 Create an interview plan from this CandidateProfile.
@@ -26,6 +27,9 @@ Planner requirements:
 - Include reasoning based on candidate evidence, especially skill_evidence, projects, and experiences.
 - Include recommended_question_areas for each topic.
 - Prefer project deep dives and evidence-backed skills over generic trivia.
+- Use curated_knowledge only to choose relevant topic depth and question direction; candidate evidence remains authoritative.
+- Do not plan broad definition questions such as "What is Machine Learning?" when the profile contains specific evidence.
+- For evidence-backed topics, plan questions about mechanisms, implementation decisions, trade-offs, debugging, measurement, or failure cases.
 - Include coverage_goals for what the interview should validate.
 - Include risk_areas for claims that need verification or weak evidence.
 - Use interview language '{interview_config.language}' for planner_summary and reasoning.
@@ -41,6 +45,7 @@ Planner requirements:
         context={
             "candidate_profile": candidate_profile.model_dump(mode="json"),
             "interview_config": interview_config.model_dump(mode="json"),
+            "curated_knowledge": knowledge_topics or [],
         },
         system_instruction=INTERVIEW_PLANNER_SYSTEM_INSTRUCTION,
         agent_task=agent_task,

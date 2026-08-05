@@ -1,6 +1,6 @@
-# InterviewOS
+# Fipilot
 
-InterviewOS turns a candidate's resume into a reviewed profile that can be used to create text or speech interview sessions.
+Fipilot turns a candidate's resume into a reviewed profile that can be used to create text or speech interview sessions.
 
 ## Language
 

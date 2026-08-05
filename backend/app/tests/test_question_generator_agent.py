@@ -71,6 +71,8 @@ class QuestionGeneratorAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("The interview language is Vietnamese.", llm_service.prompt)
         self.assertIn("keep technical terms", llm_service.prompt.lower())
         self.assertIn("one or two short sentences", llm_service.prompt.lower())
+        self.assertIn("do not ask broad definition questions", llm_service.prompt.lower())
+        self.assertIn("candidate evidence", llm_service.prompt.lower())
         self.assertEqual(llm_service.output_schema, InterviewQuestion)
         self.assertEqual(llm_service.kwargs["task_type"], "simple")
         self.assertEqual(llm_service.kwargs["thinking_budget"], 0)

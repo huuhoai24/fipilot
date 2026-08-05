@@ -11,6 +11,7 @@ import { InterviewHistoryPage } from '@/pages/InterviewHistoryPage'
 import { InterviewReportPage } from '@/pages/InterviewReportPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { CandidateProfilePage } from '@/pages/CandidateProfilePage'
+import { LandingPage } from '@/pages/LandingPage'
 
 const queryClient = new QueryClient()
 
@@ -20,10 +21,10 @@ export default function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
-                <Route path="/" element={<Navigate to="/text-interview" replace />} />
                 <Route path="/text-interview" element={<TextInterviewPage mode="text" />} />
                 <Route path="/text-interview/:sessionId" element={<TextInterviewPage mode="text" />} />
                 <Route path="/text-interview/:sessionId/report" element={<InterviewReportPage />} />

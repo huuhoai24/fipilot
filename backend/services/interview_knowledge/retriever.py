@@ -6,7 +6,7 @@ from shared.schemas import CandidateProfile, InterviewConfig
 
 
 class KnowledgeRetriever(Protocol):
-    """Future seam for selecting interview topics from curated knowledge."""
+    """Select bounded interview guidance from the packaged knowledge catalog."""
 
     def retrieve_topics(
         self,

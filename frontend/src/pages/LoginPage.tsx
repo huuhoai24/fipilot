@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { AlertCircle, Loader2, LogIn, Mic } from 'lucide-react'
+import { AlertCircle, Loader2, LogIn } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 import { useAuth } from '@/contexts/AuthContext'
 
 export function LoginPage() {
@@ -31,11 +32,9 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-bg px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent">
-            <Mic className="h-6 w-6 text-white" />
-          </div>
+          <BrandLogo className="h-12 w-12" />
           <span className="font-display text-lg font-bold text-text-primary">
-            Interview<span className="text-accent">OS</span>
+            Fi<span className="text-accent">pilot</span>
           </span>
         </div>
         <div className="rounded-lg border border-border bg-surface p-6">

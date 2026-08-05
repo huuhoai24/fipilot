@@ -11,6 +11,8 @@ from app.api.routes.resume import get_document_service, get_resume_agent
 from app.repositories import SQLiteInterviewRepository
 from app.schemas import CandidateProfile, CurrentUser
 from database import Base, get_db
+from models import User
+from services.profile_scanner.exceptions import NonResumeDocumentError
 
 
 class MockDocumentService:
@@ -33,6 +35,11 @@ class MockResumeAgent:
             specialization="AI Interview",
             confidence_score=0.93,
         )
+
+
+class MockNonResumeAgent:
+    async def extract_profile(self, resume_text: str) -> CandidateProfile:
+        raise NonResumeDocumentError
 
 
 class ResumeUploadV2Tests(unittest.TestCase):
@@ -81,6 +88,25 @@ class ResumeUploadV2Tests(unittest.TestCase):
         self.assertEqual(saved_profile.skill_evidence[0].skill, "Python")
         self.assertEqual(saved_profile.specialization, "AI Interview")
         self.assertIn("Python FastAPI", saved_resume_text)
+
+    def test_project_report_is_rejected_without_creating_candidate(self):
+        main.app.dependency_overrides[get_resume_agent] = lambda: MockNonResumeAgent()
+
+        response = self.client.post(
+            "/api/v2/resume/upload",
+            files={
+                "file": (
+                    "AI_Interview_Platform_Capstone_Report.docx",
+                    b"PK mocked capstone report content",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                )
+            },
+        )
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()["error"]["code"], "not_a_resume")
+        self.assertIn("does not appear to be a resume", response.json()["error"]["message"])
+        self.assertEqual(self.db.query(User).count(), 0)
 
 
 if __name__ == "__main__":

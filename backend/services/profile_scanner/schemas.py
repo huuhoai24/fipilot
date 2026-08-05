@@ -1,5 +1,7 @@
 """Schemas used only at the Resume extraction boundary."""
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from shared.schemas.candidate import *  # noqa: F401,F403
@@ -12,6 +14,17 @@ class ExtractedSkillEvidence(BaseModel):
 
 
 class ResumeExtractionResult(BaseModel):
+    document_type: Literal[
+        "resume",
+        "portfolio",
+        "job_description",
+        "academic_report",
+        "project_report",
+        "research_paper",
+        "certificate",
+        "other",
+    ]
+    classification_confidence: float = Field(ge=0.0, le=1.0)
     name: str = "Candidate"
     years_experience: float | None = None
     recent_role: str | None = None

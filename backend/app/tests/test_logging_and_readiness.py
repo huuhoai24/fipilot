@@ -16,6 +16,47 @@ from core.startup import validate_runtime_settings
 
 
 class LoggingTests(unittest.TestCase):
+    def test_structured_formatter_allows_only_content_free_latency_fields(self):
+        stream = StringIO()
+        handler = logging.StreamHandler(stream)
+        handler.setFormatter(StructuredJsonFormatter())
+        logger = logging.getLogger("speech-latency-test")
+        logger.handlers = [handler]
+        logger.propagate = False
+        logger.setLevel(logging.INFO)
+
+        logger.info(
+            "Voice turn latency measured.",
+            extra={
+                "event": "speech_latency",
+                "request_id": "request-1",
+                "session_id": "session-1",
+                "status": "complete",
+                "speech_to_stt_final_ms": 125.0,
+                "audio_queue_drain_ms": 25.0,
+                "stt_decode_ms": 100.0,
+                "stt_to_evaluation_ms": 500.0,
+                "evaluation_to_question_ms": 250.0,
+                "question_to_tts_first_audio_ms": 300.0,
+                "total_turn_latency_ms": 1175.0,
+                "transcript": "must not be serialized",
+                "prompt": "must not be serialized",
+                "candidate_answer": "must not be serialized",
+            },
+        )
+        payload = json.loads(stream.getvalue())
+
+        self.assertEqual(payload["event"], "speech_latency")
+        self.assertEqual(payload["request_id"], "request-1")
+        self.assertEqual(payload["session_id"], "session-1")
+        self.assertEqual(payload["status"], "complete")
+        self.assertEqual(payload["total_turn_latency_ms"], 1175.0)
+        self.assertEqual(payload["audio_queue_drain_ms"], 25.0)
+        self.assertEqual(payload["stt_decode_ms"], 100.0)
+        self.assertNotIn("transcript", payload)
+        self.assertNotIn("prompt", payload)
+        self.assertNotIn("candidate_answer", payload)
+
     def test_structured_formatter_redacts_email_and_bearer_token(self):
         stream = StringIO()
         handler = logging.StreamHandler(stream)

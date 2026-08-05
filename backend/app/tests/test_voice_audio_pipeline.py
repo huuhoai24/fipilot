@@ -103,6 +103,43 @@ class MockVADFactory(VoiceActivityDetectorFactory):
 
 
 class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
+    async def test_finish_batches_backlogged_audio_before_vad(self):
+        class CountingVAD(VoiceActivityDetector):
+            def __init__(self) -> None:
+                self.calls = 0
+
+            async def reset(self) -> None:
+                self.calls = 0
+
+            async def process_audio_chunk(self, audio_bytes: bytes) -> VADFrameResult:
+                self.calls += 1
+                return VADFrameResult(is_speech=True)
+
+            async def process_audio_batch(
+                self, audio_chunks: list[bytes]
+            ) -> list[VADFrameResult]:
+                self.calls += 1
+                return [VADFrameResult(is_speech=True) for _ in audio_chunks]
+
+        vad = CountingVAD()
+        stt = MockStreamingSTT()
+        pipeline = AudioPipelineFactory(
+            stt_factory=MockSTTFactory(),
+            vad_factory=MockVADFactory(),
+            queue_size=64,
+        ).create(transcript_publisher=lambda _event: asyncio.sleep(0))
+        pipeline.vad = vad
+        pipeline.stt = stt
+
+        await pipeline.start()
+        chunks = [bytes([index % 255, 0]) * 512 for index in range(32)]
+        for chunk in chunks:
+            self.assertTrue(pipeline.enqueue(chunk))
+        await pipeline.finish()
+
+        self.assertEqual(b"".join(stt.received_chunks), b"".join(chunks))
+        self.assertLessEqual(vad.calls, 4)
+
     async def test_empty_stt_final_returns_to_listening_without_submission(self):
         listening_again = asyncio.Event()
         published_states: list[VoiceSessionStatus] = []

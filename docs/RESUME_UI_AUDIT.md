@@ -845,7 +845,7 @@ This redesign preserves nearly all application logic while:
 - Making AI extraction easier to trust and recover from
 - Removing duplicated settings
 - Fixing the most important form and loading accessibility gaps
-- Making the flow feel like InterviewOS instead of a generic AI SaaS template
+- Making the flow feel like Fipilot instead of a generic AI SaaS template
 
 ### Acceptance criteria
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from infrastructure.llm.base import BaseLLMService
+from services.profile_scanner.exceptions import NonResumeDocumentError
 from services.profile_scanner.prompts import (
     RESUME_EXTRACTION_SYSTEM_INSTRUCTION,
     build_resume_extraction_prompt,
@@ -10,6 +11,8 @@ from shared.schemas import CandidateProfile
 
 
 class ResumeAgent:
+    MIN_RESUME_CLASSIFICATION_CONFIDENCE = 0.7
+
     def __init__(self, llm_service: BaseLLMService):
         self.llm_service = llm_service
 
@@ -22,4 +25,10 @@ class ResumeAgent:
             temperature=0.1,
             thinking_budget=0,
         )
+        if (
+            extraction.document_type != "resume"
+            or extraction.classification_confidence
+            < self.MIN_RESUME_CLASSIFICATION_CONFIDENCE
+        ):
+            raise NonResumeDocumentError
         return extraction.to_candidate_profile()

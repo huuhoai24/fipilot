@@ -62,6 +62,8 @@ class V2FoundationTests(unittest.TestCase):
             TTS_SAMPLE_RATE=24000,
             SPEECH_SERVICE_TOKEN="internal-secret",
             SPEECH_SERVICE_URL="https://speech.internal",
+            SPEECH_BENCHMARK_MODE=True,
+            SPEECH_PREWARM_MODELS=True,
             INTERVIEW_PREPARATION_TTL_SECONDS=600,
             INTERVIEW_PREPARATION_MAX_ENTRIES=64,
         )
@@ -87,6 +89,8 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(settings.tts_voice, "interviewer")
         self.assertEqual(settings.tts_sample_rate, 24000)
         self.assertEqual(settings.speech_service_token, "internal-secret")
+        self.assertTrue(settings.speech_benchmark_mode)
+        self.assertTrue(settings.speech_prewarm_models)
         self.assertEqual(settings.interview_preparation_ttl_seconds, 600)
         self.assertEqual(settings.interview_preparation_max_entries, 64)
         self.assertEqual(

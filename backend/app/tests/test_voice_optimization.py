@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest.mock import patch
 
 from services.voice_session.manager import VoiceSessionManager
 from services.voice_session.metrics import VoiceLatencyRegistry
@@ -9,10 +10,14 @@ from services.voice_session.schemas import VoiceSessionStatus
 
 class VoiceLatencyTests(unittest.TestCase):
     def test_latency_registry_tracks_internal_milestones_without_content(self):
-        times = iter([1.0, 1.2, 2.0, 2.4, 2.7])
-        registry = VoiceLatencyRegistry(clock=lambda: next(times))
+        times = iter([1.0, 1.1, 1.2, 2.0, 2.4, 2.7])
+        registry = VoiceLatencyRegistry(
+            clock=lambda: next(times),
+            benchmark_mode=True,
+        )
         registry.start_turn("session-1", "user-1")
         registry.mark("session-1", "user-1", "speech_end_time")
+        registry.mark("session-1", "user-1", "stt_started_time")
         registry.mark("session-1", "user-1", "stt_final_time")
         registry.mark("session-1", "user-1", "evaluation_completed_time")
         registry.mark("session-1", "user-1", "question_generated_time")
@@ -24,21 +29,46 @@ class VoiceLatencyTests(unittest.TestCase):
         self.assertEqual(
             snapshot.durations_ms(),
             {
-                "speech_to_transcript_ms": 200.0,
-                "transcript_to_evaluation_ms": 800.0,
+                "speech_to_stt_final_ms": 200.0,
+                "audio_queue_drain_ms": 100.0,
+                "stt_decode_ms": 100.0,
+                "stt_to_evaluation_ms": 800.0,
                 "evaluation_to_question_ms": 400.0,
-                "question_to_tts_audio_ms": 300.0,
+                "question_to_tts_first_audio_ms": 300.0,
                 "total_turn_latency_ms": 1700.0,
             },
         )
-        with self.assertLogs(
-            "services.voice_session.metrics", level="DEBUG"
-        ) as logs:
+        with patch("services.voice_session.metrics.logger.info") as log:
             registry.log_summary("session-1", "user-1")
-        output = " ".join(logs.output)
-        self.assertNotIn("audio", output.lower())
+        log.assert_called_once()
+        payload = log.call_args.kwargs["extra"]
+        self.assertEqual(payload["event"], "speech_latency")
+        self.assertEqual(payload["session_id"], "session-1")
+        self.assertEqual(payload["status"], "complete")
+        output = str(payload)
+        self.assertNotIn("audio_bytes", output.lower())
         self.assertNotIn("transcript", output.lower())
         self.assertNotIn("prompt", output.lower())
+        self.assertNotIn("candidate_answer", output.lower())
+
+    def test_benchmark_logging_stays_at_debug_when_disabled(self):
+        registry = VoiceLatencyRegistry(clock=lambda: 1.0)
+        registry.start_turn("session-1", "user-1")
+        registry.mark("session-1", "user-1", "speech_end_time")
+        registry.mark("session-1", "user-1", "stt_final_time")
+
+        with (
+            patch("services.voice_session.metrics.logger.info") as info,
+            patch("services.voice_session.metrics.logger.debug") as debug,
+        ):
+            registry.log_summary("session-1", "user-1")
+
+        info.assert_not_called()
+        debug.assert_called_once()
+        self.assertEqual(
+            debug.call_args.kwargs["extra"]["event"],
+            "voice_turn_latency",
+        )
 
 
 class BargeInStateTests(unittest.IsolatedAsyncioTestCase):
