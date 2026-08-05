@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "dataset_name": "fipilot-labelled-benchmark-v1",
+  "status": "no_data",
+  "generated_at": "2026-08-05T03:00:54.516186Z",
+  "cv_accuracy": {
+    "status": "no_data",
+    "sample_count": 0,
+    "failure_count": 0,
+    "skill_precision": null,
+    "skill_recall": null,
+    "skill_f1": null,
+    "profile_field_accuracy": null,
+    "processing_latency_ms": null
+  },
+  "stt": {
+    "status": "no_data",
+    "sample_count": 0,
+    "failure_count": 0,
+    "wer": null,
+    "cer": null,
+    "latency_ms": null,
+    "by_category": {}
+  },
+  "tts": {
+    "status": "no_data",
+    "sample_count": 0,
+    "failure_count": 0,
+    "first_audio_ms": null,
+    "generation_duration_ms": null,
+    "audio_duration_ratio": null
+  },
+  "llm": {
+    "question_generator": {
+      "status": "no_data",
+      "sample_count": 0,
+      "failure_count": 0,
+      "relevance_score": null,
+      "difficulty_alignment": null,
+      "cv_alignment": null,
+      "generation_latency_ms": null
+    },
+    "evaluator": {
+      "status": "no_data",
+      "sample_count": 0,
+      "failure_count": 0,
+      "repetitions": 0,
+      "score_consistency": null,
+      "score_mean_absolute_deviation": null,
+      "mae_against_human": null,
+      "evaluation_latency_ms": null
+    }
+  },
+  "voice_turn": {
+    "status": "no_data",
+    "sample_count": 0,
+    "failure_count": 0,
+    "average_latency_ms": null,
+    "p50_latency_ms": null,
+    "p95_latency_ms": null,
+    "failure_rate": null
+  }
+}
