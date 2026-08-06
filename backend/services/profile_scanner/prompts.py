@@ -16,17 +16,30 @@ def build_resume_extraction_prompt(resume_text: str) -> str:
     untrusted_document = json.dumps(resume_text[:12000], ensure_ascii=True)
     return f"""
 Classify the uploaded document, then extract a structured candidate profile only when
-the document is a resume or CV.
+the document is a valid resume or CV belonging to one of the 10 supported technology domains.
+
+Supported technology domains:
+1. AI Engineer
+2. Backend Developer
+3. Business Analyst
+4. Data Engineer
+5. Data Scientist
+6. DevOps Engineer
+7. Full Stack Developer
+8. Software Engineer
+9. Tester / QA / QC
+10. Web Developer
 
 Document classification requirements:
-- Set document_type to "resume" only when the document's primary purpose is to present
-  one person's qualifications for employment through identity and resume sections such
-  as skills, work experience, education, or concise candidate projects.
+- Set document_type to "resume" ONLY when the document's primary purpose is to present
+  one person's qualifications for employment in one of the 10 supported technology domains listed above.
+- Non-IT or unsupported domain resumes (such as Marketing, Sales, Accounting, Finance, Human Resources,
+  Legal, Healthcare, Administration, Graphic Design outside software, or general non-tech roles) must be classified as "other".
 - Project reports, capstone reports, theses, research papers, product documentation,
   job descriptions, certificates, and team portfolios are not resumes.
 - A technical report does not become a resume merely because it names authors,
   technologies, project roles, education, or implementation work.
-- If the document's primary purpose is ambiguous, use "other" instead of "resume".
+- If the document's primary purpose is ambiguous or outside the 10 supported domains, use "other" instead of "resume".
 - classification_confidence measures confidence in document_type, not extraction quality.
 - For every non-resume document_type, leave candidate profile fields empty/default and
   set confidence_score to 0.0.

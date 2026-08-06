@@ -105,7 +105,7 @@ class ResumeUploadV2Tests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 422)
         self.assertEqual(response.json()["error"]["code"], "not_a_resume")
-        self.assertIn("does not appear to be a resume", response.json()["error"]["message"])
+        self.assertIn("10 ngành nghề", response.json()["error"]["message"])
         self.assertEqual(self.db.query(User).count(), 0)
 
 
