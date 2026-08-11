@@ -210,6 +210,7 @@ export interface V2InterviewSessionState {
 
 export interface V2InterviewSessionResponse {
   session_id: string
+  started_at?: string | null
   state: V2InterviewSessionState
 }
 

@@ -152,6 +152,8 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(body["state"]["interview_config"]["language"], "en")
         self.assertEqual(body["state"]["interview_config"]["mode"], "text")
         self.assertTrue(body["session_id"])
+        self.assertTrue(body["started_at"])
+        self.assertTrue(body["started_at"].endswith(("Z", "+00:00")))
         repository = SQLiteInterviewRepository(self.db)
         self.assertEqual(
             repository.get_session(body["session_id"], user_id="user-1").status,
@@ -266,6 +268,7 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.json()
         self.assertEqual(body["session_id"], session_id)
+        self.assertEqual(body["started_at"], start_response.json()["started_at"])
         self.assertEqual(body["state"]["candidate_profile"]["name"], "Tran Thi B")
         self.assertEqual(body["state"]["phase"], "opening")
         self.assertEqual(

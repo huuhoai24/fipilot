@@ -1,5 +1,5 @@
-import React from 'react'
-import { cleanup, render, screen } from '@testing-library/react'
+import React, { act } from 'react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { TextInterviewRoom } from '@/components/interview/TextInterviewRoom'
@@ -65,19 +65,26 @@ function sessionState(
 
 function renderRoom(
   state: V2InterviewSessionState,
-  options: { pendingAnswer?: string | null; submitting?: boolean } = {},
+  options: {
+    answer?: string
+    onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void
+    pendingAnswer?: string | null
+    submitting?: boolean
+    startedAt?: string | null
+  } = {},
 ) {
   return render(
     <TextInterviewRoom
       state={state}
       persona={resolveInterviewerPersona(state.interview_config.interview_style)}
       progress={{ current: 1, total: 4 }}
-      answer=""
+      answer={options.answer ?? ''}
       pendingAnswer={options.pendingAnswer ?? null}
       submitting={options.submitting ?? false}
+      startedAt={options.startedAt ?? null}
       error={null}
       onAnswerChange={vi.fn()}
-      onSubmit={vi.fn()}
+      onSubmit={options.onSubmit ?? vi.fn()}
       onViewReport={vi.fn()}
       onBackToHistory={vi.fn()}
     />,
@@ -87,6 +94,114 @@ function renderRoom(
 afterEach(cleanup)
 
 describe('TextInterviewRoom conversation phases', () => {
+  it('derives elapsed time from the persisted session start without resetting on rerender', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-11T03:01:30Z'))
+
+    try {
+      const view = renderRoom(sessionState({}), {
+        startedAt: '2026-08-11T03:00:00Z',
+      })
+
+      expect(screen.getByLabelText('Elapsed interview time')).toHaveTextContent('00:01:30')
+
+      act(() => vi.advanceTimersByTime(1_000))
+      expect(screen.getByLabelText('Elapsed interview time')).toHaveTextContent('00:01:31')
+
+      view.rerender(
+        <TextInterviewRoom
+          state={sessionState({})}
+          persona={resolveInterviewerPersona('technical')}
+          progress={{ current: 1, total: 4 }}
+          answer="Draft answer"
+          pendingAnswer={null}
+          submitting={false}
+          startedAt="2026-08-11T03:00:00Z"
+          error={null}
+          onAnswerChange={vi.fn()}
+          onSubmit={vi.fn()}
+          onViewReport={vi.fn()}
+          onBackToHistory={vi.fn()}
+        />,
+      )
+      expect(screen.getByLabelText('Elapsed interview time')).toHaveTextContent('00:01:31')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('keeps Enter multiline and submits only with Ctrl or Command plus Enter', () => {
+    const onSubmit = vi.fn((event) => event.preventDefault())
+    renderRoom(sessionState({}), { answer: 'A complete answer', onSubmit })
+    const composer = screen.getByLabelText('Your answer')
+
+    fireEvent.keyDown(composer, { key: 'Enter' })
+    expect(onSubmit).not.toHaveBeenCalled()
+
+    fireEvent.keyDown(composer, { key: 'Enter', ctrlKey: true })
+    expect(onSubmit).toHaveBeenCalledOnce()
+  })
+
+  it('does not submit an empty answer', () => {
+    const onSubmit = vi.fn((event) => event.preventDefault())
+    renderRoom(sessionState({}), { answer: '   ', onSubmit })
+    const composer = screen.getByLabelText('Your answer')
+
+    expect(screen.getByRole('button', { name: 'Submit answer' })).toBeDisabled()
+    fireEvent.keyDown(composer, { key: 'Enter', metaKey: true })
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('does not force-scroll to a new question while the candidate is reading older messages', () => {
+    const scrollIntoView = vi.fn()
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      configurable: true,
+      value: scrollIntoView,
+    })
+    Object.defineProperty(document.documentElement, 'scrollHeight', {
+      configurable: true,
+      value: 2400,
+    })
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: 700,
+    })
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: 0,
+    })
+
+    const view = renderRoom(sessionState({}))
+    expect(scrollIntoView).toHaveBeenCalledOnce()
+    window.dispatchEvent(new Event('scroll'))
+
+    const nextState = sessionState({
+      current_turn: {
+        ...firstTechnicalTurn,
+        turn_id: 'turn-2',
+        question: 'How did you validate the workflow?',
+      },
+      current_question_index: 1,
+    })
+    view.rerender(
+      <TextInterviewRoom
+        state={nextState}
+        persona={resolveInterviewerPersona('technical')}
+        progress={{ current: 2, total: 4 }}
+        answer=""
+        pendingAnswer={null}
+        submitting={false}
+        error={null}
+        onAnswerChange={vi.fn()}
+        onSubmit={vi.fn()}
+        onViewReport={vi.fn()}
+        onBackToHistory={vi.fn()}
+      />,
+    )
+
+    expect(scrollIntoView).toHaveBeenCalledOnce()
+  })
+
   it('renders the selected fictional AI persona throughout the active room', () => {
     renderRoom(
       sessionState({}),
@@ -173,6 +288,8 @@ describe('TextInterviewRoom conversation phases', () => {
 
     expect(screen.getByText(/That's all the questions I have for today/)).toBeInTheDocument()
     expect(screen.getByText(/Your interview is now complete/)).toBeInTheDocument()
+    expect(screen.getAllByText('Complete')).toHaveLength(2)
+    expect(screen.queryByText(/Question \d+ of \d+/)).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'View report' })).toBeInTheDocument()
     expect(screen.queryByText('Private evaluator feedback')).not.toBeInTheDocument()
     expect(screen.queryByText('Private strength')).not.toBeInTheDocument()

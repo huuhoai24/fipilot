@@ -104,6 +104,21 @@ export function getUserFacingError(
   return fallback
 }
 
+export function getInterviewAnswerError(error: unknown): string {
+  const record = asRecord(error)
+  if (
+    record?.category === 'BACKEND_UNREACHABLE'
+    || record?.category === 'CORS_OR_NETWORK'
+    || isNetworkFailure(error)
+  ) {
+    return 'Your answer could not be submitted. Check your connection and try again.'
+  }
+  if (record?.category === 'AUTH_FAILURE') {
+    return 'Your session could not be verified. Sign in again before retrying your answer.'
+  }
+  return 'Your answer could not be submitted. Please try again.'
+}
+
 export function getResumeUploadError(error: unknown): string {
   const record = asRecord(error)
   if (record?.category === 'SERVER_ERROR') {

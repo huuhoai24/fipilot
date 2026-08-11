@@ -1,9 +1,9 @@
-import React, { type FormEvent, type KeyboardEvent, useEffect, useRef } from 'react'
+import React, { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react'
 import { CheckCircle2, FileText, History, Loader2, Send } from 'lucide-react'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Button } from '@/components/ui/Button'
 import { AI_INTERVIEWER_LABEL, type InterviewerPersona } from '@/lib/interviewerPersonas'
-import { cn } from '@/lib/utils'
+import { cn, formatElapsed } from '@/lib/utils'
 import type { V2InterviewSessionState, V2InterviewTurn } from '@/types'
 
 interface InterviewProgress {
@@ -18,6 +18,7 @@ interface TextInterviewRoomProps {
   answer: string
   pendingAnswer: string | null
   submitting: boolean
+  startedAt?: string | null
   error: string | null
   onAnswerChange: (answer: string) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
@@ -87,9 +88,11 @@ function closingText(state: V2InterviewSessionState): string {
 function RoomHeader({
   label,
   status = 'In progress',
+  startedAt,
 }: {
   label: string
   status?: 'Opening' | 'In progress' | 'Complete' | 'Unavailable'
+  startedAt?: string | null
 }) {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-surface">
@@ -111,9 +114,33 @@ function RoomHeader({
             <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
             {status}
           </span>
+          {startedAt && status !== 'Complete' && (
+            <ElapsedInterviewTimer startedAt={startedAt} />
+          )}
         </div>
       </div>
     </header>
+  )
+}
+
+function ElapsedInterviewTimer({ startedAt }: { startedAt: string }) {
+  const [, setTick] = useState(0)
+  const validStart = Number.isFinite(Date.parse(startedAt))
+
+  useEffect(() => {
+    if (!validStart) return
+    const timer = window.setInterval(() => setTick((tick) => tick + 1), 1_000)
+    return () => window.clearInterval(timer)
+  }, [startedAt, validStart])
+
+  if (!validStart) return null
+  return (
+    <time
+      aria-label="Elapsed interview time"
+      className="shrink-0 border-l border-border pl-4 font-medium tabular-nums text-text-primary"
+    >
+      {formatElapsed(startedAt)}
+    </time>
   )
 }
 
@@ -246,6 +273,7 @@ export function TextInterviewRoom({
   answer,
   pendingAnswer,
   submitting,
+  startedAt,
   error,
   onAnswerChange,
   onSubmit,
@@ -257,10 +285,50 @@ export function TextInterviewRoom({
   const phase = state.phase ?? (isFinished ? 'closing' : 'interviewing')
   const transition = transitionText(state)
   const currentQuestionRef = useRef<HTMLLIElement>(null)
+  const composerRef = useRef<HTMLTextAreaElement>(null)
+  const restoreComposerFocusRef = useRef(false)
+  const shouldFollowConversationRef = useRef(true)
+  const previousQuestionIdRef = useRef<string | null>(null)
 
   useEffect(() => {
-    currentQuestionRef.current?.scrollIntoView?.({ block: 'nearest' })
+    const questionId = state.current_turn?.turn_id ?? null
+    const isInitialQuestion = previousQuestionIdRef.current === null
+    previousQuestionIdRef.current = questionId
+    if (!questionId || (!isInitialQuestion && !shouldFollowConversationRef.current)) return
+
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    currentQuestionRef.current?.scrollIntoView?.({
+      behavior: isInitialQuestion || reduceMotion ? 'auto' : 'smooth',
+      block: 'nearest',
+    })
   }, [state.current_turn?.turn_id])
+
+  useEffect(() => {
+    const updateFollowPreference = () => {
+      const distanceFromBottom = document.documentElement.scrollHeight
+        - window.scrollY
+        - window.innerHeight
+      shouldFollowConversationRef.current = distanceFromBottom < 240
+    }
+    updateFollowPreference()
+    window.addEventListener('scroll', updateFollowPreference, { passive: true })
+    window.addEventListener('resize', updateFollowPreference)
+    return () => {
+      window.removeEventListener('scroll', updateFollowPreference)
+      window.removeEventListener('resize', updateFollowPreference)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (submitting || !restoreComposerFocusRef.current || !state.current_turn) return
+    composerRef.current?.focus({ preventScroll: true })
+    restoreComposerFocusRef.current = false
+  }, [state.current_turn, submitting])
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    restoreComposerFocusRef.current = event.currentTarget.contains(document.activeElement)
+    onSubmit(event)
+  }
 
   const handleComposerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || (!event.ctrlKey && !event.metaKey)) return
@@ -279,6 +347,7 @@ export function TextInterviewRoom({
       <RoomHeader
         label={interviewLabel(state)}
         status={phase === 'opening' ? 'Opening' : isFinished ? 'Complete' : 'In progress'}
+        startedAt={startedAt}
       />
 
       <main id="main-content" className="flex-1">
@@ -311,7 +380,7 @@ export function TextInterviewRoom({
                 {phase === 'opening'
                   ? 'Opening'
                   : isFinished
-                    ? `${state.completed_turns.length} ${state.completed_turns.length === 1 ? 'question' : 'questions'} completed`
+                    ? 'Complete'
                     : `Question ${progress.current} of ${progress.total}`}
               </p>
             </div>
@@ -405,24 +474,29 @@ export function TextInterviewRoom({
                 {error}
               </p>
             )}
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit} aria-busy={submitting}>
               <label htmlFor="interview-answer" className="mb-2 block text-sm font-semibold text-text-primary">
                 Your answer
               </label>
               <textarea
+                ref={composerRef}
                 id="interview-answer"
                 rows={5}
                 value={answer}
                 onChange={(event) => onAnswerChange(event.target.value)}
                 onKeyDown={handleComposerKeyDown}
                 disabled={submitting}
-                placeholder="Type your answer here..."
+                placeholder={submitting ? `Waiting for ${persona.name}...` : 'Type your answer here...'}
                 aria-describedby="answer-composer-help"
+                aria-invalid={Boolean(error)}
+                maxLength={12000}
                 className="min-h-32 w-full resize-y rounded-lg border border-border bg-surface-raised px-4 py-3 text-base leading-6 text-text-primary outline-none placeholder:text-text-faint focus:border-accent disabled:cursor-wait"
               />
               <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <p id="answer-composer-help" className="text-xs text-text-muted">
-                  Use Ctrl + Enter to submit.
+                  {submitting
+                    ? 'Your answer is saved above while the next question is prepared.'
+                    : 'Use Ctrl + Enter or Command + Enter to submit. Enter adds a new line.'}
                 </p>
                 <Button type="submit" size="lg" disabled={submitting || !answer.trim()} className="w-full disabled:opacity-60 sm:w-auto">
                   {submitting ? (
@@ -430,7 +504,7 @@ export function TextInterviewRoom({
                   ) : (
                     <Send className="h-4 w-4" aria-hidden="true" />
                   )}
-                  {submitting ? 'Submitting' : 'Submit answer'}
+                  {submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit answer'}
                 </Button>
               </div>
             </form>

@@ -27,7 +27,11 @@ import {
   loadInterviewPreferences,
   saveInterviewPreferences,
 } from '@/lib/interviewPreferences'
-import { getResumeUploadError, getUserFacingError } from '@/lib/userFacingError'
+import {
+  getInterviewAnswerError,
+  getResumeUploadError,
+  getUserFacingError,
+} from '@/lib/userFacingError'
 import type {
   CandidateEducation,
   CandidateProfile,
@@ -244,6 +248,7 @@ export function TextInterviewPage({
   const { sessionId: routeSessionId } = useParams()
   const navigate = useNavigate()
   const resumeInputRef = useRef<HTMLInputElement>(null)
+  const submissionInFlightRef = useRef(false)
   const [candidateId, setCandidateId] = useState('')
   const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(null)
   const [profileConfidence, setProfileConfidence] = useState(0)
@@ -260,6 +265,7 @@ export function TextInterviewPage({
   const [questionCountInput, setQuestionCountInput] = useState(String(preferences.questionCount))
   const [objective, setObjective] = useState(preferences.objective)
   const [sessionId, setSessionId] = useState(routeSessionId ?? '')
+  const [interviewStartedAt, setInterviewStartedAt] = useState<string | null>(null)
   const [state, setState] = useState<V2InterviewSessionState | null>(null)
   const [answer, setAnswer] = useState('')
   const [pendingAnswer, setPendingAnswer] = useState<string | null>(null)
@@ -324,6 +330,7 @@ export function TextInterviewPage({
       .then((response: V2InterviewSessionResponse) => {
         if (cancelled) return
         setSessionId(response.session_id)
+        setInterviewStartedAt(response.started_at ?? null)
         setState(response.state)
       })
       .catch((err) => {
@@ -477,6 +484,7 @@ export function TextInterviewPage({
         interviewStartData,
       )
       setSessionId(response.session_id)
+      setInterviewStartedAt(response.started_at ?? null)
       setState(response.state)
       const interviewPath = interviewMode === 'voice'
         ? `/speech-interview/${response.session_id}`
@@ -493,20 +501,23 @@ export function TextInterviewPage({
   const submitAnswer = async (event: FormEvent) => {
     event.preventDefault()
     const text = answer.trim()
-    if (!sessionId || !text || submitting || !state?.current_turn) return
+    if (!sessionId || !text || submissionInFlightRef.current || !state?.current_turn) return
+    submissionInFlightRef.current = true
     setSubmitting(true)
     setPendingAnswer(text)
     setAnswer('')
     setError(null)
     try {
       const response: V2InterviewSessionResponse = await api.submitV2InterviewAnswer(sessionId, text)
+      setInterviewStartedAt((current) => response.started_at ?? current)
       setState(response.state)
       setPendingAnswer(null)
     } catch (err) {
       setPendingAnswer(null)
       setAnswer(text)
-      setError(getUserFacingError(err, 'Your answer could not be submitted. Please try again.'))
+      setError(getInterviewAnswerError(err))
     } finally {
+      submissionInFlightRef.current = false
       setSubmitting(false)
     }
   }
@@ -541,6 +552,7 @@ export function TextInterviewPage({
         answer={answer}
         pendingAnswer={pendingAnswer}
         submitting={submitting}
+        startedAt={interviewStartedAt}
         error={error}
         onAnswerChange={setAnswer}
         onSubmit={submitAnswer}

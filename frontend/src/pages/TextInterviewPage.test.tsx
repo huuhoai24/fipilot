@@ -79,8 +79,8 @@ describe('TextInterviewPage interview mode', () => {
             technical_score: 8,
             communication_score: 8,
             correctness_score: 8,
-            strengths: [],
-            weaknesses: [],
+            strengths: ['Private strength'],
+            weaknesses: ['Private weakness'],
             missing_concepts: [],
             follow_up_needed: false,
             feedback: 'Private evaluator feedback',
@@ -93,7 +93,7 @@ describe('TextInterviewPage interview mode', () => {
             language: 'en',
             topic: 'Reliability',
             difficulty: 'hard',
-            reasoning: '',
+            reasoning: 'Private hidden AI reasoning',
             expected_answer_points: ['Expected private signal'],
             follow_up_questions: [],
           },
@@ -125,6 +125,9 @@ describe('TextInterviewPage interview mode', () => {
 
     expect(screen.queryByText('Expected private signal')).not.toBeInTheDocument()
     expect(screen.queryByText('Private evaluator feedback')).not.toBeInTheDocument()
+    expect(screen.queryByText('Private strength')).not.toBeInTheDocument()
+    expect(screen.queryByText('Private weakness')).not.toBeInTheDocument()
+    expect(screen.queryByText('Private hidden AI reasoning')).not.toBeInTheDocument()
     expect(screen.queryByText('Kubernetes')).not.toBeInTheDocument()
     expect(screen.queryByText('session-42')).not.toBeInTheDocument()
     expect(screen.queryByText('8/10')).not.toBeInTheDocument()

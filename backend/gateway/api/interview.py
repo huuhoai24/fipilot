@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
@@ -9,7 +11,10 @@ from core.dependencies import (
     get_interview_preparation_cache,
     get_interview_repository,
 )
-from infrastructure.repositories import SQLiteInterviewRepository
+from infrastructure.repositories import (
+    InterviewSessionRecord,
+    SQLiteInterviewRepository,
+)
 from orchestrator.interview_orchestrator import InterviewOrchestrator
 from services.interview_preparation import InterviewPreparationCache
 from shared.schemas import CurrentUser, InterviewConfig, InterviewSessionState, InterviewStatus
@@ -34,6 +39,7 @@ class InterviewAnswerRequest(BaseModel):
 
 class InterviewSessionResponse(BaseModel):
     session_id: str
+    started_at: datetime | None = None
     state: InterviewSessionState
 
 
@@ -119,7 +125,11 @@ async def start_interview(
             session.session_id, state.current_turn, user_id=current_user.uid
         )
 
-    return InterviewSessionResponse(session_id=session.session_id, state=state)
+    return InterviewSessionResponse(
+        session_id=session.session_id,
+        started_at=_utc_timestamp(session.started_at),
+        state=state,
+    )
 
 
 @router.post("/{session_id}/answer", response_model=InterviewSessionResponse)
@@ -130,7 +140,8 @@ async def submit_answer(
     orchestrator: InterviewOrchestrator = Depends(get_interview_orchestrator),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
-    state = _load_state(repository, session_id, current_user.uid)
+    session = _load_session(repository, session_id, current_user.uid)
+    state = _state_from_session(session)
     updated_state = answer_opening(state, request.answer)
     if updated_state is None:
         updated_state = await orchestrator.submit_answer(state, request.answer)
@@ -142,7 +153,11 @@ async def submit_answer(
             session_id, updated_state.current_turn, user_id=current_user.uid
         )
 
-    return InterviewSessionResponse(session_id=session_id, state=updated_state)
+    return InterviewSessionResponse(
+        session_id=session_id,
+        started_at=_utc_timestamp(session.started_at),
+        state=updated_state,
+    )
 
 
 @router.get("/{session_id}", response_model=InterviewSessionResponse)
@@ -151,8 +166,12 @@ async def get_interview_session(
     repository: SQLiteInterviewRepository = Depends(get_interview_repository),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
-    state = _load_state(repository, session_id, current_user.uid)
-    return InterviewSessionResponse(session_id=session_id, state=state)
+    session = _load_session(repository, session_id, current_user.uid)
+    return InterviewSessionResponse(
+        session_id=session_id,
+        started_at=_utc_timestamp(session.started_at),
+        state=_state_from_session(session),
+    )
 
 
 def _save_state(
@@ -174,14 +193,24 @@ def _save_state(
     )
 
 
-def _load_state(
+def _load_session(
     repository: SQLiteInterviewRepository,
     session_id: str,
     user_id: str,
-) -> InterviewSessionState:
+) -> InterviewSessionRecord:
     session = repository.get_session(session_id, user_id=user_id)
     if session is None:
         raise HTTPException(status_code=404, detail="Interview session not found.")
     if not session.state_payload:
         raise HTTPException(status_code=404, detail="Interview session state not found.")
+    return session
+
+
+def _state_from_session(session: InterviewSessionRecord) -> InterviewSessionState:
     return InterviewSessionState.model_validate(session.state_payload)
+
+
+def _utc_timestamp(value: datetime | None) -> datetime | None:
+    if value is None or value.tzinfo is not None:
+        return value
+    return value.replace(tzinfo=timezone.utc)
