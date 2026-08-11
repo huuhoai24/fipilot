@@ -279,6 +279,13 @@ def get_profile_scanner_service():
 
 
 @lru_cache
+def get_processed_resume_cache():
+    from services.profile_scanner.cache import ProcessedResumeCache
+
+    return ProcessedResumeCache()
+
+
+@lru_cache
 def get_interview_knowledge_retriever():
     from services.interview_knowledge import LocalKnowledgeRetriever
 

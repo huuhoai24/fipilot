@@ -30,6 +30,21 @@ def prepared_state() -> InterviewSessionState:
 
 
 class InterviewPreparationCacheTests(unittest.IsolatedAsyncioTestCase):
+    async def test_reports_cache_miss_then_ready_hit_without_logging_the_key(self):
+        cache = InterviewPreparationCache(ttl_seconds=300, max_entries=8)
+
+        async def factory() -> InterviewSessionState:
+            return prepared_state()
+
+        with self.assertLogs("services.interview_preparation.service", level="INFO") as logs:
+            await cache.get_or_create("private-user-and-profile-key", factory)
+            await cache.get_or_create("private-user-and-profile-key", factory)
+
+        records = [record for record in logs.records if record.event == "interview.preparation_cache"]
+        self.assertEqual([record.cache_hit for record in records], [False, True])
+        self.assertEqual([record.status for record in records], ["miss", "ready_hit"])
+        self.assertTrue(all(not hasattr(record, "cache_key") for record in records))
+
     async def test_concurrent_requests_share_one_preparation(self):
         cache = InterviewPreparationCache(ttl_seconds=300, max_entries=8)
         started = asyncio.Event()

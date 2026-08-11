@@ -8,10 +8,13 @@ from collections import OrderedDict
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 
+from core.logging import get_logger
+from core.performance import log_duration
 from shared.schemas import InterviewConfig, InterviewSessionState, PersistedCandidateProfile
 
 
 PreparationFactory = Callable[[], Awaitable[InterviewSessionState]]
+logger = get_logger(__name__)
 
 
 @dataclass(frozen=True)
@@ -56,13 +59,23 @@ class InterviewPreparationCache:
         key: str,
         factory: PreparationFactory,
     ) -> InterviewSessionState:
+        started_at = time.perf_counter()
         self._remove_expired()
         cached = self._ready.get(key)
         if cached is not None:
             self._ready.move_to_end(key)
+            log_duration(
+                logger,
+                "interview.preparation_cache",
+                started_at,
+                status="ready_hit",
+                stage="prepared_state",
+                cache_hit=True,
+            )
             return cached.state.model_copy(deep=True)
 
         task = self._inflight.get(key)
+        cache_status = "inflight_hit" if task is not None else "miss"
         if task is None:
             task = asyncio.create_task(factory())
             self._inflight[key] = task
@@ -74,6 +87,14 @@ class InterviewPreparationCache:
             )
 
         state = await asyncio.shield(task)
+        log_duration(
+            logger,
+            "interview.preparation_cache",
+            started_at,
+            status=cache_status,
+            stage="prepared_state",
+            cache_hit=cache_status != "miss",
+        )
         return state.model_copy(deep=True)
 
     def clear(self) -> None:

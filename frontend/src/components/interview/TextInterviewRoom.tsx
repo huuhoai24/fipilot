@@ -1,4 +1,11 @@
-import React, { type FormEvent, type KeyboardEvent, useEffect, useRef, useState } from 'react'
+import React, {
+  type FormEvent,
+  type KeyboardEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { CheckCircle2, FileText, History, Loader2, Send } from 'lucide-react'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Button } from '@/components/ui/Button'
@@ -30,6 +37,9 @@ interface TextInterviewRoomStatusProps {
   error?: string | null
   onBackToHistory: () => void
 }
+
+const COMPOSER_MIN_HEIGHT_PX = 72
+const COMPOSER_MAX_HEIGHT_PX = 144
 
 function questionText(turn: V2InterviewTurn): string {
   return typeof turn.question === 'string'
@@ -188,7 +198,7 @@ const InterviewerMessage = React.forwardRef<HTMLLIElement, {
   children: React.ReactNode
 }>(
   ({ persona, children }, ref) => (
-    <li ref={ref} className="grid max-w-4xl scroll-mb-80 grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3 sm:gap-4 md:scroll-mb-72">
+    <li ref={ref} className="grid max-w-4xl scroll-mb-48 grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3 sm:gap-4">
       <InterviewerAvatar persona={persona} />
       <article className="min-w-0 rounded-lg border border-border bg-surface px-4 py-3 sm:px-5 sm:py-4">
         <p className="mb-1 text-sm font-semibold text-accent">{persona.name}</p>
@@ -324,6 +334,15 @@ export function TextInterviewRoom({
     composerRef.current?.focus({ preventScroll: true })
     restoreComposerFocusRef.current = false
   }, [state.current_turn, submitting])
+
+  useLayoutEffect(() => {
+    const composer = composerRef.current
+    if (!composer) return
+    composer.style.height = 'auto'
+    const contentHeight = Math.max(COMPOSER_MIN_HEIGHT_PX, composer.scrollHeight)
+    composer.style.height = `${Math.min(contentHeight, COMPOSER_MAX_HEIGHT_PX)}px`
+    composer.style.overflowY = contentHeight > COMPOSER_MAX_HEIGHT_PX ? 'auto' : 'hidden'
+  }, [answer])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     restoreComposerFocusRef.current = event.currentTarget.contains(document.activeElement)
@@ -468,20 +487,20 @@ export function TextInterviewRoom({
 
       {!isFinished && (
         <footer className="sticky bottom-0 z-10 border-t border-border bg-surface">
-          <div className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 lg:px-10">
+          <div className="mx-auto w-full max-w-5xl px-4 py-3 sm:px-6 lg:px-10">
             {error && (
               <p role="alert" className="mb-3 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
                 {error}
               </p>
             )}
             <form onSubmit={handleSubmit} aria-busy={submitting}>
-              <label htmlFor="interview-answer" className="mb-2 block text-sm font-semibold text-text-primary">
+              <label htmlFor="interview-answer" className="mb-1 block text-sm font-semibold text-text-primary">
                 Your answer
               </label>
               <textarea
                 ref={composerRef}
                 id="interview-answer"
-                rows={5}
+                rows={2}
                 value={answer}
                 onChange={(event) => onAnswerChange(event.target.value)}
                 onKeyDown={handleComposerKeyDown}
@@ -490,21 +509,27 @@ export function TextInterviewRoom({
                 aria-describedby="answer-composer-help"
                 aria-invalid={Boolean(error)}
                 maxLength={12000}
-                className="min-h-32 w-full resize-y rounded-lg border border-border bg-surface-raised px-4 py-3 text-base leading-6 text-text-primary outline-none placeholder:text-text-faint focus:border-accent disabled:cursor-wait"
+                className="w-full resize-none rounded-lg border border-border bg-surface-raised px-3 py-2 text-base leading-6 text-text-primary outline-none placeholder:text-text-faint focus:border-accent disabled:cursor-wait"
               />
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p id="answer-composer-help" className="text-xs text-text-muted">
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <p id="answer-composer-help" className="min-w-0 text-xs leading-5 text-text-muted">
                   {submitting
                     ? 'Your answer is saved above while the next question is prepared.'
-                    : 'Use Ctrl + Enter or Command + Enter to submit. Enter adds a new line.'}
+                    : 'Ctrl/Cmd + Enter to send. Enter adds a new line.'}
                 </p>
-                <Button type="submit" size="lg" disabled={submitting || !answer.trim()} className="w-full disabled:opacity-60 sm:w-auto">
+                <Button
+                  type="submit"
+                  size="md"
+                  disabled={submitting || !answer.trim()}
+                  aria-label={submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit answer'}
+                  className="h-11 shrink-0 px-4 disabled:opacity-60"
+                >
                   {submitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
                     <Send className="h-4 w-4" aria-hidden="true" />
                   )}
-                  {submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit answer'}
+                  {submitting ? 'Sending' : error ? 'Retry' : 'Send'}
                 </Button>
               </div>
             </form>

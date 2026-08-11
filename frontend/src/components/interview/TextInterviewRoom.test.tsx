@@ -94,6 +94,48 @@ function renderRoom(
 afterEach(cleanup)
 
 describe('TextInterviewRoom conversation phases', () => {
+  it('keeps the composer compact, grows with its content, and scrolls after the height cap', () => {
+    function ComposerHarness() {
+      const [answer, setAnswer] = React.useState('')
+      return (
+        <TextInterviewRoom
+          state={sessionState({})}
+          persona={resolveInterviewerPersona('technical')}
+          progress={{ current: 1, total: 4 }}
+          answer={answer}
+          pendingAnswer={null}
+          submitting={false}
+          startedAt={null}
+          error={null}
+          onAnswerChange={setAnswer}
+          onSubmit={vi.fn()}
+          onViewReport={vi.fn()}
+          onBackToHistory={vi.fn()}
+        />
+      )
+    }
+
+    render(<ComposerHarness />)
+    const composer = screen.getByLabelText('Your answer')
+    let contentHeight = 72
+    Object.defineProperty(composer, 'scrollHeight', {
+      configurable: true,
+      get: () => contentHeight,
+    })
+
+    expect(composer).toHaveAttribute('rows', '2')
+    fireEvent.change(composer, { target: { value: 'Short answer' } })
+    expect(composer).toHaveStyle({ height: '72px', overflowY: 'hidden' })
+
+    contentHeight = 220
+    fireEvent.change(composer, { target: { value: 'A much longer answer\n'.repeat(12) } })
+    expect(composer).toHaveStyle({ height: '144px', overflowY: 'auto' })
+
+    contentHeight = 96
+    fireEvent.change(composer, { target: { value: 'A shorter answer again' } })
+    expect(composer).toHaveStyle({ height: '96px', overflowY: 'hidden' })
+  })
+
   it('derives elapsed time from the persisted session start without resetting on rerender', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-08-11T03:01:30Z'))

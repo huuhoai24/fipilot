@@ -93,18 +93,21 @@ class EvaluatorAgentTests(unittest.IsolatedAsyncioTestCase):
         llm_service = MockLLMService(expected)
         agent = EvaluatorAgent(llm_service=llm_service)
 
-        result = await agent.evaluate_answer(
-            candidate_profile(),
-            interview_question(language="en"),
-            "I would profile first, export to TensorRT, then compare mAP and latency.",
-            InterviewConfig(language="en", experience_level="middle"),
-        )
+        with self.assertLogs("services.answer_evaluator.agent", level="INFO") as logs:
+            result = await agent.evaluate_answer(
+                candidate_profile(),
+                interview_question(language="en"),
+                "I would profile first, export to TensorRT, then compare mAP and latency.",
+                InterviewConfig(language="en", experience_level="middle"),
+            )
 
         self.assertFalse(result.follow_up_needed)
         self.assertEqual(result.overall_score, 9.0)
         self.assertIn("The interview language is English.", llm_service.prompt)
         self.assertIn('"language": "en"', llm_service.prompt)
         self.assertEqual(llm_service.kwargs["task_type"], "complex")
+        events = {record.event for record in logs.records}
+        self.assertEqual(events, {"answer.evaluation_prompt", "answer.evaluation"})
 
     async def test_voice_evaluation_uses_low_latency_model_route(self):
         expected = AnswerEvaluation(

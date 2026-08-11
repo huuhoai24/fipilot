@@ -123,18 +123,19 @@ class InterviewApiTests(unittest.TestCase):
         self.db.close()
 
     def test_start_interview(self):
-        response = self.client.post(
-            "/api/v2/interview/start",
-            json={
-                "candidate_id": self.candidate.candidate_id,
-                "interview_config": {
-                    "language": "en",
-                    "experience_level": "middle",
-                    "duration_minutes": 30,
-                    "interview_style": "technical",
+        with self.assertLogs("gateway.api.interview", level="INFO") as logs:
+            response = self.client.post(
+                "/api/v2/interview/start",
+                json={
+                    "candidate_id": self.candidate.candidate_id,
+                    "interview_config": {
+                        "language": "en",
+                        "experience_level": "middle",
+                        "duration_minutes": 30,
+                        "interview_style": "technical",
+                    },
                 },
-            },
-        )
+            )
 
         self.assertEqual(response.status_code, 200)
         body = response.json()
@@ -154,6 +155,15 @@ class InterviewApiTests(unittest.TestCase):
         self.assertTrue(body["session_id"])
         self.assertTrue(body["started_at"])
         self.assertTrue(body["started_at"].endswith(("Z", "+00:00")))
+        events = {record.event for record in logs.records}
+        self.assertTrue(
+            {
+                "interview.load_candidate",
+                "interview.preparation",
+                "interview.persistence",
+                "interview.total_start",
+            }.issubset(events)
+        )
         repository = SQLiteInterviewRepository(self.db)
         self.assertEqual(
             repository.get_session(body["session_id"], user_id="user-1").status,
@@ -233,10 +243,11 @@ class InterviewApiTests(unittest.TestCase):
         )
         self.assertEqual(opening_body["state"]["completed_turns"], [])
 
-        final_response = self.client.post(
-            f"/api/v2/interview/{session_id}/answer",
-            json={"answer": "I profile bottlenecks and export to TensorRT."},
-        )
+        with self.assertLogs("gateway.api.interview", level="INFO") as logs:
+            final_response = self.client.post(
+                f"/api/v2/interview/{session_id}/answer",
+                json={"answer": "I profile bottlenecks and export to TensorRT."},
+            )
 
         self.assertEqual(final_response.status_code, 200)
         body = final_response.json()
@@ -251,6 +262,15 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(
             repository.get_session(session_id, user_id="user-1").status,
             "completed",
+        )
+        events = {record.event for record in logs.records}
+        self.assertTrue(
+            {
+                "answer.load_session",
+                "answer.orchestration",
+                "answer.persistence",
+                "answer.total",
+            }.issubset(events)
         )
 
     def test_get_interview_session(self):

@@ -248,6 +248,7 @@ export function TextInterviewPage({
   const { sessionId: routeSessionId } = useParams()
   const navigate = useNavigate()
   const resumeInputRef = useRef<HTMLInputElement>(null)
+  const startInFlightRef = useRef(false)
   const submissionInFlightRef = useRef(false)
   const [candidateId, setCandidateId] = useState('')
   const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(null)
@@ -475,7 +476,13 @@ export function TextInterviewPage({
 
   const startInterview = async (event: FormEvent) => {
     event.preventDefault()
-    if (!candidateId.trim() || !interviewStartData || !settingsAreValid) return
+    if (
+      !candidateId.trim()
+      || !interviewStartData
+      || !settingsAreValid
+      || startInFlightRef.current
+    ) return
+    startInFlightRef.current = true
     setStarting(true)
     setLoading(true)
     setError(null)
@@ -493,6 +500,7 @@ export function TextInterviewPage({
     } catch (err) {
       setError(getUserFacingError(err, 'The interview could not be started. Please try again.'))
     } finally {
+      startInFlightRef.current = false
       setStarting(false)
       setLoading(false)
     }

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import time
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -11,6 +12,8 @@ from core.dependencies import (
     get_interview_preparation_cache,
     get_interview_repository,
 )
+from core.logging import get_logger
+from core.performance import log_duration, timed_stage
 from infrastructure.repositories import (
     InterviewSessionRecord,
     SQLiteInterviewRepository,
@@ -26,6 +29,7 @@ from orchestrator.conversation_flow import (
 
 
 router = APIRouter(prefix="/api/v2/interview", tags=["v2-interview"])
+logger = get_logger(__name__)
 
 
 class InterviewStartRequest(BaseModel):
@@ -58,10 +62,16 @@ async def prepare_interview(
     ),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewPreparationResponse:
-    candidate_profile = repository.get_candidate_profile(
-        request.candidate_id,
-        user_id=current_user.uid,
-    )
+    total_started_at = time.perf_counter()
+    with timed_stage(
+        logger,
+        "interview.load_candidate",
+        stage="prepare_candidate_load",
+    ):
+        candidate_profile = repository.get_candidate_profile(
+            request.candidate_id,
+            user_id=current_user.uid,
+        )
     if candidate_profile is None:
         raise HTTPException(status_code=404, detail="Candidate profile not found.")
 
@@ -70,13 +80,15 @@ async def prepare_interview(
         candidate_profile,
         request.interview_config,
     )
-    await preparation_cache.get_or_create(
-        key,
-        lambda: orchestrator.start_interview(
-            candidate_profile,
-            request.interview_config,
-        ),
-    )
+    with timed_stage(logger, "interview.preparation", stage="prepare_request"):
+        await preparation_cache.get_or_create(
+            key,
+            lambda: orchestrator.start_interview(
+                candidate_profile,
+                request.interview_config,
+            ),
+        )
+    log_duration(logger, "interview.total_prepare", total_started_at)
     return InterviewPreparationResponse(
         profile_version=candidate_profile.profile_version,
     )
@@ -92,9 +104,15 @@ async def start_interview(
     ),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
-    candidate_profile = repository.get_candidate_profile(
-        request.candidate_id, user_id=current_user.uid
-    )
+    total_started_at = time.perf_counter()
+    with timed_stage(
+        logger,
+        "interview.load_candidate",
+        stage="start_candidate_load",
+    ):
+        candidate_profile = repository.get_candidate_profile(
+            request.candidate_id, user_id=current_user.uid
+        )
     if candidate_profile is None:
         raise HTTPException(status_code=404, detail="Candidate profile not found.")
 
@@ -103,28 +121,36 @@ async def start_interview(
         candidate_profile,
         request.interview_config,
     )
-    state = await preparation_cache.get_or_create(
-        key,
-        lambda: orchestrator.start_interview(
-            candidate_profile,
-            request.interview_config,
-        ),
-    )
-    state = begin_text_conversation(state)
-    session = repository.create_session(
-        request.candidate_id,
-        role=candidate_profile.specialization,
-        level=request.interview_config.experience_level,
-        language=request.interview_config.language,
-        user_id=current_user.uid,
-    )
-    _save_state(repository, session.session_id, state, current_user.uid)
-
-    if state.current_turn is not None:
-        repository.save_turn(
-            session.session_id, state.current_turn, user_id=current_user.uid
+    with timed_stage(logger, "interview.preparation", stage="start_request"):
+        state = await preparation_cache.get_or_create(
+            key,
+            lambda: orchestrator.start_interview(
+                candidate_profile,
+                request.interview_config,
+            ),
         )
+    state = begin_text_conversation(state)
+    with timed_stage(logger, "interview.persistence", stage="session_create"):
+        session = repository.create_session(
+            request.candidate_id,
+            role=candidate_profile.specialization,
+            level=request.interview_config.experience_level,
+            language=request.interview_config.language,
+            user_id=current_user.uid,
+        )
+        _save_state(repository, session.session_id, state, current_user.uid)
 
+        if state.current_turn is not None:
+            repository.save_turn(
+                session.session_id, state.current_turn, user_id=current_user.uid
+            )
+
+    log_duration(
+        logger,
+        "interview.total_start",
+        total_started_at,
+        session_id=session.session_id,
+    )
     return InterviewSessionResponse(
         session_id=session.session_id,
         started_at=_utc_timestamp(session.started_at),
@@ -140,18 +166,44 @@ async def submit_answer(
     orchestrator: InterviewOrchestrator = Depends(get_interview_orchestrator),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
-    session = _load_session(repository, session_id, current_user.uid)
-    state = _state_from_session(session)
-    updated_state = answer_opening(state, request.answer)
-    if updated_state is None:
-        updated_state = await orchestrator.submit_answer(state, request.answer)
-        updated_state = enter_closing_if_finished(updated_state)
-    _save_state(repository, session_id, updated_state, current_user.uid)
+    total_started_at = time.perf_counter()
+    with timed_stage(
+        logger,
+        "answer.load_session",
+        stage="session_state_load",
+        session_id=session_id,
+    ):
+        session = _load_session(repository, session_id, current_user.uid)
+        state = _state_from_session(session)
+    with timed_stage(
+        logger,
+        "answer.orchestration",
+        stage="evaluation_and_next_question",
+        session_id=session_id,
+    ):
+        updated_state = answer_opening(state, request.answer)
+        if updated_state is None:
+            updated_state = await orchestrator.submit_answer(state, request.answer)
+            updated_state = enter_closing_if_finished(updated_state)
+    with timed_stage(
+        logger,
+        "answer.persistence",
+        stage="session_state_save",
+        session_id=session_id,
+    ):
+        _save_state(repository, session_id, updated_state, current_user.uid)
 
-    if updated_state.current_turn is not None:
-        repository.save_turn(
-            session_id, updated_state.current_turn, user_id=current_user.uid
-        )
+        if updated_state.current_turn is not None:
+            repository.save_turn(
+                session_id, updated_state.current_turn, user_id=current_user.uid
+            )
+
+    log_duration(
+        logger,
+        "answer.total",
+        total_started_at,
+        session_id=session_id,
+    )
 
     return InterviewSessionResponse(
         session_id=session_id,

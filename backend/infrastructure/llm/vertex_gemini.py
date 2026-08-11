@@ -4,6 +4,7 @@ import asyncio
 import json
 import random
 import re
+import time
 from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass
 from typing import Any, TypeVar
@@ -178,6 +179,7 @@ class VertexGeminiService(BaseLLMService):
         last_error: Exception | None = None
 
         for attempt in range(1, self.retry_config.max_attempts + 1):
+            started_at = time.perf_counter()
             try:
                 response = await self._call_once_with_timeout(
                     selected_model,
@@ -189,19 +191,67 @@ class VertexGeminiService(BaseLLMService):
                     timeout_seconds=timeout_seconds,
                     thinking_budget=thinking_budget,
                 )
-                return self._validate_json_response(response, output_schema)
+                result = self._validate_json_response(response, output_schema)
+                self._log_json_latency(
+                    model=selected_model,
+                    task_type=task_type,
+                    prompt_chars=len(schema_prompt),
+                    attempt=attempt,
+                    started_at=started_at,
+                    status="complete",
+                )
+                return result
             except (ValidationError, ValueError, json.JSONDecodeError) as error:
+                self._log_json_latency(
+                    model=selected_model,
+                    task_type=task_type,
+                    prompt_chars=len(schema_prompt),
+                    attempt=attempt,
+                    started_at=started_at,
+                    status="invalid_response",
+                )
                 last_error = error
                 if attempt >= self.retry_config.max_attempts:
                     break
                 await self._sleep_before_retry(attempt)
             except Exception as error:
+                self._log_json_latency(
+                    model=selected_model,
+                    task_type=task_type,
+                    prompt_chars=len(schema_prompt),
+                    attempt=attempt,
+                    started_at=started_at,
+                    status="failed",
+                )
                 last_error = error
                 if attempt >= self.retry_config.max_attempts or not self._is_retryable_error(error):
                     break
                 await self._sleep_before_retry(attempt)
 
         raise LLMResponseValidationError(f"Could not produce valid {output_schema.__name__} JSON") from last_error
+
+    def _log_json_latency(
+        self,
+        *,
+        model: str,
+        task_type: LLMTaskType,
+        prompt_chars: int,
+        attempt: int,
+        started_at: float,
+        status: str,
+    ) -> None:
+        self.logger.info(
+            "LLM JSON generation measured.",
+            extra={
+                "event": "llm.generate_json",
+                "model": model,
+                "task_type": task_type,
+                "prompt_chars": prompt_chars,
+                "attempt": attempt,
+                "duration_ms": round((time.perf_counter() - started_at) * 1000, 2),
+                "status": status,
+            },
+        )
 
     def _create_default_client(self, settings: Settings) -> Any:
         if not settings.google_cloud_project:

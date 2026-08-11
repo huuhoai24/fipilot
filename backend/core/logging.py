@@ -19,6 +19,12 @@ _email_pattern = re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.IGNOREC
 _bearer_pattern = re.compile(r"Bearer\s+[A-Za-z0-9._~+/-]+=*", re.IGNORECASE)
 _structured_fields = (
     "event",
+    "stage",
+    "model",
+    "task_type",
+    "prompt_chars",
+    "attempt",
+    "cache_hit",
     "request_id",
     "session_id",
     "duration_ms",

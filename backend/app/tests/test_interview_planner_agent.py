@@ -69,7 +69,8 @@ class InterviewPlannerAgentTests(unittest.IsolatedAsyncioTestCase):
 
         config = InterviewConfig(language="vi", experience_level="junior")
 
-        plan = await agent.create_plan(candidate_profile, config)
+        with self.assertLogs("services.interview_planner.agent", level="INFO") as logs:
+            plan = await agent.create_plan(candidate_profile, config)
 
         self.assertEqual(llm_service.output_schema, InterviewPlan)
         self.assertIn("No job description", llm_service.prompt)
@@ -86,6 +87,14 @@ class InterviewPlannerAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(plan.rounds[0].difficulty, "hard")
         self.assertIn("API design", plan.rounds[0].recommended_question_areas)
         self.assertIn("Candidate lists FastAPI", plan.rounds[0].reasoning)
+        events = {record.event for record in logs.records}
+        self.assertTrue(
+            {
+                "interview.retrieve_context",
+                "interview.plan_prompt",
+                "interview.plan_generation",
+            }.issubset(events)
+        )
 
     async def test_create_plan_uses_english_output_mode(self):
         llm_service = MockLLMService()

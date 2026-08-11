@@ -90,16 +90,22 @@ class QuestionGeneratorAgentTests(unittest.IsolatedAsyncioTestCase):
         llm_service = MockLLMService(expected_question)
         agent = QuestionGeneratorAgent(llm_service=llm_service)
 
-        question = await agent.generate_question(
-            candidate_profile(),
-            interview_round(),
-            InterviewConfig(language="en", experience_level="middle"),
-        )
+        with self.assertLogs("services.question_generator.agent", level="INFO") as logs:
+            question = await agent.generate_question(
+                candidate_profile(),
+                interview_round(),
+                InterviewConfig(language="en", experience_level="middle"),
+            )
 
         self.assertEqual(question.language, "en")
         self.assertIn("How would you", question.question)
         self.assertIn("The interview language is English.", llm_service.prompt)
         self.assertIn('"language": "en"', llm_service.prompt)
+        events = {record.event for record in logs.records}
+        self.assertEqual(
+            events,
+            {"interview.question_prompt", "interview.question_generation"},
+        )
 
     async def test_voice_question_uses_configured_interviewer_personality(self):
         expected_question = InterviewQuestion(

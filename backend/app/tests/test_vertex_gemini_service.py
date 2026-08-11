@@ -112,6 +112,21 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(config.response_mime_type, "application/json")
         self.assertEqual(config.response_json_schema["title"], "MockJSONOutput")
 
+    async def test_generate_json_logs_safe_model_latency_metadata(self):
+        models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])
+        service = self.make_service(models)
+
+        with self.assertLogs("infrastructure.llm.vertex_gemini", level="INFO") as logs:
+            await service.generate_json("Private candidate context", MockJSONOutput)
+
+        record = next(item for item in logs.records if item.event == "llm.generate_json")
+        self.assertEqual(record.model, "gemini-complex")
+        self.assertEqual(record.task_type, "complex")
+        self.assertGreater(record.prompt_chars, len("Private candidate context"))
+        self.assertEqual(record.attempt, 1)
+        self.assertGreaterEqual(record.duration_ms, 0)
+        self.assertFalse(hasattr(record, "prompt"))
+
     async def test_generate_json_can_disable_thinking(self):
         models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])
         service = self.make_service(models)

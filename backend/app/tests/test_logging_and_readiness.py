@@ -29,6 +29,12 @@ class LoggingTests(unittest.TestCase):
             "Voice turn latency measured.",
             extra={
                 "event": "speech_latency",
+                "stage": "answer.evaluation",
+                "model": "gemini-complex",
+                "task_type": "complex",
+                "prompt_chars": 4200,
+                "attempt": 1,
+                "cache_hit": False,
                 "request_id": "request-1",
                 "session_id": "session-1",
                 "status": "complete",
@@ -47,6 +53,12 @@ class LoggingTests(unittest.TestCase):
         payload = json.loads(stream.getvalue())
 
         self.assertEqual(payload["event"], "speech_latency")
+        self.assertEqual(payload["stage"], "answer.evaluation")
+        self.assertEqual(payload["model"], "gemini-complex")
+        self.assertEqual(payload["task_type"], "complex")
+        self.assertEqual(payload["prompt_chars"], 4200)
+        self.assertEqual(payload["attempt"], 1)
+        self.assertFalse(payload["cache_hit"])
         self.assertEqual(payload["request_id"], "request-1")
         self.assertEqual(payload["session_id"], "session-1")
         self.assertEqual(payload["status"], "complete")

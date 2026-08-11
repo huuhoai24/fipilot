@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { act } from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
@@ -226,6 +226,40 @@ describe('TextInterviewPage interview mode', () => {
         }),
       )
     })
+  })
+
+  it('starts only one session when duplicate form submissions occur in the same tick', async () => {
+    vi.mocked(api.uploadResume).mockResolvedValue({
+      candidate_id: 'candidate-1',
+      confidence_score: 0.92,
+      profile: {
+        name: 'Tran Thi B',
+        skills: ['FastAPI'],
+        skill_evidence: [],
+        projects: [],
+        experiences: [],
+        confidence: 0.92,
+        confidence_score: 0.92,
+      },
+    })
+    vi.mocked(api.startV2Interview).mockReturnValue(new Promise(() => undefined))
+    render(
+      <MemoryRouter>
+        <TextInterviewPage mode="text" />
+      </MemoryRouter>,
+    )
+    const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
+    fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+    await screen.findByText('Candidate profile is ready. Review it before starting the interview.')
+
+    const startForm = screen.getByRole('button', { name: 'Start' }).closest('form') as HTMLFormElement
+    act(() => {
+      startForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+      startForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+    })
+
+    expect(api.startV2Interview).toHaveBeenCalledTimes(1)
   })
 
   it('persists valid interview settings across a page remount', () => {
