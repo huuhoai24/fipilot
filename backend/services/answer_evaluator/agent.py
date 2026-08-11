@@ -58,4 +58,5 @@ class EvaluatorAgent:
                 task_type="simple" if is_voice else self.task_type,
                 temperature=0.1,
                 thinking_budget=0 if is_voice else None,
+                operation="answer_evaluation",
             )

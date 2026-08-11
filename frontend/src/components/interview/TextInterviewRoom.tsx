@@ -58,7 +58,8 @@ function candidateInitial(name: string): string {
 function interviewLabel(state: V2InterviewSessionState): string {
   const level = state.interview_config.experience_level
   const style = state.interview_config.interview_style
-  return `${level.charAt(0).toUpperCase()}${level.slice(1)} ${style} interview`
+  const titleCase = (value: string) => `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+  return `${titleCase(level)} ${titleCase(style)} Interview`
 }
 
 function transitionText(state: V2InterviewSessionState): string | null {
@@ -106,19 +107,19 @@ function RoomHeader({
 }) {
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-surface">
-      <div className="mx-auto flex h-16 w-full max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-        <div className="flex items-center gap-3">
-          <BrandLogo className="h-8 w-8" />
+      <div className="mx-auto flex h-14 w-full max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-10">
+        <div className="flex shrink-0 items-center gap-2">
+          <BrandLogo className="h-7 w-7" />
           <span className="font-display text-base font-semibold text-text-primary">
             Fi<span className="text-accent">pilot</span>
           </span>
         </div>
-        <div className="flex min-w-0 items-center gap-4 text-sm">
+        <div className="flex min-w-max shrink-0 items-center gap-2 whitespace-nowrap text-xs sm:min-w-0 sm:shrink sm:gap-4 sm:text-sm">
           <span className="hidden truncate font-medium text-text-primary sm:block">
             {label}
           </span>
           <span
-            className="flex shrink-0 items-center gap-2 text-text-muted"
+            className="flex shrink-0 items-center gap-1.5 text-text-muted sm:gap-2"
             role="status"
           >
             <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
@@ -147,7 +148,7 @@ function ElapsedInterviewTimer({ startedAt }: { startedAt: string }) {
   return (
     <time
       aria-label="Elapsed interview time"
-      className="shrink-0 border-l border-border pl-4 font-medium tabular-nums text-text-primary"
+      className="shrink-0 border-l border-border pl-2 font-medium tabular-nums text-text-primary sm:pl-4"
     >
       {formatElapsed(startedAt)}
     </time>
@@ -162,8 +163,8 @@ function InterviewerAvatar({
   size?: 'message' | 'profile'
 }) {
   const sizeClasses = size === 'profile'
-    ? 'h-14 w-14 text-base'
-    : 'h-10 w-10 text-sm'
+    ? 'h-12 w-12 text-sm'
+    : 'h-9 w-9 text-xs'
 
   return (
     <div
@@ -185,7 +186,7 @@ function InterviewerAvatar({
 function CandidateAvatar({ name }: { name: string }) {
   return (
     <div
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface-raised text-sm font-semibold text-text-primary"
+      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface-raised text-xs font-semibold text-text-primary"
       aria-hidden="true"
     >
       {candidateInitial(name)}
@@ -196,12 +197,23 @@ function CandidateAvatar({ name }: { name: string }) {
 const InterviewerMessage = React.forwardRef<HTMLLIElement, {
   persona: InterviewerPersona
   children: React.ReactNode
+  current?: boolean
 }>(
-  ({ persona, children }, ref) => (
-    <li ref={ref} className="grid max-w-4xl scroll-mb-48 grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3 sm:gap-4">
+  ({ persona, children, current = false }, ref) => (
+    <li
+      ref={ref}
+      className="grid w-full max-w-[48rem] scroll-mb-40 grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-3 sm:w-[78%]"
+    >
       <InterviewerAvatar persona={persona} />
-      <article className="min-w-0 rounded-lg border border-border bg-surface px-4 py-3 sm:px-5 sm:py-4">
-        <p className="mb-1 text-sm font-semibold text-accent">{persona.name}</p>
+      <article
+        aria-current={current ? 'true' : undefined}
+        aria-label={current ? `Current question from ${persona.name}` : `Message from ${persona.name}`}
+        className={cn(
+          'min-w-0 rounded-lg bg-surface px-4 py-3',
+          current && 'border-l-2 border-accent bg-surface-raised animate-fade-in motion-reduce:animate-none',
+        )}
+      >
+        <p className="mb-1 text-sm font-medium text-accent">{persona.name}</p>
         <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
           {children}
         </div>
@@ -219,9 +231,12 @@ function CandidateMessage({
   children: React.ReactNode
 }) {
   return (
-    <li className="ml-auto grid max-w-4xl grid-cols-[minmax(0,1fr)_2.5rem] items-start gap-3 sm:gap-4">
-      <article className="min-w-0 rounded-lg border border-accent bg-accent-soft px-4 py-3 sm:px-5 sm:py-4">
-        <p className="mb-1 text-right text-sm font-semibold text-text-primary">{name}</p>
+    <li className="ml-auto grid w-full max-w-[48rem] grid-cols-[minmax(0,1fr)_2.25rem] items-start gap-3 sm:w-[78%]">
+      <article
+        aria-label={`Response from ${name}`}
+        className="min-w-0 rounded-lg bg-accent-soft px-4 py-3"
+      >
+        <p className="mb-1 truncate text-right text-sm font-medium text-text-muted" title={name}>{name}</p>
         <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
           {children}
         </div>
@@ -369,33 +384,29 @@ export function TextInterviewRoom({
         startedAt={startedAt}
       />
 
-      <main id="main-content" className="flex-1">
-        <div className="mx-auto w-full max-w-5xl px-4 pb-8 pt-6 sm:px-6 lg:px-10">
-          <section className="flex items-center gap-4 border-b border-border pb-6" aria-labelledby="interviewer-title">
+      <main id="main-content" className="flex flex-1">
+        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-8 sm:px-6 lg:px-10">
+          <section className="flex min-h-20 items-center gap-3 border-b border-border py-4" aria-labelledby="interviewer-title">
             <InterviewerAvatar persona={persona} size="profile" />
             <div className="min-w-0">
-              <p className="mb-1 text-xs font-medium text-text-muted">{AI_INTERVIEWER_LABEL}</p>
-              <h1 id="interviewer-title" className="font-display text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+              <h1 id="interviewer-title" className="truncate font-display text-lg font-semibold text-text-primary">
                 {persona.name}
               </h1>
-              {persona.role !== AI_INTERVIEWER_LABEL && (
-                <p className="mt-1 text-sm font-medium text-accent">{persona.role}</p>
-              )}
-              {persona.specialization && (
-                <p className="mt-1 text-sm leading-6 text-text-primary">{persona.specialization}</p>
-              )}
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-                {persona.shortDescription}
+              <p className="mt-1 truncate text-sm text-text-muted">
+                {persona.role !== AI_INTERVIEWER_LABEL && (
+                  <><span className="font-medium text-text-primary">{persona.role}</span><span aria-hidden="true"> · </span></>
+                )}
+                {AI_INTERVIEWER_LABEL}
               </p>
             </div>
           </section>
 
-          <section className="pt-6" aria-labelledby="conversation-title">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 id="conversation-title" className="text-base font-semibold text-text-primary">
+          <section className="flex-1 pt-4" aria-labelledby="conversation-title">
+            <div className="mb-3 flex items-center justify-end">
+              <h2 id="conversation-title" className="sr-only">
                 Conversation
               </h2>
-              <p className="shrink-0 text-sm tabular-nums text-text-muted">
+              <p className="shrink-0 text-xs font-medium tabular-nums text-text-muted">
                 {phase === 'opening'
                   ? 'Opening'
                   : isFinished
@@ -431,7 +442,7 @@ export function TextInterviewRoom({
                 ].filter((message): message is React.ReactElement => message !== null)
               })}
               {state.current_turn && (
-                <InterviewerMessage ref={currentQuestionRef} persona={persona}>
+                <InterviewerMessage ref={currentQuestionRef} persona={persona} current>
                   {transition && (
                     <p className="mb-2 text-text-muted">{transition}</p>
                   )}
@@ -452,7 +463,7 @@ export function TextInterviewRoom({
                 </InterviewerMessage>
               )}
               {isFinished && (
-                <InterviewerMessage persona={persona}>{closingText(state)}</InterviewerMessage>
+                <InterviewerMessage persona={persona} current>{closingText(state)}</InterviewerMessage>
               )}
             </ol>
 
@@ -487,14 +498,18 @@ export function TextInterviewRoom({
 
       {!isFinished && (
         <footer className="sticky bottom-0 z-10 border-t border-border bg-surface">
-          <div className="mx-auto w-full max-w-5xl px-4 py-3 sm:px-6 lg:px-10">
+          <div className="mx-auto w-full max-w-5xl px-4 py-2 sm:px-6 lg:px-10">
             {error && (
               <p role="alert" className="mb-3 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
                 {error}
               </p>
             )}
-            <form onSubmit={handleSubmit} aria-busy={submitting}>
-              <label htmlFor="interview-answer" className="mb-1 block text-sm font-semibold text-text-primary">
+            <form
+              onSubmit={handleSubmit}
+              aria-busy={submitting}
+              className="rounded-lg border border-border bg-surface-raised p-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-[var(--color-focus)] focus-within:ring-offset-2 focus-within:ring-offset-bg"
+            >
+              <label htmlFor="interview-answer" className="sr-only">
                 Your answer
               </label>
               <textarea
@@ -505,17 +520,17 @@ export function TextInterviewRoom({
                 onChange={(event) => onAnswerChange(event.target.value)}
                 onKeyDown={handleComposerKeyDown}
                 disabled={submitting}
-                placeholder={submitting ? `Waiting for ${persona.name}...` : 'Type your answer here...'}
+                placeholder={submitting ? `Waiting for ${persona.name}...` : 'Type your answer...'}
                 aria-describedby="answer-composer-help"
                 aria-invalid={Boolean(error)}
                 maxLength={12000}
-                className="w-full resize-none rounded-lg border border-border bg-surface-raised px-3 py-2 text-base leading-6 text-text-primary outline-none placeholder:text-text-faint focus:border-accent disabled:cursor-wait"
+                className="w-full resize-none border-0 bg-transparent px-2 py-1 text-base leading-6 text-text-primary outline-none placeholder:text-text-muted disabled:cursor-wait disabled:text-text-muted"
               />
-              <div className="mt-2 flex items-center justify-between gap-3">
+              <div className="flex items-center justify-between gap-3 border-t border-border px-2 pt-2">
                 <p id="answer-composer-help" className="min-w-0 text-xs leading-5 text-text-muted">
                   {submitting
                     ? 'Your answer is saved above while the next question is prepared.'
-                    : 'Ctrl/Cmd + Enter to send. Enter adds a new line.'}
+                    : 'Ctrl/Cmd + Enter to send · Enter for a new line'}
                 </p>
                 <Button
                   type="submit"

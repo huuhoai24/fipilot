@@ -76,6 +76,7 @@ class QuestionGeneratorAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(llm_service.output_schema, InterviewQuestion)
         self.assertEqual(llm_service.kwargs["task_type"], "simple")
         self.assertEqual(llm_service.kwargs["thinking_budget"], 0)
+        self.assertEqual(llm_service.kwargs["operation"], "question_generation")
 
     async def test_english_question_generation(self):
         expected_question = InterviewQuestion(

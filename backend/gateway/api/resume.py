@@ -21,7 +21,10 @@ from core.performance import log_duration, timed_stage
 from infrastructure.documents import DocumentService
 from infrastructure.repositories import SQLiteInterviewRepository
 from services.profile_scanner.agent import ResumeAgent
-from services.profile_scanner.cache import ProcessedResumeCache
+from services.profile_scanner.cache import (
+    RESUME_EXTRACTION_VERSION,
+    ProcessedResumeCache,
+)
 from services.profile_scanner.exceptions import NonResumeDocumentError
 from shared.schemas import CurrentUser
 
@@ -76,7 +79,11 @@ async def upload_resume(
             raise HTTPException(status_code=422, detail="Could not extract enough resume text.")
 
         cache_started_at = time.perf_counter()
-        profile = processed_resume_cache.get(current_user.uid, content_hash)
+        profile = processed_resume_cache.get(
+            current_user.uid,
+            content_hash,
+            RESUME_EXTRACTION_VERSION,
+        )
         cache_hit = profile is not None
         log_duration(
             logger,
@@ -86,6 +93,29 @@ async def upload_resume(
             stage="profile_extraction_reuse",
             cache_hit=cache_hit,
         )
+
+        persistent_artifact_key = processed_resume_cache.key_for(
+            current_user.uid,
+            content_hash,
+            RESUME_EXTRACTION_VERSION,
+        )
+        persistent_hit = False
+        if profile is None:
+            persistent_started_at = time.perf_counter()
+            profile = repository.get_resume_extraction_artifact(
+                persistent_artifact_key,
+                user_id=current_user.uid,
+            )
+            persistent_hit = profile is not None
+            log_duration(
+                logger,
+                "cv.persistent_extraction",
+                persistent_started_at,
+                status="hit" if persistent_hit else "miss",
+                stage="versioned_profile_artifact",
+                cache_hit=persistent_hit,
+            )
+        cache_hit = profile is not None
 
         if profile is None:
             try:
@@ -123,6 +153,12 @@ async def upload_resume(
                 current_user.uid,
                 content_hash,
                 profile,
+                RESUME_EXTRACTION_VERSION,
+            )
+            repository.save_resume_extraction_artifact(
+                persistent_artifact_key,
+                profile,
+                user_id=current_user.uid,
             )
 
         total_status = "cached" if cache_hit else "complete"

@@ -50,8 +50,13 @@ class InterviewOrchestrator:
         self,
         candidate_profile: CandidateProfile,
         interview_config: InterviewConfig,
+        *,
+        interview_plan: InterviewPlan | None = None,
     ) -> InterviewSessionState:
-        interview_plan = await self.planner_agent.create_plan(candidate_profile, interview_config)
+        interview_plan = interview_plan or await self.create_plan(
+            candidate_profile,
+            interview_config,
+        )
         first_round = self._get_round_or_finish(interview_plan, 0)
         first_question = await self.question_generator_agent.generate_question(
             candidate_profile,
@@ -67,6 +72,13 @@ class InterviewOrchestrator:
             completed_turns=[],
             current_question_index=0,
         )
+
+    async def create_plan(
+        self,
+        candidate_profile: CandidateProfile,
+        interview_config: InterviewConfig,
+    ) -> InterviewPlan:
+        return await self.planner_agent.create_plan(candidate_profile, interview_config)
 
     async def submit_answer(
         self,

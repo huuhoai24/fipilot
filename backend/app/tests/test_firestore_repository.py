@@ -163,6 +163,55 @@ class FirestoreRepositoryTests(unittest.TestCase):
         candidate_paths = [path for path in self.client.documents if "candidates" in path]
         self.assertEqual(candidate_paths[0][:2], ("users", "user-a"))
 
+    def test_reusable_artifacts_persist_and_remain_owner_scoped(self):
+        candidate = self.repository.save_candidate("user-a", profile("Candidate A"))
+        extracted = profile("Extracted Candidate")
+        plan = InterviewPlan(
+            rounds=[InterviewRound(round_id="round-1", topic="FastAPI")]
+        )
+        self.repository.save_resume_extraction_artifact(
+            "resume-artifact",
+            extracted,
+            user_id="user-a",
+        )
+        self.repository.save_interview_blueprint(
+            candidate.candidate_id,
+            "blueprint-artifact",
+            plan,
+            user_id="user-a",
+        )
+
+        restarted = FirestoreRepository(self.client)
+
+        self.assertEqual(
+            restarted.get_resume_extraction_artifact(
+                "resume-artifact",
+                user_id="user-a",
+            ),
+            extracted,
+        )
+        self.assertEqual(
+            restarted.get_interview_blueprint(
+                candidate.candidate_id,
+                "blueprint-artifact",
+                user_id="user-a",
+            ),
+            plan,
+        )
+        self.assertIsNone(
+            restarted.get_resume_extraction_artifact(
+                "resume-artifact",
+                user_id="user-b",
+            )
+        )
+        self.assertIsNone(
+            restarted.get_interview_blueprint(
+                candidate.candidate_id,
+                "blueprint-artifact",
+                user_id="user-b",
+            )
+        )
+
     def test_session_save_get_and_cross_user_isolation(self):
         candidate = self.repository.save_candidate("user-a", profile("Candidate A"))
         session_state = state(

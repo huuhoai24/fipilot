@@ -28,7 +28,7 @@ export function InterviewPreparationScreen({
   const ModeIcon = mode === 'voice' ? Mic : MessageSquareText
   const activity = preparationReady
     ? 'Opening the interview room'
-    : 'Building the interview plan and first question'
+    : 'Preparing interview topics and structure'
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -58,8 +58,8 @@ export function InterviewPreparationScreen({
               Preparing your {modeLabel} interview
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
-              The first question is being prepared from the saved candidate
-              profile and interview settings.
+              Interview topics are prepared from your saved profile and
+              settings. A fresh question is generated for this session.
             </p>
           </div>
         </div>
@@ -151,10 +151,10 @@ export function InterviewPreparationScreen({
               />
               <div>
                 <div className="text-sm font-medium text-text-primary">
-                  Opening question
+                  Session question
                 </div>
                 <div className="mt-0.5 text-xs text-text-faint">
-                  Evidence-based prompt
+                  Generated fresh on entry
                 </div>
               </div>
             </li>

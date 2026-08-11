@@ -8,6 +8,9 @@ from dataclasses import dataclass
 from shared.schemas import CandidateProfile
 
 
+RESUME_EXTRACTION_VERSION = "resume-extraction-v1"
+
+
 @dataclass(frozen=True)
 class _ProcessedResumeEntry:
     profile: CandidateProfile
@@ -22,8 +25,13 @@ class ProcessedResumeCache:
         self.max_entries = max_entries
         self._entries: OrderedDict[str, _ProcessedResumeEntry] = OrderedDict()
 
-    def get(self, user_id: str, content_hash: str) -> CandidateProfile | None:
-        key = self._key(user_id, content_hash)
+    def get(
+        self,
+        user_id: str,
+        content_hash: str,
+        extraction_version: str = RESUME_EXTRACTION_VERSION,
+    ) -> CandidateProfile | None:
+        key = self.key_for(user_id, content_hash, extraction_version)
         entry = self._entries.get(key)
         if entry is None:
             return None
@@ -38,8 +46,9 @@ class ProcessedResumeCache:
         user_id: str,
         content_hash: str,
         profile: CandidateProfile,
+        extraction_version: str = RESUME_EXTRACTION_VERSION,
     ) -> None:
-        key = self._key(user_id, content_hash)
+        key = self.key_for(user_id, content_hash, extraction_version)
         self._entries[key] = _ProcessedResumeEntry(
             profile=profile.model_copy(deep=True),
             expires_at=time.monotonic() + self.ttl_seconds,
@@ -49,5 +58,6 @@ class ProcessedResumeCache:
             self._entries.popitem(last=False)
 
     @staticmethod
-    def _key(user_id: str, content_hash: str) -> str:
-        return hashlib.sha256(f"{user_id}:{content_hash}".encode("utf-8")).hexdigest()
+    def key_for(user_id: str, content_hash: str, extraction_version: str) -> str:
+        key_material = f"{extraction_version}:{user_id}:{content_hash}"
+        return hashlib.sha256(key_material.encode("utf-8")).hexdigest()

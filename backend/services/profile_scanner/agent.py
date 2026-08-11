@@ -24,6 +24,7 @@ class ResumeAgent:
             task_type="simple",
             temperature=0.1,
             thinking_budget=0,
+            operation="resume_extraction",
         )
         if (
             extraction.document_type != "resume"

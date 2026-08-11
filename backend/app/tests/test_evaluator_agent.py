@@ -106,6 +106,7 @@ class EvaluatorAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("The interview language is English.", llm_service.prompt)
         self.assertIn('"language": "en"', llm_service.prompt)
         self.assertEqual(llm_service.kwargs["task_type"], "complex")
+        self.assertEqual(llm_service.kwargs["operation"], "answer_evaluation")
         events = {record.event for record in logs.records}
         self.assertEqual(events, {"answer.evaluation_prompt", "answer.evaluation"})
 

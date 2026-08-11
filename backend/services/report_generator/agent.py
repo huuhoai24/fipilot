@@ -24,6 +24,7 @@ class ReportGeneratorAgent:
             system_instruction=REPORT_SYSTEM_INSTRUCTION,
             task_type="complex",
             temperature=0.1,
+            operation="report_generation",
         )
         return report.model_copy(
             update={

@@ -71,3 +71,24 @@ class Evaluation(Base):
     rubric_json = Column(Text, nullable=True)
     
     session = relationship("Session", back_populates="evaluations")
+
+
+class InterviewBlueprintArtifact(Base):
+    __tablename__ = "interview_blueprint_artifacts"
+
+    artifact_key = Column(String, primary_key=True)
+    user_id = Column(String, index=True, nullable=False)
+    candidate_id = Column(Integer, ForeignKey("users.id"), index=True, nullable=False)
+    plan_json = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
+
+
+class ResumeExtractionArtifact(Base):
+    __tablename__ = "resume_extraction_artifacts"
+
+    artifact_key = Column(String, primary_key=True)
+    user_id = Column(String, index=True, nullable=False)
+    profile_json = Column(Text, nullable=False)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)

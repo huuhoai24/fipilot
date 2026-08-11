@@ -4,8 +4,9 @@ import asyncio
 from contextlib import asynccontextmanager
 from contextlib import suppress
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from gateway.api.health import router as health_router
 from gateway.api.auth import router as auth_v2_router
@@ -14,10 +15,11 @@ from gateway.api.interview import router as interview_v2_router
 from gateway.api.report import router as report_v2_router
 from gateway.api.resume import router as resume_v2_router
 from gateway.api.voice import router as voice_v2_router
-from core.logging import get_logger, setup_logging
+from core.logging import get_logger, get_request_id, setup_logging
 from core.middleware import request_correlation_middleware
 from core.settings import get_settings
 from core.startup import initialize_runtime
+from infrastructure.llm.vertex_gemini import LLMServiceError
 
 
 settings = get_settings()
@@ -73,6 +75,29 @@ async def lifespan(application: FastAPI):
 
 app = FastAPI(title="CV-Driven AI Interviewer", lifespan=lifespan)
 app.middleware("http")(request_correlation_middleware)
+
+
+@app.exception_handler(LLMServiceError)
+async def handle_llm_service_error(
+    request: Request,
+    error: LLMServiceError,
+) -> JSONResponse:
+    logger.warning(
+        "AI processing request failed safely.",
+        extra={"event": "llm_request_failed", "status": "transient_failure"},
+    )
+    return JSONResponse(
+        status_code=503,
+        content={
+            "error": {
+                "code": "transient_service_failure",
+                "message": "AI processing is temporarily unavailable. Please try again.",
+                "retryable": True,
+                "issues": [],
+            },
+            "request_id": get_request_id(),
+        },
+    )
 
 app.add_middleware(
     CORSMiddleware,

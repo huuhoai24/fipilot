@@ -45,4 +45,5 @@ class QuestionGeneratorAgent:
                 task_type="simple",
                 temperature=0.2,
                 thinking_budget=0,
+                operation="question_generation",
             )

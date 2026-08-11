@@ -253,9 +253,29 @@ describe('TextInterviewRoom conversation phases', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Sarah Nguyen' })).toBeInTheDocument()
     expect(screen.getByText('AI Virtual Interviewer')).toBeInTheDocument()
     expect(screen.getByText('Technical Interviewer')).toBeInTheDocument()
-    expect(screen.getByText('Technical knowledge, projects, and system design')).toBeInTheDocument()
+    expect(screen.queryByText('Technical knowledge, projects, and system design')).not.toBeInTheDocument()
+    expect(screen.queryByText(/explore your technical decisions/i)).not.toBeInTheDocument()
     expect(screen.getByText('Sarah Nguyen is preparing the next question...')).toBeInTheDocument()
     expect(screen.queryByText('FiPilot interviewer is preparing the next question...')).not.toBeInTheDocument()
+  })
+
+  it('keeps visual form labels quiet while preserving accessible conversation and composer names', () => {
+    renderRoom(sessionState({}), { pendingAnswer: 'A candidate response' })
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Conversation' })).toHaveClass('sr-only')
+    expect(screen.getByText('Your answer')).toHaveClass('sr-only')
+    expect(screen.getByLabelText('Your answer')).toHaveAttribute('placeholder', 'Type your answer...')
+
+    const currentQuestion = screen.getByRole('article', {
+      name: 'Current question from Sarah Nguyen',
+    })
+    const candidateResponse = screen.getByRole('article', {
+      name: 'Response from Trieu Vo',
+    })
+
+    expect(currentQuestion).toHaveAttribute('aria-current', 'true')
+    expect(currentQuestion.closest('li')).toHaveClass('w-full', 'sm:w-[78%]')
+    expect(candidateResponse.closest('li')).toHaveClass('ml-auto', 'w-full', 'sm:w-[78%]')
   })
 
   it('starts with the persisted opening and keeps the planned question hidden', () => {

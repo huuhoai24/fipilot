@@ -107,7 +107,8 @@ class ReportAgentTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertIn("Vietnamese", prompt)
         self.assertIn("Tôi dùng Depends", prompt)
-        self.assertIn("answer_evaluations", prompt)
+        self.assertIn("Clear evidence.", prompt)
+        self.assertNotIn("answer_evaluations", prompt)
         self.assertIn("not evaluated", prompt)
 
     def test_english_report_prompt_contains_all_evidence(self):
@@ -130,6 +131,7 @@ class ReportAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(report.session_id, "")
         self.assertIs(llm.calls[0][1], InterviewReport)
         self.assertEqual(llm.calls[0][2]["task_type"], "complex")
+        self.assertEqual(llm.calls[0][2]["operation"], "report_generation")
 
 
 if __name__ == "__main__":

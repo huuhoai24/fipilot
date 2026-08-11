@@ -54,6 +54,7 @@ class ResumeAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(llm_service.output_schema, ResumeExtractionResult)
         self.assertEqual(llm_service.kwargs["task_type"], "simple")
         self.assertEqual(llm_service.kwargs["thinking_budget"], 0)
+        self.assertEqual(llm_service.kwargs["operation"], "resume_extraction")
 
     async def test_rejects_project_report_instead_of_creating_profile(self):
         class ProjectReportLLM(MockLLMService):

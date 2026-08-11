@@ -20,7 +20,14 @@ from infrastructure.repositories import (
 )
 from orchestrator.interview_orchestrator import InterviewOrchestrator
 from services.interview_preparation import InterviewPreparationCache
-from shared.schemas import CurrentUser, InterviewConfig, InterviewSessionState, InterviewStatus
+from shared.schemas import (
+    CurrentUser,
+    InterviewConfig,
+    InterviewPlan,
+    InterviewSessionState,
+    InterviewStatus,
+    PersistedCandidateProfile,
+)
 from orchestrator.conversation_flow import (
     answer_opening,
     begin_text_conversation,
@@ -81,12 +88,14 @@ async def prepare_interview(
         request.interview_config,
     )
     with timed_stage(logger, "interview.preparation", stage="prepare_request"):
-        await preparation_cache.get_or_create(
+        await _get_or_create_blueprint(
+            repository,
+            orchestrator,
+            preparation_cache,
             key,
-            lambda: orchestrator.start_interview(
-                candidate_profile,
-                request.interview_config,
-            ),
+            candidate_profile,
+            request.interview_config,
+            current_user.uid,
         )
     log_duration(logger, "interview.total_prepare", total_started_at)
     return InterviewPreparationResponse(
@@ -122,12 +131,20 @@ async def start_interview(
         request.interview_config,
     )
     with timed_stage(logger, "interview.preparation", stage="start_request"):
-        state = await preparation_cache.get_or_create(
+        interview_plan = await _get_or_create_blueprint(
+            repository,
+            orchestrator,
+            preparation_cache,
             key,
-            lambda: orchestrator.start_interview(
-                candidate_profile,
-                request.interview_config,
-            ),
+            candidate_profile,
+            request.interview_config,
+            current_user.uid,
+        )
+    with timed_stage(logger, "interview.question_generation", stage="session_first_question"):
+        state = await orchestrator.start_interview(
+            candidate_profile,
+            request.interview_config,
+            interview_plan=interview_plan,
         )
     state = begin_text_conversation(state)
     with timed_stage(logger, "interview.persistence", stage="session_create"):
@@ -243,6 +260,50 @@ def _save_state(
         ),
         user_id=user_id,
     )
+
+
+async def _get_or_create_blueprint(
+    repository: SQLiteInterviewRepository,
+    orchestrator: InterviewOrchestrator,
+    preparation_cache: InterviewPreparationCache,
+    artifact_key: str,
+    candidate_profile: PersistedCandidateProfile,
+    interview_config: InterviewConfig,
+    user_id: str,
+) -> InterviewPlan:
+    async def load_or_create() -> InterviewPlan:
+        persistent_started_at = time.perf_counter()
+        plan = repository.get_interview_blueprint(
+            candidate_profile.candidate_id,
+            artifact_key,
+            user_id=user_id,
+        )
+        log_duration(
+            logger,
+            "interview.blueprint_store",
+            persistent_started_at,
+            status="hit" if plan is not None else "miss",
+            stage="persistent_blueprint",
+            cache_hit=plan is not None,
+        )
+        if plan is not None:
+            return plan
+
+        plan = await orchestrator.create_plan(candidate_profile, interview_config)
+        with timed_stage(
+            logger,
+            "interview.blueprint_persistence",
+            stage="persistent_blueprint_save",
+        ):
+            repository.save_interview_blueprint(
+                candidate_profile.candidate_id,
+                artifact_key,
+                plan,
+                user_id=user_id,
+            )
+        return plan
+
+    return await preparation_cache.get_or_create(artifact_key, load_or_create)
 
 
 def _load_session(

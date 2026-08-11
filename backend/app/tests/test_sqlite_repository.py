@@ -6,7 +6,15 @@ from sqlalchemy.orm import sessionmaker
 import models
 from database import Base
 from app.repositories import SQLiteInterviewRepository
-from app.schemas import AnswerEvaluation, CandidateProfile, EvaluationScore, FinalReport, InterviewTurn
+from app.schemas import (
+    AnswerEvaluation,
+    CandidateProfile,
+    EvaluationScore,
+    FinalReport,
+    InterviewPlan,
+    InterviewRound,
+    InterviewTurn,
+)
 
 
 class SQLiteInterviewRepositoryTests(unittest.TestCase):
@@ -74,6 +82,55 @@ class SQLiteInterviewRepositoryTests(unittest.TestCase):
 
         self.assertEqual(saved_resume_text, resume_text)
         self.assertEqual(saved_candidate.raw_resume_text, resume_text)
+
+    def test_reusable_artifacts_persist_and_remain_owner_scoped(self):
+        candidate = self.repository.create_candidate("Candidate", user_id="user-a")
+        profile = CandidateProfile(name="Candidate", skills=["Python"])
+        plan = InterviewPlan(
+            rounds=[InterviewRound(round_id="round-1", topic="Python")]
+        )
+        self.repository.save_resume_extraction_artifact(
+            "resume-artifact",
+            profile,
+            user_id="user-a",
+        )
+        self.repository.save_interview_blueprint(
+            candidate.candidate_id,
+            "blueprint-artifact",
+            plan,
+            user_id="user-a",
+        )
+
+        restarted = SQLiteInterviewRepository(self.db)
+
+        self.assertEqual(
+            restarted.get_resume_extraction_artifact(
+                "resume-artifact",
+                user_id="user-a",
+            ),
+            profile,
+        )
+        self.assertEqual(
+            restarted.get_interview_blueprint(
+                candidate.candidate_id,
+                "blueprint-artifact",
+                user_id="user-a",
+            ),
+            plan,
+        )
+        self.assertIsNone(
+            restarted.get_resume_extraction_artifact(
+                "resume-artifact",
+                user_id="user-b",
+            )
+        )
+        self.assertIsNone(
+            restarted.get_interview_blueprint(
+                candidate.candidate_id,
+                "blueprint-artifact",
+                user_id="user-b",
+            )
+        )
 
     def test_create_session(self):
         candidate = self.repository.create_candidate("Nguyen Van A")

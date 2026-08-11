@@ -425,7 +425,7 @@ describe('TextInterviewPage interview mode', () => {
     expect(screen.queryByText('Choose Interview Mode')).not.toBeInTheDocument()
   })
 
-  it('prepares the first question after resume analysis for both interview modes', async () => {
+  it('prepares the reusable interview blueprint after resume analysis for both modes', async () => {
     vi.mocked(api.uploadResume).mockResolvedValue({
       candidate_id: 'candidate-1',
       confidence_score: 0.92,
@@ -553,7 +553,8 @@ describe('TextInterviewPage interview mode', () => {
       }),
     ).toBeInTheDocument()
     expect(screen.getByText('Tran Thi B')).toBeInTheDocument()
-    expect(screen.getByText('Building the interview plan and first question')).toBeInTheDocument()
+    expect(screen.getByText('Preparing interview topics and structure')).toBeInTheDocument()
+    expect(screen.queryByText(/first question is being prepared/i)).not.toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Preparing')
   })
 })

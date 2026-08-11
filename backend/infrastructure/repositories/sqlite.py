@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import inspect, or_, text
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import Session
 
 import crud
@@ -16,6 +17,7 @@ from shared.schemas import (
     FinalReport,
     InterviewReport,
     InterviewMode,
+    InterviewPlan,
     InterviewSessionState,
     InterviewSessionSummary,
     InterviewStatus,
@@ -43,6 +45,51 @@ class SQLiteInterviewRepository(InterviewRepository):
         owner_id = self._resolve_user_id(user_id)
         candidate = crud.create_user(self.db, name or "Candidate", user_id=owner_id)
         return self._candidate_from_model(candidate)
+
+    def get_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile | None:
+        owner_id = self._resolve_user_id(user_id)
+        artifact = (
+            self.db.query(models.ResumeExtractionArtifact)
+            .filter(
+                models.ResumeExtractionArtifact.artifact_key == artifact_key,
+                models.ResumeExtractionArtifact.user_id == owner_id,
+            )
+            .first()
+        )
+        if artifact is None:
+            return None
+        try:
+            return CandidateProfile.model_validate_json(artifact.profile_json)
+        except ValueError:
+            return None
+
+    def save_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        profile: CandidateProfile,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile:
+        owner_id = self._resolve_user_id(user_id)
+        self.db.execute(
+            sqlite_insert(models.ResumeExtractionArtifact)
+            .values(
+                artifact_key=artifact_key,
+                user_id=owner_id,
+                profile_json=profile.model_dump_json(),
+            )
+            .on_conflict_do_nothing(index_elements=["artifact_key"])
+        )
+        self.db.commit()
+        artifact = self.db.get(models.ResumeExtractionArtifact, artifact_key)
+        if artifact is None or artifact.user_id != owner_id:
+            raise ValueError("Resume extraction artifact is not owned by this user")
+        return CandidateProfile.model_validate_json(artifact.profile_json)
 
     def get_candidate(
         self, candidate_id: str, *, user_id: str | None = None
@@ -127,6 +174,62 @@ class SQLiteInterviewRepository(InterviewRepository):
         self.db.commit()
         self.db.refresh(session)
         return self._session_from_model(session)
+
+    def get_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan | None:
+        owner_id = self._resolve_user_id(user_id)
+        artifact = (
+            self.db.query(models.InterviewBlueprintArtifact)
+            .filter(
+                models.InterviewBlueprintArtifact.artifact_key == artifact_key,
+                models.InterviewBlueprintArtifact.candidate_id
+                == self._int_id(candidate_id),
+                models.InterviewBlueprintArtifact.user_id == owner_id,
+            )
+            .first()
+        )
+        if artifact is None:
+            return None
+        try:
+            return InterviewPlan.model_validate_json(artifact.plan_json)
+        except ValueError:
+            return None
+
+    def save_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        plan: InterviewPlan,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan:
+        owner_id = self._resolve_user_id(user_id)
+        if self._get_candidate_model(candidate_id, owner_id) is None:
+            raise ValueError(f"Candidate {candidate_id} does not exist for this user")
+        self.db.execute(
+            sqlite_insert(models.InterviewBlueprintArtifact)
+            .values(
+                artifact_key=artifact_key,
+                user_id=owner_id,
+                candidate_id=self._int_id(candidate_id),
+                plan_json=plan.model_dump_json(),
+            )
+            .on_conflict_do_nothing(index_elements=["artifact_key"])
+        )
+        self.db.commit()
+        artifact = self.db.get(models.InterviewBlueprintArtifact, artifact_key)
+        if (
+            artifact is None
+            or artifact.user_id != owner_id
+            or artifact.candidate_id != self._int_id(candidate_id)
+        ):
+            raise ValueError("Interview blueprint key is not owned by this candidate")
+        return InterviewPlan.model_validate_json(artifact.plan_json)
 
     def get_session(
         self, session_id: str, *, user_id: str | None = None
@@ -373,6 +476,8 @@ class SQLiteInterviewRepository(InterviewRepository):
             return
 
         inspector = inspect(bind)
+        models.InterviewBlueprintArtifact.__table__.create(bind, checkfirst=True)
+        models.ResumeExtractionArtifact.__table__.create(bind, checkfirst=True)
         user_columns = {column["name"] for column in inspector.get_columns("users")}
         for column_name, column_type in {
             "user_id": "VARCHAR",

@@ -21,14 +21,78 @@ from app.schemas import (
 )
 from database import Base, get_db
 from app.repositories import SQLiteInterviewRepository
+from orchestrator.decision_service import InterviewDecisionService
+from orchestrator.interview_orchestrator import InterviewOrchestrator
+from services.answer_evaluator.agent import EvaluatorAgent
+from services.interview_planner.agent import InterviewPlannerAgent
 from services.interview_preparation import InterviewPreparationCache
+from services.question_generator.agent import QuestionGeneratorAgent
+
+
+class SessionFreshnessLLM:
+    def __init__(self):
+        self.plan_requests = 0
+        self.question_requests = 0
+
+    async def generate_json(self, prompt, output_schema, **kwargs):
+        if output_schema is InterviewPlan:
+            self.plan_requests += 1
+            return InterviewPlan(
+                rounds=[
+                    InterviewRound(
+                        round_id="round-1",
+                        topic="YOLO Optimization",
+                        difficulty="medium",
+                        target_skills=["YOLOv8"],
+                    )
+                ]
+            )
+        if output_schema is InterviewQuestion:
+            self.question_requests += 1
+            return InterviewQuestion(
+                question=f"Fresh session question {self.question_requests}",
+                language="en",
+                topic="YOLO Optimization",
+                difficulty="medium",
+                follow_up_questions=[
+                    f"Fresh follow-up for session question {self.question_requests}"
+                ],
+            )
+        if output_schema is AnswerEvaluation:
+            return AnswerEvaluation(
+                turn_id="",
+                overall_score=4.0,
+                feedback="The answer needs one session-specific follow-up.",
+                follow_up_needed=True,
+                follow_up_reason="Clarify the candidate's actual answer.",
+            )
+        raise AssertionError(f"Unexpected schema: {output_schema}")
 
 
 class MockInterviewOrchestrator:
     def __init__(self):
         self.start_calls = 0
+        self.plan_calls = 0
 
-    async def start_interview(self, candidate_profile, interview_config):
+    async def create_plan(self, candidate_profile, interview_config):
+        self.plan_calls += 1
+        return InterviewPlan(
+            rounds=[
+                InterviewRound(
+                    round_id="round-1",
+                    topic="YOLO Optimization",
+                    difficulty="medium",
+                )
+            ]
+        )
+
+    async def start_interview(
+        self,
+        candidate_profile,
+        interview_config,
+        *,
+        interview_plan=None,
+    ):
         self.start_calls += 1
         question = InterviewQuestion(
             question="How would you optimize YOLOv8 inference?",
@@ -39,15 +103,7 @@ class MockInterviewOrchestrator:
             expected_answer_points=["profiling", "TensorRT"],
             follow_up_questions=["How do you validate mAP after optimization?"],
         )
-        plan = InterviewPlan(
-            rounds=[
-                InterviewRound(
-                    round_id="round-1",
-                    topic="YOLO Optimization",
-                    difficulty="medium",
-                )
-            ]
-        )
+        plan = interview_plan or await self.create_plan(candidate_profile, interview_config)
         return InterviewSessionState(
             candidate_profile=candidate_profile,
             interview_config=interview_config,
@@ -213,6 +269,64 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(prepare_response.json()["status"], "ready")
         self.assertEqual(start_response.status_code, 200)
         self.assertEqual(self.orchestrator.start_calls, 1)
+        self.assertEqual(self.orchestrator.plan_calls, 1)
+
+    def test_persisted_blueprint_never_replays_questions_across_sessions(self):
+        llm = SessionFreshnessLLM()
+        orchestrator = InterviewOrchestrator(
+            planner_agent=InterviewPlannerAgent(llm),
+            question_generator_agent=QuestionGeneratorAgent(llm),
+            evaluator_agent=EvaluatorAgent(llm, task_type="simple"),
+            decision_service=InterviewDecisionService(),
+        )
+        self.app.dependency_overrides[get_interview_orchestrator] = lambda: orchestrator
+        cache = InterviewPreparationCache()
+        self.app.dependency_overrides[get_interview_preparation_cache] = lambda: cache
+        payload = {
+            "candidate_id": self.candidate.candidate_id,
+            "interview_config": {
+                "mode": "text",
+                "language": "en",
+                "experience_level": "middle",
+            },
+        }
+
+        prepared = self.client.post("/api/v2/interview/prepare", json=payload)
+        cache = InterviewPreparationCache()  # simulate another process/restart
+        first = self.client.post("/api/v2/interview/start", json=payload)
+        cache = InterviewPreparationCache()  # force persistent reuse again
+        second = self.client.post("/api/v2/interview/start", json=payload)
+
+        self.assertEqual(prepared.status_code, 200)
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertNotEqual(first.json()["session_id"], second.json()["session_id"])
+        first_question = first.json()["state"]["pending_turn"]["question"]["question"]
+        second_question = second.json()["state"]["pending_turn"]["question"]["question"]
+        self.assertNotEqual(first_question, second_question)
+        self.assertEqual(llm.plan_requests, 1)
+        self.assertEqual(llm.question_requests, 2)
+
+        follow_ups = []
+        for response, answer in (
+            (first, "I optimized the first pipeline."),
+            (second, "I optimized the second pipeline differently."),
+        ):
+            session_id = response.json()["session_id"]
+            opening = self.client.post(
+                f"/api/v2/interview/{session_id}/answer",
+                json={"answer": "I build computer vision systems."},
+            )
+            technical = self.client.post(
+                f"/api/v2/interview/{session_id}/answer",
+                json={"answer": answer},
+            )
+            self.assertEqual(opening.status_code, 200)
+            self.assertEqual(technical.status_code, 200)
+            follow_ups.append(
+                technical.json()["state"]["current_turn"]["question"]["question"]
+            )
+        self.assertNotEqual(follow_ups[0], follow_ups[1])
 
     def test_opening_answer_reveals_first_question_and_final_answer_enters_closing(self):
         start_response = self.client.post(

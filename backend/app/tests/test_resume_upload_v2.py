@@ -7,12 +7,18 @@ from sqlalchemy.pool import StaticPool
 
 import main
 from core.dependencies import get_current_user
-from app.api.routes.resume import get_document_service, get_resume_agent
+from app.api.routes.resume import (
+    get_document_service,
+    get_processed_resume_cache,
+    get_resume_agent,
+)
 from app.repositories import SQLiteInterviewRepository
 from app.schemas import CandidateProfile, CurrentUser
 from database import Base, get_db
 from models import User
+from infrastructure.llm.vertex_gemini import LLMTimeoutError
 from services.profile_scanner.exceptions import NonResumeDocumentError
+from services.profile_scanner.cache import ProcessedResumeCache
 
 
 class MockDocumentService:
@@ -46,6 +52,11 @@ class MockNonResumeAgent:
         raise NonResumeDocumentError
 
 
+class MockTimeoutResumeAgent:
+    async def extract_profile(self, resume_text: str) -> CandidateProfile:
+        raise LLMTimeoutError("private provider timeout details")
+
+
 class ResumeUploadV2Tests(unittest.TestCase):
     def setUp(self):
         engine = create_engine(
@@ -63,6 +74,10 @@ class ResumeUploadV2Tests(unittest.TestCase):
         main.app.dependency_overrides[get_document_service] = lambda: MockDocumentService()
         self.resume_agent = MockResumeAgent()
         main.app.dependency_overrides[get_resume_agent] = lambda: self.resume_agent
+        self.process_cache = ProcessedResumeCache()
+        main.app.dependency_overrides[get_processed_resume_cache] = (
+            lambda: self.process_cache
+        )
         main.app.dependency_overrides[get_current_user] = lambda: CurrentUser(uid="user-1")
         self.client = TestClient(main.app)
 
@@ -125,6 +140,20 @@ class ResumeUploadV2Tests(unittest.TestCase):
         self.assertIn("10 ngành nghề", response.json()["error"]["message"])
         self.assertEqual(self.db.query(User).count(), 0)
 
+    def test_model_timeout_returns_safe_retryable_service_error(self):
+        main.app.dependency_overrides[get_resume_agent] = lambda: MockTimeoutResumeAgent()
+        client = TestClient(main.app, raise_server_exceptions=False)
+
+        response = client.post(
+            "/api/v2/resume/upload",
+            files={"file": ("resume.pdf", b"%PDF timeout resume content", "application/pdf")},
+        )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json()["error"]["code"], "transient_service_failure")
+        self.assertTrue(response.json()["error"]["retryable"])
+        self.assertNotIn("provider", response.text.lower())
+
     def test_identical_successful_resume_reuses_extraction_for_a_new_candidate(self):
         upload = {
             "files": {
@@ -162,6 +191,38 @@ class ResumeUploadV2Tests(unittest.TestCase):
         self.assertNotEqual(second.json()["candidate_id"], first.json()["candidate_id"])
         self.assertEqual(self.resume_agent.calls, 2)
         self.assertEqual(self.db.query(User).count(), 2)
+
+    def test_successful_extraction_is_reused_after_process_cache_restart(self):
+        files = {
+            "file": (
+                "restart-safe.pdf",
+                b"%PDF persistent extraction artifact across process restart",
+                "application/pdf",
+            )
+        }
+        first = self.client.post("/api/v2/resume/upload", files=files)
+        self.process_cache = ProcessedResumeCache()
+        main.app.dependency_overrides[get_resume_agent] = lambda: MockNonResumeAgent()
+
+        second = self.client.post("/api/v2/resume/upload", files=files)
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertNotEqual(first.json()["candidate_id"], second.json()["candidate_id"])
+        self.assertEqual(second.json()["profile"], first.json()["profile"])
+
+    def test_resume_artifact_identity_changes_with_owner_and_schema_version(self):
+        owner_key = self.process_cache.key_for("user-1", "content-hash", "schema-v1")
+
+        self.assertNotEqual(
+            owner_key,
+            self.process_cache.key_for("user-2", "content-hash", "schema-v1"),
+        )
+        self.assertNotEqual(
+            owner_key,
+            self.process_cache.key_for("user-1", "content-hash", "schema-v2"),
+        )
+        self.assertNotIn("user-1", owner_key)
 
 
 if __name__ == "__main__":

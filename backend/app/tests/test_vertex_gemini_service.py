@@ -117,15 +117,38 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         service = self.make_service(models)
 
         with self.assertLogs("infrastructure.llm.vertex_gemini", level="INFO") as logs:
-            await service.generate_json("Private candidate context", MockJSONOutput)
+            await service.generate_json(
+                "Private candidate context",
+                MockJSONOutput,
+                operation="test_scoring",
+            )
 
         record = next(item for item in logs.records if item.event == "llm.generate_json")
         self.assertEqual(record.model, "gemini-complex")
         self.assertEqual(record.task_type, "complex")
         self.assertGreater(record.prompt_chars, len("Private candidate context"))
         self.assertEqual(record.attempt, 1)
+        self.assertEqual(record.operation, "test_scoring")
+        self.assertEqual(record.output_schema, "MockJSONOutput")
         self.assertGreaterEqual(record.duration_ms, 0)
         self.assertFalse(hasattr(record, "prompt"))
+
+        by_event = {item.event: item for item in logs.records}
+        self.assertTrue(
+            {
+                "llm.request_preparation",
+                "llm.model_request",
+                "llm.response_parsing",
+                "llm.operation_total",
+                "llm.generate_json",
+            }.issubset(by_event)
+        )
+        self.assertEqual(by_event["llm.model_request"].attempt, 1)
+        self.assertEqual(
+            by_event["llm.response_parsing"].response_chars,
+            len('{"name":"Alice","score":9}'),
+        )
+        self.assertFalse(hasattr(by_event["llm.response_parsing"], "response"))
 
     async def test_generate_json_can_disable_thinking(self):
         models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])

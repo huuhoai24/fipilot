@@ -11,6 +11,7 @@ from shared.schemas import (
     CandidateProfile,
     FinalReport,
     InterviewReport,
+    InterviewPlan,
     InterviewSessionSummary,
     InterviewTurn,
     PersistedCandidateProfile,
@@ -41,6 +42,25 @@ class InterviewSessionRecord(BaseModel):
 
 
 class CandidateRepository(ABC):
+    @abstractmethod
+    def get_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        profile: CandidateProfile,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile:
+        raise NotImplementedError
+
     @abstractmethod
     def create_candidate(
         self, name: str | None = None, *, user_id: str | None = None
@@ -84,6 +104,27 @@ class CandidateRepository(ABC):
 
 
 class InterviewSessionRepository(ABC):
+    @abstractmethod
+    def get_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def save_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        plan: InterviewPlan,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan:
+        raise NotImplementedError
+
     @abstractmethod
     def create_session(
         self,

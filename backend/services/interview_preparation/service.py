@@ -10,27 +10,28 @@ from dataclasses import dataclass
 
 from core.logging import get_logger
 from core.performance import log_duration
-from shared.schemas import InterviewConfig, InterviewSessionState, PersistedCandidateProfile
+from shared.schemas import InterviewConfig, InterviewPlan, PersistedCandidateProfile
 
 
-PreparationFactory = Callable[[], Awaitable[InterviewSessionState]]
+PreparationFactory = Callable[[], Awaitable[InterviewPlan]]
 logger = get_logger(__name__)
+INTERVIEW_BLUEPRINT_VERSION = "interview-blueprint-v2"
 
 
 @dataclass(frozen=True)
 class _PreparedEntry:
-    state: InterviewSessionState
+    plan: InterviewPlan
     expires_at: float
 
 
 class InterviewPreparationCache:
-    """Deduplicates and briefly caches the unchanged interview bootstrap."""
+    """Deduplicates stable blueprints; generated questions are never cached."""
 
     def __init__(self, *, ttl_seconds: float = 300.0, max_entries: int = 128) -> None:
         self.ttl_seconds = ttl_seconds
         self.max_entries = max_entries
         self._ready: OrderedDict[str, _PreparedEntry] = OrderedDict()
-        self._inflight: dict[str, asyncio.Task[InterviewSessionState]] = {}
+        self._inflight: dict[str, asyncio.Task[InterviewPlan]] = {}
 
     def key_for(
         self,
@@ -45,20 +46,22 @@ class InterviewPreparationCache:
             sort_keys=True,
         )
         fingerprint = hashlib.sha256(config_json.encode("utf-8")).hexdigest()
-        return ":".join(
+        key_material = ":".join(
             (
+                INTERVIEW_BLUEPRINT_VERSION,
                 user_id,
                 candidate_profile.candidate_id,
                 str(candidate_profile.profile_version),
                 fingerprint,
             )
         )
+        return hashlib.sha256(key_material.encode("utf-8")).hexdigest()
 
     async def get_or_create(
         self,
         key: str,
         factory: PreparationFactory,
-    ) -> InterviewSessionState:
+    ) -> InterviewPlan:
         started_at = time.perf_counter()
         self._remove_expired()
         cached = self._ready.get(key)
@@ -69,10 +72,10 @@ class InterviewPreparationCache:
                 "interview.preparation_cache",
                 started_at,
                 status="ready_hit",
-                stage="prepared_state",
+                stage="interview_blueprint",
                 cache_hit=True,
             )
-            return cached.state.model_copy(deep=True)
+            return cached.plan.model_copy(deep=True)
 
         task = self._inflight.get(key)
         cache_status = "inflight_hit" if task is not None else "miss"
@@ -92,7 +95,7 @@ class InterviewPreparationCache:
             "interview.preparation_cache",
             started_at,
             status=cache_status,
-            stage="prepared_state",
+            stage="interview_blueprint",
             cache_hit=cache_status != "miss",
         )
         return state.model_copy(deep=True)
@@ -106,7 +109,7 @@ class InterviewPreparationCache:
     def _store_completed(
         self,
         key: str,
-        task: asyncio.Task[InterviewSessionState],
+        task: asyncio.Task[InterviewPlan],
     ) -> None:
         if self._inflight.get(key) is not task:
             return
@@ -119,7 +122,7 @@ class InterviewPreparationCache:
             return
 
         self._ready[key] = _PreparedEntry(
-            state=state.model_copy(deep=True),
+            plan=state.model_copy(deep=True),
             expires_at=time.monotonic() + self.ttl_seconds,
         )
         self._ready.move_to_end(key)

@@ -11,6 +11,7 @@ from shared.schemas import (
     FinalReport,
     InterviewReport,
     InterviewMode,
+    InterviewPlan,
     InterviewSessionState,
     InterviewSessionSummary,
     InterviewStatus,
@@ -70,6 +71,38 @@ class FirestoreRepository(InterviewRepository):
             owner_id,
             CandidateProfile(name=name or "Candidate"),
         )
+
+    def get_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile | None:
+        owner_id = self._require_user_id(user_id)
+        snapshot = self._resume_extraction_collection(owner_id).document(
+            artifact_key
+        ).get()
+        if not snapshot.exists:
+            return None
+        profile_data = (snapshot.to_dict() or {}).get("profile")
+        return CandidateProfile.model_validate(profile_data) if profile_data else None
+
+    def save_resume_extraction_artifact(
+        self,
+        artifact_key: str,
+        profile: CandidateProfile,
+        *,
+        user_id: str | None = None,
+    ) -> CandidateProfile:
+        owner_id = self._require_user_id(user_id)
+        self._resume_extraction_collection(owner_id).document(artifact_key).set(
+            {
+                "profile": profile.model_dump(mode="json"),
+                "updated_at": self._now(),
+            },
+            merge=True,
+        )
+        return profile
 
     def get_candidate(
         self, candidate_id: str, *, user_id: str | None = None
@@ -229,6 +262,45 @@ class FirestoreRepository(InterviewRepository):
             }
         )
         return self.get_session(reference.id, user_id=owner_id)
+
+    def get_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan | None:
+        owner_id = self._require_user_id(user_id)
+        if self.get_candidate(candidate_id, user_id=owner_id) is None:
+            return None
+        snapshot = self._blueprint_collection(owner_id).document(artifact_key).get()
+        if not snapshot.exists:
+            return None
+        data = snapshot.to_dict() or {}
+        if data.get("candidate_id") != candidate_id or not data.get("plan"):
+            return None
+        return InterviewPlan.model_validate(data["plan"])
+
+    def save_interview_blueprint(
+        self,
+        candidate_id: str,
+        artifact_key: str,
+        plan: InterviewPlan,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewPlan:
+        owner_id = self._require_user_id(user_id)
+        if self.get_candidate(candidate_id, user_id=owner_id) is None:
+            raise ValueError(f"Candidate {candidate_id} does not exist for this user")
+        self._blueprint_collection(owner_id).document(artifact_key).set(
+            {
+                "candidate_id": candidate_id,
+                "plan": plan.model_dump(mode="json"),
+                "updated_at": self._now(),
+            },
+            merge=True,
+        )
+        return plan
 
     def get_interview_session(
         self, session_id: str, user_id: str
@@ -469,6 +541,12 @@ class FirestoreRepository(InterviewRepository):
 
     def _interview_collection(self, user_id: str) -> Any:
         return self._user_document(user_id).collection(self.interviews_collection)
+
+    def _blueprint_collection(self, user_id: str) -> Any:
+        return self._user_document(user_id).collection("interview_blueprints")
+
+    def _resume_extraction_collection(self, user_id: str) -> Any:
+        return self._user_document(user_id).collection("resume_extractions")
 
     def _session_from_data(
         self, session_id: str, user_id: str, data: dict[str, Any]

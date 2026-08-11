@@ -26,11 +26,6 @@ def build_report_prompt(
         "interview_turns": [
             turn.model_dump(mode="json") for turn in interview_state.completed_turns
         ],
-        "answer_evaluations": [
-            turn.evaluation.model_dump(mode="json")
-            for turn in interview_state.completed_turns
-            if turn.evaluation is not None
-        ],
     }
     return f"""
 Create a holistic final interview report from the supplied evidence.
