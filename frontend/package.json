@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite --config vite.config.ts",
     "build": "tsc -b && vite build --config vite.config.ts",
+    "build:production": "node scripts/build-production.mjs",
+    "verify:production-build": "node scripts/verify-production-build.mjs",
     "test": "vitest run --environment jsdom",
     "preview": "vite preview",
     "lint": "eslint ."

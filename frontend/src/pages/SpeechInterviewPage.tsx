@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/Button'
 import { firebaseAuth } from '@/lib/firebase'
 import { api } from '@/lib/api'
 import { PcmAudioPlayer } from '@/lib/pcmAudioPlayer'
+import { getUserFacingError } from '@/lib/userFacingError'
 import type {
   InterviewReport,
   V2InterviewSessionResponse,
@@ -169,9 +170,7 @@ export function SpeechInterviewPage() {
       })
       .catch((error) => {
         if (cancelled) return
-        setFinalReportError(
-          error instanceof Error ? error.message : 'Final scores could not be generated.'
-        )
+        setFinalReportError(getUserFacingError(error, 'Final scores could not be generated. Please try again.'))
         setFinalReportState('error')
       })
     return () => {
@@ -263,7 +262,7 @@ export function SpeechInterviewPage() {
       })
       .catch((error) => {
         if (!cancelled) {
-          setLoadError(error instanceof Error ? error.message : 'Failed to load the interview session.')
+          setLoadError(getUserFacingError(error, 'The interview session could not be loaded. Please try again.'))
         }
       })
       .finally(() => {

@@ -4,6 +4,15 @@ export type ExperienceLevel = 'intern' | 'junior' | 'middle' | 'senior'
 export type InterviewStyle = 'technical' | 'behavioral' | 'mixed'
 export type InterviewMode = 'text' | 'voice'
 export type InterviewTurnStatus = 'created' | 'answered' | 'evaluated'
+export type InterviewPhase = 'opening' | 'interviewing' | 'closing'
+export type InterviewQuestionType =
+  | 'opening'
+  | 'conceptual'
+  | 'practical'
+  | 'project_deep_dive'
+  | 'system_design'
+  | 'debugging'
+  | 'follow_up'
 export type InterviewStatus = 'created' | 'in_progress' | 'completed' | 'report_generated'
 export type HiringRecommendation = 'strong_hire' | 'hire' | 'consider' | 'no_hire'
 
@@ -165,6 +174,7 @@ export interface V2InterviewTurn {
   answer?: string | null
   status: InterviewTurnStatus
   evaluation?: V2AnswerEvaluation | null
+  question_type?: InterviewQuestionType
   difficulty: Difficulty
   topic: string
   expected_signal: string[]
@@ -188,6 +198,9 @@ export interface V2InterviewSessionState {
   candidate_profile: V2CandidateProfile
   interview_config: V2InterviewConfig
   interview_plan: V2InterviewPlan
+  phase?: InterviewPhase
+  opening_turn?: V2InterviewTurn | null
+  pending_turn?: V2InterviewTurn | null
   current_turn?: V2InterviewTurn | null
   completed_turns: V2InterviewTurn[]
   current_question_index: number

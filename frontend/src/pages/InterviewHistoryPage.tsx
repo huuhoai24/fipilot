@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, FileText, History, Loader2, MessageSquareText, RefreshCw } from 'lucide-react'
+import { AlertCircle, ArrowLeft, ArrowRight, FileText, History, Loader2, MessageSquareText, RefreshCw } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
 import { api } from '@/lib/api'
+import { getUserFacingError } from '@/lib/userFacingError'
 import type { InterviewHistoryResponse, InterviewSessionSummary, InterviewStatus } from '@/types'
 
 const PAGE_SIZE = 10
@@ -57,7 +58,11 @@ export function InterviewHistoryPage() {
     try {
       setData(await api.listInterviewSessions({ limit: PAGE_SIZE, offset }))
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'Failed to load interview history')
+      setError(getUserFacingError(
+        loadError,
+        'We could not load your interview history. Please try again.',
+        'We could not load your interview history. Check your connection and try again.',
+      ))
     } finally {
       setLoading(false)
     }
@@ -80,12 +85,19 @@ export function InterviewHistoryPage() {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">{error}</div>
+        <div role="alert" className="flex flex-wrap items-center gap-3 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
+          <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span className="min-w-0 flex-1">{error}</span>
+          <Button size="sm" variant="secondary" onClick={() => void load()} disabled={loading}>
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} aria-hidden="true" />
+            Try again
+          </Button>
+        </div>
       )}
 
       {loading && !data ? (
         <div className="flex min-h-64 items-center justify-center"><Loader2 className="h-7 w-7 animate-spin text-accent" /></div>
-      ) : data?.items.length ? (
+      ) : error && !data ? null : data?.items.length ? (
         <div className="space-y-3">
           {data.items.map((session) => {
             const progress = session.question_count

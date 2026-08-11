@@ -32,7 +32,7 @@ describe('SettingsPage', () => {
     expect(screen.getByRole('status')).toHaveTextContent(
       'Preferences saved on this device.',
     )
-    expect(JSON.parse(localStorage.getItem('interview-preferences') ?? '{}')).toMatchObject({
+    expect(JSON.parse(localStorage.getItem('ai-interview:text-settings:v1') ?? '{}')).toMatchObject({
       language: 'en',
       interviewStyle: 'mixed',
     })

@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useMemo, useState } from 'react'
+import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowRight,
@@ -8,10 +8,7 @@ import {
   FileText,
   FolderKanban,
   GraduationCap,
-  History,
   Loader2,
-  MessageSquareText,
-  Send,
   Upload,
   UserRound,
 } from 'lucide-react'
@@ -20,8 +17,16 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
 import { InterviewPreparationScreen } from '@/components/interview/InterviewPreparationScreen'
+import {
+  TextInterviewRoom,
+  TextInterviewRoomStatus,
+} from '@/components/interview/TextInterviewRoom'
 import { api } from '@/lib/api'
-import { loadInterviewPreferences } from '@/lib/interviewPreferences'
+import {
+  loadInterviewPreferences,
+  saveInterviewPreferences,
+} from '@/lib/interviewPreferences'
+import { getResumeUploadError, getUserFacingError } from '@/lib/userFacingError'
 import type {
   CandidateEducation,
   CandidateProfile,
@@ -29,10 +34,8 @@ import type {
   InterviewMode,
   InterviewLanguage,
   InterviewStyle,
-  V2InterviewQuestion,
   V2InterviewSessionResponse,
   V2InterviewSessionState,
-  V2InterviewTurn,
 } from '@/types'
 
 const MAX_RESUME_BYTES = 10 * 1024 * 1024
@@ -42,6 +45,17 @@ const RESUME_MIME_TYPES = new Set([
   'application/x-pdf',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ])
+
+type ResumeUploadStatus = 'idle' | 'uploading' | 'success' | 'error'
+type BackendAvailability = 'unknown' | 'checking' | 'reachable' | 'unreachable'
+
+function parseIntegerSetting(value: string, minimum: number, maximum = Number.MAX_SAFE_INTEGER): number | null {
+  if (value.trim() === '') return null
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed >= minimum && parsed <= maximum
+    ? parsed
+    : null
+}
 
 function validateResumeFile(file: File): string | null {
   const extension = file.name.split('.').pop()?.toLowerCase() ?? ''
@@ -218,16 +232,6 @@ function CandidateProfilePreview({
   )
 }
 
-function getQuestion(turn?: V2InterviewTurn | null): V2InterviewQuestion | null {
-  if (!turn || typeof turn.question === 'string') return null
-  return turn.question
-}
-
-function questionText(turn?: V2InterviewTurn | null): string {
-  if (!turn) return ''
-  return typeof turn.question === 'string' ? turn.question : turn.question.question
-}
-
 interface TextInterviewPageProps {
   mode?: InterviewMode
 }
@@ -238,22 +242,26 @@ export function TextInterviewPage({
   const preferences = useMemo(() => loadInterviewPreferences(), [])
   const { sessionId: routeSessionId } = useParams()
   const navigate = useNavigate()
+  const resumeInputRef = useRef<HTMLInputElement>(null)
   const [candidateId, setCandidateId] = useState('')
-  const [candidateProfile, setCandidateProfile] = useState<CandidateProfile | null>(null)
+  const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(null)
   const [profileConfidence, setProfileConfidence] = useState(0)
   const interviewMode = mode
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [uploading, setUploading] = useState(false)
+  const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(null)
+  const [resumeUploadStatus, setResumeUploadStatus] = useState<ResumeUploadStatus>('idle')
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [backendAvailability, setBackendAvailability] = useState<BackendAvailability>('unknown')
+  const [connectivityError, setConnectivityError] = useState<string | null>(null)
   const [language, setLanguage] = useState<InterviewLanguage>(preferences.language)
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>(preferences.experienceLevel)
   const [interviewStyle, setInterviewStyle] = useState<InterviewStyle>(preferences.interviewStyle)
-  const [durationMinutes, setDurationMinutes] = useState(preferences.durationMinutes)
-  const [questionCount, setQuestionCount] = useState(preferences.questionCount)
+  const [durationInput, setDurationInput] = useState(String(preferences.durationMinutes))
+  const [questionCountInput, setQuestionCountInput] = useState(String(preferences.questionCount))
   const [objective, setObjective] = useState(preferences.objective)
   const [sessionId, setSessionId] = useState(routeSessionId ?? '')
   const [state, setState] = useState<V2InterviewSessionState | null>(null)
   const [answer, setAnswer] = useState('')
+  const [pendingAnswer, setPendingAnswer] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [starting, setStarting] = useState(false)
   const [showPreparationScreen, setShowPreparationScreen] = useState(false)
@@ -262,6 +270,49 @@ export function TextInterviewPage({
   >('idle')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const uploading = resumeUploadStatus === 'uploading'
+  const durationMinutes = useMemo(() => parseIntegerSetting(durationInput, 5, 180), [durationInput])
+  const questionCount = useMemo(() => parseIntegerSetting(questionCountInput, 1), [questionCountInput])
+  const settingsAreValid = durationMinutes !== null && questionCount !== null
+
+  const checkBackendAvailability = useCallback(async () => {
+    setBackendAvailability('checking')
+    setConnectivityError(null)
+    try {
+      await api.checkHealth()
+      setBackendAvailability('reachable')
+    } catch (healthError) {
+      setBackendAvailability('unreachable')
+      setConnectivityError(getUserFacingError(
+        healthError,
+        'Backend service is unavailable. Please check the API connection.',
+      ))
+    }
+  }, [])
+
+  useEffect(() => {
+    void checkBackendAvailability()
+  }, [checkBackendAvailability])
+
+  useEffect(() => {
+    if (!settingsAreValid || durationMinutes === null || questionCount === null) return
+    saveInterviewPreferences({
+      language,
+      experienceLevel,
+      interviewStyle,
+      durationMinutes,
+      questionCount,
+      objective,
+    })
+  }, [
+    durationMinutes,
+    experienceLevel,
+    interviewStyle,
+    language,
+    objective,
+    questionCount,
+    settingsAreValid,
+  ])
 
   useEffect(() => {
     if (!routeSessionId) return
@@ -275,7 +326,7 @@ export function TextInterviewPage({
         setState(response.state)
       })
       .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load interview')
+        if (!cancelled) setError(getUserFacingError(err, 'The interview could not be loaded. Please try again.'))
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -286,29 +337,31 @@ export function TextInterviewPage({
   }, [routeSessionId])
 
   const progress = useMemo(() => {
-    if (!state) return { current: 0, total: questionCount, pct: 0 }
-    const total = state.interview_config.question_count || questionCount
+    if (!state) return { current: 0, total: questionCount ?? 0 }
+    const total = state.interview_config.question_count || questionCount || 0
     const current = Math.min(
       total,
       state.completed_turns.length + (state.current_turn ? 1 : 0)
     )
-    return { current, total, pct: total ? Math.round((current / total) * 100) : 0 }
+    return { current, total }
   }, [questionCount, state])
 
-  const currentQuestion = getQuestion(state?.current_turn)
   const isFinished = Boolean(state && !state.current_turn)
-  const interviewStartData = useMemo(() => ({
-    candidate_id: candidateId.trim(),
-    interview_config: {
-      mode: interviewMode,
-      language,
-      experience_level: experienceLevel,
-      duration_minutes: durationMinutes,
-      interview_style: interviewStyle,
-      question_count: questionCount,
-      objective,
-    },
-  }), [
+  const interviewStartData = useMemo(() => {
+    if (durationMinutes === null || questionCount === null) return null
+    return {
+      candidate_id: candidateId.trim(),
+      interview_config: {
+        mode: interviewMode,
+        language,
+        experience_level: experienceLevel,
+        duration_minutes: durationMinutes,
+        interview_style: interviewStyle,
+        question_count: questionCount,
+        objective,
+      },
+    }
+  }, [
     candidateId,
     durationMinutes,
     experienceLevel,
@@ -320,7 +373,7 @@ export function TextInterviewPage({
   ])
 
   useEffect(() => {
-    if (!candidateProfile || !interviewStartData.candidate_id || state) return
+    if (!uploadedCandidateProfile || !interviewStartData?.candidate_id || state) return
 
     let active = true
     setPreparationStatus('idle')
@@ -338,7 +391,7 @@ export function TextInterviewPage({
       active = false
       window.clearTimeout(timer)
     }
-  }, [candidateProfile, interviewStartData, state])
+  }, [interviewStartData, state, uploadedCandidateProfile])
 
   useEffect(() => {
     if (!starting) {
@@ -358,49 +411,63 @@ export function TextInterviewPage({
     const file = event.target.files?.[0] ?? null
     setError(null)
     setUploadError(null)
+    setResumeUploadStatus('idle')
     setCandidateId('')
-    setCandidateProfile(null)
+    setUploadedCandidateProfile(null)
     setProfileConfidence(0)
 
     if (!file) {
-      setSelectedFile(null)
+      setSelectedResumeFile(null)
       return
     }
 
     const validationError = validateResumeFile(file)
     if (validationError) {
-      setSelectedFile(null)
+      setSelectedResumeFile(null)
+      setResumeUploadStatus('error')
       setUploadError(validationError)
       event.target.value = ''
       return
     }
 
-    setSelectedFile(file)
+    setSelectedResumeFile(file)
+    if (backendAvailability === 'unreachable') void checkBackendAvailability()
+  }
+
+  const removeResume = () => {
+    if (resumeInputRef.current) resumeInputRef.current.value = ''
+    setSelectedResumeFile(null)
+    setUploadedCandidateProfile(null)
+    setCandidateId('')
+    setProfileConfidence(0)
+    setUploadError(null)
+    setResumeUploadStatus('idle')
+    setPreparationStatus('idle')
   }
 
   const uploadSelectedResume = async () => {
-    if (!selectedFile || uploading || candidateProfile) return
-    setUploading(true)
+    if (!selectedResumeFile || uploading || uploadedCandidateProfile) return
+    setResumeUploadStatus('uploading')
     setError(null)
     setUploadError(null)
     setCandidateId('')
-    setCandidateProfile(null)
+    setUploadedCandidateProfile(null)
     setProfileConfidence(0)
     try {
-      const response = await api.uploadResume(selectedFile)
+      const response = await api.uploadResume(selectedResumeFile)
       setCandidateId(response.candidate_id)
-      setCandidateProfile(response.profile)
+      setUploadedCandidateProfile(response.profile)
       setProfileConfidence(response.confidence_score)
+      setResumeUploadStatus('success')
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Resume analysis failed. Please try again.')
-    } finally {
-      setUploading(false)
+      setUploadError(getResumeUploadError(err))
+      setResumeUploadStatus('error')
     }
   }
 
   const startInterview = async (event: FormEvent) => {
     event.preventDefault()
-    if (!candidateId.trim()) return
+    if (!candidateId.trim() || !interviewStartData || !settingsAreValid) return
     setStarting(true)
     setLoading(true)
     setError(null)
@@ -415,7 +482,7 @@ export function TextInterviewPage({
         : `/text-interview/${response.session_id}`
       navigate(interviewPath, { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start interview')
+      setError(getUserFacingError(err, 'The interview could not be started. Please try again.'))
     } finally {
       setStarting(false)
       setLoading(false)
@@ -427,26 +494,56 @@ export function TextInterviewPage({
     const text = answer.trim()
     if (!sessionId || !text || submitting || !state?.current_turn) return
     setSubmitting(true)
+    setPendingAnswer(text)
+    setAnswer('')
     setError(null)
     try {
       const response: V2InterviewSessionResponse = await api.submitV2InterviewAnswer(sessionId, text)
       setState(response.state)
-      setAnswer('')
+      setPendingAnswer(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit answer')
+      setPendingAnswer(null)
+      setAnswer(text)
+      setError(getUserFacingError(err, 'Your answer could not be submitted. Please try again.'))
     } finally {
       setSubmitting(false)
     }
   }
 
-  if (showPreparationScreen && candidateProfile && !state) {
+  if (showPreparationScreen && uploadedCandidateProfile && !state) {
     return (
       <InterviewPreparationScreen
-        candidateName={candidateProfile.name}
+        candidateName={uploadedCandidateProfile.name}
         mode={interviewMode}
         experienceLevel={experienceLevel}
-        questionCount={questionCount}
+        questionCount={questionCount ?? preferences.questionCount}
         preparationReady={preparationStatus === 'ready'}
+      />
+    )
+  }
+
+  if (routeSessionId && !state) {
+    return (
+      <TextInterviewRoomStatus
+        error={error}
+        onBackToHistory={() => navigate('/interview-history')}
+      />
+    )
+  }
+
+  if (routeSessionId && state) {
+    return (
+      <TextInterviewRoom
+        state={state}
+        progress={progress}
+        answer={answer}
+        pendingAnswer={pendingAnswer}
+        submitting={submitting}
+        error={error}
+        onAnswerChange={setAnswer}
+        onSubmit={submitAnswer}
+        onViewReport={() => navigate(`/text-interview/${sessionId}/report`)}
+        onBackToHistory={() => navigate('/interview-history')}
       />
     )
   }
@@ -488,6 +585,7 @@ export function TextInterviewPage({
                 <div className="min-w-0">
                   <Label htmlFor="resume-file">Resume file</Label>
                   <Input
+                    ref={resumeInputRef}
                     id="resume-file"
                     type="file"
                     accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -503,32 +601,62 @@ export function TextInterviewPage({
                 <Button
                   type="button"
                   onClick={() => void uploadSelectedResume()}
-                  disabled={!selectedFile || uploading || loading || Boolean(candidateProfile)}
+                  disabled={
+                    !selectedResumeFile
+                    || uploading
+                    || loading
+                    || backendAvailability === 'unreachable'
+                    || Boolean(uploadedCandidateProfile)
+                  }
                   className="w-full md:w-auto"
                 >
                   {uploading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : candidateProfile ? (
+                  ) : uploadedCandidateProfile ? (
                     <CheckCircle2 className="h-4 w-4" />
                   ) : (
                     <Upload className="h-4 w-4" />
                   )}
-                  {uploading ? 'Analyzing...' : candidateProfile ? 'Analyzed' : 'Upload and Analyze'}
+                  {uploading ? 'Analyzing...' : uploadedCandidateProfile ? 'Analyzed' : 'Upload and Analyze'}
                 </Button>
               </div>
 
-              {selectedFile && (
+              {selectedResumeFile && (
                 <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2.5">
                   <FileText className="h-4 w-4 shrink-0 text-accent" />
-                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{selectedFile.name}</span>
-                  <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedFile.size)}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{selectedResumeFile.name}</span>
+                  <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedResumeFile.size)}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeResume}
+                    disabled={uploading || loading}
+                  >
+                    Remove resume
+                  </Button>
+                </div>
+              )}
+
+              {connectivityError && (
+                <div role="alert" className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm text-danger">
+                  <span>{connectivityError}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => void checkBackendAvailability()}
+                    disabled={backendAvailability === 'checking'}
+                  >
+                    Retry connection
+                  </Button>
                 </div>
               )}
 
               <div id="resume-upload-status" aria-live="polite" aria-atomic="true">
                 {uploading ? (
                   <p className="text-sm text-text-muted">Uploading and extracting the candidate profile...</p>
-                ) : candidateProfile ? (
+                ) : uploadedCandidateProfile ? (
                   <p className="flex items-center gap-2 text-sm text-success">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
                     Candidate profile is ready. Review it before starting the interview.
@@ -548,8 +676,8 @@ export function TextInterviewPage({
             </CardContent>
           </Card>
 
-          {candidateProfile && (
-            <CandidateProfilePreview profile={candidateProfile} confidenceScore={profileConfidence} />
+          {uploadedCandidateProfile && (
+            <CandidateProfilePreview profile={uploadedCandidateProfile} confidenceScore={profileConfidence} />
           )}
 
           <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -605,10 +733,18 @@ export function TextInterviewPage({
                       type="number"
                       min={5}
                       max={180}
-                      value={durationMinutes}
-                      onChange={(event) => setDurationMinutes(Number(event.target.value) || 30)}
+                      required
+                      value={durationInput}
+                      onChange={(event) => setDurationInput(event.target.value)}
                       disabled={loading || uploading}
+                      aria-invalid={durationMinutes === null}
+                      aria-describedby={durationMinutes === null ? 'interview-duration-error' : undefined}
                     />
+                    {durationMinutes === null && (
+                      <p id="interview-duration-error" className="mt-1.5 text-xs text-danger">
+                        Enter a whole number from 5 to 180.
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="interview-question-count">Question Count</Label>
@@ -616,10 +752,18 @@ export function TextInterviewPage({
                       id="interview-question-count"
                       type="number"
                       min={1}
-                      value={questionCount}
-                      onChange={(event) => setQuestionCount(Number(event.target.value) || 10)}
+                      required
+                      value={questionCountInput}
+                      onChange={(event) => setQuestionCountInput(event.target.value)}
                       disabled={loading || uploading}
+                      aria-invalid={questionCount === null}
+                      aria-describedby={questionCount === null ? 'interview-question-count-error' : undefined}
                     />
+                    {questionCount === null && (
+                      <p id="interview-question-count-error" className="mt-1.5 text-xs text-danger">
+                        Enter a whole number of at least 1.
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -635,7 +779,7 @@ export function TextInterviewPage({
                 <div className="flex justify-end">
                   <Button
                     type="submit"
-                    disabled={loading || uploading || !candidateId}
+                    disabled={loading || uploading || !candidateId || !uploadedCandidateProfile || !settingsAreValid}
                   >
                     {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                     Start
@@ -659,7 +803,7 @@ export function TextInterviewPage({
                 <div className="flex justify-between gap-3">
                   <span>Candidate</span>
                   <span className="max-w-[180px] truncate font-medium text-text-primary">
-                    {candidateProfile?.name ?? 'CV required'}
+                    {uploadedCandidateProfile?.name ?? 'CV required'}
                   </span>
                 </div>
                 <div className="flex justify-between gap-3">
@@ -672,145 +816,17 @@ export function TextInterviewPage({
                 </div>
                 <div className="flex justify-between gap-3">
                   <span>Questions</span>
-                  <span className="font-medium text-text-primary">{questionCount}</span>
+                  <span className="font-medium text-text-primary">{questionCount ?? '—'}</span>
                 </div>
                 <div className="flex justify-between gap-3">
                   <span>Minutes</span>
-                  <span className="font-medium text-text-primary">{durationMinutes}</span>
+                  <span className="font-medium text-text-primary">{durationMinutes ?? '—'}</span>
                 </div>
               </div>
             </div>
           </form>
         </div>
-      ) : (
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-          <section className="space-y-5">
-            <div className="rounded-lg border border-border bg-surface p-5">
-              <div className="mb-4 flex items-center justify-between gap-4">
-                <div>
-                  <div className="text-xs font-medium uppercase text-text-faint">Progress</div>
-                  <div className="mt-1 text-sm text-text-muted">
-                    Question {progress.current} of {progress.total}
-                  </div>
-                </div>
-                <Badge variant={currentQuestion?.difficulty === 'hard' ? 'warning' : 'accent'}>
-                  {currentQuestion?.difficulty ?? 'done'}
-                </Badge>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-surface-raised">
-                <div className="h-full bg-accent transition-[width] duration-300" style={{ width: `${progress.pct}%` }} />
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{isFinished ? 'Interview Complete' : currentQuestion?.topic || state.current_turn?.topic}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-5">
-                {isFinished ? (
-                  <div className="flex items-start gap-3 rounded-lg border border-success/30 bg-success/10 p-4">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-success" />
-                    <div>
-                      <div className="text-sm font-semibold text-text-primary">All current questions are complete.</div>
-                      <div className="mt-1 text-sm text-text-muted">
-                        Completed turns: {state.completed_turns.length}
-                      </div>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <Button type="button" onClick={() => navigate(`/text-interview/${sessionId}/report`)}>
-                          <FileText className="h-4 w-4" />
-                          View Final Report
-                        </Button>
-                        <Button type="button" variant="secondary" onClick={() => navigate('/interview-history')}>
-                          <History className="h-4 w-4" />
-                          Back to History
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="rounded-lg border border-border bg-surface-raised p-5">
-                      <div className="mb-3 flex items-center gap-2 text-xs font-medium uppercase text-text-faint">
-                        <MessageSquareText className="h-4 w-4 text-accent" />
-                        Current Question
-                      </div>
-                      <p className="text-base leading-7 text-text-primary">{questionText(state.current_turn)}</p>
-                    </div>
-
-                    {currentQuestion?.expected_answer_points?.length ? (
-                      <div>
-                        <div className="mb-2 text-xs font-medium uppercase text-text-faint">Expected Signals</div>
-                        <div className="flex flex-wrap gap-2">
-                          {currentQuestion.expected_answer_points.map((point) => (
-                            <Badge key={point} variant="default">{point}</Badge>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <form onSubmit={submitAnswer} className="space-y-3">
-                      <div>
-                        <Label htmlFor="interview-answer">Answer</Label>
-                        <Textarea
-                          id="interview-answer"
-                          rows={8}
-                          value={answer}
-                          onChange={(event) => setAnswer(event.target.value)}
-                          disabled={submitting}
-                          placeholder="Type your answer..."
-                        />
-                      </div>
-                      <div className="flex justify-end">
-                        <Button type="submit" disabled={submitting || !answer.trim()}>
-                          {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                          Submit Answer
-                        </Button>
-                      </div>
-                    </form>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          </section>
-
-          <aside className="space-y-5">
-            <div className="rounded-lg border border-border bg-surface p-5">
-              <div className="text-sm font-semibold text-text-primary">
-                {state.candidate_profile.name}
-              </div>
-              <div className="mt-1 text-xs text-text-muted">
-                {state.candidate_profile.specialization || 'Candidate'}
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {state.candidate_profile.skills.slice(0, 8).map((skill) => (
-                  <Badge key={skill} variant="accent">{skill}</Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-border bg-surface p-5">
-              <div className="mb-3 text-sm font-semibold text-text-primary">Completed Turns</div>
-              <div className="space-y-3">
-                {state.completed_turns.length === 0 ? (
-                  <div className="text-sm text-text-muted">No completed turns yet.</div>
-                ) : (
-                  state.completed_turns.map((turn, index) => (
-                    <div key={`${turn.turn_id}-${index}`} className="rounded-lg border border-border bg-surface-raised p-3">
-                      <div className="mb-1 flex items-center justify-between gap-2">
-                        <span className="truncate text-xs font-medium text-text-primary">{turn.topic || `Turn ${index + 1}`}</span>
-                        <Badge variant="success">{turn.evaluation?.overall_score ?? 0}/10</Badge>
-                      </div>
-                      {turn.evaluation?.feedback && (
-                        <p className="line-clamp-3 text-xs leading-5 text-text-muted">{turn.evaluation.feedback}</p>
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </aside>
-        </div>
-      )}
+      ) : null}
     </div>
   )
 }

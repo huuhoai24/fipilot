@@ -30,7 +30,8 @@ class InterviewMode(str, Enum):
 
 
 Difficulty = Literal["easy", "medium", "hard"]
-QuestionType = Literal["conceptual", "practical", "project_deep_dive", "system_design", "debugging", "follow_up"]
+QuestionType = Literal["opening", "conceptual", "practical", "project_deep_dive", "system_design", "debugging", "follow_up"]
+InterviewPhase = Literal["opening", "interviewing", "closing"]
 InterviewLanguage = Literal["vi", "en"]
 ExperienceLevel = Literal["intern", "junior", "middle", "senior"]
 InterviewStyle = Literal["technical", "behavioral", "mixed"]
@@ -118,6 +119,9 @@ class InterviewSessionState(BaseModel):
     candidate_profile: CandidateProfile
     interview_config: InterviewConfig
     interview_plan: InterviewPlan
+    phase: InterviewPhase = "interviewing"
+    opening_turn: InterviewTurn | None = None
+    pending_turn: InterviewTurn | None = None
     current_turn: InterviewTurn | None = None
     completed_turns: list[InterviewTurn] = Field(default_factory=list)
     current_question_index: int = Field(default=0, ge=0)

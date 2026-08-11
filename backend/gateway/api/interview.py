@@ -13,6 +13,11 @@ from infrastructure.repositories import SQLiteInterviewRepository
 from orchestrator.interview_orchestrator import InterviewOrchestrator
 from services.interview_preparation import InterviewPreparationCache
 from shared.schemas import CurrentUser, InterviewConfig, InterviewSessionState, InterviewStatus
+from orchestrator.conversation_flow import (
+    answer_opening,
+    begin_text_conversation,
+    enter_closing_if_finished,
+)
 
 
 router = APIRouter(prefix="/api/v2/interview", tags=["v2-interview"])
@@ -99,6 +104,7 @@ async def start_interview(
             request.interview_config,
         ),
     )
+    state = begin_text_conversation(state)
     session = repository.create_session(
         request.candidate_id,
         role=candidate_profile.specialization,
@@ -125,7 +131,10 @@ async def submit_answer(
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
     state = _load_state(repository, session_id, current_user.uid)
-    updated_state = await orchestrator.submit_answer(state, request.answer)
+    updated_state = answer_opening(state, request.answer)
+    if updated_state is None:
+        updated_state = await orchestrator.submit_answer(state, request.answer)
+        updated_state = enter_closing_if_finished(updated_state)
     _save_state(repository, session_id, updated_state, current_user.uid)
 
     if updated_state.current_turn is not None:

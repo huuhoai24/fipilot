@@ -147,6 +147,86 @@ describe('Candidate Profile API adapter', () => {
   })
 })
 
+describe('Connectivity and resume upload API adapter', () => {
+  it('checks backend health without requesting a Firebase token', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ status: 'ok' }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(api.checkHealth()).resolves.toEqual({ status: 'ok' })
+
+    expect(mocks.getIdToken).not.toHaveBeenCalled()
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(/\/health$/),
+      expect.objectContaining({ headers: { Accept: 'application/json' } }),
+    )
+  })
+
+  it('classifies an unreachable backend health endpoint', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Failed to fetch')))
+
+    await expect(api.checkHealth()).rejects.toMatchObject({
+      category: 'BACKEND_UNREACHABLE',
+      code: 'backend_unreachable',
+      retryable: true,
+    })
+  })
+
+  it('classifies Firebase token acquisition failure without exposing a token', async () => {
+    mocks.getIdToken.mockRejectedValue(new Error('Firebase: internal token detail'))
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(api.uploadResume(new File(['resume'], 'resume.pdf'))).rejects.toMatchObject({
+      category: 'AUTH_FAILURE',
+      code: 'authentication_failed',
+      status: 401,
+    })
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('classifies upload validation, browser network, and server failures', async () => {
+    mocks.getIdToken.mockResolvedValue('firebase-token')
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 422,
+        json: async () => ({
+          error: {
+            code: 'not_a_resume',
+            message: 'This document does not appear to be a resume.',
+          },
+        }),
+      })
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        json: async () => ({}),
+      })
+    vi.stubGlobal('fetch', fetchMock)
+    const file = new File(['resume'], 'resume.pdf')
+
+    await expect(api.uploadResume(file)).rejects.toMatchObject({
+      category: 'UPLOAD_VALIDATION_ERROR',
+      code: 'not_a_resume',
+      status: 422,
+    })
+    await expect(api.uploadResume(file)).rejects.toMatchObject({
+      category: 'CORS_OR_NETWORK',
+      code: 'network_request_failed',
+      status: 0,
+    })
+    await expect(api.uploadResume(file)).rejects.toMatchObject({
+      category: 'SERVER_ERROR',
+      status: 500,
+    })
+  })
+})
+
 describe('Interview report API adapter', () => {
   it('deduplicates concurrent report generation requests for one session', async () => {
     mocks.getIdToken.mockResolvedValue('firebase-token')

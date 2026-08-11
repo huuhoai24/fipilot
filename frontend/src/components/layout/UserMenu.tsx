@@ -54,7 +54,7 @@ export function UserMenu({ sidebarCollapsed }: UserMenuProps) {
     try {
       await logout()
       closeUserMenu()
-      navigate('/login', { replace: true })
+      navigate('/', { replace: true })
     } catch {
       setLogoutError('Could not sign out. Please try again.')
       setLoggingOut(false)

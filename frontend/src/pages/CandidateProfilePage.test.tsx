@@ -344,7 +344,7 @@ describe('CandidateProfilePage', () => {
     ).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Sign in again' })).toHaveAttribute(
       'href',
-      '/login',
+      '/',
     )
   })
 

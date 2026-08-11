@@ -180,7 +180,7 @@ After Hosting deployment, add the generated `PROJECT_ID.web.app` domain, `PROJEC
 Deploy the existing React SPA from `frontend`:
 
 ```bash
-npm run build
+npm run build:production
 npx firebase-tools deploy --only hosting --project "$PROJECT_ID"
 ```
 

@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { ApiError, api } from '@/lib/api'
+import { getUserFacingError } from '@/lib/userFacingError'
 import type { HiringRecommendation, InterviewReport } from '@/types'
 
 type LoadPhase = 'loading' | 'generating' | 'ready' | 'incomplete' | 'error'
@@ -54,7 +55,7 @@ export function InterviewReportPage() {
       return
     } catch (loadError) {
       if (!(loadError instanceof ApiError) || loadError.status !== 404) {
-        setError(loadError instanceof Error ? loadError.message : 'Failed to load report')
+        setError(getUserFacingError(loadError, 'The interview report could not be loaded. Please try again.'))
         setPhase('error')
         return
       }
@@ -66,7 +67,7 @@ export function InterviewReportPage() {
       setReport(generated.report)
       setPhase('ready')
     } catch (generationError) {
-      setError(generationError instanceof Error ? generationError.message : 'Failed to generate report')
+      setError(getUserFacingError(generationError, 'The interview report could not be generated. Please try again.'))
       setPhase(generationError instanceof ApiError && generationError.status === 409 ? 'incomplete' : 'error')
     }
   }

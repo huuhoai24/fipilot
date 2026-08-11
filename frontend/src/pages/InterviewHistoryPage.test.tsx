@@ -25,6 +25,22 @@ afterEach(() => {
 })
 
 describe('InterviewHistoryPage session continuation', () => {
+  it('shows a retryable connection message without exposing fetch internals', async () => {
+    mocks.listInterviewSessions.mockRejectedValue(new TypeError('Failed to fetch'))
+
+    render(
+      <MemoryRouter initialEntries={['/interview-history']}>
+        <InterviewHistoryPage />
+      </MemoryRouter>,
+    )
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'We could not load your interview history. Check your connection and try again.',
+    )
+    expect(screen.queryByText('Failed to fetch')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try again' })).toBeEnabled()
+  })
+
   it('opens an in-progress voice session in Speech Interview', async () => {
     mocks.listInterviewSessions.mockResolvedValue({
       items: [{

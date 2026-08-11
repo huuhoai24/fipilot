@@ -26,7 +26,7 @@ export function AppLayout() {
     setLogoutError('')
     try {
       await logout()
-      navigate('/login', { replace: true })
+      navigate('/', { replace: true })
     } catch {
       setLogoutError('Could not sign out. Please try again.')
       setLoggingOut(false)

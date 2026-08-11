@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   AlertCircle,
   ArrowRight,
@@ -9,6 +9,7 @@ import {
   Loader2,
   MessageSquareText,
   Moon,
+  Info,
   Sun,
   Volume2,
 } from 'lucide-react'
@@ -16,6 +17,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Button, ButtonLink } from '@/components/ui/Button'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { useAuth } from '@/contexts/AuthContext'
+import { getAuthFailureMessage } from '@/lib/userFacingError'
 import { useUIStore } from '@/store/useAppStore'
 
 const workflow = [
@@ -54,7 +56,35 @@ export function LandingPage() {
   const { theme, toggleTheme } = useUIStore()
   const navigate = useNavigate()
   const [signingIn, setSigningIn] = useState(false)
-  const [signInError, setSignInError] = useState('')
+  const [signInFeedback, setSignInFeedback] = useState<{
+    kind: 'cancelled' | 'error'
+    message: string
+  } | null>(null)
+
+  useEffect(() => {
+    if (!signingIn || user) return
+
+    let popupOpened = false
+    let settleTimer: number | undefined
+    const handleBlur = () => {
+      popupOpened = true
+    }
+    const handleFocus = () => {
+      if (!popupOpened) return
+      settleTimer = window.setTimeout(() => {
+        setSigningIn(false)
+        setSignInFeedback(getAuthFailureMessage({ code: 'auth/popup-closed-by-user' }))
+      }, 1500)
+    }
+
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('focus', handleFocus)
+    return () => {
+      window.removeEventListener('blur', handleBlur)
+      window.removeEventListener('focus', handleFocus)
+      if (settleTimer !== undefined) window.clearTimeout(settleTimer)
+    }
+  }, [signingIn, user])
 
   const handleWorkspaceAccess = async () => {
     if (user) {
@@ -63,12 +93,12 @@ export function LandingPage() {
     }
 
     setSigningIn(true)
-    setSignInError('')
+    setSignInFeedback(null)
     try {
       await signInWithGoogle()
       navigate('/text-interview', { replace: true })
     } catch (error) {
-      setSignInError(error instanceof Error ? error.message : 'Google sign-in failed.')
+      setSignInFeedback(getAuthFailureMessage(error))
     } finally {
       setSigningIn(false)
     }
@@ -142,7 +172,7 @@ export function LandingPage() {
             className="absolute inset-0 h-full w-full object-cover object-[66%_center]"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-black/55" aria-hidden="true" />
+          <div className="absolute inset-0 bg-black/25 md:bg-black/20" aria-hidden="true" />
           <div className="relative mx-auto flex min-h-[620px] max-w-[1280px] items-center px-4 py-16 md:px-6 lg:min-h-[calc(100dvh-112px)] lg:max-h-[760px] lg:px-10">
             <div className="max-w-[600px] text-white">
               <p className="mb-4 text-sm font-semibold text-[#8af0ce]">CV-driven interview practice</p>
@@ -181,13 +211,21 @@ export function LandingPage() {
                   Explore the process
                 </a>
               </div>
-              {signInError && (
+              {signInFeedback && (
                 <div
-                  role="alert"
-                  className="mt-5 flex max-w-[560px] items-start gap-2 rounded-lg border border-red-300/60 bg-black/45 px-4 py-3 text-sm text-white"
+                  role={signInFeedback.kind === 'error' ? 'alert' : 'status'}
+                  className={`mt-5 flex max-w-[560px] items-start gap-2 rounded-lg border px-4 py-3 text-sm ${
+                    signInFeedback.kind === 'error'
+                      ? 'border-red-300/60 bg-black/45 text-white'
+                      : 'border-white/35 bg-black/35 text-white/90'
+                  }`}
                 >
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-200" aria-hidden="true" />
-                  <span>{signInError}</span>
+                  {signInFeedback.kind === 'error' ? (
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                  )}
+                  <span>{signInFeedback.message}</span>
                 </div>
               )}
             </div>

@@ -13,9 +13,20 @@ import { firebaseAuth } from '@/lib/firebase'
 const configuredApiUrl = import.meta.env.VITE_API_BASE_URL
 const API_ROOT_URL = configuredApiUrl
   ? configuredApiUrl.replace(/\/api\/?$/, '').replace(/\/$/, '')
-  : import.meta.env.DEV
-    ? 'http://127.0.0.1:8000'
-    : ''
+  : ''
+
+export type ApiFailureCategory =
+  | 'BACKEND_UNREACHABLE'
+  | 'AUTH_FAILURE'
+  | 'CORS_OR_NETWORK'
+  | 'UPLOAD_VALIDATION_ERROR'
+  | 'SERVER_ERROR'
+
+function developmentLog(message: string): void {
+  if (import.meta.env.DEV) console.info(message)
+}
+
+developmentLog(`[API] base URL: ${API_ROOT_URL || window.location.origin}`)
 
 function voiceWebSocketUrl(sessionId: string | number): string {
   const baseUrl = API_ROOT_URL || window.location.origin
@@ -31,10 +42,17 @@ export class ApiError extends Error {
     public readonly code = 'request_failed',
     public readonly issues: unknown[] = [],
     public readonly retryable = false,
+    public readonly category: ApiFailureCategory = 'SERVER_ERROR',
   ) {
     super(message)
     this.name = 'ApiError'
   }
+}
+
+function failureCategoryForStatus(status: number): ApiFailureCategory {
+  if (status === 401 || status === 403) return 'AUTH_FAILURE'
+  if (status >= 400 && status < 500) return 'UPLOAD_VALIDATION_ERROR'
+  return 'SERVER_ERROR'
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -47,12 +65,46 @@ async function requestJsonResponse<T>(
   refreshedToken = false
 ): Promise<{ data: T; response: Response }> {
   const user = firebaseAuth.currentUser
-  if (!user) throw new ApiError('Authentication is required. Please sign in again.', 401)
+  if (!user) {
+    throw new ApiError(
+      'Authentication is required. Please sign in again.',
+      401,
+      'authentication_required',
+      [],
+      false,
+      'AUTH_FAILURE',
+    )
+  }
 
-  const token = await user.getIdToken(refreshedToken)
+  let token: string
+  try {
+    token = await user.getIdToken(refreshedToken)
+    developmentLog('[API] authenticated: true')
+  } catch {
+    throw new ApiError(
+      'Authentication could not be verified.',
+      401,
+      'authentication_failed',
+      [],
+      false,
+      'AUTH_FAILURE',
+    )
+  }
   const headers = new Headers(init?.headers)
   headers.set('Authorization', `Bearer ${token}`)
-  const response = await fetch(url, { ...init, headers })
+  let response: Response
+  try {
+    response = await fetch(url, { ...init, headers })
+  } catch {
+    throw new ApiError(
+      'Network request failed.',
+      0,
+      'network_request_failed',
+      [],
+      true,
+      'CORS_OR_NETWORK',
+    )
+  }
   if (response.status === 401 && !refreshedToken) {
     return requestJsonResponse<T>(url, init, true)
   }
@@ -76,11 +128,35 @@ async function requestJsonResponse<T>(
         : 'request_failed',
       Array.isArray(structuredError?.issues) ? structuredError.issues : [],
       structuredError?.retryable === true,
+      failureCategoryForStatus(response.status),
     )
   }
   return {
     data: await response.json() as T,
     response,
+  }
+}
+
+async function checkHealth(): Promise<{ status: string }> {
+  try {
+    const response = await fetch(`${API_ROOT_URL}/health`, {
+      headers: { Accept: 'application/json' },
+    })
+    if (!response.ok) throw new Error(`Health returned ${response.status}`)
+    const data = await response.json() as { status?: unknown }
+    if (data.status !== 'ok') throw new Error('Health response was invalid')
+    developmentLog('[API] health: OK')
+    return { status: 'ok' }
+  } catch {
+    developmentLog('[API] health: BACKEND_UNREACHABLE')
+    throw new ApiError(
+      'Backend service is unavailable.',
+      0,
+      'backend_unreachable',
+      [],
+      true,
+      'BACKEND_UNREACHABLE',
+    )
   }
 }
 
@@ -108,10 +184,17 @@ export interface StartV2InterviewData {
 async function uploadResume(file: File): Promise<ResumeUploadResponse> {
   const formData = new FormData()
   formData.append('file', file)
-  return requestJson<ResumeUploadResponse>(`${API_ROOT_URL}/api/v2/resume/upload`, {
-    method: 'POST',
-    body: formData,
-  })
+  developmentLog('[Resume] upload request started')
+  try {
+    return await requestJson<ResumeUploadResponse>(`${API_ROOT_URL}/api/v2/resume/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+  } catch (error) {
+    const category = error instanceof ApiError ? error.category : 'CORS_OR_NETWORK'
+    developmentLog(`[Resume] upload failed: ${category}`)
+    throw error
+  }
 }
 
 const reportGenerationRequests = new Map<
@@ -147,6 +230,7 @@ function generateInterviewReport(
 }
 
 export const api = {
+  checkHealth,
   uploadResume,
   uploadV2Resume: uploadResume,
   getVoiceInterviewWebSocketUrl: voiceWebSocketUrl,

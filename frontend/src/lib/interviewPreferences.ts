@@ -18,17 +18,68 @@ export const defaultInterviewPreferences: InterviewPreferences = {
   objective: 'Evaluate technical knowledge and practical experience',
 }
 
-const STORAGE_KEY = 'interview-preferences'
+export const INTERVIEW_PREFERENCES_STORAGE_KEY = 'ai-interview:text-settings:v1'
+const LEGACY_STORAGE_KEY = 'interview-preferences'
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function isIntegerInRange(value: unknown, minimum: number, maximum = Number.MAX_SAFE_INTEGER): value is number {
+  return typeof value === 'number'
+    && Number.isInteger(value)
+    && value >= minimum
+    && value <= maximum
+}
+
+function normalizeInterviewPreferences(value: unknown): InterviewPreferences {
+  if (!isRecord(value)) return { ...defaultInterviewPreferences }
+
+  return {
+    language: value.language === 'vi' || value.language === 'en'
+      ? value.language
+      : defaultInterviewPreferences.language,
+    experienceLevel: value.experienceLevel === 'intern'
+      || value.experienceLevel === 'junior'
+      || value.experienceLevel === 'middle'
+      || value.experienceLevel === 'senior'
+      ? value.experienceLevel
+      : defaultInterviewPreferences.experienceLevel,
+    interviewStyle: value.interviewStyle === 'technical'
+      || value.interviewStyle === 'behavioral'
+      || value.interviewStyle === 'mixed'
+      ? value.interviewStyle
+      : defaultInterviewPreferences.interviewStyle,
+    durationMinutes: isIntegerInRange(value.durationMinutes, 5, 180)
+      ? value.durationMinutes
+      : defaultInterviewPreferences.durationMinutes,
+    questionCount: isIntegerInRange(value.questionCount, 1)
+      ? value.questionCount
+      : defaultInterviewPreferences.questionCount,
+    objective: typeof value.objective === 'string'
+      ? value.objective
+      : defaultInterviewPreferences.objective,
+  }
+}
 
 export function loadInterviewPreferences(): InterviewPreferences {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') as Partial<InterviewPreferences>
-    return { ...defaultInterviewPreferences, ...saved }
+    const stored = localStorage.getItem(INTERVIEW_PREFERENCES_STORAGE_KEY)
+      ?? localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (!stored) return { ...defaultInterviewPreferences }
+    return normalizeInterviewPreferences(JSON.parse(stored) as unknown)
   } catch {
-    return defaultInterviewPreferences
+    return { ...defaultInterviewPreferences }
   }
 }
 
 export function saveInterviewPreferences(preferences: InterviewPreferences): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences))
+  try {
+    localStorage.setItem(
+      INTERVIEW_PREFERENCES_STORAGE_KEY,
+      JSON.stringify(normalizeInterviewPreferences(preferences)),
+    )
+  } catch {
+    // Storage may be unavailable or full; settings remain usable for this page lifetime.
+  }
 }

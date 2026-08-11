@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.api.routes.interview import get_interview_orchestrator, router
-from core.dependencies import get_current_user
+from core.dependencies import get_current_user, get_interview_preparation_cache
 from app.schemas import (
     AnswerEvaluation,
     CandidateProfile,
@@ -21,6 +21,7 @@ from app.schemas import (
 )
 from database import Base, get_db
 from app.repositories import SQLiteInterviewRepository
+from services.interview_preparation import InterviewPreparationCache
 
 
 class MockInterviewOrchestrator:
@@ -100,6 +101,8 @@ class InterviewApiTests(unittest.TestCase):
         self.app.dependency_overrides[get_db] = override_get_db
         self.orchestrator = MockInterviewOrchestrator()
         self.app.dependency_overrides[get_interview_orchestrator] = lambda: self.orchestrator
+        self.preparation_cache = InterviewPreparationCache()
+        self.app.dependency_overrides[get_interview_preparation_cache] = lambda: self.preparation_cache
         self.app.dependency_overrides[get_current_user] = lambda: CurrentUser(uid="user-1")
         self.client = TestClient(self.app)
 
@@ -135,7 +138,17 @@ class InterviewApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         body = response.json()
-        self.assertEqual(body["state"]["current_turn"]["question"]["topic"], "YOLO Optimization")
+        self.assertEqual(body["state"]["phase"], "opening")
+        self.assertEqual(body["state"]["current_turn"]["question"]["topic"], "Introduction")
+        self.assertIn("Tran Thi B", body["state"]["current_turn"]["question"]["question"])
+        self.assertIn(
+            "briefly introduce yourself",
+            body["state"]["current_turn"]["question"]["question"],
+        )
+        self.assertEqual(
+            body["state"]["pending_turn"]["question"]["topic"],
+            "YOLO Optimization",
+        )
         self.assertEqual(body["state"]["interview_config"]["language"], "en")
         self.assertEqual(body["state"]["interview_config"]["mode"], "text")
         self.assertTrue(body["session_id"])
@@ -189,7 +202,7 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(start_response.status_code, 200)
         self.assertEqual(self.orchestrator.start_calls, 1)
 
-    def test_submit_answer_updates_session_state(self):
+    def test_opening_answer_reveals_first_question_and_final_answer_enters_closing(self):
         start_response = self.client.post(
             "/api/v2/interview/start",
             json={
@@ -199,16 +212,39 @@ class InterviewApiTests(unittest.TestCase):
         )
         session_id = start_response.json()["session_id"]
 
-        response = self.client.post(
+        opening_response = self.client.post(
+            f"/api/v2/interview/{session_id}/answer",
+            json={"answer": "I build and optimize computer vision systems."},
+        )
+
+        self.assertEqual(opening_response.status_code, 200)
+        opening_body = opening_response.json()
+        self.assertEqual(opening_body["state"]["phase"], "interviewing")
+        self.assertEqual(
+            opening_body["state"]["opening_turn"]["answer"],
+            "I build and optimize computer vision systems.",
+        )
+        self.assertIsNone(opening_body["state"]["opening_turn"]["evaluation"])
+        self.assertEqual(
+            opening_body["state"]["current_turn"]["question"]["topic"],
+            "YOLO Optimization",
+        )
+        self.assertEqual(opening_body["state"]["completed_turns"], [])
+
+        final_response = self.client.post(
             f"/api/v2/interview/{session_id}/answer",
             json={"answer": "I profile bottlenecks and export to TensorRT."},
         )
 
-        self.assertEqual(response.status_code, 200)
-        body = response.json()
+        self.assertEqual(final_response.status_code, 200)
+        body = final_response.json()
+        self.assertEqual(body["state"]["phase"], "closing")
         self.assertIsNone(body["state"]["current_turn"])
         self.assertEqual(body["state"]["completed_turns"][0]["status"], "evaluated")
-        self.assertEqual(body["state"]["completed_turns"][0]["answer"], "I profile bottlenecks and export to TensorRT.")
+        self.assertEqual(
+            body["state"]["completed_turns"][0]["answer"],
+            "I profile bottlenecks and export to TensorRT.",
+        )
         repository = SQLiteInterviewRepository(self.db)
         self.assertEqual(
             repository.get_session(session_id, user_id="user-1").status,
@@ -231,6 +267,11 @@ class InterviewApiTests(unittest.TestCase):
         body = response.json()
         self.assertEqual(body["session_id"], session_id)
         self.assertEqual(body["state"]["candidate_profile"]["name"], "Tran Thi B")
+        self.assertEqual(body["state"]["phase"], "opening")
+        self.assertEqual(
+            body["state"]["pending_turn"]["question"]["topic"],
+            "YOLO Optimization",
+        )
 
 
 if __name__ == "__main__":

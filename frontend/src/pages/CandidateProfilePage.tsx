@@ -6,6 +6,7 @@ import {
   profileTargetForFieldPath,
 } from '@/components/candidate-profile/InterviewReadinessSummary'
 import { ApiError, api } from '@/lib/api'
+import { getUserFacingError } from '@/lib/userFacingError'
 import type {
   CandidateEducation,
   CandidateExperience,
@@ -373,10 +374,10 @@ export function CandidateProfilePage() {
       } else {
         setLoadState({
           phase: 'error',
-          message:
-            error instanceof Error
-              ? error.message
-              : 'Candidate Profile could not be loaded.',
+          message: getUserFacingError(
+            error,
+            'Candidate Profile could not be loaded. Please try again.',
+          ),
         })
       }
     }
@@ -427,7 +428,7 @@ export function CandidateProfilePage() {
         <div className="mt-6 flex flex-wrap gap-4">
           {authenticationRequired ? (
             <ButtonLink
-              to="/login"
+              to="/"
               treatment="restrained"
               className="h-12 px-4"
             >

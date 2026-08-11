@@ -4,6 +4,7 @@ import { AlertCircle, Loader2, LogIn } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { useAuth } from '@/contexts/AuthContext'
+import { getAuthFailureMessage } from '@/lib/userFacingError'
 
 export function LoginPage() {
   const { user, loading, signInWithGoogle } = useAuth()
@@ -22,7 +23,7 @@ export function LoginPage() {
       const destination = (location.state as { from?: string } | null)?.from
       navigate(destination || '/text-interview', { replace: true })
     } catch (signInError) {
-      setError(signInError instanceof Error ? signInError.message : 'Google sign-in failed.')
+      setError(getAuthFailureMessage(signInError).message)
     } finally {
       setSubmitting(false)
     }
