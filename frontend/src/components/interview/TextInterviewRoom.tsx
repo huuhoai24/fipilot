@@ -2,6 +2,8 @@ import React, { type FormEvent, type KeyboardEvent, useEffect, useRef } from 're
 import { CheckCircle2, FileText, History, Loader2, Send } from 'lucide-react'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Button } from '@/components/ui/Button'
+import { AI_INTERVIEWER_LABEL, type InterviewerPersona } from '@/lib/interviewerPersonas'
+import { cn } from '@/lib/utils'
 import type { V2InterviewSessionState, V2InterviewTurn } from '@/types'
 
 interface InterviewProgress {
@@ -11,6 +13,7 @@ interface InterviewProgress {
 
 interface TextInterviewRoomProps {
   state: V2InterviewSessionState
+  persona: InterviewerPersona
   progress: InterviewProgress
   answer: string
   pendingAnswer: string | null
@@ -114,10 +117,30 @@ function RoomHeader({
   )
 }
 
-function InterviewerAvatar() {
+function InterviewerAvatar({
+  persona,
+  size = 'message',
+}: {
+  persona: InterviewerPersona
+  size?: 'message' | 'profile'
+}) {
+  const sizeClasses = size === 'profile'
+    ? 'h-14 w-14 text-base'
+    : 'h-10 w-10 text-sm'
+
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-accent bg-accent-soft">
-      <BrandLogo className="h-6 w-6" />
+    <div
+      className={cn(
+        'flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-accent bg-accent-soft font-semibold text-accent',
+        sizeClasses,
+      )}
+      aria-hidden="true"
+    >
+      {persona.avatar.src ? (
+        <img src={persona.avatar.src} alt="" className="h-full w-full object-cover" />
+      ) : (
+        persona.avatar.initials
+      )}
     </div>
   )
 }
@@ -133,12 +156,15 @@ function CandidateAvatar({ name }: { name: string }) {
   )
 }
 
-const InterviewerMessage = React.forwardRef<HTMLLIElement, { children: React.ReactNode }>(
-  ({ children }, ref) => (
+const InterviewerMessage = React.forwardRef<HTMLLIElement, {
+  persona: InterviewerPersona
+  children: React.ReactNode
+}>(
+  ({ persona, children }, ref) => (
     <li ref={ref} className="grid max-w-4xl scroll-mb-80 grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3 sm:gap-4 md:scroll-mb-72">
-      <InterviewerAvatar />
+      <InterviewerAvatar persona={persona} />
       <article className="min-w-0 rounded-lg border border-border bg-surface px-4 py-3 sm:px-5 sm:py-4">
-        <p className="mb-1 text-sm font-semibold text-accent">FiPilot interviewer</p>
+        <p className="mb-1 text-sm font-semibold text-accent">{persona.name}</p>
         <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
           {children}
         </div>
@@ -215,6 +241,7 @@ export function TextInterviewRoomStatus({
 
 export function TextInterviewRoom({
   state,
+  persona,
   progress,
   answer,
   pendingAnswer,
@@ -257,18 +284,20 @@ export function TextInterviewRoom({
       <main id="main-content" className="flex-1">
         <div className="mx-auto w-full max-w-5xl px-4 pb-8 pt-6 sm:px-6 lg:px-10">
           <section className="flex items-center gap-4 border-b border-border pb-6" aria-labelledby="interviewer-title">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-accent bg-accent-soft">
-              <BrandLogo className="h-8 w-8" />
-            </div>
+            <InterviewerAvatar persona={persona} size="profile" />
             <div className="min-w-0">
+              <p className="mb-1 text-xs font-medium text-text-muted">{AI_INTERVIEWER_LABEL}</p>
               <h1 id="interviewer-title" className="font-display text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
-                FiPilot interviewer
+                {persona.name}
               </h1>
-              <p className="mt-1 text-sm font-medium capitalize text-accent">
-                {state.interview_config.interview_style} interviewer
-              </p>
+              {persona.role !== AI_INTERVIEWER_LABEL && (
+                <p className="mt-1 text-sm font-medium text-accent">{persona.role}</p>
+              )}
+              {persona.specialization && (
+                <p className="mt-1 text-sm leading-6 text-text-primary">{persona.specialization}</p>
+              )}
               <p className="mt-1 max-w-2xl text-sm leading-6 text-text-muted">
-                I’ll guide you through this interview one question at a time.
+                {persona.shortDescription}
               </p>
             </div>
           </section>
@@ -290,7 +319,7 @@ export function TextInterviewRoom({
             <ol className="space-y-4" aria-live="polite">
               {state.opening_turn && (
                 <>
-                  <InterviewerMessage>
+                  <InterviewerMessage persona={persona}>
                     {questionText(state.opening_turn)}
                   </InterviewerMessage>
                   {answerText(state.opening_turn) && (
@@ -303,7 +332,7 @@ export function TextInterviewRoom({
               {state.completed_turns.flatMap((turn) => {
                 const response = answerText(turn)
                 return [
-                  <InterviewerMessage key={`${turn.turn_id}-question`}>
+                  <InterviewerMessage key={`${turn.turn_id}-question`} persona={persona}>
                     {questionText(turn)}
                   </InterviewerMessage>,
                   response ? (
@@ -314,7 +343,7 @@ export function TextInterviewRoom({
                 ].filter((message): message is React.ReactElement => message !== null)
               })}
               {state.current_turn && (
-                <InterviewerMessage ref={currentQuestionRef}>
+                <InterviewerMessage ref={currentQuestionRef} persona={persona}>
                   {transition && (
                     <p className="mb-2 text-text-muted">{transition}</p>
                   )}
@@ -327,15 +356,15 @@ export function TextInterviewRoom({
                 </CandidateMessage>
               )}
               {submitting && pendingAnswer && (
-                <InterviewerMessage>
+                <InterviewerMessage persona={persona}>
                   <span className="flex items-center gap-2 text-sm text-text-muted" role="status">
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                    FiPilot interviewer is preparing the next question...
+                    {persona.name} is preparing the next question...
                   </span>
                 </InterviewerMessage>
               )}
               {isFinished && (
-                <InterviewerMessage>{closingText(state)}</InterviewerMessage>
+                <InterviewerMessage persona={persona}>{closingText(state)}</InterviewerMessage>
               )}
             </ol>
 

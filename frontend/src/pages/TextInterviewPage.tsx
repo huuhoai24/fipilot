@@ -21,6 +21,7 @@ import {
   TextInterviewRoom,
   TextInterviewRoomStatus,
 } from '@/components/interview/TextInterviewRoom'
+import { resolveInterviewerPersona } from '@/lib/interviewerPersonas'
 import { api } from '@/lib/api'
 import {
   loadInterviewPreferences,
@@ -535,6 +536,7 @@ export function TextInterviewPage({
     return (
       <TextInterviewRoom
         state={state}
+        persona={resolveInterviewerPersona(state.interview_config.interview_style)}
         progress={progress}
         answer={answer}
         pendingAnswer={pendingAnswer}

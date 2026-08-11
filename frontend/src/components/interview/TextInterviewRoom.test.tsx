@@ -3,6 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { TextInterviewRoom } from '@/components/interview/TextInterviewRoom'
+import { resolveInterviewerPersona } from '@/lib/interviewerPersonas'
 import type { V2InterviewSessionState, V2InterviewTurn } from '@/types'
 
 const openingTurn: V2InterviewTurn = {
@@ -62,14 +63,18 @@ function sessionState(
   }
 }
 
-function renderRoom(state: V2InterviewSessionState) {
+function renderRoom(
+  state: V2InterviewSessionState,
+  options: { pendingAnswer?: string | null; submitting?: boolean } = {},
+) {
   return render(
     <TextInterviewRoom
       state={state}
+      persona={resolveInterviewerPersona(state.interview_config.interview_style)}
       progress={{ current: 1, total: 4 }}
       answer=""
-      pendingAnswer={null}
-      submitting={false}
+      pendingAnswer={options.pendingAnswer ?? null}
+      submitting={options.submitting ?? false}
       error={null}
       onAnswerChange={vi.fn()}
       onSubmit={vi.fn()}
@@ -82,6 +87,20 @@ function renderRoom(state: V2InterviewSessionState) {
 afterEach(cleanup)
 
 describe('TextInterviewRoom conversation phases', () => {
+  it('renders the selected fictional AI persona throughout the active room', () => {
+    renderRoom(
+      sessionState({}),
+      { pendingAnswer: 'My submitted answer', submitting: true },
+    )
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Sarah Nguyen' })).toBeInTheDocument()
+    expect(screen.getByText('AI Virtual Interviewer')).toBeInTheDocument()
+    expect(screen.getByText('Technical Interviewer')).toBeInTheDocument()
+    expect(screen.getByText('Technical knowledge, projects, and system design')).toBeInTheDocument()
+    expect(screen.getByText('Sarah Nguyen is preparing the next question...')).toBeInTheDocument()
+    expect(screen.queryByText('FiPilot interviewer is preparing the next question...')).not.toBeInTheDocument()
+  })
+
   it('starts with the persisted opening and keeps the planned question hidden', () => {
     renderRoom(sessionState({
       phase: 'opening',
@@ -90,6 +109,7 @@ describe('TextInterviewRoom conversation phases', () => {
     }))
 
     expect(screen.getByText(/Hi Trieu, nice to meet you/)).toBeInTheDocument()
+    expect(screen.getAllByText('Sarah Nguyen')).toHaveLength(2)
     expect(screen.getAllByText('Opening')).toHaveLength(2)
     expect(screen.queryByText(firstTechnicalTurn.question as string)).not.toBeInTheDocument()
   })

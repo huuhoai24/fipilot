@@ -114,7 +114,8 @@ describe('TextInterviewPage interview mode', () => {
       </MemoryRouter>,
     )
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'FiPilot interviewer' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sarah Nguyen' })).toBeInTheDocument()
+    expect(screen.getByText('AI Virtual Interviewer')).toBeInTheDocument()
     expect(screen.getByText('Tell me about a system you scaled.')).toBeInTheDocument()
     expect(screen.getByText('I separated the write path and added backpressure.')).toBeInTheDocument()
     expect(screen.getByText('How did you detect and recover from overload?')).toBeInTheDocument()
@@ -139,7 +140,7 @@ describe('TextInterviewPage interview mode', () => {
     })
     expect(screen.getByText('I used queue-depth alarms and a circuit breaker.')).toBeInTheDocument()
     expect(
-      screen.getByText('FiPilot interviewer is preparing the next question...'),
+      screen.getByText('Sarah Nguyen is preparing the next question...'),
     ).toBeInTheDocument()
     expect(screen.queryByText(/evaluating|score|retrieval/i)).not.toBeInTheDocument()
   })
