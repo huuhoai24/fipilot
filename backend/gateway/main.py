@@ -34,21 +34,30 @@ async def _warm_local_speech_models(application: FastAPI) -> None:
     from services.voice_session.warmup import warm_up_speech_runtime
 
     try:
-        await warm_up_speech_runtime(
+        metrics = await warm_up_speech_runtime(
             get_audio_pipeline_factory(),
             get_streaming_tts_service(),
+            prewarm_tts=(
+                settings.tts_prewarm or settings.speech_prewarm_models
+            ),
+            prewarm_stt_vad=settings.speech_prewarm_models,
         )
         application.state.speech_models_ready = True
         logger.info(
             "Local speech models are warm.",
-            extra={"event": "speech_models_warm", "status": "ready"},
+            extra={
+                "event": "speech_models_warm",
+                "status": "ready",
+                "tts_model_load_ms": getattr(metrics, "model_load_ms", None),
+                "tts_prewarm_ms": getattr(metrics, "prewarm_ms", None),
+            },
         )
     except asyncio.CancelledError:
         raise
     except Exception:
         application.state.speech_models_ready = False
-        logger.exception(
-            "Local speech model warm-up failed.",
+        logger.warning(
+            "Optional local speech warm-up failed; lazy loading remains available.",
             extra={"event": "speech_models_warm", "status": "failed"},
         )
 
@@ -59,7 +68,9 @@ async def lifespan(application: FastAPI):
     initialize_runtime(settings)
     warmup_task: asyncio.Task[None] | None = None
     application.state.speech_models_ready = False
-    if settings.speech_prewarm_models and not settings.speech_service_url:
+    if (
+        settings.tts_prewarm or settings.speech_prewarm_models
+    ) and not settings.speech_service_url:
         warmup_task = asyncio.create_task(_warm_local_speech_models(application))
         application.state.speech_warmup_task = warmup_task
     application.state.ready = True

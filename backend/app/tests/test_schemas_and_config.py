@@ -98,6 +98,15 @@ class V2FoundationTests(unittest.TestCase):
             "https://speech.internal",
         )
 
+    def test_tts_prewarm_is_disabled_by_default_and_can_be_enabled(self):
+        self.assertFalse(Settings(APP_ENV="test").tts_prewarm)
+        enabled = Settings(APP_ENV="test", TTS_PREWARM=True)
+        self.assertTrue(enabled.tts_prewarm)
+        self.assertEqual(enabled.tts_mode, "v3turbo")
+        self.assertEqual(enabled.tts_device, "auto")
+        self.assertIsNone(enabled.tts_voice)
+        self.assertEqual(enabled.tts_sample_rate, 24000)
+
     def test_auth_and_cors_settings(self):
         settings = Settings(
             APP_ENV="production",

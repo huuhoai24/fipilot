@@ -2,17 +2,30 @@ from __future__ import annotations
 
 import asyncio
 import threading
+import time
 from collections.abc import AsyncIterator, Callable, Iterator
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 
+from core.logging import get_logger
 from infrastructure.speech.tts.base import AudioChunk, StreamingTTS
+
+
+logger = get_logger(__name__)
 
 
 class VieneuTTSError(RuntimeError):
     pass
+
+
+@dataclass(frozen=True)
+class VieneuWarmupMetrics:
+    model_load_ms: float | None
+    prewarm_ms: float
+    performed: bool
 
 
 class _VieneuModelProvider:
@@ -21,12 +34,14 @@ class _VieneuModelProvider:
         self.device = device
         self._model: Any | None = None
         self._lock = threading.Lock()
+        self.model_load_ms: float | None = None
 
     def get_model(self) -> Any:
         if self._model is not None:
             return self._model
         with self._lock:
             if self._model is None:
+                started_at = time.perf_counter()
                 try:
                     from vieneu import Vieneu
                 except ImportError as error:
@@ -34,6 +49,15 @@ class _VieneuModelProvider:
                         "The vieneu package is required for speech synthesis."
                     ) from error
                 self._model = Vieneu(mode=self.mode, device=self.device)
+                self.model_load_ms = (time.perf_counter() - started_at) * 1000
+                logger.info(
+                    "Vieneu model loaded.",
+                    extra={
+                        "event": "tts_model_loaded",
+                        "status": "ready",
+                        "tts_model_load_ms": round(self.model_load_ms, 2),
+                    },
+                )
         return self._model
 
 
@@ -59,12 +83,15 @@ class VieneuStreamingTTS(StreamingTTS):
         self.sample_rate = sample_rate
         self.frame_duration_ms = frame_duration_ms
         provider = _VieneuModelProvider(mode=mode, device=device)
+        self._model_state = provider if model_provider is None else None
         self._model_provider = model_provider or provider.get_model
         self._executor = ThreadPoolExecutor(
             max_workers=1,
             thread_name_prefix="vieneu-tts",
         )
         self._synthesis_lock = asyncio.Lock()
+        self._warmup_lock = asyncio.Lock()
+        self._warmed = False
 
     async def synthesize_stream(self, text: str) -> AsyncIterator[AudioChunk]:
         normalized_text = text.strip()
@@ -92,9 +119,29 @@ class VieneuStreamingTTS(StreamingTTS):
                         sample_rate=self.sample_rate,
                     )
 
-    async def warm_up(self) -> None:
-        async for _ in self.synthesize_stream("Xin chao."):
-            pass
+    async def warm_up(self) -> VieneuWarmupMetrics:
+        if self._warmed:
+            return VieneuWarmupMetrics(
+                model_load_ms=self.model_load_ms,
+                prewarm_ms=0.0,
+                performed=False,
+            )
+        async with self._warmup_lock:
+            if self._warmed:
+                return VieneuWarmupMetrics(
+                    model_load_ms=self.model_load_ms,
+                    prewarm_ms=0.0,
+                    performed=False,
+                )
+            started_at = time.perf_counter()
+            async for _ in self.synthesize_stream("Xin chao."):
+                pass
+            self._warmed = True
+            return VieneuWarmupMetrics(
+                model_load_ms=self.model_load_ms,
+                prewarm_ms=(time.perf_counter() - started_at) * 1000,
+                performed=True,
+            )
 
     def close(self) -> None:
         self._executor.shutdown(wait=False, cancel_futures=True)
@@ -105,6 +152,10 @@ class VieneuStreamingTTS(StreamingTTS):
         if self.voice:
             kwargs["voice"] = self.voice
         return iter(model.infer_stream(text, **kwargs))
+
+    @property
+    def model_load_ms(self) -> float | None:
+        return self._model_state.model_load_ms if self._model_state else None
 
     @staticmethod
     def _next_or_end(iterator: Iterator[np.ndarray]) -> np.ndarray | object:

@@ -42,6 +42,7 @@ from shared.schemas import (
     CandidateProfile,
     CurrentUser,
     InterviewConfig,
+    InterviewMode,
     InterviewPlan,
     InterviewQuestion,
     InterviewRound,
@@ -85,6 +86,17 @@ def voice_interview_state(*, active_turn: bool = True) -> InterviewSessionState:
     )
 
 
+def text_interview_state() -> InterviewSessionState:
+    state = voice_interview_state()
+    return state.model_copy(
+        update={
+            "interview_config": state.interview_config.model_copy(
+                update={"mode": InterviewMode.TEXT}
+            )
+        }
+    )
+
+
 class MockVoiceAuthService:
     def verify_id_token(self, token: str) -> CurrentUser:
         users = {
@@ -111,7 +123,7 @@ class MockVoiceRepository:
                 session_id="text-session",
                 candidate_id="candidate-a",
                 user_id="user-a",
-                state_payload={"interview_config": {"mode": "text"}},
+                state_payload=text_interview_state().model_dump(mode="json"),
             ),
             ("user-b", "other-session"): InterviewSessionRecord(
                 session_id="other-session",
@@ -280,8 +292,15 @@ class WebSocketMockSTT(StreamingSTT):
 
 
 class WebSocketMockSTTFactory(StreamingSTTFactory):
+    def __init__(self) -> None:
+        self.requested_languages: list[str | None] = []
+
     def create(self) -> StreamingSTT:
         return WebSocketMockSTT()
+
+    def create_for_language(self, language: str | None) -> StreamingSTT:
+        self.requested_languages.append(language)
+        return self.create()
 
 
 class WebSocketMockVAD(VoiceActivityDetector):
@@ -372,16 +391,26 @@ class VoiceWebSocketTests(unittest.TestCase):
         self.assertEqual(context.exception.code, expected_code)
 
     def enable_audio_pipeline(self) -> None:
+        self.stt_factory = WebSocketMockSTTFactory()
         self.manager = VoiceSessionManager(
             max_chunk_bytes=16,
             max_session_bytes=64,
             pipeline_factory=AudioPipelineFactory(
-                stt_factory=WebSocketMockSTTFactory(),
+                stt_factory=self.stt_factory,
                 vad_factory=WebSocketMockVADFactory(),
                 queue_size=4,
             ),
         )
         self.app.dependency_overrides[get_voice_session_manager] = lambda: self.manager
+
+    def test_session_language_is_forwarded_to_stt_pipeline(self) -> None:
+        self.enable_audio_pipeline()
+
+        with self.connect() as websocket:
+            self.assertEqual(websocket.receive_json()["type"], "connected")
+            self.assertEqual(websocket.receive_json()["value"], "WAITING_FOR_USER")
+
+        self.assertEqual(self.stt_factory.requested_languages, ["en"])
 
     def trigger_manual_answer(
         self,
@@ -458,6 +487,180 @@ class VoiceWebSocketTests(unittest.TestCase):
 
     def test_rejects_non_voice_session(self) -> None:
         self.assert_rejected("text-session", token="user-a-token", expected_code=4409)
+
+    def test_transcription_mode_returns_text_without_submitting_or_speaking(self) -> None:
+        self.enable_audio_pipeline()
+
+        with self.client.websocket_connect(
+            "/api/v2/voice/interview/text-session?purpose=transcription",
+            subprotocols=["firebase-auth", "user-a-token"],
+            headers={"origin": self.origin},
+        ) as websocket:
+            self.assertEqual(websocket.receive_json()["type"], "connected")
+            self.assertEqual(websocket.receive_json()["value"], "WAITING_FOR_USER")
+            websocket.send_json({"type": "speak_question"})
+            self.assertEqual(
+                websocket.receive_json(),
+                {
+                    "type": "error",
+                    "code": "unsupported_transcription_control",
+                    "message": "This control is not available for speech input.",
+                },
+            )
+            websocket.send_json({"type": "start_listening"})
+            self.assertEqual(websocket.receive_json()["value"], "USER_SPEAKING")
+            websocket.send_json(
+                {
+                    "type": "audio_chunk",
+                    "sequence": 0,
+                    "encoding": "pcm_s16le",
+                    "sample_rate": 16000,
+                }
+            )
+            websocket.send_bytes(b"\x01\x00" * 4)
+            self.assertEqual(websocket.receive_json()["type"], "audio_ack")
+            websocket.send_json({"type": "stop_listening"})
+
+            received: list[dict] = []
+            while not any(
+                event.get("type") == "state"
+                and event.get("value") == "WAITING_FOR_USER"
+                for event in received
+            ):
+                received.append(websocket.receive_json())
+
+        self.assertTrue(
+            any(
+                event.get("type") == "transcript_final"
+                and event.get("text") == "final voice answer"
+                for event in received
+            )
+        )
+        self.assertFalse(
+            {"processing", "question_start", "tts_start", "completed"}
+            & {event.get("type") for event in received}
+        )
+        self.assertEqual(self.orchestrator.calls, [])
+        self.assertEqual(self.tts_service.texts, [])
+        self.assertEqual(self.repository.updated_states, [])
+
+    def test_text_playback_speaks_server_owned_interviewer_dialogue_only(self) -> None:
+        with self.client.websocket_connect(
+            "/api/v2/voice/interview/text-session?purpose=playback",
+            subprotocols=["firebase-auth", "user-a-token"],
+            headers={"origin": self.origin},
+        ) as websocket:
+            self.assertEqual(websocket.receive_json()["type"], "connected")
+            turn_id = text_interview_state().current_turn.turn_id
+            websocket.send_json(
+                {"type": "speak_interviewer", "turn_id": turn_id}
+            )
+            self.assertEqual(websocket.receive_json(), {"type": "tts_start"})
+            self.assertEqual(
+                websocket.receive_json(),
+                {"type": "audio_format", "sample_rate": 24000, "format": "pcm"},
+            )
+            self.assertEqual(websocket.receive_bytes(), b"\x01\x00" * 8)
+            self.assertEqual(websocket.receive_json(), {"type": "tts_complete"})
+
+            websocket.send_json(
+                {
+                    "type": "speak_interviewer",
+                    "turn_id": turn_id,
+                    "text": "Candidate-controlled text must not be spoken.",
+                }
+            )
+            self.assertEqual(
+                websocket.receive_json(),
+                {
+                    "type": "error",
+                    "code": "invalid_message",
+                    "message": "Invalid voice control message.",
+                },
+            )
+
+        self.assertEqual(self.tts_service.texts, ["Explain dependency injection."])
+        self.assertEqual(self.orchestrator.calls, [])
+        self.assertEqual(self.repository.updated_states, [])
+
+    def test_text_playback_uses_same_path_for_opening_follow_up_and_closing(self) -> None:
+        base = text_interview_state()
+        cases = (
+            ("opening", "opening-turn", "Welcome to your interview."),
+            ("follow_up", "follow-up-turn", "What happened next?"),
+        )
+        for question_type, turn_id, question in cases:
+            turn = base.current_turn.model_copy(
+                update={
+                    "turn_id": turn_id,
+                    "question": question,
+                    "question_type": question_type,
+                }
+            )
+            state = base.model_copy(
+                update={
+                    "phase": "opening" if question_type == "opening" else "interviewing",
+                    "current_turn": turn,
+                }
+            )
+            session_id = f"text-{question_type}"
+            self.repository.sessions[("user-a", session_id)] = InterviewSessionRecord(
+                session_id=session_id,
+                candidate_id="candidate-a",
+                user_id="user-a",
+                state_payload=state.model_dump(mode="json"),
+            )
+            with self.client.websocket_connect(
+                f"/api/v2/voice/interview/{session_id}?purpose=playback",
+                subprotocols=["firebase-auth", "user-a-token"],
+                headers={"origin": self.origin},
+            ) as websocket:
+                websocket.receive_json()
+                websocket.send_json(
+                    {"type": "speak_interviewer", "turn_id": turn_id}
+                )
+                self.assertEqual(websocket.receive_json()["type"], "tts_start")
+                self.assertEqual(websocket.receive_json()["type"], "audio_format")
+                websocket.receive_bytes()
+                self.assertEqual(websocket.receive_json()["type"], "tts_complete")
+
+        closing = base.model_copy(update={"phase": "closing", "current_turn": None})
+        self.repository.sessions[("user-a", "text-closing")] = InterviewSessionRecord(
+            session_id="text-closing",
+            candidate_id="candidate-a",
+            user_id="user-a",
+            state_payload=closing.model_dump(mode="json"),
+        )
+        with self.client.websocket_connect(
+            "/api/v2/voice/interview/text-closing?purpose=playback",
+            subprotocols=["firebase-auth", "user-a-token"],
+            headers={"origin": self.origin},
+        ) as websocket:
+            websocket.receive_json()
+            websocket.send_json(
+                {"type": "speak_interviewer", "message_kind": "closing"}
+            )
+            self.assertEqual(websocket.receive_json()["type"], "tts_start")
+            self.assertEqual(websocket.receive_json()["type"], "audio_format")
+            while True:
+                message = websocket.receive()
+                if message.get("bytes") is not None:
+                    continue
+                event = json.loads(message["text"])
+                self.assertEqual(event["type"], "tts_complete")
+                break
+
+        self.assertEqual(
+            self.tts_service.texts[:2],
+            ["Welcome to your interview.", "What happened next?"],
+        )
+        self.assertEqual(
+            " ".join(self.tts_service.texts[2:]),
+            (
+                "Thanks, Voice Candidate. That's all the questions I have "
+                "for today. Thank you for your time. Your interview is now complete."
+            ),
+        )
 
     def test_connect_stream_ack_stop_and_disconnect(self) -> None:
         with self.connect() as websocket:

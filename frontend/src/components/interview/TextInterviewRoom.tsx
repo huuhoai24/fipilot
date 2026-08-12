@@ -6,10 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { CheckCircle2, FileText, History, Loader2, Send } from 'lucide-react'
+import { CheckCircle2, FileText, History, Loader2, Mic, RotateCcw, Send, Square, Volume2 } from 'lucide-react'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { Button } from '@/components/ui/Button'
 import { AI_INTERVIEWER_LABEL, type InterviewerPersona } from '@/lib/interviewerPersonas'
+import { useSpeechInput } from '@/hooks/useSpeechInput'
+import { useInterviewerAudio } from '@/hooks/useInterviewerAudio'
 import { cn, formatElapsed } from '@/lib/utils'
 import type { V2InterviewSessionState, V2InterviewTurn } from '@/types'
 
@@ -20,6 +22,7 @@ interface InterviewProgress {
 
 interface TextInterviewRoomProps {
   state: V2InterviewSessionState
+  sessionId?: string
   persona: InterviewerPersona
   progress: InterviewProgress
   answer: string
@@ -53,6 +56,12 @@ function answerText(turn: V2InterviewTurn): string {
 
 function candidateInitial(name: string): string {
   return name.trim().charAt(0).toLocaleUpperCase() || 'C'
+}
+
+function formatRecordingTime(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const remainder = seconds % 60
+  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
 }
 
 function interviewLabel(state: V2InterviewSessionState): string {
@@ -198,8 +207,9 @@ const InterviewerMessage = React.forwardRef<HTMLLIElement, {
   persona: InterviewerPersona
   children: React.ReactNode
   current?: boolean
+  audioControl?: React.ReactNode
 }>(
-  ({ persona, children, current = false }, ref) => (
+  ({ persona, children, current = false, audioControl }, ref) => (
     <li
       ref={ref}
       className="grid w-full max-w-[48rem] scroll-mb-40 grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-3 sm:w-[78%]"
@@ -213,7 +223,13 @@ const InterviewerMessage = React.forwardRef<HTMLLIElement, {
           current && 'border-l-2 border-accent bg-surface-raised animate-fade-in motion-reduce:animate-none',
         )}
       >
-        <p className="mb-1 text-sm font-medium text-accent">{persona.name}</p>
+        <div className={cn(
+          'mb-1 flex items-center justify-between gap-2',
+          audioControl && 'min-h-11',
+        )}>
+          <p className="min-w-0 truncate text-sm font-medium text-accent">{persona.name}</p>
+          {audioControl}
+        </div>
         <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
           {children}
         </div>
@@ -222,6 +238,45 @@ const InterviewerMessage = React.forwardRef<HTMLLIElement, {
   ),
 )
 InterviewerMessage.displayName = 'InterviewerMessage'
+
+function InterviewerAudioControl({
+  audio,
+}: {
+  audio: ReturnType<typeof useInterviewerAudio>
+}) {
+  const playing = audio.status === 'playing'
+  const preparing = audio.status === 'preparing'
+  const label = playing || preparing
+    ? 'Stop interviewer audio'
+    : audio.hasPlayed
+      ? 'Replay interviewer question'
+      : 'Play interviewer audio'
+
+  return (
+    <div className="flex shrink-0 items-center gap-2" aria-live="polite">
+      {audio.error && <span className="text-xs text-text-muted">Audio unavailable</span>}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-11 w-11 shrink-0"
+        aria-label={label}
+        title={preparing ? 'Preparing interviewer audio' : label}
+        onClick={playing || preparing ? audio.stopPlayback : () => void audio.startPlayback()}
+      >
+        {preparing ? (
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+        ) : playing ? (
+          <Square className="h-4 w-4" aria-hidden="true" />
+        ) : audio.hasPlayed ? (
+          <RotateCcw className="h-4 w-4" aria-hidden="true" />
+        ) : (
+          <Volume2 className="h-4 w-4" aria-hidden="true" />
+        )}
+      </Button>
+    </div>
+  )
+}
 
 function CandidateMessage({
   name,
@@ -293,6 +348,7 @@ export function TextInterviewRoomStatus({
 
 export function TextInterviewRoom({
   state,
+  sessionId,
   persona,
   progress,
   answer,
@@ -314,6 +370,30 @@ export function TextInterviewRoom({
   const restoreComposerFocusRef = useRef(false)
   const shouldFollowConversationRef = useRef(true)
   const previousQuestionIdRef = useRef<string | null>(null)
+  const interviewerAudioRequest = sessionId
+    ? isFinished
+      ? { key: 'closing', messageKind: 'closing' as const }
+      : state.current_turn
+        ? { key: `turn:${state.current_turn.turn_id}`, turnId: state.current_turn.turn_id }
+        : null
+    : null
+  const interviewerAudio = useInterviewerAudio({
+    sessionId,
+    request: interviewerAudioRequest,
+  })
+  const speechInput = useSpeechInput({
+    sessionId,
+    disabled: submitting || isFinished,
+    onTranscript: (transcript) => {
+      const current = answer.trimEnd()
+      onAnswerChange(current ? `${current} ${transcript}` : transcript)
+      window.setTimeout(() => composerRef.current?.focus({ preventScroll: true }), 0)
+    },
+    onRecordingStart: interviewerAudio.stopPlayback,
+  })
+  const speechInputBusy = speechInput.status === 'requesting'
+    || speechInput.status === 'recording'
+    || speechInput.status === 'processing'
 
   useEffect(() => {
     const questionId = state.current_turn?.turn_id ?? null
@@ -367,7 +447,7 @@ export function TextInterviewRoom({
   const handleComposerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || (!event.ctrlKey && !event.metaKey)) return
     event.preventDefault()
-    if (!submitting && answer.trim()) event.currentTarget.form?.requestSubmit()
+    if (!submitting && !speechInputBusy && answer.trim()) event.currentTarget.form?.requestSubmit()
   }
 
   return (
@@ -442,7 +522,12 @@ export function TextInterviewRoom({
                 ].filter((message): message is React.ReactElement => message !== null)
               })}
               {state.current_turn && (
-                <InterviewerMessage ref={currentQuestionRef} persona={persona} current>
+                <InterviewerMessage
+                  ref={currentQuestionRef}
+                  persona={persona}
+                  current
+                  audioControl={<InterviewerAudioControl audio={interviewerAudio} />}
+                >
                   {transition && (
                     <p className="mb-2 text-text-muted">{transition}</p>
                   )}
@@ -463,7 +548,13 @@ export function TextInterviewRoom({
                 </InterviewerMessage>
               )}
               {isFinished && (
-                <InterviewerMessage persona={persona} current>{closingText(state)}</InterviewerMessage>
+                <InterviewerMessage
+                  persona={persona}
+                  current
+                  audioControl={<InterviewerAudioControl audio={interviewerAudio} />}
+                >
+                  {closingText(state)}
+                </InterviewerMessage>
               )}
             </ol>
 
@@ -506,7 +597,7 @@ export function TextInterviewRoom({
             )}
             <form
               onSubmit={handleSubmit}
-              aria-busy={submitting}
+              aria-busy={submitting || speechInput.status === 'processing'}
               className="rounded-lg border border-border bg-surface-raised p-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-[var(--color-focus)] focus-within:ring-offset-2 focus-within:ring-offset-bg"
             >
               <label htmlFor="interview-answer" className="sr-only">
@@ -521,21 +612,68 @@ export function TextInterviewRoom({
                 onKeyDown={handleComposerKeyDown}
                 disabled={submitting}
                 placeholder={submitting ? `Waiting for ${persona.name}...` : 'Type your answer...'}
-                aria-describedby="answer-composer-help"
-                aria-invalid={Boolean(error)}
+                aria-describedby="answer-composer-help speech-input-feedback"
+                aria-invalid={Boolean(error || speechInput.error)}
                 maxLength={12000}
                 className="w-full resize-none border-0 bg-transparent px-2 py-1 text-base leading-6 text-text-primary outline-none placeholder:text-text-muted disabled:cursor-wait disabled:text-text-muted"
               />
-              <div className="flex items-center justify-between gap-3 border-t border-border px-2 pt-2">
-                <p id="answer-composer-help" className="min-w-0 text-xs leading-5 text-text-muted">
-                  {submitting
-                    ? 'Your answer is saved above while the next question is prepared.'
-                    : 'Ctrl/Cmd + Enter to send · Enter for a new line'}
-                </p>
+              <div id="speech-input-feedback" className="px-2" aria-live="polite" aria-atomic="true">
+                {speechInput.error && (
+                  <p role="alert" className="pb-2 text-xs leading-5 text-danger">{speechInput.error}</p>
+                )}
+                {!speechInput.error && speechInput.notice && (
+                  <p className="pb-2 text-xs leading-5 text-text-muted">{speechInput.notice}</p>
+                )}
+              </div>
+              <div className="flex items-center justify-between gap-2 border-t border-border px-2 pt-2 sm:gap-3">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
+                  {sessionId && (
+                    speechInput.status === 'recording' ? (
+                      <Button
+                        type="button"
+                        variant="danger"
+                        size="md"
+                        aria-label="Stop recording"
+                        onClick={speechInput.stopRecording}
+                        className="h-11 shrink-0 px-3"
+                      >
+                        <Square className="h-3.5 w-3.5" aria-hidden="true" />
+                        Stop
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        aria-label={speechInput.status === 'processing' ? 'Transcribing answer' : speechInput.status === 'error' ? 'Record again' : 'Start recording'}
+                        onClick={() => void speechInput.startRecording()}
+                        disabled={submitting || speechInput.status === 'requesting' || speechInput.status === 'processing'}
+                        className="h-11 w-11 shrink-0"
+                      >
+                        {speechInput.status === 'requesting' || speechInput.status === 'processing' ? (
+                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                        ) : (
+                          <Mic className="h-4 w-4" aria-hidden="true" />
+                        )}
+                      </Button>
+                    )
+                  )}
+                  <p id="answer-composer-help" className="min-w-0 text-xs leading-5 text-text-muted">
+                    {submitting
+                      ? 'Your answer is saved above while the next question is prepared.'
+                      : speechInput.status === 'recording'
+                        ? <span role="status" aria-label="Recording in progress">● Recording {formatRecordingTime(speechInput.elapsedSeconds)}</span>
+                        : speechInput.status === 'processing'
+                          ? <span role="status" aria-label="Transcribing answer">Transcribing...</span>
+                          : speechInput.status === 'requesting'
+                            ? <span role="status">Opening microphone...</span>
+                            : 'Ctrl/Cmd + Enter to send · Enter for a new line · Record up to 2 minutes'}
+                  </p>
+                </div>
                 <Button
                   type="submit"
                   size="md"
-                  disabled={submitting || !answer.trim()}
+                  disabled={submitting || speechInputBusy || !answer.trim()}
                   aria-label={submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit answer'}
                   className="h-11 shrink-0 px-4 disabled:opacity-60"
                 >

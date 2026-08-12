@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 import unittest
 
-from infrastructure.speech.remote import RemoteStreamingTTS
+from infrastructure.speech.remote import RemoteAudioPipelineFactory, RemoteStreamingTTS
+from services.voice_session.manager import VoiceSessionManager
 
 
 class FakeSpeechSocket:
@@ -40,7 +41,67 @@ class FakeConnectionContext:
         return None
 
 
+class FakeSTTSocket(FakeSpeechSocket):
+    def __init__(self) -> None:
+        super().__init__()
+        self.responses = [json.dumps({"type": "stt_started"})]
+        self._closed = __import__("asyncio").Event()
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        await self._closed.wait()
+        raise StopAsyncIteration
+
+
 class RemoteSpeechTests(unittest.IsolatedAsyncioTestCase):
+    async def test_remote_factory_accepts_voice_manager_lifecycle_callbacks(self):
+        factory = RemoteAudioPipelineFactory(
+            service_url="https://speech.internal/",
+            service_token="secret",
+            queue_size=4,
+        )
+        manager = VoiceSessionManager(
+            max_chunk_bytes=2048,
+            max_session_bytes=8192,
+            pipeline_factory=factory,
+        )
+
+        await manager.connect(
+            "session-1",
+            "user-1",
+            language="vi",
+            transcript_publisher=lambda _event: __import__("asyncio").sleep(0),
+        )
+        await manager.disconnect("session-1", "user-1")
+
+    async def test_remote_stt_sends_session_language_to_private_service(self):
+        socket = FakeSTTSocket()
+
+        def connector(_url: str, **_kwargs):
+            return FakeConnectionContext(socket)
+
+        factory = RemoteAudioPipelineFactory(
+            service_url="https://speech.internal/",
+            service_token="secret",
+            queue_size=4,
+            connector=connector,
+        )
+        pipeline = factory.create(
+            language="vi",
+            transcript_publisher=lambda _event: __import__("asyncio").sleep(0),
+        )
+
+        await pipeline.start()
+        try:
+            self.assertEqual(
+                json.loads(socket.sent[0]),
+                {"type": "stt_start", "language": "vi"},
+            )
+        finally:
+            await pipeline.close()
+
     async def test_remote_tts_uses_private_boundary_and_streams_pcm(self):
         socket = FakeSpeechSocket()
         connector_calls: list[tuple[str, dict]] = []

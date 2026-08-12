@@ -21,11 +21,15 @@ class ClientVoiceEvent(BaseModel):
         # is produced by the REST /start call, so without this the candidate saw
         # question 1 as text and heard nothing. Also used after a reconnect.
         "speak_question",
+        "speak_interviewer",
+        "stop_playback",
     ]
     sequence: int | None = Field(default=None, ge=0)
     encoding: Literal["pcm_s16le"] | None = None
     sample_rate: Literal[16000] | None = None
     text: str | None = Field(default=None, max_length=12000)
+    turn_id: str | None = Field(default=None, min_length=1, max_length=128)
+    message_kind: Literal["closing"] | None = None
 
     @model_validator(mode="after")
     def validate_payload(self) -> "ClientVoiceEvent":
@@ -42,6 +46,17 @@ class ClientVoiceEvent(BaseModel):
                 raise ValueError("confirm_answer requires non-empty text")
         elif self.text is not None:
             raise ValueError("text is only valid for confirm_answer")
+        if self.type == "speak_interviewer":
+            has_turn = self.turn_id is not None
+            has_kind = self.message_kind is not None
+            if has_turn == has_kind:
+                raise ValueError(
+                    "speak_interviewer requires exactly one dialogue selector"
+                )
+        elif self.turn_id is not None or self.message_kind is not None:
+            raise ValueError(
+                "dialogue selectors are only valid for speak_interviewer"
+            )
         return self
 
 

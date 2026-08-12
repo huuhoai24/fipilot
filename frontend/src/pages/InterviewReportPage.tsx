@@ -20,7 +20,6 @@ import { ApiError, api } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { getUserFacingError } from '@/lib/userFacingError'
 import type {
-  HiringRecommendation,
   InterviewReport,
   V2InterviewSessionState,
   V2InterviewTurn,
@@ -28,16 +27,38 @@ import type {
 
 type LoadPhase = 'loading' | 'generating' | 'ready' | 'incomplete' | 'error'
 
-const recommendationLabels: Record<HiringRecommendation, string> = {
-  strong_hire: 'Strong hire',
-  hire: 'Hire',
-  consider: 'Consider',
-  no_hire: 'No hire',
+const coachingReplacements: Array<[RegExp, string]> = [
+  [/(?:you|the candidate) may have exaggerated (?:your|their) experience/gi, 'Your answer did not demonstrate the experience described in your CV'],
+  [/may have exaggerated experience/gi, 'did not demonstrate the experience described in the CV'],
+  [/(?:you|the candidate) may be dishonest(?: about [^.!?]*)?/gi, 'Your answer did not provide enough detail to support the experience described'],
+  [/major concern about authenticity/gi, 'large difference between the CV description and the depth demonstrated in the answer'],
+]
+
+function coachingText(value: string): string {
+  return coachingReplacements.reduce(
+    (text, [pattern, replacement]) => text.replace(pattern, replacement),
+    value,
+  )
+}
+
+function uniqueCoachingItems(items: string[]): string[] {
+  const seen = new Set<string>()
+  return items.flatMap((item) => {
+    const normalized = coachingText(item).trim()
+    const key = normalized.toLocaleLowerCase()
+    if (!normalized || seen.has(key)) return []
+    seen.add(key)
+    return [normalized]
+  })
+}
+
+function summarySentences(summary: string): string[] {
+  return coachingText(summary).match(/[^.!?]+(?:[.!?]+|$)/g)?.map((sentence) => sentence.trim()).filter(Boolean) ?? []
 }
 
 function ScoreItem({ label, score }: { label: string; score: number }) {
   return (
-    <div className="border-b border-border px-4 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:px-6">
+    <div className="border-b border-border px-4 py-4 odd:border-r [&:nth-child(n+3)]:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:px-6">
       <dt className="text-sm font-medium text-text-muted">{label}</dt>
       <dd className="mt-2 flex items-baseline gap-1">
         <span className="font-display text-3xl font-bold text-text-primary">{score.toFixed(1)}</span>
@@ -81,19 +102,40 @@ function FeedbackList({
   icon: typeof CheckCircle2
   iconClassName: string
 }) {
-  if (items.length === 0) {
+  const normalizedItems = uniqueCoachingItems(items)
+  const visibleItems = normalizedItems.slice(0, 4)
+  const hiddenItems = normalizedItems.slice(4)
+
+  if (normalizedItems.length === 0) {
     return <p className="text-sm leading-6 text-text-faint">{emptyText}</p>
   }
 
   return (
-    <ul className="space-y-3">
-      {items.map((item, index) => (
-        <li key={`${item}-${index}`} className="flex gap-3 text-sm leading-6 text-text-muted">
-          <Icon className={cn('mt-1 h-4 w-4 shrink-0', iconClassName)} aria-hidden="true" />
-          <span>{item}</span>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul className="space-y-3">
+        {visibleItems.map((item, index) => (
+          <li key={`${item}-${index}`} className="flex gap-3 text-sm leading-6 text-text-muted">
+            <Icon className={cn('mt-1 h-4 w-4 shrink-0', iconClassName)} aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      {hiddenItems.length > 0 && (
+        <details className="mt-4 text-sm text-text-muted">
+          <summary className="cursor-pointer font-medium text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+            Show {hiddenItems.length} more
+          </summary>
+          <ul className="mt-3 space-y-3 pl-1">
+            {hiddenItems.map((item, index) => (
+              <li key={`${item}-${index}`} className="flex gap-3 text-sm leading-6 text-text-muted">
+                <Icon className={cn('mt-1 h-4 w-4 shrink-0', iconClassName)} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </>
   )
 }
 
@@ -111,14 +153,16 @@ function QuestionReview({
   const evaluation = turn.evaluation
   const signals = expectedSignals(turn)
   const improvements = evaluation
-    ? [...new Set([...(evaluation.weaknesses ?? []), ...(evaluation.missing_concepts ?? [])])]
+    ? uniqueCoachingItems([...(evaluation.weaknesses ?? []), ...(evaluation.missing_concepts ?? [])])
     : []
   const panelId = `question-review-${turn.turn_id}`
+  const triggerId = `question-review-trigger-${turn.turn_id}`
 
   return (
     <article className="border-b border-border last:border-b-0">
       <h3>
         <button
+          id={triggerId}
           type="button"
           className="flex min-h-16 w-full items-center gap-4 px-4 py-4 text-left hover:bg-surface-raised sm:px-6"
           aria-expanded={expanded}
@@ -128,13 +172,12 @@ function QuestionReview({
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-surface-raised text-xs font-semibold text-text-muted">
             {index + 1}
           </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-medium text-accent">Question {index + 1} · {turn.topic || 'General'}</span>
-            <span className="mt-1 block text-sm font-semibold leading-6 text-text-primary">{questionText(turn)}</span>
+          <span className="min-w-0 flex-1 text-sm font-semibold text-text-primary">
+            Question {index + 1} <span className="font-normal text-text-faint">·</span> {turn.topic || 'General'}
           </span>
           {evaluation && (
-            <span className="hidden shrink-0 text-sm font-semibold text-text-primary sm:block">
-              {evaluation.overall_score.toFixed(1)}<span className="font-normal text-text-faint">/10</span>
+            <span className="shrink-0 text-xs font-medium text-text-muted sm:text-sm">
+              <span className="sr-only sm:not-sr-only">Score </span>{evaluation.overall_score.toFixed(1)}<span className="font-normal text-text-faint">/10</span>
             </span>
           )}
           <ChevronDown
@@ -145,9 +188,18 @@ function QuestionReview({
       </h3>
 
       {expanded && (
-        <div id={panelId} className="border-t border-border px-4 py-6 sm:px-6">
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={triggerId}
+          className="border-t border-border px-4 py-6 sm:px-6"
+        >
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)]">
             <div className="space-y-6">
+              <div>
+                <h4 className="text-sm font-semibold text-text-primary">Question</h4>
+                <p className="mt-2 text-sm leading-7 text-text-muted">{questionText(turn)}</p>
+              </div>
               <div>
                 <h4 className="text-sm font-semibold text-text-primary">Your answer</h4>
                 <blockquote className="mt-3 border-l-2 border-border pl-4 text-sm leading-7 text-text-muted">
@@ -159,7 +211,7 @@ function QuestionReview({
                 <>
                   <div>
                     <h4 className="text-sm font-semibold text-text-primary">Coach feedback</h4>
-                    <p className="mt-2 text-sm leading-7 text-text-muted">{evaluation.feedback}</p>
+                    <p className="mt-2 text-sm leading-7 text-text-muted">{coachingText(evaluation.feedback)}</p>
                   </div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
@@ -187,7 +239,7 @@ function QuestionReview({
               )}
             </div>
 
-            <aside className="self-start border-l-2 border-accent bg-accent-soft px-4 py-4" aria-labelledby={`${panelId}-signals`}>
+            <aside className="self-start border-t border-border pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0" aria-labelledby={`${panelId}-signals`}>
               <h4 id={`${panelId}-signals`} className="text-sm font-semibold text-text-primary">
                 What the interviewer was looking for
               </h4>
@@ -318,15 +370,23 @@ export function InterviewReportPage() {
   const missingSkills = report.missing_skills ?? []
   const recommendations = report.recommendations ?? []
   const learningPlan = report.learning_plan ?? []
+  const sanitizedSummary = coachingText(report.summary)
+  const sentences = summarySentences(report.summary)
+  const summaryNeedsDisclosure = sentences.length > 4 || sanitizedSummary.length > 600
+  const summaryPreview = summaryNeedsDisclosure ? sentences.slice(0, 3).join(' ') : sanitizedSummary
+  const nextActions = uniqueCoachingItems([
+    ...recommendations,
+    ...learningPlan.map((item) => item.recommended_action),
+  ]).slice(0, 5)
 
   return (
-    <div className="mx-auto max-w-6xl space-y-10 pb-12">
-      <header className="border-b border-border pb-8">
+    <div className="mx-auto max-w-6xl space-y-8 pb-12">
+      <header className="border-b border-border pb-6">
         <Button variant="ghost" size="sm" className="mb-5 -ml-3" onClick={() => navigate('/interview-history')}>
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Interview history
         </Button>
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-accent bg-accent-soft">
               <CircleCheckBig className="h-6 w-6 text-accent" aria-hidden="true" />
@@ -336,29 +396,29 @@ export function InterviewReportPage() {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
                 Review what worked, where your answers can improve, and what to practice next.
               </p>
-              <p className="mt-2 text-xs text-text-faint">
-                Report generated {new Date(report.generated_at).toLocaleString()}
-              </p>
             </div>
           </div>
-          <div className="self-start text-left sm:text-right">
-            <span className="mb-2 block text-xs text-text-faint">AI coaching assessment</span>
-            <Badge variant={report.hiring_recommendation === 'no_hire' ? 'warning' : 'success'}>
-              {recommendationLabels[report.hiring_recommendation]}
-            </Badge>
-            <p className="mt-2 max-w-56 text-xs leading-5 text-text-faint">
-              Practice feedback, not an employment decision.
-            </p>
-          </div>
+          <p className="pl-16 text-xs leading-5 text-text-faint sm:pl-0 sm:text-right">
+            Practice coaching report<br />
+            Generated {new Date(report.generated_at).toLocaleString()}
+          </p>
         </div>
       </header>
 
       <section aria-labelledby="summary-heading">
         <div className="max-w-3xl">
           <h2 id="summary-heading" className="text-xl font-semibold text-text-primary">Overall coaching summary</h2>
-          <p className="mt-3 text-base leading-8 text-text-muted">{report.summary}</p>
+          <p className="mt-3 text-base leading-8 text-text-muted">{summaryPreview}</p>
+          {summaryNeedsDisclosure && (
+            <details className="mt-3 text-sm text-text-muted">
+              <summary className="cursor-pointer font-medium text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                Read full coaching summary
+              </summary>
+              <p className="mt-3 max-w-3xl leading-7">{sanitizedSummary}</p>
+            </details>
+          )}
         </div>
-        <dl className="mt-6 grid overflow-hidden rounded-lg border border-border bg-surface sm:grid-cols-4">
+        <dl className="mt-6 grid grid-cols-2 overflow-hidden rounded-lg border border-border bg-surface sm:grid-cols-4">
           <ScoreItem label="Overall" score={report.overall_score} />
           <ScoreItem label="Technical" score={report.technical_score} />
           <ScoreItem label="Communication" score={report.communication_score} />
@@ -369,8 +429,8 @@ export function InterviewReportPage() {
 
       <section aria-labelledby="feedback-heading">
         <h2 id="feedback-heading" className="text-xl font-semibold text-text-primary">Your interview patterns</h2>
-        <div className="mt-5 grid overflow-hidden rounded-lg border border-border bg-surface lg:grid-cols-2 lg:divide-x lg:divide-border">
-          <div className="border-b border-border p-5 lg:border-b-0 lg:p-6">
+        <div className="mt-5 grid overflow-hidden rounded-lg border border-border bg-surface md:grid-cols-2 md:divide-x md:divide-border">
+          <div className="border-b border-border p-5 md:border-b-0 md:p-6">
             <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-text-primary">
               <CheckCircle2 className="h-4 w-4 text-success" aria-hidden="true" />
               Strengths
@@ -382,7 +442,7 @@ export function InterviewReportPage() {
               iconClassName="text-success"
             />
           </div>
-          <div className="p-5 lg:p-6">
+          <div className="p-5 md:p-6">
             <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-text-primary">
               <Target className="h-4 w-4 text-warning" aria-hidden="true" />
               Areas to improve
@@ -407,36 +467,49 @@ export function InterviewReportPage() {
             <dl className="mt-5 grid gap-4 border-y border-border py-5 sm:grid-cols-2">
               <div>
                 <dt className="text-xs font-medium text-text-faint">Demonstrated</dt>
-                <dd className="mt-2 text-sm leading-6 text-text-primary">{demonstratedSkills.join(' · ') || 'None recorded'}</dd>
+                <dd className="mt-2 flex flex-wrap gap-2">
+                  {demonstratedSkills.length > 0
+                    ? demonstratedSkills.map((skill) => <Badge key={skill} variant="success">{skill}</Badge>)
+                    : <span className="text-sm text-text-faint">None recorded</span>}
+                </dd>
               </div>
               <div>
                 <dt className="text-xs font-medium text-text-faint">Evaluated but not yet demonstrated</dt>
-                <dd className="mt-2 text-sm leading-6 text-text-primary">{missingSkills.join(' · ') || 'None recorded'}</dd>
+                <dd className="mt-2 flex flex-wrap gap-2">
+                  {missingSkills.length > 0
+                    ? missingSkills.map((skill) => <Badge key={skill} variant="outline">{skill}</Badge>)
+                    : <span className="text-sm text-text-faint">None recorded</span>}
+                </dd>
               </div>
             </dl>
           )}
           {skillAssessments.length > 0 && (
-            <div className="mt-4 overflow-hidden rounded-lg border border-border bg-surface">
-              {skillAssessments.map((assessment) => (
-                <article key={assessment.skill} className="grid gap-3 border-b border-border p-5 last:border-b-0 sm:grid-cols-[minmax(8rem,0.35fr)_minmax(0,1fr)] sm:p-6">
-                  <div>
-                    <h3 className="text-sm font-semibold text-text-primary">{assessment.skill}</h3>
-                    <p className="mt-1 text-sm text-text-muted">{assessment.score.toFixed(1)}/10</p>
-                  </div>
-                  <div>
-                    <p className="text-sm leading-6 text-text-muted">{assessment.feedback}</p>
-                    {(assessment.evidence ?? []).length > 0 && (
-                      <div className="mt-3 border-t border-border pt-3">
-                        <p className="text-xs font-medium text-text-faint">Evidence from your answers</p>
-                        <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-text-muted">
-                          {(assessment.evidence ?? []).map((item) => <li key={item}>{item}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </article>
-              ))}
-            </div>
+            <details className="mt-4 rounded-lg border border-border bg-surface">
+              <summary className="cursor-pointer px-4 py-4 text-sm font-semibold text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:px-6">
+                View detailed skill feedback ({skillAssessments.length})
+              </summary>
+              <div className="border-t border-border">
+                {skillAssessments.map((assessment) => (
+                  <article key={assessment.skill} className="grid gap-3 border-b border-border p-5 last:border-b-0 sm:grid-cols-[minmax(8rem,0.35fr)_minmax(0,1fr)] sm:p-6">
+                    <div>
+                      <h3 className="text-sm font-semibold text-text-primary">{assessment.skill}</h3>
+                      <p className="mt-1 text-sm text-text-muted">{assessment.score.toFixed(1)}/10</p>
+                    </div>
+                    <div>
+                      <p className="text-sm leading-6 text-text-muted">{coachingText(assessment.feedback)}</p>
+                      {(assessment.evidence ?? []).length > 0 && (
+                        <div className="mt-3 border-t border-border pt-3">
+                          <p className="text-xs font-medium text-text-faint">Evidence from your answers</p>
+                          <ul className="mt-2 list-disc space-y-1 pl-4 text-xs leading-5 text-text-muted">
+                            {(assessment.evidence ?? []).map((item) => <li key={item}>{coachingText(item)}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </details>
           )}
         </section>
       )}
@@ -470,41 +543,42 @@ export function InterviewReportPage() {
           <BookOpen className="h-5 w-5 text-accent" aria-hidden="true" />
           <h2 id="next-steps-heading" className="text-xl font-semibold text-text-primary">Next steps</h2>
         </div>
-        <div className="mt-5 grid gap-8 lg:grid-cols-2">
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary">Recommended practice</h3>
-            {recommendations.length > 0 ? (
-              <ol className="mt-3 space-y-3 text-sm leading-6 text-text-muted">
-                {recommendations.map((item, index) => (
-                  <li key={`${item}-${index}`} className="flex gap-3">
-                    <span className="font-semibold text-accent">{index + 1}.</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <p className="mt-3 text-sm text-text-faint">No additional recommendations were included.</p>
-            )}
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-text-primary">Learning plan</h3>
-            {learningPlan.length > 0 ? (
-              <div className="mt-3 divide-y divide-border border-y border-border">
+        <div className="mt-5 max-w-3xl">
+          <h3 className="text-sm font-semibold text-text-primary">Recommended practice</h3>
+          {nextActions.length > 0 ? (
+            <ol className="mt-3 space-y-3 text-sm leading-6 text-text-muted">
+              {nextActions.map((item, index) => (
+                <li key={`${item}-${index}`} className="flex gap-3">
+                  <span className="font-semibold text-accent">{index + 1}.</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="mt-3 text-sm text-text-faint">No additional recommendations were included.</p>
+          )}
+
+          {learningPlan.length > 0 && (
+            <details className="mt-5 border-y border-border py-4">
+              <summary className="cursor-pointer text-sm font-semibold text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                View learning plan details
+              </summary>
+              <div className="mt-3 divide-y divide-border">
                 {learningPlan.map((item, index) => (
-                  <article key={`${item.topic}-${index}`} className="py-4">
+                  <article key={`${item.topic}-${index}`} className="py-4 first:pt-1">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <h4 className="text-sm font-medium text-text-primary">{item.topic}</h4>
                       <span className="text-xs text-text-faint">Priority: {item.priority}</span>
                     </div>
-                    <p className="mt-2 text-sm leading-6 text-text-muted">{item.reason}</p>
-                    <p className="mt-2 text-sm font-medium leading-6 text-accent">{item.recommended_action}</p>
+                    <p className="mt-2 text-sm leading-6 text-text-muted">{coachingText(item.reason)}</p>
+                    <p className="mt-2 text-sm font-medium leading-6 text-accent">
+                      {coachingText(item.recommended_action)}
+                    </p>
                   </article>
                 ))}
               </div>
-            ) : (
-              <p className="mt-3 text-sm text-text-faint">No learning plan was included.</p>
-            )}
-          </div>
+            </details>
+          )}
         </div>
 
         <div className="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row">

@@ -27,11 +27,11 @@ RUN python -m pip install --no-cache-dir --upgrade pip \
 
 COPY scripts/cache_speech_models.py /tmp/cache_speech_models.py
 RUN python /tmp/cache_speech_models.py \
-        --stt-model small \
-        --stt-output-dir /opt/fipilot/models/faster-whisper-small \
+        --stt-model large-v3-turbo \
+        --stt-output-dir /opt/fipilot/models/faster-whisper-large-v3-turbo \
     && rm /tmp/cache_speech_models.py
 
-ENV STT_MODEL=/opt/fipilot/models/faster-whisper-small \
+ENV STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3-turbo \
     HF_HUB_OFFLINE=1
 
 RUN addgroup --system app \

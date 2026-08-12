@@ -429,6 +429,7 @@ class AudioPipelineFactory:
     def create(
         self,
         *,
+        language: str | None = None,
         transcript_publisher: TranscriptPublisher,
         endpoint_callback: EndpointCallback | None = None,
         speech_started_callback: PipelineEventCallback | None = None,
@@ -437,7 +438,7 @@ class AudioPipelineFactory:
         stt_final_callback: PipelineEventCallback | None = None,
     ) -> AudioPipeline:
         return AudioPipeline(
-            stt=self.stt_factory.create(),
+            stt=self.stt_factory.create_for_language(language),
             vad=self.vad_factory.create(),
             transcript_service=TranscriptService(transcript_publisher),
             queue_size=self.queue_size,

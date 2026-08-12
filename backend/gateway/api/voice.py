@@ -196,8 +196,21 @@ async def voice_interview(
     if session is None:
         await _reject(websocket, 4404, "Interview session not found.")
         return
-    if session.state_payload.get("interview_config", {}).get("mode") != "voice":
-        await _reject(websocket, 4409, "Interview session is not configured for voice.")
+    session_mode = session.state_payload.get("interview_config", {}).get("mode")
+    query_params = getattr(websocket, "query_params", {})
+    transcription_only = query_params.get("purpose") == "transcription"
+    playback_only = query_params.get("purpose") == "playback"
+    expected_mode = "text" if transcription_only or playback_only else "voice"
+    if session_mode != expected_mode:
+        await _reject(
+            websocket,
+            4409,
+            (
+                "Interview session is not configured for text transcription."
+                if transcription_only or playback_only
+                else "Interview session is not configured for voice."
+            ),
+        )
         return
 
     runtime = _VoiceConnectionRuntime(websocket)
@@ -207,7 +220,22 @@ async def voice_interview(
         await _reject(websocket, 4409, "Interview session is unavailable.")
         return
 
+    if playback_only:
+        await _serve_text_interviewer_playback(
+            websocket,
+            session_id,
+            current_user.uid,
+            repository,
+            question_speech_factory,
+            runtime,
+            settings.max_voice_message_chars,
+        )
+        return
+
     async def submit_final_transcript(text: str) -> None:
+        if transcription_only:
+            await manager.recover_answer_submission(session_id, current_user.uid)
+            return
         await runtime.wait_for_answer_idle()
         started = runtime.start_answer(
             _handle_confirm_answer(
@@ -234,6 +262,7 @@ async def voice_interview(
         state = await manager.connect(
             session_id,
             current_user.uid,
+            language=persisted_state.interview_config.language,
             transcript_publisher=runtime.send_json,
             state_publisher=lambda value: runtime.send_json(state_event(value)),
             barge_in_callback=runtime.cancel_tts,
@@ -295,6 +324,7 @@ async def voice_interview(
                         runtime,
                         settings.max_voice_message_chars,
                         speak_current_question,
+                        transcription_only=transcription_only,
                     )
                     if not should_continue:
                         break
@@ -314,6 +344,151 @@ async def voice_interview(
     finally:
         await runtime.close()
         await manager.disconnect(session_id, current_user.uid)
+
+
+async def _serve_text_interviewer_playback(
+    websocket: WebSocket,
+    session_id: str,
+    user_id: str,
+    repository: InterviewRepository,
+    question_speech_factory: QuestionSpeechStreamerFactory,
+    runtime: _VoiceConnectionRuntime,
+    max_message_chars: int,
+) -> None:
+    await websocket.accept(
+        subprotocol=(
+            AUTH_SUBPROTOCOL
+            if AUTH_SUBPROTOCOL in _offered_protocols(websocket)
+            else None
+        )
+    )
+    await runtime.send_json(connected_event(session_id))
+    try:
+        while True:
+            message = await websocket.receive()
+            if message["type"] == "websocket.disconnect":
+                return
+            raw_message = message.get("text")
+            if raw_message is None:
+                await runtime.send_json(error_event("Invalid voice control message."))
+                continue
+            if len(raw_message) > max_message_chars:
+                await runtime.send_json(
+                    error_event("Control message is too large.", "message_too_large")
+                )
+                await websocket.close(code=1009, reason="Control message is too large.")
+                return
+            try:
+                event = ClientVoiceEvent.model_validate(json.loads(raw_message))
+                if event.type == "stop_playback":
+                    await runtime.cancel_tts()
+                    await runtime.wait_for_answer_idle()
+                    continue
+                if event.type != "speak_interviewer":
+                    raise ValueError("Unsupported playback control")
+                record = repository.get_session(session_id, user_id=user_id)
+                if record is None:
+                    await runtime.send_json(
+                        error_event("Interview session not found.", "session_not_found")
+                    )
+                    continue
+                state = InterviewSessionState.model_validate(record.state_payload)
+                dialogue = _interviewer_dialogue(state, event)
+                if dialogue is None:
+                    await runtime.send_json(
+                        error_event(
+                            "Interviewer audio is unavailable for this message.",
+                            "dialogue_unavailable",
+                        )
+                    )
+                    continue
+                await runtime.cancel_tts()
+                await runtime.wait_for_answer_idle()
+                runtime.start_answer(
+                    _speak_text_interviewer_dialogue(
+                        dialogue,
+                        session_id,
+                        question_speech_factory,
+                        runtime,
+                    )
+                )
+            except (json.JSONDecodeError, ValidationError, ValueError):
+                await runtime.send_json(error_event("Invalid voice control message."))
+    except WebSocketDisconnect:
+        return
+    finally:
+        await runtime.close()
+
+
+def _interviewer_dialogue(
+    state: InterviewSessionState,
+    event: ClientVoiceEvent,
+) -> str | None:
+    if event.message_kind == "closing":
+        if state.current_turn is not None and state.phase != "closing":
+            return None
+        name = state.candidate_profile.name.strip()
+        if state.interview_config.language == "vi":
+            thanks = f"Cảm ơn {name}." if name else "Cảm ơn bạn."
+            return (
+                f"{thanks}\n\nĐó là tất cả các câu hỏi của buổi phỏng vấn hôm nay. "
+                "Cảm ơn bạn đã dành thời gian.\n\n"
+                "Buổi phỏng vấn của bạn hiện đã hoàn tất."
+            )
+        thanks = f"Thanks, {name}." if name else "Thank you."
+        return (
+            f"{thanks}\n\nThat's all the questions I have for today. "
+            "Thank you for your time.\n\nYour interview is now complete."
+        )
+
+    turns = [
+        state.opening_turn,
+        *state.completed_turns,
+        state.current_turn,
+    ]
+    for turn in turns:
+        if turn is None or turn.turn_id != event.turn_id:
+            continue
+        question = turn.question
+        text = question if isinstance(question, str) else question.question
+        return text.strip() or None
+    return None
+
+
+async def _speak_text_interviewer_dialogue(
+    dialogue: str,
+    session_id: str,
+    question_speech_factory: QuestionSpeechStreamerFactory,
+    runtime: _VoiceConnectionRuntime,
+) -> None:
+    speech = question_speech_factory.create(
+        start_publisher=lambda: runtime.send_json(tts_start_event()),
+        format_publisher=lambda chunk: runtime.send_json(
+            audio_format_event(chunk.sample_rate, chunk.format)
+        ),
+        audio_publisher=runtime.send_audio,
+        complete_publisher=lambda: runtime.send_json(tts_complete_event()),
+        error_publisher=lambda: runtime.send_json(
+            error_event("Interviewer audio is unavailable.", "tts_failed")
+        ),
+    )
+    runtime.bind_speech(speech)
+    try:
+        await speech.feed_text_delta(dialogue)
+        speech.mark_question_complete()
+        metrics = await speech.finish()
+        _log_tts_performance(session_id, metrics, event="text_interviewer_tts")
+    except asyncio.CancelledError:
+        await speech.cancel()
+        raise
+    except Exception:
+        await speech.cancel()
+        await runtime.send_json(
+            error_event("Interviewer audio is unavailable.", "tts_failed")
+        )
+    finally:
+        if runtime.question_speech is speech:
+            runtime.question_speech = None
 
 
 async def _speak_pending_question(
@@ -385,6 +560,8 @@ async def _handle_text_message(
     runtime: _VoiceConnectionRuntime,
     max_message_chars: int,
     speak_current_question: Callable[[], Awaitable[None]] | None = None,
+    *,
+    transcription_only: bool = False,
 ) -> bool:
     if len(raw_message) > max_message_chars:
         await runtime.send_json(error_event("Control message is too large.", "message_too_large"))
@@ -393,6 +570,18 @@ async def _handle_text_message(
 
     try:
         event = ClientVoiceEvent.model_validate(json.loads(raw_message))
+        if transcription_only and event.type not in {
+            "start_listening",
+            "stop_listening",
+            "audio_chunk",
+        }:
+            await runtime.send_json(
+                error_event(
+                    "This control is not available for speech input.",
+                    "unsupported_transcription_control",
+                )
+            )
+            return True
         if event.type == "start_listening":
             state = await manager.start_listening(session_id, user_id)
             await runtime.send_json(state_event(state.state))
@@ -643,6 +832,37 @@ def _log_question_speech_metrics(session_id: str, metrics) -> None:
                 "duration_ms": round(metrics.tts_first_audio_time_ms, 2),
             },
         )
+    _log_tts_performance(session_id, metrics, event="voice_question_tts")
+
+
+def _log_tts_performance(session_id: str, metrics, *, event: str) -> None:
+    logger.info(
+        "Interviewer TTS performance measured.",
+        extra={
+            "event": event,
+            "session_id": session_id,
+            "tts_queue_ms": (
+                round(metrics.tts_queue_ms, 2)
+                if metrics.tts_queue_ms is not None
+                else None
+            ),
+            "tts_generation_ms": (
+                round(metrics.tts_generation_ms, 2)
+                if metrics.tts_generation_ms is not None
+                else None
+            ),
+            "tts_first_audio_ms": (
+                round(metrics.tts_first_audio_time_ms, 2)
+                if metrics.tts_first_audio_time_ms is not None
+                else None
+            ),
+            "tts_total_ms": (
+                round(metrics.tts_total_ms, 2)
+                if metrics.tts_total_ms is not None
+                else None
+            ),
+        },
+    )
 
 
 async def _handle_binary_message(

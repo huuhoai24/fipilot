@@ -105,6 +105,14 @@ TTS_DEVICE=cpu
 
 CPU speech inference is substantially slower.
 
+VieNeu remains lazy by default. Set `TTS_PREWARM=true` in the process that owns
+VieNeu (`backend/.env.speech` for the normal three-service setup, or
+`backend/.env.local` when `SPEECH_SERVICE_URL` is empty) to load and minimally
+warm the configured `v3turbo` model in the background during process startup.
+Keep it `false` when faster local process startup is more useful. Optional TTS
+warm-up failure does not affect health/readiness and the first real playback
+retries through the normal lazy path.
+
 ## Firebase Local Login
 
 In Firebase Console, open:

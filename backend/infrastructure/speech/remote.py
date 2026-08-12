@@ -86,20 +86,24 @@ class RemoteAudioPipeline:
         service_url: str,
         service_token: str | None,
         queue_size: int,
+        language: str | None,
         transcript_publisher: JsonPublisher,
         endpoint_callback: EventCallback | None,
         speech_started_callback: EventCallback | None,
         speech_end_callback: EventCallback | None,
         stt_final_callback: EventCallback | None,
+        stt_started_callback: EventCallback | None = None,
         connector=None,
     ) -> None:
         self.url = _inference_url(service_url)
         self.service_token = service_token
         self.queue_size = queue_size
+        self.language = language
         self.transcript_publisher = transcript_publisher
         self.endpoint_callback = endpoint_callback
         self.speech_started_callback = speech_started_callback
         self.speech_end_callback = speech_end_callback
+        self.stt_started_callback = stt_started_callback
         self.stt_final_callback = stt_final_callback
         self.connector = connector
         self._connection_context = None
@@ -124,7 +128,10 @@ class RemoteAudioPipeline:
             max_size=None,
         )
         self._websocket = await self._connection_context.__aenter__()
-        await self._websocket.send(json.dumps({"type": "stt_start"}))
+        start_event = {"type": "stt_start"}
+        if self.language:
+            start_event["language"] = self.language
+        await self._websocket.send(json.dumps(start_event))
         started = json.loads(await self._websocket.recv())
         if started.get("type") != "stt_started":
             await self.close()
@@ -153,6 +160,8 @@ class RemoteAudioPipeline:
         if self._queue is None or self._websocket is None:
             return
         await self._queue.join()
+        if self.stt_started_callback:
+            await self.stt_started_callback()
         await self._websocket.send(json.dumps({"type": "stt_finish"}))
         await self._complete.wait()
         await self.close()
@@ -231,20 +240,24 @@ class RemoteAudioPipelineFactory:
     def create(
         self,
         *,
+        language: str | None = None,
         transcript_publisher: JsonPublisher,
         endpoint_callback: EventCallback | None = None,
         speech_started_callback: EventCallback | None = None,
         speech_end_callback: EventCallback | None = None,
+        stt_started_callback: EventCallback | None = None,
         stt_final_callback: EventCallback | None = None,
     ) -> RemoteAudioPipeline:
         return RemoteAudioPipeline(
             service_url=self.service_url,
             service_token=self.service_token,
             queue_size=self.queue_size,
+            language=language,
             transcript_publisher=transcript_publisher,
             endpoint_callback=endpoint_callback,
             speech_started_callback=speech_started_callback,
             speech_end_callback=speech_end_callback,
+            stt_started_callback=stt_started_callback,
             stt_final_callback=stt_final_callback,
             connector=self.connector,
         )

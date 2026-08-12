@@ -71,14 +71,25 @@ class SpeechModelCacheTests(unittest.TestCase):
                 )
 
     def test_cloud_run_image_uses_baked_models_without_hub_requests(self):
-        dockerfile = (Path(__file__).resolve().parents[2] / "Dockerfile").read_text(
-            encoding="utf-8"
-        )
+        backend_root = Path(__file__).resolve().parents[2]
+        dockerfile = (backend_root / "Dockerfile").read_text(encoding="utf-8")
+        cloud_run_environment = (
+            backend_root / ".env.cloudrun.cpu.example"
+        ).read_text(encoding="utf-8")
 
         self.assertIn("scripts/cache_speech_models.py", dockerfile)
-        self.assertIn("STT_MODEL=/opt/fipilot/models/faster-whisper-small", dockerfile)
+        self.assertIn("--stt-model large-v3-turbo", dockerfile)
+        self.assertIn(
+            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3-turbo",
+            dockerfile,
+        )
         self.assertIn("HF_HUB_OFFLINE=1", dockerfile)
         self.assertIn("HF_HUB_DISABLE_XET=1", dockerfile)
+        self.assertIn(
+            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3-turbo",
+            cloud_run_environment,
+        )
+        self.assertIn("EVALUATOR_TASK_TYPE=complex", cloud_run_environment)
 
 
 if __name__ == "__main__":

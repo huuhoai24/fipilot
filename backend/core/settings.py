@@ -134,6 +134,7 @@ class SpeechSettings(BaseModel):
     service_url: str | None = None
     benchmark_mode: bool = False
     prewarm_models: bool = False
+    tts_prewarm: bool = False
 
 
 class AuthenticationSettings(BaseModel):
@@ -349,6 +350,7 @@ class Settings(BaseSettings):
         speech_data.setdefault(
             "prewarm_models", _env_bool("SPEECH_PREWARM_MODELS", False)
         )
+        speech_data.setdefault("tts_prewarm", _env_bool("TTS_PREWARM", False))
 
         auth_data.setdefault("enabled", _env_bool("AUTH_ENABLED", True))
         auth_data.setdefault("provider", os.getenv("AUTH_PROVIDER", "firebase"))
@@ -475,6 +477,7 @@ class Settings(BaseSettings):
             ("service_url", "SPEECH_SERVICE_URL"),
             ("benchmark_mode", "SPEECH_BENCHMARK_MODE"),
             ("prewarm_models", "SPEECH_PREWARM_MODELS"),
+            ("tts_prewarm", "TTS_PREWARM"),
         ):
             value = _take(data, field_name, env_name)
             if value is not None:
@@ -724,6 +727,10 @@ class Settings(BaseSettings):
     @property
     def speech_prewarm_models(self) -> bool:
         return self.speech.prewarm_models
+
+    @property
+    def tts_prewarm(self) -> bool:
+        return self.speech.tts_prewarm
 
     @property
     def auth_enabled(self) -> bool:

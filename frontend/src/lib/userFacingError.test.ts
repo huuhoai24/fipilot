@@ -32,16 +32,19 @@ describe('user-facing error messages', () => {
   it('maps classified connectivity, authentication, validation, and server failures', () => {
     expect(getResumeUploadError(Object.assign(new Error('Request failed'), {
       category: 'BACKEND_UNREACHABLE',
-    }))).toBe('Backend service is unavailable. Please check the API connection.')
+    }))).toBe('FiPilot is temporarily unavailable. Please try again.')
     expect(getResumeUploadError(Object.assign(new Error('Request failed'), {
       category: 'AUTH_FAILURE',
     }))).toBe('Your session could not be verified. Please sign in again.')
     expect(getResumeUploadError(Object.assign(new Error('Request failed'), {
       category: 'UPLOAD_VALIDATION_ERROR',
-    }))).toBe('Unable to process this resume file.')
+    }))).toBe('We could not read this CV. Choose a PDF or DOCX file and try again.')
     expect(getResumeUploadError(Object.assign(new Error('internal stack'), {
       category: 'SERVER_ERROR',
-    }))).toBe('The server encountered an error while analyzing the resume.')
+    }))).toBe('We could not analyze this CV. Please try again.')
+    expect(getResumeUploadError(new Error('Provider timeout after 30 seconds'))).toBe(
+      'CV analysis took too long. Please try again.',
+    )
   })
 
   it('treats closing the Google popup as cancellation', () => {

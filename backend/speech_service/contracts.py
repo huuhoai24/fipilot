@@ -10,6 +10,7 @@ class SpeechControlMessage(BaseModel):
 
     type: Literal["stt_start", "stt_finish", "tts_synthesize"]
     text: str | None = Field(default=None, max_length=4096)
+    language: str | None = Field(default=None, min_length=2, max_length=16)
 
     @model_validator(mode="after")
     def validate_payload(self) -> "SpeechControlMessage":
@@ -18,4 +19,6 @@ class SpeechControlMessage(BaseModel):
                 raise ValueError("tts_synthesize requires text")
         elif self.text is not None:
             raise ValueError("text is only valid for tts_synthesize")
+        if self.type != "stt_start" and self.language is not None:
+            raise ValueError("language is only valid for stt_start")
         return self

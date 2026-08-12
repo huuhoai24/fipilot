@@ -91,11 +91,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Cache the public CPU speech models inside a container image."
     )
-    parser.add_argument("--stt-model", default="small")
+    parser.add_argument("--stt-model", default="large-v3-turbo")
     parser.add_argument(
         "--stt-output-dir",
         type=Path,
-        default=Path("/opt/fipilot/models/faster-whisper-small"),
+        default=Path("/opt/fipilot/models/faster-whisper-large-v3-turbo"),
     )
     args = parser.parse_args()
     result = cache_speech_models(

@@ -50,6 +50,18 @@ class SpeechWarmupTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(order, ["tts", "stt", "vad"])
 
+    async def test_tts_only_prewarm_does_not_initialize_stt_or_vad(self):
+        order: list[str] = []
+
+        await warm_up_speech_runtime(
+            _Factory(order),
+            _TTS(order),
+            prewarm_tts=True,
+            prewarm_stt_vad=False,
+        )
+
+        self.assertEqual(order, ["tts"])
+
 
 if __name__ == "__main__":
     unittest.main()

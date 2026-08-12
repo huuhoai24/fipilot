@@ -13,6 +13,7 @@ from infrastructure.speech.stt.base import (
     TranscriptEventType,
 )
 from infrastructure.speech.stt.faster_whisper import (
+    FasterWhisperSTTFactory,
     FasterWhisperStreamingSTT,
     _FasterWhisperModelProvider,
 )
@@ -315,10 +316,13 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
             def __init__(self) -> None:
                 self.calls = 0
 
-            def transcribe(self, audio, language, hotwords, beam_size=1):
+            def transcribe(
+                self, audio, language, hotwords, beam_size=1, multilingual=False
+            ):
                 self.calls += 1
                 self.assert_audio_size = len(audio)
                 self.hotwords = hotwords
+                self.multilingual = multilingual
                 return "mocked transcript", language or "en", 0.88
 
         provider = MockModelProvider()
@@ -341,8 +345,11 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_faster_whisper_receives_technical_vocabulary_hotwords(self):
         class MockModelProvider:
-            def transcribe(self, audio, language, hotwords, beam_size=1):
+            def transcribe(
+                self, audio, language, hotwords, beam_size=1, multilingual=False
+            ):
                 self.hotwords = hotwords
+                self.multilingual = multilingual
                 return "FastAPI on Kubernetes", "en", 0.9
 
         hotwords = vocabulary_hotwords("backend", ["Kubernetes"])
@@ -359,6 +366,49 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Backend", provider.hotwords)
         self.assertIn("FastAPI", provider.hotwords)
         self.assertIn("Kubernetes", provider.hotwords)
+
+    def test_vietnamese_session_keeps_vietnamese_dominant_decode(self):
+        factory = FasterWhisperSTTFactory(
+            model_name="mock",
+            device="cpu",
+            compute_type="int8",
+            language="en",
+            partial_interval_ms=1000,
+        )
+
+        stt = factory.create_for_language("vi")
+
+        self.assertEqual(stt.language, "vi")
+        self.assertFalse(stt.multilingual)
+
+    def test_english_session_keeps_english_focused_decode(self):
+        factory = FasterWhisperSTTFactory(
+            model_name="mock",
+            device="cpu",
+            compute_type="int8",
+            language="vi",
+            partial_interval_ms=1000,
+        )
+
+        stt = factory.create_for_language("en")
+
+        self.assertEqual(stt.language, "en")
+        self.assertFalse(stt.multilingual)
+
+    def test_unknown_session_language_uses_deployment_fallback(self):
+        factory = FasterWhisperSTTFactory(
+            model_name="mock",
+            device="cpu",
+            compute_type="int8",
+            language="vi",
+            partial_interval_ms=1000,
+        )
+
+        missing = factory.create_for_language(None)
+        malformed = factory.create_for_language("not-a-language")
+
+        self.assertEqual((missing.language, missing.multilingual), ("vi", False))
+        self.assertEqual((malformed.language, malformed.multilingual), ("vi", False))
 
     def test_faster_whisper_does_not_duplicate_hotwords_as_initial_prompt(self):
         class MockWhisperModel:
@@ -381,6 +431,7 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
         provider.transcribe([0.0], "vi", "FastAPI Kubernetes", beam_size=2)
 
         self.assertEqual(model.kwargs["hotwords"], "FastAPI Kubernetes")
+        self.assertFalse(model.kwargs["multilingual"])
         self.assertNotIn("initial_prompt", model.kwargs)
 
     def test_vocabulary_profiles_cover_supported_technical_roles(self):

@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+import asyncio
+import threading
 import unittest
+from unittest.mock import patch
 
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
@@ -27,7 +31,11 @@ class FakePipeline:
 
 
 class FakePipelineFactory:
+    def __init__(self) -> None:
+        self.languages: list[str | None] = []
+
     def create(self, **kwargs):
+        self.languages.append(kwargs.get("language"))
         return FakePipeline()
 
 
@@ -39,9 +47,30 @@ class FakeTTS(StreamingTTS):
 class WarmableFakeTTS(FakeTTS):
     def __init__(self) -> None:
         self.warmed = False
+        self.warm_up_calls = 0
 
     async def warm_up(self) -> None:
+        self.warm_up_calls += 1
         self.warmed = True
+
+
+class BlockingWarmableFakeTTS(FakeTTS):
+    def __init__(self) -> None:
+        self.started = asyncio.Event()
+        self.release = asyncio.Event()
+
+    async def warm_up(self) -> None:
+        self.started.set()
+        await self.release.wait()
+
+
+class FailingWarmableFakeTTS(FakeTTS):
+    def __init__(self) -> None:
+        self.attempted = threading.Event()
+
+    async def warm_up(self) -> None:
+        self.attempted.set()
+        raise RuntimeError("sensitive model path must not escape")
 
 
 class SpeechServiceBoundaryTests(unittest.TestCase):
@@ -92,15 +121,111 @@ class SpeechServiceBoundaryTests(unittest.TestCase):
             tts,
         )
 
-        __import__("asyncio").run(warm_up_models(app))
+        asyncio.run(warm_up_models(app))
 
         self.assertTrue(tts.warmed)
+
+    def test_startup_skips_optional_tts_prewarm_when_disabled(self):
+        tts = WarmableFakeTTS()
+        app.dependency_overrides[get_speech_runtime] = lambda: (
+            FakePipelineFactory(),
+            tts,
+        )
+        disabled = Settings(
+            APP_ENV="test",
+            SPEECH_SERVICE_TOKEN="",
+            TTS_PREWARM=False,
+        )
+
+        with patch("speech_service.main.get_settings", return_value=disabled):
+            with TestClient(app) as client:
+                self.assertEqual(client.get("/health").status_code, 200)
+
+        self.assertEqual(tts.warm_up_calls, 0)
+
+    def test_enabled_tts_prewarm_runs_after_service_becomes_operational(self):
+        async def scenario() -> None:
+            from speech_service.main import lifespan
+
+            tts = BlockingWarmableFakeTTS()
+            test_app = FastAPI()
+            test_app.dependency_overrides[get_speech_runtime] = lambda: (
+                FakePipelineFactory(),
+                tts,
+            )
+            enabled = Settings(
+                APP_ENV="test",
+                SPEECH_SERVICE_TOKEN="",
+                TTS_PREWARM=True,
+            )
+            entered = asyncio.Event()
+
+            async def run_lifespan() -> None:
+                async with lifespan(test_app):
+                    entered.set()
+                    await tts.release.wait()
+
+            with patch("speech_service.main.get_settings", return_value=enabled):
+                task = asyncio.create_task(run_lifespan())
+                await tts.started.wait()
+                try:
+                    self.assertTrue(entered.is_set())
+                finally:
+                    tts.release.set()
+                    await task
+
+        asyncio.run(scenario())
+
+    def test_tts_prewarm_failure_keeps_readiness_and_lazy_synthesis_available(self):
+        tts = FailingWarmableFakeTTS()
+        app.dependency_overrides[get_speech_runtime] = lambda: (
+            FakePipelineFactory(),
+            tts,
+        )
+        enabled = Settings(
+            APP_ENV="test",
+            SPEECH_SERVICE_TOKEN="",
+            TTS_PREWARM=True,
+        )
+
+        with self.assertLogs("speech_service.main", level="WARNING") as logs:
+            with patch("speech_service.main.get_settings", return_value=enabled):
+                with TestClient(app) as client:
+                    self.assertTrue(tts.attempted.wait(timeout=1))
+                    self.assertEqual(client.get("/ready").status_code, 200)
+                    with client.websocket_connect(
+                        "/internal/v1/inference",
+                        headers={"authorization": "Bearer internal-secret"},
+                    ) as websocket:
+                        websocket.send_json(
+                            {"type": "tts_synthesize", "text": "Retry lazily"}
+                        )
+                        self.assertEqual(websocket.receive_json()["type"], "tts_start")
+                        self.assertEqual(websocket.receive_json()["type"], "audio_format")
+                        self.assertTrue(websocket.receive_bytes())
+                        self.assertEqual(websocket.receive_json()["type"], "tts_complete")
+
+        self.assertEqual(app.state.tts_prewarm_status, "failed")
+        self.assertNotIn("sensitive model path", " ".join(logs.output))
 
     def test_internal_websocket_requires_service_token(self):
         with self.assertRaises(WebSocketDisconnect) as context:
             with self.client.websocket_connect("/internal/v1/inference"):
                 pass
         self.assertEqual(context.exception.code, 4401)
+
+    def test_stt_start_uses_requested_session_language(self):
+        factory = FakePipelineFactory()
+        app.dependency_overrides[get_speech_runtime] = lambda: (factory, FakeTTS())
+
+        with self.client.websocket_connect(
+            "/internal/v1/inference",
+            headers={"authorization": "Bearer internal-secret"},
+        ) as websocket:
+            websocket.send_json({"type": "stt_start", "language": "vi"})
+            self.assertEqual(websocket.receive_json(), {"type": "stt_started"})
+
+        self.assertEqual(factory.languages, ["vi"])
 
     def test_tts_streams_metadata_binary_and_completion(self):
         with self.client.websocket_connect(

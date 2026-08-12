@@ -2,19 +2,14 @@ import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } f
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowRight,
-  BriefcaseBusiness,
   CheckCircle2,
-  ClipboardList,
+  Circle,
   FileText,
-  FolderKanban,
-  GraduationCap,
   Loader2,
   Upload,
-  UserRound,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Button, ButtonLink } from '@/components/ui/Button'
+import { Card, CardContent, CardHeader } from '@/components/ui/Card'
 import { Input, Label, Select, Textarea } from '@/components/ui/Input'
 import { InterviewPreparationScreen } from '@/components/interview/InterviewPreparationScreen'
 import {
@@ -33,7 +28,6 @@ import {
   getUserFacingError,
 } from '@/lib/userFacingError'
 import type {
-  CandidateEducation,
   CandidateProfile,
   ExperienceLevel,
   InterviewMode,
@@ -80,160 +74,78 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-function educationLabel(education: CandidateEducation): string {
-  return [education.degree, education.field_of_study, education.institution]
-    .filter(Boolean)
-    .join(' - ')
-}
-
 function CandidateProfilePreview({
   profile,
-  confidenceScore,
+  candidateId,
 }: {
   profile: CandidateProfile
-  confidenceScore: number
+  candidateId: string
 }) {
-  const educationItems = Array.isArray(profile.education)
-    ? profile.education.map(educationLabel).filter(Boolean)
-    : profile.education
-      ? [profile.education]
-      : []
-  const evidenceItems = profile.skill_evidence.filter(
-    (item) => item.skill || item.evidence.length > 0
-  )
+  const role = profile.specialization || profile.recent_role || 'Candidate profile'
+  const topSkills = profile.skills.slice(0, 5)
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <CardTitle>Extracted Candidate Profile</CardTitle>
-          <Badge variant="success">{Math.round(confidenceScore * 100)}% confidence</Badge>
+    <section className="rounded-lg border border-border bg-surface p-5 sm:p-6" aria-labelledby="candidate-summary-title">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-accent">Candidate profile</p>
+          <h2 id="candidate-summary-title" className="mt-1 break-words font-display text-2xl font-bold text-text-primary">
+            {profile.name}
+          </h2>
+          <p className="mt-1 break-words text-sm text-text-muted">{role}</p>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-start gap-3">
-          <UserRound className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
-          <div className="min-w-0">
-            <div className="break-words text-sm font-semibold text-text-primary">{profile.name}</div>
-            {(profile.specialization || profile.recent_role) && (
-              <div className="mt-1 break-words text-sm text-text-muted">
-                {[profile.specialization, profile.recent_role].filter(Boolean).join(' / ')}
-              </div>
-            )}
-            {profile.years_experience != null && (
-              <div className="mt-1 text-xs text-text-faint">
-                {profile.years_experience} years of experience
-              </div>
-            )}
-          </div>
+        <ButtonLink to={`/candidate-profile/${candidateId}`} variant="outline" size="sm" className="self-start">
+          View full profile
+        </ButtonLink>
+      </div>
+
+      <dl className="mt-6 grid gap-5 border-t border-border pt-5 lg:grid-cols-[0.7fr_1.6fr_0.7fr]">
+        <div>
+          <dt className="text-xs font-medium text-text-faint">Experience</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-primary">
+            {profile.years_experience != null ? `${profile.years_experience} years` : 'Not specified'}
+          </dd>
         </div>
+        <div className="min-w-0">
+          <dt className="text-xs font-medium text-text-faint">Top skills</dt>
+          <dd className="mt-1 break-words text-sm font-semibold leading-6 text-text-primary">
+            {topSkills.length > 0 ? topSkills.join(' · ') : 'No skills detected'}
+          </dd>
+        </div>
+        <div>
+          <dt className="text-xs font-medium text-text-faint">Projects</dt>
+          <dd className="mt-1 text-sm font-semibold text-text-primary">{profile.projects.length} detected</dd>
+        </div>
+      </dl>
+    </section>
+  )
+}
 
-        {profile.skills.length > 0 && (
-          <section aria-labelledby="profile-skills-title">
-            <h3 id="profile-skills-title" className="mb-2 text-xs font-medium uppercase text-text-faint">
-              Skills
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {profile.skills.map((skill) => <Badge key={skill} variant="accent">{skill}</Badge>)}
-            </div>
-          </section>
-        )}
+const resumeAnalysisStages = [
+  'Reading your CV',
+  'Understanding your experience and projects',
+  'Building your interview profile',
+]
 
-        {profile.projects.length > 0 && (
-          <section aria-labelledby="profile-projects-title">
-            <div className="mb-3 flex items-center gap-2">
-              <FolderKanban className="h-4 w-4 text-accent" />
-              <h3 id="profile-projects-title" className="text-xs font-medium uppercase text-text-faint">
-                Projects
-              </h3>
-            </div>
-            <div className="divide-y divide-border">
-              {profile.projects.map((project, index) => (
-                <div key={`${project.name}-${index}`} className="py-3 first:pt-0 last:pb-0">
-                  {(project.name || project.role) && (
-                    <div className="break-words text-sm font-medium text-text-primary">
-                      {[project.name, project.role].filter(Boolean).join(' / ')}
-                    </div>
-                  )}
-                  {project.description && (
-                    <p className="mt-1 break-words text-sm leading-6 text-text-muted">{project.description}</p>
-                  )}
-                  {project.technologies.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {project.technologies.map((technology) => (
-                        <Badge key={technology} variant="default">{technology}</Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {profile.experiences.length > 0 && (
-          <section aria-labelledby="profile-experience-title">
-            <div className="mb-3 flex items-center gap-2">
-              <BriefcaseBusiness className="h-4 w-4 text-accent" />
-              <h3 id="profile-experience-title" className="text-xs font-medium uppercase text-text-faint">
-                Experience
-              </h3>
-            </div>
-            <div className="divide-y divide-border">
-              {profile.experiences.map((experience, index) => (
-                <div key={`${experience.company}-${experience.title}-${index}`} className="py-3 first:pt-0 last:pb-0">
-                  <div className="break-words text-sm font-medium text-text-primary">
-                    {[experience.title, experience.company].filter(Boolean).join(' / ')}
-                  </div>
-                  {(experience.start_date || experience.end_date) && (
-                    <div className="mt-1 text-xs text-text-faint">
-                      {[experience.start_date, experience.end_date].filter(Boolean).join(' - ')}
-                    </div>
-                  )}
-                  {experience.description && (
-                    <p className="mt-1 break-words text-sm leading-6 text-text-muted">{experience.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {educationItems.length > 0 && (
-          <section aria-labelledby="profile-education-title">
-            <div className="mb-3 flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-accent" />
-              <h3 id="profile-education-title" className="text-xs font-medium uppercase text-text-faint">
-                Education
-              </h3>
-            </div>
-            <ul className="space-y-2 text-sm text-text-muted">
-              {educationItems.map((item, index) => <li key={`${item}-${index}`} className="break-words">{item}</li>)}
-            </ul>
-          </section>
-        )}
-
-        {evidenceItems.length > 0 && (
-          <section aria-labelledby="profile-evidence-title">
-            <h3 id="profile-evidence-title" className="mb-3 text-xs font-medium uppercase text-text-faint">
-              Skill Evidence
-            </h3>
-            <div className="space-y-3">
-              {evidenceItems.map((item, index) => (
-                <div key={`${item.skill}-${index}`}>
-                  {item.skill && <div className="text-sm font-medium text-text-primary">{item.skill}</div>}
-                  {item.evidence.length > 0 && (
-                    <p className="mt-1 break-words text-sm leading-6 text-text-muted">
-                      {item.evidence.slice(0, 2).join(' ')}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </CardContent>
-    </Card>
+function ResumeAnalysisStatus() {
+  return (
+    <div id="resume-upload-status" role="status" aria-live="polite" aria-atomic="true">
+      <p className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-accent" aria-hidden="true" />
+        Analyzing your CV
+      </p>
+      <ol className="mt-3 space-y-3">
+        {resumeAnalysisStages.map((stage) => (
+          <li key={stage} className="flex items-center gap-3 text-sm text-text-muted">
+            <Circle className="h-4 w-4 shrink-0 text-text-faint" aria-hidden="true" />
+            <span>{stage}</span>
+          </li>
+        ))}
+      </ol>
+      <p className="mt-4 text-xs leading-5 text-text-faint">
+        Fresh CV analysis can take 20–30 seconds. Keep this page open while FiPilot prepares your profile.
+      </p>
+    </div>
   )
 }
 
@@ -252,10 +164,10 @@ export function TextInterviewPage({
   const submissionInFlightRef = useRef(false)
   const [candidateId, setCandidateId] = useState('')
   const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(null)
-  const [profileConfidence, setProfileConfidence] = useState(0)
   const interviewMode = mode
   const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(null)
   const [resumeUploadStatus, setResumeUploadStatus] = useState<ResumeUploadStatus>('idle')
+  const [isDraggingResume, setIsDraggingResume] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [backendAvailability, setBackendAvailability] = useState<BackendAvailability>('unknown')
   const [connectivityError, setConnectivityError] = useState<string | null>(null)
@@ -293,7 +205,7 @@ export function TextInterviewPage({
       setBackendAvailability('unreachable')
       setConnectivityError(getUserFacingError(
         healthError,
-        'Backend service is unavailable. Please check the API connection.',
+        'FiPilot is temporarily unavailable. Please try again.',
       ))
     }
   }, [])
@@ -416,18 +328,16 @@ export function TextInterviewPage({
     void api.generateInterviewReport(sessionId).catch(() => undefined)
   }, [isFinished, sessionId])
 
-  const selectResume = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null
+  const acceptResume = (file: File | null): boolean => {
     setError(null)
     setUploadError(null)
     setResumeUploadStatus('idle')
     setCandidateId('')
     setUploadedCandidateProfile(null)
-    setProfileConfidence(0)
 
     if (!file) {
       setSelectedResumeFile(null)
-      return
+      return true
     }
 
     const validationError = validateResumeFile(file)
@@ -435,12 +345,24 @@ export function TextInterviewPage({
       setSelectedResumeFile(null)
       setResumeUploadStatus('error')
       setUploadError(validationError)
-      event.target.value = ''
-      return
+      return false
     }
 
     setSelectedResumeFile(file)
     if (backendAvailability === 'unreachable') void checkBackendAvailability()
+    return true
+  }
+
+  const selectResume = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const accepted = acceptResume(event.target.files?.[0] ?? null)
+    if (!accepted) event.target.value = ''
+  }
+
+  const dropResume = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setIsDraggingResume(false)
+    if (uploading || loading) return
+    acceptResume(event.dataTransfer.files?.[0] ?? null)
   }
 
   const removeResume = () => {
@@ -448,7 +370,6 @@ export function TextInterviewPage({
     setSelectedResumeFile(null)
     setUploadedCandidateProfile(null)
     setCandidateId('')
-    setProfileConfidence(0)
     setUploadError(null)
     setResumeUploadStatus('idle')
     setPreparationStatus('idle')
@@ -461,12 +382,10 @@ export function TextInterviewPage({
     setUploadError(null)
     setCandidateId('')
     setUploadedCandidateProfile(null)
-    setProfileConfidence(0)
     try {
       const response = await api.uploadResume(selectedResumeFile)
       setCandidateId(response.candidate_id)
       setUploadedCandidateProfile(response.profile)
-      setProfileConfidence(response.confidence_score)
       setResumeUploadStatus('success')
     } catch (err) {
       setUploadError(getResumeUploadError(err))
@@ -535,8 +454,10 @@ export function TextInterviewPage({
       <InterviewPreparationScreen
         candidateName={uploadedCandidateProfile.name}
         mode={interviewMode}
+        language={language}
         experienceLevel={experienceLevel}
         questionCount={questionCount ?? preferences.questionCount}
+        persona={resolveInterviewerPersona(interviewStyle)}
         preparationReady={preparationStatus === 'ready'}
       />
     )
@@ -555,6 +476,7 @@ export function TextInterviewPage({
     return (
       <TextInterviewRoom
         state={state}
+        sessionId={sessionId}
         persona={resolveInterviewerPersona(state.interview_config.interview_style)}
         progress={progress}
         answer={answer}
@@ -571,158 +493,164 @@ export function TextInterviewPage({
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight-display text-text-primary">
-            {interviewMode === 'voice' ? 'Speech Interview' : 'Text Interview'}
-          </h1>
-          <p className="mt-1 text-sm text-text-muted">
-            {interviewMode === 'voice'
-              ? 'CV-driven conversational interview with realtime speech.'
-              : 'CV-driven interview room using adaptive V2 APIs.'}
-          </p>
-        </div>
-        {sessionId && (
-          <Badge variant={isFinished ? 'success' : 'accent'}>
-            {isFinished ? 'Completed' : `Session ${sessionId}`}
-          </Badge>
-        )}
-      </div>
+    <div className="mx-auto max-w-5xl space-y-8 pb-10">
+      <header>
+        <h1 className="font-display text-3xl font-bold tracking-tight-display text-text-primary">
+          Prepare your interview
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
+          Upload your CV, review the profile FiPilot creates, choose your settings, and start when you are ready.
+          {' '}This setup will start a {interviewMode === 'voice' ? 'speech' : 'text'} interview.
+        </p>
+      </header>
 
       {error && (
-        <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
+        <div role="alert" className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       )}
 
       {!state ? (
         <div className="space-y-5">
-          <Card>
+          <Card className="shadow-none">
             <CardHeader>
-              <CardTitle>Candidate Profile</CardTitle>
+              <div>
+                <h2 className="text-lg font-semibold text-text-primary">Upload your CV</h2>
+                <p className="mt-1 text-sm leading-6 text-text-muted">
+                  FiPilot uses your CV to personalize interview questions.
+                </p>
+              </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
-                <div className="min-w-0">
-                  <Label htmlFor="resume-file">Resume file</Label>
-                  <Input
-                    ref={resumeInputRef}
-                    id="resume-file"
-                    type="file"
-                    accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    onChange={selectResume}
-                    disabled={uploading || loading}
-                    aria-describedby="resume-file-help resume-upload-status"
-                    className="file:mr-3 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-text-primary"
-                  />
-                  <p id="resume-file-help" className="mt-1.5 text-xs text-text-faint">
-                    PDF or DOCX, up to 10 MB.
-                  </p>
-                </div>
-                <Button
-                  type="button"
-                  onClick={() => void uploadSelectedResume()}
-                  disabled={
-                    !selectedResumeFile
-                    || uploading
-                    || loading
-                    || backendAvailability === 'unreachable'
-                    || Boolean(uploadedCandidateProfile)
-                  }
-                  className="w-full md:w-auto"
-                >
-                  {uploading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : uploadedCandidateProfile ? (
-                    <CheckCircle2 className="h-4 w-4" />
-                  ) : (
-                    <Upload className="h-4 w-4" />
-                  )}
-                  {uploading ? 'Analyzing...' : uploadedCandidateProfile ? 'Analyzed' : 'Upload and Analyze'}
-                </Button>
-              </div>
+              <Label htmlFor="resume-file" className="sr-only">Resume file</Label>
+              <input
+                ref={resumeInputRef}
+                id="resume-file"
+                type="file"
+                accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                onChange={selectResume}
+                disabled={uploading || loading}
+                aria-describedby="resume-upload-status"
+                tabIndex={-1}
+                className="sr-only"
+              />
 
-              {selectedResumeFile && (
-                <div className="flex min-w-0 items-center gap-2 rounded-lg border border-border bg-surface-raised px-3 py-2.5">
-                  <FileText className="h-4 w-4 shrink-0 text-accent" />
-                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{selectedResumeFile.name}</span>
-                  <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedResumeFile.size)}</span>
+              {!uploadedCandidateProfile && (
+                <div
+                  className={`rounded-lg border border-dashed px-5 py-7 text-center transition-colors duration-150 ${
+                    isDraggingResume ? 'border-accent bg-accent-soft' : 'border-border bg-surface-raised'
+                  }`}
+                  onDragEnter={(event) => {
+                    event.preventDefault()
+                    if (!uploading && !loading) setIsDraggingResume(true)
+                  }}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDragLeave={() => setIsDraggingResume(false)}
+                  onDrop={dropResume}
+                >
+                  <Upload className="mx-auto h-6 w-6 text-accent" aria-hidden="true" />
+                  <p className="mt-3 text-sm font-semibold text-text-primary">Choose a CV or drag it here</p>
+                  <p id="resume-file-help" className="mt-1 text-xs text-text-faint">PDF or DOCX, up to 10 MB</p>
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={removeResume}
+                    variant={selectedResumeFile ? 'secondary' : 'primary'}
+                    className="mt-4"
+                    onClick={() => resumeInputRef.current?.click()}
                     disabled={uploading || loading}
                   >
-                    Remove resume
+                    Choose CV
+                  </Button>
+                </div>
+              )}
+
+              {selectedResumeFile && (
+                <div className="flex min-w-0 flex-col gap-3 rounded-lg border border-border bg-surface-raised px-3 py-3 sm:flex-row sm:items-center">
+                  <div className="flex min-w-0 flex-1 items-center gap-2">
+                    <FileText className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary" title={selectedResumeFile.name}>
+                      {selectedResumeFile.name}
+                    </span>
+                    <span className="shrink-0 text-xs text-text-faint">{formatFileSize(selectedResumeFile.size)}</span>
+                  </div>
+                  <Button type="button" variant="ghost" size="sm" onClick={removeResume} disabled={uploading || loading}>
+                    {uploadedCandidateProfile ? 'Choose another CV' : 'Remove CV'}
                   </Button>
                 </div>
               )}
 
               {connectivityError && (
-                <div role="alert" className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm text-danger">
+                <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger/10 px-3 py-3 text-sm text-danger">
                   <span>{connectivityError}</span>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => void checkBackendAvailability()}
-                    disabled={backendAvailability === 'checking'}
-                  >
+                  <Button type="button" variant="outline" size="sm" onClick={() => void checkBackendAvailability()} disabled={backendAvailability === 'checking'}>
                     Retry connection
                   </Button>
                 </div>
               )}
 
-              <div id="resume-upload-status" aria-live="polite" aria-atomic="true">
-                {uploading ? (
-                  <p className="text-sm text-text-muted">Uploading and extracting the candidate profile...</p>
-                ) : uploadedCandidateProfile ? (
-                  <p className="flex items-center gap-2 text-sm text-success">
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    Candidate profile is ready. Review it before starting the interview.
-                  </p>
-                ) : (
-                  <p className="text-sm text-text-muted">
-                    No candidate profile is loaded. Upload your CV to begin.
-                  </p>
-                )}
-              </div>
+              {uploading ? (
+                <ResumeAnalysisStatus />
+              ) : uploadedCandidateProfile ? (
+                <p id="resume-upload-status" role="status" className="flex items-center gap-2 text-sm text-success">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  Profile ready. Review the summary and choose your interview settings.
+                </p>
+              ) : (
+                <p id="resume-upload-status" className="text-sm text-text-muted">
+                  Start by choosing the CV you want to practice with.
+                </p>
+              )}
 
               {uploadError && (
-                <div role="alert" className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-2.5 text-sm text-danger">
+                <div role="alert" className="rounded-lg border border-danger/30 bg-danger/10 px-3 py-3 text-sm text-danger">
                   {uploadError}
                 </div>
+              )}
+
+              {selectedResumeFile && !uploadedCandidateProfile && !uploading && (
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={() => void uploadSelectedResume()}
+                  disabled={loading || backendAvailability === 'unreachable'}
+                  className="w-full sm:w-auto"
+                >
+                  <Upload className="h-4 w-4" aria-hidden="true" />
+                  {resumeUploadStatus === 'error' ? 'Try analysis again' : 'Upload and analyze'}
+                </Button>
               )}
             </CardContent>
           </Card>
 
           {uploadedCandidateProfile && (
-            <CandidateProfilePreview profile={uploadedCandidateProfile} confidenceScore={profileConfidence} />
+            <CandidateProfilePreview profile={uploadedCandidateProfile} candidateId={candidateId} />
           )}
 
-          <form onSubmit={startInterview} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <Card>
+          {uploadedCandidateProfile && (
+          <form onSubmit={startInterview}>
+            <Card className="shadow-none">
               <CardHeader>
-                <CardTitle>Interview Setup</CardTitle>
+                <div>
+                  <h2 className="text-lg font-semibold text-text-primary">Choose interview settings</h2>
+                  <p className="mt-1 text-sm leading-6 text-text-muted">Use the options supported by this interview mode.</p>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-5">
-                <div className="grid gap-4 md:grid-cols-2">
+              <CardContent className="space-y-6">
+                <div className="grid gap-4 lg:grid-cols-2">
                   <div>
-                    <Label htmlFor="interview-language">Language</Label>
+                    <Label htmlFor="interview-style">Interview type</Label>
                     <Select
-                      id="interview-language"
-                      value={language}
-                      onChange={(event) => setLanguage(event.target.value as InterviewLanguage)}
+                      id="interview-style"
+                      value={interviewStyle}
+                      onChange={(event) => setInterviewStyle(event.target.value as InterviewStyle)}
                       disabled={loading || uploading}
                     >
-                      <option value="vi">Vietnamese</option>
-                      <option value="en">English</option>
+                      <option value="technical">Technical</option>
+                      <option value="behavioral">Behavioral</option>
+                      <option value="mixed">Mixed</option>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="interview-experience-level">Experience Level</Label>
+                    <Label htmlFor="interview-experience-level">Difficulty</Label>
                     <Select
                       id="interview-experience-level"
                       value={experienceLevel}
@@ -736,40 +664,19 @@ export function TextInterviewPage({
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="interview-style">Interview Style</Label>
+                    <Label htmlFor="interview-language">Language</Label>
                     <Select
-                      id="interview-style"
-                      value={interviewStyle}
-                      onChange={(event) => setInterviewStyle(event.target.value as InterviewStyle)}
+                      id="interview-language"
+                      value={language}
+                      onChange={(event) => setLanguage(event.target.value as InterviewLanguage)}
                       disabled={loading || uploading}
                     >
-                      <option value="technical">Technical</option>
-                      <option value="behavioral">Behavioral</option>
-                      <option value="mixed">Mixed</option>
+                      <option value="vi">Vietnamese</option>
+                      <option value="en">English</option>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="interview-duration">Duration</Label>
-                    <Input
-                      id="interview-duration"
-                      type="number"
-                      min={5}
-                      max={180}
-                      required
-                      value={durationInput}
-                      onChange={(event) => setDurationInput(event.target.value)}
-                      disabled={loading || uploading}
-                      aria-invalid={durationMinutes === null}
-                      aria-describedby={durationMinutes === null ? 'interview-duration-error' : undefined}
-                    />
-                    {durationMinutes === null && (
-                      <p id="interview-duration-error" className="mt-1.5 text-xs text-danger">
-                        Enter a whole number from 5 to 180.
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label htmlFor="interview-question-count">Question Count</Label>
+                    <Label htmlFor="interview-question-count">Number of questions</Label>
                     <Input
                       id="interview-question-count"
                       type="number"
@@ -779,7 +686,7 @@ export function TextInterviewPage({
                       onChange={(event) => setQuestionCountInput(event.target.value)}
                       disabled={loading || uploading}
                       aria-invalid={questionCount === null}
-                      aria-describedby={questionCount === null ? 'interview-question-count-error' : undefined}
+                      aria-describedby={questionCount === null ? 'interview-question-count-error' : 'interview-duration-estimate'}
                     />
                     {questionCount === null && (
                       <p id="interview-question-count-error" className="mt-1.5 text-xs text-danger">
@@ -788,65 +695,57 @@ export function TextInterviewPage({
                     )}
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="interview-objective">Objective</Label>
-                  <Textarea
-                    id="interview-objective"
-                    rows={3}
-                    value={objective}
-                    onChange={(event) => setObjective(event.target.value)}
-                    disabled={loading || uploading}
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    disabled={loading || uploading || !candidateId || !uploadedCandidateProfile || !settingsAreValid}
-                  >
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                    Start
+
+                {questionCount !== null && durationMinutes !== null && (
+                  <p id="interview-duration-estimate" className="border-y border-border py-3 text-sm font-medium text-text-primary">
+                    {questionCount} questions <span className="text-text-faint">·</span> about {durationMinutes} minutes
+                  </p>
+                )}
+
+                <details className="border-b border-border pb-4">
+                  <summary className="cursor-pointer text-sm font-medium text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                    More options
+                  </summary>
+                  <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                    <div>
+                      <Label htmlFor="interview-duration">Duration</Label>
+                      <Input
+                        id="interview-duration"
+                        type="number"
+                        min={5}
+                        max={180}
+                        required
+                        value={durationInput}
+                        onChange={(event) => setDurationInput(event.target.value)}
+                        disabled={loading || uploading}
+                        aria-invalid={durationMinutes === null}
+                        aria-describedby={durationMinutes === null ? 'interview-duration-error' : undefined}
+                      />
+                      {durationMinutes === null && (
+                        <p id="interview-duration-error" className="mt-1.5 text-xs text-danger">Enter a whole number from 5 to 180.</p>
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="interview-objective">Objective</Label>
+                      <Textarea id="interview-objective" rows={3} value={objective} onChange={(event) => setObjective(event.target.value)} disabled={loading || uploading} />
+                    </div>
+                  </div>
+                </details>
+
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                  <p className="max-w-2xl text-sm leading-6 text-text-muted">
+                    Your AI interviewer will ask questions based on your CV and adapt follow-up questions to your answers.
+                  </p>
+                  <Button type="submit" size="lg" disabled={loading || uploading || !settingsAreValid} className="w-full shrink-0 sm:w-auto">
+                    {starting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+                    {starting ? 'Preparing interview' : 'Start Interview'}
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="rounded-lg border border-border bg-surface px-5 py-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-text-primary">
-                <ClipboardList className="h-4 w-4 text-accent" />
-                Session Setup
-              </div>
-              <div className="mt-4 space-y-3 text-sm text-text-muted">
-                <div className="flex justify-between gap-3">
-                  <span>Mode</span>
-                  <span className="font-medium text-text-primary">
-                    {interviewMode === 'text' ? 'Text' : 'Speech'}
-                  </span>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <span>Candidate</span>
-                  <span className="max-w-[180px] truncate font-medium text-text-primary">
-                    {uploadedCandidateProfile?.name ?? 'CV required'}
-                  </span>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <span>Language</span>
-                  <span className="font-medium text-text-primary">{language.toUpperCase()}</span>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <span>Level</span>
-                  <span className="font-medium text-text-primary capitalize">{experienceLevel}</span>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <span>Questions</span>
-                  <span className="font-medium text-text-primary">{questionCount ?? '—'}</span>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <span>Minutes</span>
-                  <span className="font-medium text-text-primary">{durationMinutes ?? '—'}</span>
-                </div>
-              </div>
-            </div>
           </form>
+          )}
         </div>
       ) : null}
     </div>

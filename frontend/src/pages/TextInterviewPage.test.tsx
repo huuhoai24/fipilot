@@ -1,7 +1,7 @@
 import React, { act } from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TextInterviewPage } from '@/pages/TextInterviewPage'
 import { api } from '@/lib/api'
@@ -18,10 +18,36 @@ vi.mock('@/lib/api', () => ({
   },
 }))
 
+const basicUploadResponse = {
+  candidate_id: 'candidate-1',
+  confidence_score: 0.92,
+  profile: {
+    name: 'Tran Thi B',
+    skills: ['FastAPI'],
+    skill_evidence: [],
+    projects: [],
+    experiences: [],
+    confidence: 0.92,
+    confidence_score: 0.92,
+  },
+}
+
+async function uploadBasicProfile() {
+  const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
+  fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
+  fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+  await screen.findByText('Profile ready. Review the summary and choose your interview settings.')
+}
+
+function CurrentPath() {
+  return <div data-testid="current-path">{useLocation().pathname}</div>
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
   window.localStorage.clear()
   vi.mocked(api.checkHealth).mockResolvedValue({ status: 'ok' })
+  vi.mocked(api.uploadResume).mockResolvedValue(basicUploadResponse)
   vi.mocked(api.prepareV2Interview).mockResolvedValue({
     status: 'ready',
     profile_version: 1,
@@ -33,6 +59,73 @@ afterEach(() => {
 })
 
 describe('TextInterviewPage interview mode', () => {
+  it('guides a fresh resume through clear analysis stages without internal terminology', async () => {
+    vi.mocked(api.uploadResume).mockReturnValue(new Promise(() => undefined))
+    render(
+      <MemoryRouter>
+        <TextInterviewPage mode="text" />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByRole('heading', { level: 1, name: 'Prepare your interview' })).toBeInTheDocument()
+    const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
+    fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+
+    expect(await screen.findByText('Reading your CV')).toBeInTheDocument()
+    expect(screen.getByText('Understanding your experience and projects')).toBeInTheDocument()
+    expect(screen.getByText('Building your interview profile')).toBeInTheDocument()
+    expect(screen.queryByText(/\b(gemini|llm|rag|embeddings?|agents?)\b/i)).not.toBeInTheDocument()
+  })
+
+  it('shows a concise cached profile result and the four primary interview settings', async () => {
+    vi.mocked(api.uploadResume).mockResolvedValue({
+      candidate_id: 'candidate-1',
+      confidence_score: 0.92,
+      profile: {
+        name: 'Vo Quang Trieu',
+        specialization: 'AI / Machine Learning',
+        years_experience: 2,
+        skills: ['Python', 'PyTorch', 'LangGraph', 'RAG', 'CUDA', 'FastAPI'],
+        skill_evidence: [],
+        projects: [
+          { name: 'Vision API', description: '', technologies: [], role: '' },
+          { name: 'Agent platform', description: '', technologies: [], role: '' },
+          { name: 'Search service', description: '', technologies: [], role: '' },
+        ],
+        experiences: [],
+        confidence: 0.92,
+        confidence_score: 0.92,
+      },
+    })
+    render(
+      <MemoryRouter>
+        <TextInterviewPage mode="text" />
+      </MemoryRouter>,
+    )
+
+    const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
+    fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+
+    expect(await screen.findByRole('heading', { name: 'Vo Quang Trieu' })).toBeInTheDocument()
+    expect(screen.getByText('AI / Machine Learning')).toBeInTheDocument()
+    expect(screen.getByText('2 years')).toBeInTheDocument()
+    expect(screen.getByText('3 detected')).toBeInTheDocument()
+    expect(screen.getByText('Python · PyTorch · LangGraph · RAG · CUDA')).toBeInTheDocument()
+    expect(screen.queryByText('FastAPI')).not.toBeInTheDocument()
+    expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'View full profile' })).toHaveAttribute(
+      'href',
+      '/candidate-profile/candidate-1',
+    )
+    expect(screen.getByLabelText('Interview type')).toBeInTheDocument()
+    expect(screen.getByLabelText('Difficulty')).toBeInTheDocument()
+    expect(screen.getByLabelText('Language')).toBeInTheDocument()
+    expect(screen.getByLabelText('Number of questions')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start Interview' })).toBeEnabled()
+  })
+
   it('presents an active session as a focused conversation without evaluation data', async () => {
     vi.mocked(api.submitV2InterviewAnswer).mockReturnValue(new Promise(() => undefined))
     vi.mocked(api.getV2InterviewSession).mockResolvedValue({
@@ -148,14 +241,15 @@ describe('TextInterviewPage interview mode', () => {
     expect(screen.queryByText(/evaluating|score|retrieval/i)).not.toBeInTheDocument()
   })
 
-  it('allows Question Count to be cleared and replaced while editing', () => {
+  it('allows Number of questions to be cleared and replaced while editing', async () => {
     render(
       <MemoryRouter>
         <TextInterviewPage mode="text" />
       </MemoryRouter>,
     )
 
-    const questionCount = screen.getByLabelText('Question Count')
+    await uploadBasicProfile()
+    const questionCount = screen.getByLabelText('Number of questions')
 
     fireEvent.change(questionCount, { target: { value: '' } })
 
@@ -166,12 +260,13 @@ describe('TextInterviewPage interview mode', () => {
     expect(questionCount).toHaveValue(7)
   })
 
-  it('allows Duration to be cleared and replaced while editing', () => {
+  it('allows Duration to be cleared and replaced while editing', async () => {
     render(
       <MemoryRouter>
         <TextInterviewPage mode="text" />
       </MemoryRouter>,
     )
+    await uploadBasicProfile()
     const duration = screen.getByLabelText('Duration')
 
     fireEvent.change(duration, { target: { value: '' } })
@@ -203,11 +298,11 @@ describe('TextInterviewPage interview mode', () => {
     )
     const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
     fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
-    await screen.findByText('Candidate profile is ready. Review it before starting the interview.')
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+    await screen.findByText('Profile ready. Review the summary and choose your interview settings.')
 
-    const questionCount = screen.getByLabelText('Question Count')
-    const startButton = screen.getByRole('button', { name: 'Start' })
+    const questionCount = screen.getByLabelText('Number of questions')
+    const startButton = screen.getByRole('button', { name: 'Start Interview' })
     fireEvent.change(questionCount, { target: { value: '' } })
 
     expect(questionCount).toHaveAttribute('aria-invalid', 'true')
@@ -250,10 +345,10 @@ describe('TextInterviewPage interview mode', () => {
     )
     const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
     fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
-    await screen.findByText('Candidate profile is ready. Review it before starting the interview.')
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+    await screen.findByText('Profile ready. Review the summary and choose your interview settings.')
 
-    const startForm = screen.getByRole('button', { name: 'Start' }).closest('form') as HTMLFormElement
+    const startForm = screen.getByRole('button', { name: 'Start Interview' }).closest('form') as HTMLFormElement
     act(() => {
       startForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
       startForm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
@@ -262,18 +357,19 @@ describe('TextInterviewPage interview mode', () => {
     expect(api.startV2Interview).toHaveBeenCalledTimes(1)
   })
 
-  it('persists valid interview settings across a page remount', () => {
+  it('persists valid interview settings across a page remount', async () => {
     const firstRender = render(
       <MemoryRouter>
         <TextInterviewPage mode="text" />
       </MemoryRouter>,
     )
 
+    await uploadBasicProfile()
     fireEvent.change(screen.getByLabelText('Language'), { target: { value: 'en' } })
-    fireEvent.change(screen.getByLabelText('Experience Level'), { target: { value: 'senior' } })
-    fireEvent.change(screen.getByLabelText('Interview Style'), { target: { value: 'mixed' } })
+    fireEvent.change(screen.getByLabelText('Difficulty'), { target: { value: 'senior' } })
+    fireEvent.change(screen.getByLabelText('Interview type'), { target: { value: 'mixed' } })
     fireEvent.change(screen.getByLabelText('Duration'), { target: { value: '45' } })
-    fireEvent.change(screen.getByLabelText('Question Count'), { target: { value: '7' } })
+    fireEvent.change(screen.getByLabelText('Number of questions'), { target: { value: '7' } })
     fireEvent.change(screen.getByLabelText('Objective'), { target: { value: 'Assess system design' } })
     firstRender.unmount()
 
@@ -283,16 +379,17 @@ describe('TextInterviewPage interview mode', () => {
       </MemoryRouter>,
     )
 
+    await uploadBasicProfile()
     expect(screen.getByLabelText('Language')).toHaveValue('en')
-    expect(screen.getByLabelText('Experience Level')).toHaveValue('senior')
-    expect(screen.getByLabelText('Interview Style')).toHaveValue('mixed')
+    expect(screen.getByLabelText('Difficulty')).toHaveValue('senior')
+    expect(screen.getByLabelText('Interview type')).toHaveValue('mixed')
     expect(screen.getByLabelText('Duration')).toHaveValue(45)
-    expect(screen.getByLabelText('Question Count')).toHaveValue(7)
+    expect(screen.getByLabelText('Number of questions')).toHaveValue(7)
     expect(screen.getByLabelText('Objective')).toHaveValue('Assess system design')
     expect(window.localStorage.getItem('ai-interview:text-settings:v1')).not.toBeNull()
   })
 
-  it('ignores malformed persisted interview settings', () => {
+  it('ignores malformed persisted interview settings', async () => {
     window.localStorage.setItem('ai-interview:text-settings:v1', JSON.stringify({
       language: 'invalid',
       durationMinutes: 'forever',
@@ -306,9 +403,10 @@ describe('TextInterviewPage interview mode', () => {
       </MemoryRouter>,
     )
 
+    await uploadBasicProfile()
     expect(screen.getByLabelText('Language')).toHaveValue('vi')
     expect(screen.getByLabelText('Duration')).toHaveValue(30)
-    expect(screen.getByLabelText('Question Count')).toHaveValue(10)
+    expect(screen.getByLabelText('Number of questions')).toHaveValue(10)
     expect(screen.getByLabelText('Objective')).toHaveValue(
       'Evaluate technical knowledge and practical experience',
     )
@@ -321,14 +419,14 @@ describe('TextInterviewPage interview mode', () => {
       </MemoryRouter>,
     )
     const fileInput = screen.getByLabelText('Resume file')
-    const uploadButton = screen.getByRole('button', { name: 'Upload and Analyze' })
     const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
 
     fireEvent.change(fileInput, { target: { files: [file] } })
+    const uploadButton = screen.getByRole('button', { name: 'Upload and analyze' })
     expect(uploadButton).toBeEnabled()
 
     fireEvent.change(fileInput, { target: { files: [] } })
-    expect(uploadButton).toBeDisabled()
+    expect(screen.queryByRole('button', { name: 'Upload and analyze' })).not.toBeInTheDocument()
   })
 
   it('removes an analyzed resume and its stale candidate profile together', async () => {
@@ -354,15 +452,15 @@ describe('TextInterviewPage interview mode', () => {
     const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
 
     fireEvent.change(fileInput, { target: { files: [file] } })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
-    await screen.findByText('Candidate profile is ready. Review it before starting the interview.')
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+    await screen.findByText('Profile ready. Review the summary and choose your interview settings.')
 
-    fireEvent.click(screen.getByRole('button', { name: 'Remove resume' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Choose another CV' }))
 
     expect(fileInput.value).toBe('')
-    expect(screen.queryByText('Extracted Candidate Profile')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Upload and Analyze' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'Start' })).toBeDisabled()
+    expect(screen.queryByRole('heading', { name: 'Tran Thi B' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Upload and analyze' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Start Interview' })).not.toBeInTheDocument()
   })
 
   it('checks backend health and reports an unavailable service specifically', async () => {
@@ -377,7 +475,7 @@ describe('TextInterviewPage interview mode', () => {
     )
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Backend service is unavailable. Please check the API connection.',
+      'FiPilot is temporarily unavailable. Please try again.',
     )
     expect(api.checkHealth).toHaveBeenCalledOnce()
   })
@@ -394,25 +492,24 @@ describe('TextInterviewPage interview mode', () => {
     const file = new File(['resume'], 'resume.pdf', { type: 'application/pdf' })
 
     fireEvent.change(screen.getByLabelText('Resume file'), { target: { files: [file] } })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Your session could not be verified. Please sign in again.',
     )
-    expect(screen.getByRole('button', { name: 'Upload and Analyze' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Try analysis again' })).toBeEnabled()
   })
 
-  it('keeps the page heading and session summary in sync when the route mode changes', () => {
+  it('keeps the guided setup copy in sync when the route mode changes', () => {
     const { rerender } = render(
       <MemoryRouter>
         <TextInterviewPage mode="text" />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Text Interview' })).toBeInTheDocument()
-    expect(screen.getByText('Text', { selector: 'span' })).toBeInTheDocument()
-    expect(screen.getByLabelText('Language')).toBeInTheDocument()
-    expect(screen.queryByText('Set up my interview')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Prepare your interview' })).toBeInTheDocument()
+    expect(screen.getByText(/start a text interview/i)).toBeInTheDocument()
+    expect(screen.queryByLabelText('Language')).not.toBeInTheDocument()
 
     rerender(
       <MemoryRouter>
@@ -420,9 +517,8 @@ describe('TextInterviewPage interview mode', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Speech Interview' })).toBeInTheDocument()
-    expect(screen.getByText('Speech', { selector: 'span' })).toBeInTheDocument()
-    expect(screen.queryByText('Choose Interview Mode')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Prepare your interview' })).toBeInTheDocument()
+    expect(screen.getByText(/start a speech interview/i)).toBeInTheDocument()
   })
 
   it('prepares the reusable interview blueprint after resume analysis for both modes', async () => {
@@ -453,7 +549,7 @@ describe('TextInterviewPage interview mode', () => {
     fireEvent.change(screen.getByLabelText('Resume file'), {
       target: { files: [file] },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
 
     await waitFor(() => {
       expect(api.prepareV2Interview).toHaveBeenCalledWith(
@@ -473,7 +569,7 @@ describe('TextInterviewPage interview mode', () => {
     fireEvent.change(screen.getByLabelText('Resume file'), {
       target: { files: [file] },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
 
     await waitFor(() => {
       expect(api.prepareV2Interview).toHaveBeenCalledWith(
@@ -507,14 +603,91 @@ describe('TextInterviewPage interview mode', () => {
     fireEvent.change(screen.getByLabelText('Resume file'), {
       target: { files: [report] },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'This document does not appear to be a resume.',
     )
-    expect(screen.getByRole('button', { name: 'Upload and Analyze' })).toBeEnabled()
-    expect(screen.queryByText('Extracted Candidate Profile')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Try analysis again' })).toBeEnabled()
+    expect(screen.queryByRole('heading', { name: 'Tran Thi B' })).not.toBeInTheDocument()
     expect(api.prepareV2Interview).not.toHaveBeenCalled()
+  })
+
+  it('transitions directly into the Interview Room when preparation succeeds', async () => {
+    vi.mocked(api.startV2Interview).mockResolvedValue({
+      session_id: 'session-ready',
+      started_at: '2026-08-11T03:00:00Z',
+      state: {
+        candidate_profile: basicUploadResponse.profile,
+        interview_config: {
+          mode: 'text',
+          language: 'vi',
+          experience_level: 'junior',
+          duration_minutes: 30,
+          interview_style: 'technical',
+          question_count: 10,
+          objective: 'Evaluate technical knowledge and practical experience',
+        },
+        interview_plan: {
+          duration_minutes: 30,
+          rounds: [],
+          coverage_goals: [],
+          risk_areas: [],
+          planner_summary: '',
+        },
+        phase: 'interviewing',
+        completed_turns: [],
+        current_turn: {
+          turn_id: 'turn-1',
+          question: 'Tell me about your recent work.',
+          status: 'created',
+          difficulty: 'medium',
+          topic: 'Background',
+          expected_signal: [],
+        },
+        pending_turn: null,
+        current_question_index: 0,
+      },
+    })
+    render(
+      <MemoryRouter initialEntries={['/text-interview']}>
+        <Routes>
+          <Route path="/text-interview" element={<TextInterviewPage mode="text" />} />
+          <Route path="*" element={<CurrentPath />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await uploadBasicProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Start Interview' }))
+
+    await waitFor(() => {
+      expect(screen.getByTestId('current-path')).toHaveTextContent('/text-interview/session-ready')
+    })
+  })
+
+  it('keeps preparation failures concise and allows the user to retry', async () => {
+    vi.mocked(api.startV2Interview).mockRejectedValueOnce(
+      Object.assign(new Error('model provider timeout'), { category: 'SERVER_ERROR' }),
+    )
+    render(
+      <MemoryRouter>
+        <TextInterviewPage mode="text" />
+      </MemoryRouter>,
+    )
+
+    await uploadBasicProfile()
+    fireEvent.click(screen.getByRole('button', { name: 'Start Interview' }))
+
+    const preparationError = await screen.findByRole('alert')
+    expect(preparationError).toHaveTextContent(
+      'The interview could not be started. Please try again.',
+    )
+    expect(preparationError).not.toHaveTextContent(/provider|model|langgraph|api/i)
+
+    vi.mocked(api.startV2Interview).mockReturnValue(new Promise(() => undefined))
+    fireEvent.click(screen.getByRole('button', { name: 'Start Interview' }))
+    expect(api.startV2Interview).toHaveBeenCalledTimes(2)
   })
 
   it('shows an informative preparation workspace while start is pending', async () => {
@@ -542,19 +715,21 @@ describe('TextInterviewPage interview mode', () => {
     fireEvent.change(screen.getByLabelText('Resume file'), {
       target: { files: [file] },
     })
-    fireEvent.click(screen.getByRole('button', { name: 'Upload and Analyze' }))
-    await screen.findByText('Candidate profile is ready. Review it before starting the interview.')
-    fireEvent.click(screen.getByRole('button', { name: 'Start' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Upload and analyze' }))
+    await screen.findByText('Profile ready. Review the summary and choose your interview settings.')
+    fireEvent.click(screen.getByRole('button', { name: 'Start Interview' }))
 
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: 'Preparing your text interview',
+        name: 'Preparing your interview',
       }),
     ).toBeInTheDocument()
     expect(screen.getByText('Tran Thi B')).toBeInTheDocument()
-    expect(screen.getByText('Preparing interview topics and structure')).toBeInTheDocument()
-    expect(screen.queryByText(/first question is being prepared/i)).not.toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Preparing interview topics')
+    expect(screen.getByText('Preparing the first question')).toBeInTheDocument()
+    expect(screen.getByText('Sarah Nguyen')).toBeInTheDocument()
+    expect(screen.getByText('AI Virtual Interviewer')).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Preparing')
   })
 })

@@ -59,3 +59,7 @@ class StreamingSTTFactory(ABC):
     @abstractmethod
     def create(self) -> StreamingSTT:
         raise NotImplementedError
+
+    def create_for_language(self, language: str | None) -> StreamingSTT:
+        """Create a session STT, falling back to the factory configuration."""
+        return self.create()

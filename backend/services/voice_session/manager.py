@@ -82,6 +82,7 @@ class VoiceSessionManager:
         session_id: str,
         user_id: str,
         *,
+        language: str | None = None,
         transcript_publisher: TranscriptPublisher | None = None,
         state_publisher: StatePublisher | None = None,
         barge_in_callback: BargeInCallback | None = None,
@@ -122,6 +123,7 @@ class VoiceSessionManager:
                         )
 
                 managed.pipeline = self.pipeline_factory.create(
+                    language=language,
                     transcript_publisher=publish_transcript,
                     endpoint_callback=lambda: self._handle_endpoint(
                         session_id, user_id

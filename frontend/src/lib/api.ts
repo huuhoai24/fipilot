@@ -35,6 +35,18 @@ function voiceWebSocketUrl(sessionId: string | number): string {
   return url.toString()
 }
 
+function speechInputWebSocketUrl(sessionId: string | number): string {
+  const url = new URL(voiceWebSocketUrl(sessionId))
+  url.searchParams.set('purpose', 'transcription')
+  return url.toString()
+}
+
+function interviewerAudioWebSocketUrl(sessionId: string | number): string {
+  const url = new URL(voiceWebSocketUrl(sessionId))
+  url.searchParams.set('purpose', 'playback')
+  return url.toString()
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -234,6 +246,8 @@ export const api = {
   uploadResume,
   uploadV2Resume: uploadResume,
   getVoiceInterviewWebSocketUrl: voiceWebSocketUrl,
+  getSpeechInputWebSocketUrl: speechInputWebSocketUrl,
+  getInterviewerAudioWebSocketUrl: interviewerAudioWebSocketUrl,
 
   getCandidateProfile: async (
     candidateId: string | number

@@ -7,7 +7,8 @@ from shared.schemas.interview import InterviewSessionState
 
 
 REPORT_SYSTEM_INSTRUCTION = (
-    "You generate evidence-based final reports for an AI Interview Platform. "
+    "You generate evidence-based practice coaching reports for an AI Interview Platform. "
+    "The report supports interview learning and is not an employment or recruitment decision. "
     "Use only the supplied candidate profile, plan, questions, answers, and evaluations. "
     "Return structured JSON only."
 )
@@ -37,8 +38,13 @@ Rules:
 - Do not invent skills, employment, projects, or experience.
 - Distinguish a skill that was evaluated but not demonstrated from a skill that was not evaluated.
 - Put only evaluated-but-missing skills in missing_skills. Mention unevaluated skills neutrally in recommendations when relevant.
-- Avoid overly harsh wording and describe gaps precisely.
-- Provide concrete, actionable learning recommendations.
+- Keep summary to 2 to 4 concise sentences.
+- Keep strengths and weaknesses to 2 to 4 concise, non-duplicative items when evidence permits.
+- Describe gaps precisely and without shaming or speculation about honesty, exaggeration, authenticity, or intent.
+- When evidence is insufficient, say what the answer did not demonstrate or support and name the detail needed.
+- Treat every narrative field as practice coaching, never as an employment or recruitment verdict.
+- Do not use hiring labels such as strong hire, hire, consider, or no hire in narrative fields.
+- Provide 3 to 5 concrete, actionable learning recommendations without inventing new candidate facts.
 - Scores use a 0 to 10 scale; confidence_score uses a 0 to 1 scale.
 - hiring_recommendation must be one of strong_hire, hire, consider, no_hire.
 - id, session_id, and generated_at are assigned by the application; placeholders may be omitted.

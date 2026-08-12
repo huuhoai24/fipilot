@@ -54,7 +54,7 @@ class _FasterWhisperModelProvider:
         self._load_lock = Lock()
         self._inference_lock = Lock()
 
-    def warm_up(self, language: str | None) -> None:
+    def warm_up(self, language: str | None, *, multilingual: bool = False) -> None:
         """Load the model and run one tiny inference.
 
         Both the weight load and the first CUDA kernel launch are slow. Doing
@@ -68,6 +68,7 @@ class _FasterWhisperModelProvider:
             language,
             None,
             beam_size=1,
+            multilingual=multilingual,
         )
 
     def transcribe(
@@ -76,6 +77,7 @@ class _FasterWhisperModelProvider:
         language: str | None,
         hotwords: str | None = None,
         beam_size: int = 1,
+        multilingual: bool = False,
     ) -> tuple[str, str, float]:
         model = self._get_model()
         with self._inference_lock:
@@ -87,6 +89,7 @@ class _FasterWhisperModelProvider:
                 condition_on_previous_text=False,
                 word_timestamps=False,
                 hotwords=hotwords,
+                multilingual=multilingual,
             )
             materialized = list(segments)
 
@@ -131,6 +134,7 @@ class FasterWhisperStreamingSTT(StreamingSTT):
         language: str,
         partial_interval_ms: int,
         hotwords: str | None = None,
+        multilingual: bool = False,
         partial_max_audio_ms: int = 20_000,
         final_beam_size: int = 5,
     ) -> None:
@@ -151,6 +155,7 @@ class FasterWhisperStreamingSTT(StreamingSTT):
         self._audio = bytearray()
         self._last_partial_size = 0
         self.hotwords = hotwords
+        self.multilingual = multilingual
 
     async def start_session(self) -> None:
         self._audio.clear()
@@ -211,6 +216,7 @@ class FasterWhisperStreamingSTT(StreamingSTT):
             self.language,
             self.hotwords,
             beam_size,
+            self.multilingual,
         )
         if not text:
             return None
@@ -254,14 +260,31 @@ class FasterWhisperSTTFactory(StreamingSTTFactory):
         ) or None
 
     def warm_up(self) -> None:
-        self.provider.warm_up(None if self.language.lower() == "auto" else self.language)
+        language, multilingual = self._language_options(None)
+        self.provider.warm_up(language, multilingual=multilingual)
 
     def create(self) -> StreamingSTT:
+        return self.create_for_language(None)
+
+    def create_for_language(self, language: str | None) -> StreamingSTT:
+        resolved_language, multilingual = self._language_options(language)
         return FasterWhisperStreamingSTT(
             self.provider,
-            language=self.language,
+            language=resolved_language or "auto",
             partial_interval_ms=self.partial_interval_ms,
             hotwords=self.hotwords,
+            multilingual=multilingual,
             partial_max_audio_ms=self.partial_max_audio_ms,
             final_beam_size=self.final_beam_size,
         )
+
+    def _language_options(self, session_language: str | None) -> tuple[str | None, bool]:
+        normalized = (session_language or "").strip().lower()
+        if normalized not in {"vi", "en"}:
+            normalized = self.language.strip().lower()
+        language = None if normalized == "auto" else normalized
+        # Faster-Whisper 1.2.x can detect language per segment, but the local
+        # code-switch benchmark showed no vocabulary gain and one regression
+        # for short, mixed Vietnamese utterances. Its multilingual option is
+        # not token-level switching, so keep the session language dominant.
+        return language, False

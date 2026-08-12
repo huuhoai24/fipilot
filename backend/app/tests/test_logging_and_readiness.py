@@ -44,6 +44,8 @@ class LoggingTests(unittest.TestCase):
                 "stt_to_evaluation_ms": 500.0,
                 "evaluation_to_question_ms": 250.0,
                 "question_to_tts_first_audio_ms": 300.0,
+                "tts_model_load_ms": 12000.0,
+                "tts_prewarm_ms": 12500.0,
                 "total_turn_latency_ms": 1175.0,
                 "transcript": "must not be serialized",
                 "prompt": "must not be serialized",
@@ -65,6 +67,8 @@ class LoggingTests(unittest.TestCase):
         self.assertEqual(payload["total_turn_latency_ms"], 1175.0)
         self.assertEqual(payload["audio_queue_drain_ms"], 25.0)
         self.assertEqual(payload["stt_decode_ms"], 100.0)
+        self.assertEqual(payload["tts_model_load_ms"], 12000.0)
+        self.assertEqual(payload["tts_prewarm_ms"], 12500.0)
         self.assertNotIn("transcript", payload)
         self.assertNotIn("prompt", payload)
         self.assertNotIn("candidate_answer", payload)

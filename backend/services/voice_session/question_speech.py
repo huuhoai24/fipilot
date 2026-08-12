@@ -77,6 +77,9 @@ class QuestionSentenceChunker:
 class QuestionSpeechMetrics:
     question_complete_time_ms: float | None
     tts_first_audio_time_ms: float | None
+    tts_queue_ms: float | None
+    tts_generation_ms: float | None
+    tts_total_ms: float | None
 
 
 class QuestionSpeechStreamer:
@@ -114,6 +117,8 @@ class QuestionSpeechStreamer:
         self._question_completed_at: float | None = None
         self._first_text_ready_at: float | None = None
         self._first_audio_at: float | None = None
+        self._generation_started_at: float | None = None
+        self._generation_completed_at: float | None = None
         self._cancelled = False
 
     async def feed_text_delta(self, delta: str) -> None:
@@ -134,6 +139,7 @@ class QuestionSpeechStreamer:
             await self._worker
             if self._started:
                 await self.complete_publisher()
+        finished_at = time.perf_counter()
         return QuestionSpeechMetrics(
             question_complete_time_ms=(
                 (self._question_completed_at - self._question_started_at) * 1000
@@ -146,6 +152,27 @@ class QuestionSpeechStreamer:
                     self._first_audio_at is not None
                     and self._first_text_ready_at is not None
                 )
+                else None
+            ),
+            tts_queue_ms=(
+                (self._generation_started_at - self._first_text_ready_at) * 1000
+                if (
+                    self._generation_started_at is not None
+                    and self._first_text_ready_at is not None
+                )
+                else None
+            ),
+            tts_generation_ms=(
+                (self._generation_completed_at - self._generation_started_at) * 1000
+                if (
+                    self._generation_completed_at is not None
+                    and self._generation_started_at is not None
+                )
+                else None
+            ),
+            tts_total_ms=(
+                (finished_at - self._question_started_at) * 1000
+                if self._started
                 else None
             ),
         )
@@ -169,31 +196,37 @@ class QuestionSpeechStreamer:
         await asyncio.sleep(0)
 
     async def _run(self) -> None:
-        while True:
-            text = await self._queue.get()
-            if text is None:
-                return
-            if self._failed:
-                continue
-            try:
-                async for audio_chunk in self.tts_service.synthesize_stream(text):
-                    current_format = (
-                        audio_chunk.sample_rate,
-                        audio_chunk.format,
-                    )
-                    if self._audio_format is None:
-                        self._audio_format = current_format
-                        await self.format_publisher(audio_chunk)
-                    elif current_format != self._audio_format:
-                        raise RuntimeError("TTS audio format changed mid-stream.")
-                    if self._first_audio_at is None:
-                        self._first_audio_at = time.perf_counter()
-                        if self.first_audio_publisher is not None:
-                            await self.first_audio_publisher()
-                    await self.audio_publisher(audio_chunk.bytes)
-            except Exception:
-                self._failed = True
-                await self.error_publisher()
+        try:
+            while True:
+                text = await self._queue.get()
+                if text is None:
+                    return
+                if self._failed:
+                    continue
+                if self._generation_started_at is None:
+                    self._generation_started_at = time.perf_counter()
+                try:
+                    async for audio_chunk in self.tts_service.synthesize_stream(text):
+                        current_format = (
+                            audio_chunk.sample_rate,
+                            audio_chunk.format,
+                        )
+                        if self._audio_format is None:
+                            self._audio_format = current_format
+                            await self.format_publisher(audio_chunk)
+                        elif current_format != self._audio_format:
+                            raise RuntimeError("TTS audio format changed mid-stream.")
+                        if self._first_audio_at is None:
+                            self._first_audio_at = time.perf_counter()
+                            if self.first_audio_publisher is not None:
+                                await self.first_audio_publisher()
+                        await self.audio_publisher(audio_chunk.bytes)
+                except Exception:
+                    self._failed = True
+                    await self.error_publisher()
+        finally:
+            if self._generation_started_at is not None:
+                self._generation_completed_at = time.perf_counter()
 
 
 class QuestionSpeechStreamerFactory:

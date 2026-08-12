@@ -73,13 +73,13 @@ export function getUserFacingError(
       ? record.message
       : ''
   if (record?.category === 'BACKEND_UNREACHABLE') {
-    return 'Backend service is unavailable. Please check the API connection.'
+    return 'FiPilot is temporarily unavailable. Please try again.'
   }
   if (record?.category === 'AUTH_FAILURE') {
     return 'Your session could not be verified. Please sign in again.'
   }
   if (record?.category === 'CORS_OR_NETWORK') {
-    return 'The browser could not reach the API. Check your connection and allowed origin.'
+    return 'FiPilot could not be reached. Check your connection and try again.'
   }
   if (record?.category === 'SERVER_ERROR') {
     return fallback
@@ -121,8 +121,19 @@ export function getInterviewAnswerError(error: unknown): string {
 
 export function getResumeUploadError(error: unknown): string {
   const record = asRecord(error)
-  if (record?.category === 'SERVER_ERROR') {
-    return 'The server encountered an error while analyzing the resume.'
+  const message = error instanceof Error
+    ? error.message
+    : typeof record?.message === 'string'
+      ? record.message
+      : ''
+  if (/timed?\s*out|timeout/i.test(message)) {
+    return 'CV analysis took too long. Please try again.'
   }
-  return getUserFacingError(error, 'Resume analysis failed. Please try again.')
+  if (record?.category === 'UPLOAD_VALIDATION_ERROR' && (!message || message === 'Request failed')) {
+    return 'We could not read this CV. Choose a PDF or DOCX file and try again.'
+  }
+  if (record?.category === 'SERVER_ERROR') {
+    return 'We could not analyze this CV. Please try again.'
+  }
+  return getUserFacingError(error, 'We could not analyze this CV. Please try again.')
 }

@@ -73,7 +73,7 @@ gcloud run deploy "$SERVICE" \
   --max-instances=1 \
   --port=8080 \
   --allow-unauthenticated \
-  --set-env-vars="APP_ENV=production,DEBUG=false,LOG_LEVEL=INFO,GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_CLOUD_LOCATION=$REGION,GEMINI_SIMPLE_MODEL=gemini-2.5-flash,GEMINI_COMPLEX_MODEL=gemini-2.5-pro,EVALUATOR_TASK_TYPE=simple,GEMINI_RESUME_MODEL=gemini-2.5-flash-lite,GEMINI_RESUME_LOCATION=global,AUTH_ENABLED=true,AUTH_PROVIDER=firebase,FIREBASE_PROJECT_ID=$PROJECT_ID,REPOSITORY_BACKEND=firestore,FIRESTORE_DATABASE=(default),STT_MODEL=/opt/fipilot/models/faster-whisper-small,STT_DEVICE=cpu,STT_COMPUTE_TYPE=int8,STT_LANGUAGE=vi,TTS_MODE=v3turbo,TTS_DEVICE=cpu,SPEECH_BENCHMARK_MODE=true,SPEECH_PREWARM_MODELS=true"
+  --set-env-vars="APP_ENV=production,DEBUG=false,LOG_LEVEL=INFO,GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_CLOUD_LOCATION=$REGION,GEMINI_SIMPLE_MODEL=gemini-2.5-flash,GEMINI_COMPLEX_MODEL=gemini-2.5-pro,EVALUATOR_TASK_TYPE=simple,GEMINI_RESUME_MODEL=gemini-2.5-flash-lite,GEMINI_RESUME_LOCATION=global,AUTH_ENABLED=true,AUTH_PROVIDER=firebase,FIREBASE_PROJECT_ID=$PROJECT_ID,REPOSITORY_BACKEND=firestore,FIRESTORE_DATABASE=(default),STT_MODEL=/opt/fipilot/models/faster-whisper-small,STT_DEVICE=cpu,STT_COMPUTE_TYPE=int8,STT_LANGUAGE=vi,TTS_MODE=v3turbo,TTS_DEVICE=cpu,TTS_PREWARM=true,SPEECH_BENCHMARK_MODE=true,SPEECH_PREWARM_MODELS=true"
 ```
 
 Set the production frontend origin separately because its URL contains commas
@@ -96,6 +96,16 @@ gcloud run services update "$SERVICE" \
 Return to cold-start benchmarking with `--min-instances=0`. Keep
 `SPEECH_SERVICE_URL` unset so STT, VAD, and TTS run inside this application
 container.
+
+`TTS_PREWARM=true` starts a minimal internal VieNeu warm-up in the background
+during process startup without making health/readiness depend on optional TTS.
+It never generates or caches candidate-specific question audio.
+The model remains process-local: every Uvicorn worker and every Cloud Run
+instance loads its own copy. Multiple workers therefore multiply VieNeu's RAM
+or VRAM footprint; this benchmark intentionally uses one process per container.
+Scale-to-zero still creates a fresh process and a fresh model cold start.
+Keeping a minimum instance warm can reduce candidate-facing cold starts at an
+idle-cost tradeoff, but does not share model memory with newly scaled instances.
 
 ## Authentication And ADC
 
@@ -149,6 +159,8 @@ A warm run starts after both STT and TTS have completed at least one real turn.
   15-second, 469-chunk fixture from 2.316 seconds to 37.041 seconds.
 - A new instance must initialize both baked models again, increasing cold-start
   time even though their artifacts are already present in the image.
+- Optional TTS prewarm runs once per process. A multi-worker container repeats
+  both initialization time and model memory for every worker.
 - Min instances set to 1 reduces demo cold starts but incurs idle cost; it does
   not make this a production deployment.
 - Concurrency 1 isolates benchmark samples and intentionally limits throughput.

@@ -163,9 +163,13 @@ describe('InterviewReportPage coaching report', () => {
     expect(screen.getByText('Used concrete production examples.')).toBeInTheDocument()
     expect(screen.getByText('Make failure policies more explicit.')).toBeInTheDocument()
     expect(screen.getByText('Good systems thinking grounded in a real operating constraint.')).toBeInTheDocument()
+    expect(screen.queryByText('Hire')).not.toBeInTheDocument()
 
     const firstQuestion = screen.getByRole('button', { name: /question 1.*reliability/i })
     expect(firstQuestion).toHaveAttribute('aria-expanded', 'true')
+    expect(firstQuestion).toHaveAttribute('aria-controls', 'question-review-turn-1')
+    expect(screen.getByRole('region', { name: /question 1.*reliability/i })).toBeInTheDocument()
+    expect(screen.getByText('How would you keep an API reliable under load?')).toBeInTheDocument()
     expect(screen.getByText('I would add backpressure and isolate queues.')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'What the interviewer was looking for' })).toBeInTheDocument()
     expect(screen.getByText('Backpressure')).toBeInTheDocument()
@@ -173,10 +177,57 @@ describe('InterviewReportPage coaching report', () => {
 
     const secondQuestion = screen.getByRole('button', { name: /question 2.*fastapi/i })
     expect(secondQuestion).toHaveAttribute('aria-expanded', 'false')
+    secondQuestion.focus()
+    expect(secondQuestion).toHaveFocus()
     fireEvent.click(secondQuestion)
     expect(secondQuestion).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByText('Dependency overrides')).toBeInTheDocument()
     expect(screen.getByText('No detailed evaluation was saved for this answer.')).toBeInTheDocument()
+  })
+
+  it('reframes harsh legacy wording as specific practice coaching without changing scores', async () => {
+    mocks.getInterviewReport.mockResolvedValue({
+      session_id: 'session-42',
+      report: {
+        ...report,
+        overall_score: 2.1,
+        summary: 'You may have exaggerated your experience. This creates a major concern about authenticity.',
+        weaknesses: ['You may be dishonest about the project depth.'],
+      },
+    })
+
+    renderPage()
+
+    expect(await screen.findByText('2.1')).toBeInTheDocument()
+    expect(screen.queryByText(/exaggerated|dishonest|authenticity/i)).not.toBeInTheDocument()
+    expect(screen.getByText(/did not demonstrate the experience described in your CV/i)).toBeInTheDocument()
+    expect(screen.getByText(/did not provide enough detail to support the experience described/i)).toBeInTheDocument()
+  })
+
+  it('keeps long summaries and detailed learning data available through disclosure', async () => {
+    mocks.getInterviewReport.mockResolvedValue({
+      session_id: 'session-42',
+      report: {
+        ...report,
+        summary: 'First coaching point. Second coaching point. Third coaching point. Fourth coaching point. Fifth coaching point.',
+        recommendations: [
+          'Practice action one.',
+          'Practice action two.',
+          'Practice action three.',
+          'Practice action four.',
+          'Practice action five.',
+          'Practice action six.',
+        ],
+      },
+    })
+
+    renderPage()
+
+    expect((await screen.findAllByText(/First coaching point.*Third coaching point/))[0]).toBeInTheDocument()
+    expect(screen.getByText('Read full coaching summary')).toBeInTheDocument()
+    expect(screen.getByText('View learning plan details')).toBeInTheDocument()
+    expect(screen.getByText('Practice action five.')).toBeInTheDocument()
+    expect(screen.queryByText('Practice action six.')).not.toBeInTheDocument()
   })
 
   it('keeps the report unavailable while an interview is active', async () => {

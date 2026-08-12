@@ -3,13 +3,16 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import time
 from contextlib import asynccontextmanager
+from contextlib import suppress
 from secrets import compare_digest
 
 from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket
 from pydantic import ValidationError
 
 from core.exceptions import ConfigurationError
+from core.logging import get_logger
 from core.settings import Settings, get_settings
 from services.voice_session.audio_pipeline import AudioQueueFullError
 from services.voice_session.warmup import warm_up_speech_runtime
@@ -20,6 +23,7 @@ from speech_service.dependencies import get_speech_runtime
 # Environments where an unauthenticated internal socket is tolerated. Anything
 # else (development, staging, production) must configure SPEECH_SERVICE_TOKEN.
 TOKENLESS_ENVIRONMENTS = {"local", "test"}
+logger = get_logger(__name__)
 
 
 def validate_speech_service_settings(settings: Settings) -> None:
@@ -31,8 +35,12 @@ def validate_speech_service_settings(settings: Settings) -> None:
         )
 
 
-async def warm_up_models(application: FastAPI | None = None) -> None:
-    """Load STT/VAD weights before the first session.
+async def warm_up_models(
+    application: FastAPI | None = None,
+    *,
+    prewarm_tts: bool = True,
+) -> None:
+    """Load STT/VAD weights and, when requested, TTS before the first session.
 
     Model weights used to load lazily inside the audio consumer loop on the
     first utterance. That took tens of seconds while PCM kept arriving, so the
@@ -47,19 +55,70 @@ async def warm_up_models(application: FastAPI | None = None) -> None:
             get_speech_runtime, get_speech_runtime
         )
     pipeline_factory, tts_service = provider()
-    await warm_up_speech_runtime(pipeline_factory, tts_service)
+    await warm_up_speech_runtime(
+        pipeline_factory,
+        tts_service,
+        prewarm_tts=prewarm_tts,
+    )
+
+
+async def _prewarm_tts(application: FastAPI) -> None:
+    provider = application.dependency_overrides.get(
+        get_speech_runtime,
+        get_speech_runtime,
+    )
+    _, tts_service = provider()
+    started_at = time.perf_counter()
+    try:
+        metrics = await tts_service.warm_up()
+        elapsed_ms = (time.perf_counter() - started_at) * 1000
+        application.state.tts_prewarm_status = "ready"
+        logger.info(
+            "Optional TTS prewarm completed.",
+            extra={
+                "event": "tts_prewarm",
+                "status": "ready",
+                "tts_model_load_ms": getattr(metrics, "model_load_ms", None),
+                "tts_prewarm_ms": getattr(metrics, "prewarm_ms", elapsed_ms),
+            },
+        )
+    except asyncio.CancelledError:
+        raise
+    except Exception:
+        application.state.tts_prewarm_status = "failed"
+        logger.warning(
+            "Optional TTS prewarm failed; lazy synthesis remains available.",
+            extra={"event": "tts_prewarm", "status": "failed"},
+        )
 
 
 @asynccontextmanager
 async def lifespan(application: FastAPI):
-    validate_speech_service_settings(get_settings())
+    settings = get_settings()
+    validate_speech_service_settings(settings)
     application.state.models_ready = False
+    application.state.tts_prewarm_status = (
+        "pending" if settings.tts_prewarm else "disabled"
+    )
+    tts_prewarm_task: asyncio.Task[None] | None = None
+    application.state.tts_prewarm_task = None
+    if settings.tts_prewarm:
+        # Start optional TTS readiness as early as possible while the existing
+        # STT/VAD startup work proceeds. It remains isolated from readiness.
+        tts_prewarm_task = asyncio.create_task(_prewarm_tts(application))
+        application.state.tts_prewarm_task = tts_prewarm_task
     try:
-        await warm_up_models(application)
+        await warm_up_models(application, prewarm_tts=False)
         application.state.models_ready = True
     except Exception as error:  # pragma: no cover - depends on local model files
         application.state.warm_up_error = repr(error)
-    yield
+    try:
+        yield
+    finally:
+        if tts_prewarm_task is not None and not tts_prewarm_task.done():
+            tts_prewarm_task.cancel()
+            with suppress(asyncio.CancelledError):
+                await tts_prewarm_task
 
 
 app = FastAPI(title="AI Interview Speech Inference Service", lifespan=lifespan)
@@ -112,13 +171,7 @@ async def inference(
         async with send_lock:
             await websocket.send_json(payload)
 
-    pipeline = pipeline_factory.create(
-        transcript_publisher=send_json,
-        endpoint_callback=lambda: send_json({"type": "endpoint"}),
-        speech_started_callback=lambda: send_json({"type": "speech_started"}),
-        speech_end_callback=lambda: send_json({"type": "speech_end"}),
-        stt_final_callback=lambda: send_json({"type": "stt_final"}),
-    )
+    pipeline = None
     pipeline_started = False
     dropped = 0
     await websocket.accept()
@@ -169,6 +222,17 @@ async def inference(
                 continue
 
             if control.type == "stt_start":
+                if pipeline is None:
+                    pipeline = pipeline_factory.create(
+                        language=control.language,
+                        transcript_publisher=send_json,
+                        endpoint_callback=lambda: send_json({"type": "endpoint"}),
+                        speech_started_callback=lambda: send_json({"type": "speech_started"}),
+                        speech_end_callback=lambda: send_json(
+                            {"type": "speech_end"}
+                        ),
+                        stt_final_callback=lambda: send_json({"type": "stt_final"}),
+                    )
                 await pipeline.start()
                 pipeline_started = True
                 await send_json({"type": "stt_started"})
@@ -180,7 +244,8 @@ async def inference(
             else:
                 await _stream_tts(websocket, tts_service, control.text or "")
     finally:
-        await pipeline.close()
+        if pipeline is not None:
+            await pipeline.close()
 
 
 async def _stream_tts(websocket: WebSocket, tts_service, text: str) -> None:

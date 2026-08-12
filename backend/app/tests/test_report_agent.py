@@ -118,6 +118,10 @@ class ReportAgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("English", prompt)
         self.assertIn("I use Depends", prompt)
         self.assertIn("interview_plan", prompt)
+        self.assertIn("2 to 4 concise sentences", prompt)
+        self.assertIn("without shaming or speculation", prompt)
+        self.assertIn("never as an employment or recruitment verdict", prompt)
+        self.assertIn("3 to 5 concrete", prompt)
 
     async def test_agent_uses_complex_structured_output(self):
         llm = MockLLMService()

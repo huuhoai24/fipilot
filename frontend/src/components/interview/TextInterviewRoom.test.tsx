@@ -67,6 +67,7 @@ function renderRoom(
   state: V2InterviewSessionState,
   options: {
     answer?: string
+    sessionId?: string
     onSubmit?: (event: React.FormEvent<HTMLFormElement>) => void
     pendingAnswer?: string | null
     submitting?: boolean
@@ -76,6 +77,7 @@ function renderRoom(
   return render(
     <TextInterviewRoom
       state={state}
+      sessionId={options.sessionId}
       persona={resolveInterviewerPersona(state.interview_config.interview_style)}
       progress={{ current: 1, total: 4 }}
       answer={options.answer ?? ''}
@@ -94,6 +96,14 @@ function renderRoom(
 afterEach(cleanup)
 
 describe('TextInterviewRoom conversation phases', () => {
+  it('offers microphone input without replacing the text composer', () => {
+    renderRoom(sessionState({}), { sessionId: 'session-42' })
+
+    expect(screen.getByRole('button', { name: 'Start recording' })).toBeEnabled()
+    expect(screen.getByLabelText('Your answer')).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Submit answer' })).toBeDisabled()
+  })
+
   it('keeps the composer compact, grows with its content, and scrolls after the height cap', () => {
     function ComposerHarness() {
       const [answer, setAnswer] = React.useState('')

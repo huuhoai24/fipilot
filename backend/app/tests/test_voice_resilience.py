@@ -182,6 +182,7 @@ class RemoteAudioPipelineShutdownTests(unittest.IsolatedAsyncioTestCase):
             service_url="http://speech.invalid:9000",
             service_token=None,
             queue_size=queue_size,
+            language=None,
             transcript_publisher=lambda payload: asyncio.sleep(0),
             endpoint_callback=None,
             speech_started_callback=None,

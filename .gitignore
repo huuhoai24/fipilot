@@ -44,6 +44,9 @@ credentials*
 
 *.log
 
+# Local browser profiles, screenshots, recordings, and QA artifacts
+.scratch/
+
 # Backend specifics
 data/
 models/
