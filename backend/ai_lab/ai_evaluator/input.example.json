@@ -1,0 +1,31 @@
+{
+  "candidate_profile": {
+    "name": "Nguyen An",
+    "skills": ["Python", "FastAPI"],
+    "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}],
+    "projects": [],
+    "experiences": [],
+    "education": null,
+    "confidence_score": 0.9
+  },
+  "interview_question": {
+    "question": "Bạn xác định và xử lý bottleneck của luồng async như thế nào?",
+    "language": "vi",
+    "topic": "FastAPI service design",
+    "difficulty": "medium",
+    "reasoning": "Validate production experience.",
+    "expected_answer_points": ["Profiling method", "Async I/O boundaries", "Latency validation"],
+    "follow_up_questions": []
+  },
+  "answer": "Tôi đo p95 latency bằng tracing, tìm blocking I/O trong event loop, chuyển tác vụ CPU-bound sang worker và so sánh load test trước và sau.",
+  "interview_config": {
+    "mode": "text",
+    "language": "vi",
+    "experience_level": "middle",
+    "duration_minutes": 30,
+    "interview_style": "technical",
+    "question_count": 6,
+    "objective": "Evaluate backend engineering depth",
+    "interviewer_personality": "professional"
+  }
+}

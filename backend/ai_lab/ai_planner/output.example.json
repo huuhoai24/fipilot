@@ -1,0 +1,19 @@
+{
+  "duration_minutes": 30,
+  "rounds": [
+    {
+      "round_id": "round-1",
+      "topic": "FastAPI service design",
+      "objective": "Validate production API design experience.",
+      "difficulty": "medium",
+      "reasoning": "The candidate reports operating FastAPI at meaningful scale.",
+      "recommended_question_areas": ["Async bottlenecks", "Failure handling", "Latency measurement"],
+      "weight": 0.6,
+      "target_skills": ["FastAPI", "Python"],
+      "question_budget": 3
+    }
+  ],
+  "coverage_goals": ["Validate API design and operational trade-offs"],
+  "risk_areas": ["Clarify the candidate's individual contribution"],
+  "planner_summary": "Tập trung vào kinh nghiệm backend có bằng chứng trong hồ sơ."
+}

@@ -1,0 +1,15 @@
+{
+  "turn_id": "",
+  "scores": {"technical_score": 8.5, "depth_score": 8.0, "communication_score": 8.0, "engineering_mindset_score": 8.5, "overall_score": 8.3},
+  "overall_score": 8.3,
+  "technical_score": 8.5,
+  "communication_score": 8.0,
+  "correctness_score": 8.5,
+  "strengths": ["Nêu rõ tracing và p95 latency", "Phân biệt blocking I/O và CPU-bound work"],
+  "weaknesses": ["Chưa mô tả ngưỡng chấp nhận sau load test"],
+  "missing_topics": [],
+  "missing_concepts": ["Acceptance threshold"],
+  "feedback": "Câu trả lời có quy trình đo và tối ưu rõ ràng; hãy bổ sung tiêu chí định lượng để kết luận thay đổi thành công.",
+  "follow_up_needed": true,
+  "follow_up_reason": "Cần làm rõ ngưỡng latency và throughput chấp nhận được."
+}

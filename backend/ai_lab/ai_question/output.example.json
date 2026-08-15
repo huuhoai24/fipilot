@@ -1,0 +1,9 @@
+{
+  "question": "Trong API FastAPI phục vụ 2 triệu request mỗi ngày, bạn xác định và xử lý bottleneck của luồng async như thế nào?",
+  "language": "vi",
+  "topic": "FastAPI service design",
+  "difficulty": "medium",
+  "reasoning": "Câu hỏi kiểm tra trực tiếp kinh nghiệm vận hành FastAPI ở quy mô đã nêu.",
+  "expected_answer_points": ["Profiling method", "Async I/O boundaries", "Latency validation"],
+  "follow_up_questions": ["Bạn theo dõi metric nào sau khi triển khai thay đổi?"]
+}

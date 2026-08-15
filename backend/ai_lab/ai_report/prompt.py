@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+import json
+
+from ai_lab.ai_report.schemas import ReportInput
+
+
+SYSTEM_INSTRUCTION = (
+    "You generate evidence-based practice coaching reports for an AI Interview Platform. "
+    "The report supports interview learning and is not an employment or recruitment decision. "
+    "Use only the supplied candidate profile, plan, questions, answers, and evaluations. "
+    "Return structured JSON only."
+)
+
+
+def build_prompt(input_data: ReportInput) -> str:
+    state = input_data.interview_state
+    language = state.interview_config.language
+    output_language = "Vietnamese" if language == "vi" else "English"
+    payload = {
+        "candidate_profile": input_data.candidate_profile.model_dump(mode="json"),
+        "interview_config": state.interview_config.model_dump(mode="json"),
+        "interview_plan": state.interview_plan.model_dump(mode="json"),
+        "interview_turns": [turn.model_dump(mode="json") for turn in state.completed_turns],
+    }
+    return f"""
+Create a holistic final interview report from the supplied evidence.
+
+Rules:
+- Write narrative content in {output_language} (language code: {language}).
+- Keep technical product, framework, protocol, and programming-language names in English.
+- Ground every skill assessment in actual candidate answers or evaluations.
+- Do not invent skills, employment, projects, or experience.
+- Distinguish a skill that was evaluated but not demonstrated from a skill that was not evaluated.
+- Put only evaluated-but-missing skills in missing_skills. Mention unevaluated skills neutrally in recommendations when relevant.
+- Keep summary to 2 to 4 concise sentences.
+- Keep strengths and weaknesses to 2 to 4 concise, non-duplicative items when evidence permits.
+- Describe gaps precisely and without shaming or speculation about honesty, exaggeration, authenticity, or intent.
+- When evidence is insufficient, say what the answer did not demonstrate or support and name the detail needed.
+- Treat every narrative field as practice coaching, never as an employment or recruitment verdict.
+- Do not use hiring labels such as strong hire, hire, consider, or no hire in narrative fields.
+- Provide 3 to 5 concrete, actionable learning recommendations without inventing new candidate facts.
+- Scores use a 0 to 10 scale; confidence_score uses a 0 to 1 scale.
+- hiring_recommendation must be one of strong_hire, hire, consider, no_hire.
+- id, session_id, and generated_at are assigned by the application; placeholders may be omitted.
+- Return only one JSON object matching InterviewReport.
+
+Interview evidence:
+{json.dumps(payload, ensure_ascii=False, indent=2)}
+""".strip()

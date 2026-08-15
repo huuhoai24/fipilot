@@ -1,0 +1,25 @@
+{
+  "candidate_profile": {
+    "name": "Nguyen An",
+    "years_experience": 4,
+    "recent_role": "Backend Developer",
+    "skills": ["Python", "FastAPI", "PostgreSQL"],
+    "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}],
+    "projects": [{"name": "Order API", "description": "Designed an async order API.", "technologies": ["FastAPI", "PostgreSQL"], "role": "Backend Developer"}],
+    "experiences": [],
+    "education": null,
+    "specialization": "Backend Development",
+    "confidence_score": 0.9
+  },
+  "interview_config": {
+    "mode": "text",
+    "language": "vi",
+    "experience_level": "middle",
+    "duration_minutes": 30,
+    "interview_style": "technical",
+    "question_count": 6,
+    "objective": "Evaluate backend engineering depth",
+    "interviewer_personality": "professional"
+  },
+  "knowledge_topics": ["Async request handling", "Database transactions", "API observability"]
+}

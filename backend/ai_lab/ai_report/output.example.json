@@ -1,0 +1,19 @@
+{
+  "id": "report-example",
+  "session_id": "",
+  "overall_score": 7.9,
+  "technical_score": 8.0,
+  "communication_score": 8.0,
+  "correctness_score": 7.8,
+  "summary": "Ứng viên thể hiện được cách đo và phân tích hiệu năng FastAPI dựa trên tracing và p95 latency. Câu trả lời cần bổ sung tiêu chí định lượng để xác nhận kết quả tối ưu.",
+  "strengths": ["Sử dụng dữ liệu đo thay vì phỏng đoán", "Trình bày quy trình ngắn gọn"],
+  "weaknesses": ["Chưa nêu ngưỡng latency hoặc throughput chấp nhận được"],
+  "demonstrated_skills": ["FastAPI"],
+  "missing_skills": [],
+  "skill_assessments": [{"skill": "FastAPI", "score": 8.0, "evidence": ["Dùng tracing, p95 và load test trước/sau"], "feedback": "Tiếp tục làm rõ tiêu chí thành công của tối ưu."}],
+  "recommendations": ["Định nghĩa SLO latency và throughput trước load test", "Ghi lại baseline và regression threshold", "Thực hành phân tích blocking I/O trong event loop"],
+  "learning_plan": [{"topic": "Performance acceptance criteria", "priority": "high", "reason": "Câu trả lời chưa có ngưỡng định lượng", "recommended_action": "Thiết kế một load test có SLO và regression threshold"}],
+  "hiring_recommendation": "consider",
+  "confidence_score": 0.85,
+  "generated_at": "2026-01-01T00:00:00Z"
+}

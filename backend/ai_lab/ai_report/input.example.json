@@ -1,0 +1,61 @@
+{
+  "candidate_profile": {
+    "name": "Nguyen An",
+    "skills": ["Python", "FastAPI"],
+    "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}],
+    "projects": [],
+    "experiences": [],
+    "education": null,
+    "confidence_score": 0.9
+  },
+  "interview_state": {
+    "candidate_profile": {
+      "name": "Nguyen An",
+      "skills": ["Python", "FastAPI"],
+      "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}],
+      "projects": [],
+      "experiences": [],
+      "education": null,
+      "confidence_score": 0.9
+    },
+    "interview_config": {
+      "mode": "text",
+      "language": "vi",
+      "experience_level": "middle",
+      "duration_minutes": 30,
+      "interview_style": "technical",
+      "question_count": 1,
+      "objective": "Evaluate backend engineering depth",
+      "interviewer_personality": "professional"
+    },
+    "interview_plan": {
+      "duration_minutes": 30,
+      "rounds": [{"round_id": "round-1", "topic": "FastAPI service design", "objective": "Validate production API design.", "difficulty": "medium", "reasoning": "Evidence-backed skill.", "recommended_question_areas": ["Async bottlenecks"], "weight": 1.0, "target_skills": ["FastAPI"], "question_budget": 1}],
+      "coverage_goals": ["Validate API design trade-offs"],
+      "risk_areas": [],
+      "planner_summary": "Tập trung vào FastAPI."
+    },
+    "phase": "closing",
+    "opening_turn": null,
+    "pending_turn": null,
+    "current_turn": null,
+    "completed_turns": [
+      {
+        "turn_id": "turn-1",
+        "round_id": "round-1",
+        "question": {"question": "Bạn xử lý async bottleneck như thế nào?", "language": "vi", "topic": "FastAPI service design", "difficulty": "medium", "reasoning": "Validate experience.", "expected_answer_points": ["Profiling", "Validation"], "follow_up_questions": []},
+        "answer": "Tôi dùng tracing, đo p95 và load test trước và sau.",
+        "status": "evaluated",
+        "evaluation": {"turn_id": "turn-1", "scores": {"technical_score": 8.0, "depth_score": 7.5, "communication_score": 8.0, "engineering_mindset_score": 8.0, "overall_score": 7.9}, "overall_score": 7.9, "technical_score": 8.0, "communication_score": 8.0, "correctness_score": 7.8, "strengths": ["Có phương pháp đo"], "weaknesses": ["Thiếu ngưỡng chấp nhận"], "missing_topics": [], "missing_concepts": ["Acceptance threshold"], "feedback": "Cần bổ sung tiêu chí định lượng.", "follow_up_needed": false, "follow_up_reason": null},
+        "question_type": "practical",
+        "difficulty": "medium",
+        "topic": "FastAPI service design",
+        "expected_signal": ["Uses measurements"],
+        "candidate_answer": "Tôi dùng tracing, đo p95 và load test trước và sau."
+      }
+    ],
+    "current_question_index": 1,
+    "memory": {"previous_topics": ["FastAPI service design"], "covered_skills": ["FastAPI"], "weaknesses": ["Acceptance threshold"], "follow_up_points": []},
+    "voice_analytics": {"speaking_duration_ms": 0, "response_latencies_ms": [], "interruption_count": 0}
+  }
+}

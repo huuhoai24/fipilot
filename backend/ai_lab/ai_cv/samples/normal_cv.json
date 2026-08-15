@@ -1,0 +1,3 @@
+{
+  "resume_text": "TRAN MINH\nAI Engineer\nminh@example.com\n\nSKILLS\nPython, PyTorch, YOLO, TensorRT, Docker\n\nWORK EXPERIENCE\nAI Engineer at Vision Labs, 2022-present. Trained YOLO models for defect detection and optimized inference with TensorRT, reducing p95 latency by 38%.\n\nPROJECTS\nFactory Vision: built a PyTorch training pipeline, evaluated mAP, and deployed the model in Docker.\n\nEDUCATION\nBSc Computer Science, Example University, 2018-2022."
+}

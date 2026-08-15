@@ -1,0 +1,46 @@
+{
+  "candidate_id": null,
+  "name": "Nguyen An",
+  "years_experience": 4.0,
+  "recent_role": "Backend Developer",
+  "skills": ["Python", "FastAPI", "PostgreSQL", "Docker"],
+  "skill_evidence": [
+    {
+      "skill": "FastAPI",
+      "evidence": ["Built FastAPI services and reduced API latency by 35%."],
+      "source_section": "WORK EXPERIENCE"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Order Platform",
+      "description": "Designed PostgreSQL schemas and containerized services.",
+      "technologies": ["PostgreSQL", "Docker"],
+      "role": null
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Acme",
+      "title": "Backend Developer",
+      "start_date": "2022",
+      "end_date": "present",
+      "description": "Built FastAPI services and reduced API latency by 35%.",
+      "technologies": ["FastAPI"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example University",
+      "degree": "BSc Computer Science",
+      "field_of_study": "Computer Science",
+      "start_date": "2018",
+      "end_date": "2022"
+    }
+  ],
+  "specialization": "Backend Development",
+  "seniority_signal": null,
+  "confidence": 0.9,
+  "confidence_score": 0.9,
+  "extraction_method": null
+}

@@ -1,0 +1,32 @@
+{
+  "candidate_profile": {
+    "name": "Nguyen An",
+    "skills": ["Python", "FastAPI", "PostgreSQL"],
+    "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}],
+    "projects": [],
+    "experiences": [],
+    "education": null,
+    "confidence_score": 0.9
+  },
+  "interview_round": {
+    "round_id": "round-1",
+    "topic": "FastAPI service design",
+    "objective": "Validate production API design experience.",
+    "difficulty": "medium",
+    "reasoning": "The candidate reports operating FastAPI at meaningful scale.",
+    "recommended_question_areas": ["Async bottlenecks", "Latency measurement"],
+    "weight": 0.6,
+    "target_skills": ["FastAPI", "Python"],
+    "question_budget": 1
+  },
+  "interview_config": {
+    "mode": "text",
+    "language": "vi",
+    "experience_level": "middle",
+    "duration_minutes": 30,
+    "interview_style": "technical",
+    "question_count": 6,
+    "objective": "Evaluate backend engineering depth",
+    "interviewer_personality": "professional"
+  }
+}
