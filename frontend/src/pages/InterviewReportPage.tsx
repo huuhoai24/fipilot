@@ -87,7 +87,7 @@ function interviewIsComplete(state: V2InterviewSessionState): boolean {
   if (state.current_turn != null || state.pending_turn != null) return false
   if (state.phase === 'closing') return true
   return (
-    state.current_question_index >= state.interview_config.question_count
+    state.completed_turns.length >= state.interview_config.question_count
   )
 }
 

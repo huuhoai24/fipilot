@@ -56,3 +56,6 @@ backend/pretrained/
 *.wav
 *.mp3
 *.m4a
+
+# Unlabelled local Resume corpus (may contain personal data)
+resumes/

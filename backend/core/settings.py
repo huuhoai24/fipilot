@@ -89,10 +89,9 @@ class SpeechSettings(BaseModel):
     backend/.env.speech.example for the CUDA-specific overrides.
     """
 
-    # large-v3-turbo is a distilled large-v3: far better on Vietnamese mixed with
-    # English technical terms than `medium`, and small enough for 4 GB VRAM
-    # (~1.0 GB at int8_float16, ~1.6 GB at float16).
-    stt_model: str = "large-v3-turbo"
+    # Accuracy-first default for Vietnamese mixed with English technical terms.
+    # Deployments that prioritize latency can explicitly select large-v3-turbo.
+    stt_model: str = "large-v3"
     stt_device: str = "cpu"
     # int8 is the portable choice. On CUDA prefer int8_float16 (see env example).
     stt_compute_type: str = "int8"
@@ -117,7 +116,7 @@ class SpeechSettings(BaseModel):
     # for the final transcript, which is the one that gets scored.
     partial_max_audio_ms: int = 20000
     # Partials run greedy; the final transcript gets a real beam search.
-    final_beam_size: int = 2
+    final_beam_size: int = 5
     vad_threshold: float = 0.5
     # 500 ms endpointed on ordinary mid-sentence pauses, cutting answers in half.
     vad_min_silence_ms: int = 900
@@ -310,7 +309,7 @@ class Settings(BaseSettings):
             "partial_max_audio_ms", _env_int("STT_PARTIAL_MAX_AUDIO_MS", 20000)
         )
         speech_data.setdefault(
-            "final_beam_size", _env_int("STT_FINAL_BEAM_SIZE", 2)
+            "final_beam_size", _env_int("STT_FINAL_BEAM_SIZE", 5)
         )
         speech_data.setdefault("vad_threshold", _env_float("VAD_THRESHOLD", 0.5))
         speech_data.setdefault(

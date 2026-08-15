@@ -78,15 +78,16 @@ class SpeechModelCacheTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn("scripts/cache_speech_models.py", dockerfile)
-        self.assertIn("--stt-model large-v3-turbo", dockerfile)
+        self.assertIn("--stt-model large-v3", dockerfile)
+        self.assertNotIn("--stt-model large-v3-turbo", dockerfile)
         self.assertIn(
-            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3-turbo",
+            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3",
             dockerfile,
         )
         self.assertIn("HF_HUB_OFFLINE=1", dockerfile)
         self.assertIn("HF_HUB_DISABLE_XET=1", dockerfile)
         self.assertIn(
-            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3-turbo",
+            "STT_MODEL=/opt/fipilot/models/faster-whisper-large-v3",
             cloud_run_environment,
         )
         self.assertIn("EVALUATOR_TASK_TYPE=complex", cloud_run_environment)

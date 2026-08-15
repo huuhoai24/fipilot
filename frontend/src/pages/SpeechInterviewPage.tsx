@@ -129,6 +129,11 @@ export function SpeechInterviewPage() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
   const audioWorkletRef = useRef<AudioWorkletNode | null>(null)
+  const recordingStartPendingRef = useRef(false)
+  const recordingGenerationRef = useRef(0)
+  const activeRecordingGenerationRef = useRef<number | null>(null)
+  const recordingStopPendingRef = useRef<number | null>(null)
+  const stoppedRecordingGenerationRef = useRef<number | null>(null)
   const sendQueueRef = useRef<Promise<void>>(Promise.resolve())
   const pendingChunksRef = useRef(0)
   const sequenceRef = useRef(0)
@@ -179,6 +184,10 @@ export function SpeechInterviewPage() {
   }, [finalReportRetry, interviewComplete, sessionId])
 
   const releaseMedia = () => {
+    const startWasPending = recordingStartPendingRef.current
+    recordingGenerationRef.current += 1
+    recordingStartPendingRef.current = false
+    activeRecordingGenerationRef.current = null
     if (audioWorkletRef.current) {
       audioWorkletRef.current.port.onmessage = null
       audioWorkletRef.current.disconnect()
@@ -191,6 +200,9 @@ export function SpeechInterviewPage() {
     if (audioContext && audioContext.state !== 'closed') void audioContext.close()
     stopMediaStream(mediaStreamRef.current)
     mediaStreamRef.current = null
+    if (startWasPending && mountedRef.current) {
+      setMicrophonePermission('unknown')
+    }
   }
 
   const releasePlayback = () => {
@@ -640,7 +652,7 @@ export function SpeechInterviewPage() {
     controlType: 'start_listening' | 'start_barge_in',
     resetAnswer = true,
   ) => {
-    if (mediaStreamRef.current) return
+    if (recordingStartPendingRef.current || mediaStreamRef.current) return
     setMicrophoneError('')
     setTransportError('')
     const activeSocket = websocketRef.current
@@ -658,16 +670,51 @@ export function SpeechInterviewPage() {
       return
     }
 
+    const recordingGeneration = recordingGenerationRef.current + 1
+    recordingGenerationRef.current = recordingGeneration
+    recordingStartPendingRef.current = true
+    let stream: MediaStream | null = null
+    let audioContext: AudioContext | null = null
+    let source: MediaStreamAudioSourceNode | null = null
+    let worklet: AudioWorkletNode | null = null
+
+    const isCurrentRecordingStart = () => (
+      mountedRef.current
+      && recordingGenerationRef.current === recordingGeneration
+    )
+    const releaseOwnedMedia = () => {
+      if (activeRecordingGenerationRef.current === recordingGeneration) {
+        activeRecordingGenerationRef.current = null
+      }
+      if (worklet && audioWorkletRef.current === worklet) {
+        worklet.port.onmessage = null
+        worklet.disconnect()
+        audioWorkletRef.current = null
+      }
+      if (source && audioSourceRef.current === source) {
+        source.disconnect()
+        audioSourceRef.current = null
+      }
+      if (audioContext && audioContextRef.current === audioContext) {
+        audioContextRef.current = null
+        if (audioContext.state !== 'closed') void audioContext.close()
+      }
+      if (stream && mediaStreamRef.current === stream) {
+        mediaStreamRef.current = null
+        stopMediaStream(stream)
+      }
+    }
+
     try {
       setMicrophonePermission('requesting')
-      const stream = await navigator.mediaDevices.getUserMedia({
+      stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
         },
       })
-      if (!mountedRef.current) {
+      if (!isCurrentRecordingStart()) {
         stopMediaStream(stream)
         return
       }
@@ -675,14 +722,18 @@ export function SpeechInterviewPage() {
 
       stopMediaStream(mediaStreamRef.current)
       mediaStreamRef.current = stream
-      const audioContext = new AudioContext({ sampleRate: 16000 })
+      audioContext = new AudioContext({ sampleRate: 16000 })
       audioContextRef.current = audioContext
       await audioContext.audioWorklet.addModule('/pcm-worklet.js')
+      if (!isCurrentRecordingStart()) {
+        releaseOwnedMedia()
+        return
+      }
       if (audioContext.sampleRate !== 16000) {
         throw new Error('The browser did not provide a 16 kHz audio context.')
       }
-      const source = audioContext.createMediaStreamSource(stream)
-      const worklet = new AudioWorkletNode(audioContext, 'pcm16-capture')
+      source = audioContext.createMediaStreamSource(stream)
+      worklet = new AudioWorkletNode(audioContext, 'pcm16-capture')
       audioSourceRef.current = source
       audioWorkletRef.current = worklet
       worklet.port.onmessage = (event: MessageEvent<ArrayBuffer>) => {
@@ -698,18 +749,33 @@ export function SpeechInterviewPage() {
       }
 
       if (!sendControl(controlType)) {
-        releaseMedia()
+        recordingGenerationRef.current += 1
+        recordingStartPendingRef.current = false
+        releaseOwnedMedia()
         return
       }
+      activeRecordingGenerationRef.current = recordingGeneration
       source.connect(worklet)
       worklet.connect(audioContext.destination)
       await audioContext.resume()
+      if (!isCurrentRecordingStart()) {
+        releaseOwnedMedia()
+        return
+      }
       await ensurePlayback().prepare()
+      if (!isCurrentRecordingStart()) releaseOwnedMedia()
     } catch (error) {
-      releaseMedia()
-      if (mountedRef.current) {
+      const isCurrent = isCurrentRecordingStart()
+      releaseOwnedMedia()
+      if (isCurrent) {
+        recordingGenerationRef.current += 1
+        recordingStartPendingRef.current = false
         setMicrophonePermission(microphonePermissionAfterError(error))
         setMicrophoneError(microphoneErrorMessage(error))
+      }
+    } finally {
+      if (recordingGenerationRef.current === recordingGeneration) {
+        recordingStartPendingRef.current = false
       }
     }
   }
@@ -723,14 +789,39 @@ export function SpeechInterviewPage() {
 
   const stopListening = async () => {
     if (voiceState !== VoiceInterviewState.USER_SPEAKING) return
+    const recordingGeneration = activeRecordingGenerationRef.current
+    if (recordingGeneration === null) {
+      if (recordingStartPendingRef.current) {
+        setVoiceState(VoiceInterviewState.WAITING_FOR_USER)
+        releaseMedia()
+      }
+      return
+    }
+    if (
+      recordingStopPendingRef.current === recordingGeneration
+      || stoppedRecordingGenerationRef.current === recordingGeneration
+    ) {
+      return
+    }
+    recordingStopPendingRef.current = recordingGeneration
+    stoppedRecordingGenerationRef.current = recordingGeneration
     turnProcessingStartedAtRef.current = performance.now()
     turnLatencyRecordedRef.current = false
     setLocalTurnLatencyMs(null)
     setVoiceState(VoiceInterviewState.TRANSCRIBING)
     releaseMedia()
-    await sendQueueRef.current.catch(() => undefined)
-    if (!sendControl('stop_listening')) {
-      setVoiceState(VoiceInterviewState.WAITING_FOR_USER)
+    try {
+      await sendQueueRef.current.catch(() => undefined)
+      if (
+        !sendControl('stop_listening')
+        && activeRecordingGenerationRef.current === null
+      ) {
+        setVoiceState(VoiceInterviewState.WAITING_FOR_USER)
+      }
+    } finally {
+      if (recordingStopPendingRef.current === recordingGeneration) {
+        recordingStopPendingRef.current = null
+      }
     }
   }
 
@@ -794,6 +885,7 @@ export function SpeechInterviewPage() {
     || voiceState === VoiceInterviewState.USER_SPEAKING
   const microphoneActionable = isConnected
     && !isComplete
+    && microphonePermission !== 'requesting'
     && (
       voiceState === VoiceInterviewState.WAITING_FOR_USER
       || voiceState === VoiceInterviewState.USER_SPEAKING

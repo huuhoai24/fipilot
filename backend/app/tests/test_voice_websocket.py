@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import threading
 import unittest
 from datetime import datetime, timezone
 
@@ -318,6 +319,37 @@ class WebSocketMockVAD(VoiceActivityDetector):
 class WebSocketMockVADFactory(VoiceActivityDetectorFactory):
     def create(self) -> VoiceActivityDetector:
         return WebSocketMockVAD()
+
+
+class BlockingFinishPipeline:
+    def __init__(self) -> None:
+        self.finish_started = threading.Event()
+        self.release_finish = threading.Event()
+        self.closed = threading.Event()
+
+    async def start(self) -> None:
+        pass
+
+    def enqueue(self, audio_bytes: bytes) -> bool:
+        return True
+
+    async def finish(self) -> None:
+        self.finish_started.set()
+        await asyncio.to_thread(self.release_finish.wait)
+
+    async def close(self) -> None:
+        self.release_finish.set()
+        self.closed.set()
+
+
+class BlockingFinishPipelineFactory:
+    def __init__(self) -> None:
+        self.instances: list[BlockingFinishPipeline] = []
+
+    def create(self, **_kwargs) -> BlockingFinishPipeline:
+        pipeline = BlockingFinishPipeline()
+        self.instances.append(pipeline)
+        return pipeline
 
 
 class VoiceWebSocketTests(unittest.TestCase):
@@ -704,6 +736,55 @@ class VoiceWebSocketTests(unittest.TestCase):
             self.assertEqual(websocket.receive_json()["type"], "audio_ack")
 
         self.assertEqual(asyncio.run(self.manager.active_session_count()), 0)
+
+    def test_disconnect_during_stop_finalization_allows_reconnect(self) -> None:
+        pipeline_factory = BlockingFinishPipelineFactory()
+        self.manager = VoiceSessionManager(
+            max_chunk_bytes=16,
+            max_session_bytes=64,
+            pipeline_factory=pipeline_factory,
+        )
+        self.app.dependency_overrides[get_voice_session_manager] = lambda: self.manager
+        first_context = self.connect()
+        first = first_context.__enter__()
+        try:
+            self.assertEqual(first.receive_json()["type"], "connected")
+            self.assertEqual(first.receive_json()["value"], "WAITING_FOR_USER")
+            first.send_json({"type": "start_listening"})
+            self.assertEqual(first.receive_json()["value"], "USER_SPEAKING")
+            first.send_json({"type": "stop_listening"})
+            self.assertEqual(first.receive_json()["value"], "TRANSCRIBING")
+            pipeline = pipeline_factory.instances[0]
+            self.assertTrue(pipeline.finish_started.wait(timeout=1))
+
+            first.close()
+
+            with self.connect() as reconnected:
+                self.assertEqual(
+                    reconnected.receive_json(),
+                    {"type": "connected", "session_id": "voice-session"},
+                )
+                self.assertEqual(
+                    reconnected.receive_json(),
+                    {"type": "state", "value": "WAITING_FOR_USER"},
+                )
+        finally:
+            for pipeline in pipeline_factory.instances:
+                pipeline.release_finish.set()
+            first_context.__exit__(None, None, None)
+
+    def test_second_live_connection_for_same_session_is_rejected(self) -> None:
+        with self.connect() as first:
+            self.assertEqual(first.receive_json()["type"], "connected")
+            self.assertEqual(first.receive_json()["value"], "WAITING_FOR_USER")
+
+            self.assert_rejected(
+                "voice-session",
+                token="user-a-token",
+                expected_code=4429,
+            )
+
+            self.assertEqual(asyncio.run(self.manager.active_session_count()), 1)
 
     def test_invalid_message_returns_safe_error_and_connection_stays_open(self) -> None:
         with self.connect() as websocket:

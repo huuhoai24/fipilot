@@ -1,7 +1,7 @@
 import React from 'react'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { CandidateProfilePage } from '@/pages/CandidateProfilePage'
 import { ApiError } from '@/lib/api'
@@ -9,6 +9,10 @@ import { ApiError } from '@/lib/api'
 const mocks = vi.hoisted(() => ({
   getCandidateProfile: vi.fn(),
 }))
+
+function CurrentPath() {
+  return <div data-testid="current-path">{useLocation().pathname}</div>
+}
 
 vi.mock('@/lib/api', () => ({
   ApiError: class MockApiError extends Error {
@@ -30,6 +34,95 @@ afterEach(() => {
 })
 
 describe('CandidateProfilePage', () => {
+  it('returns to the Candidate Profile setup route that opened the full profile', async () => {
+    mocks.getCandidateProfile.mockResolvedValue({
+      etag: '"1"',
+      readiness: { is_ready: true, issues: [] },
+      profile: {
+        candidate_id: 'candidate-voice',
+        profile_version: 1,
+        name: 'Tran Thi B',
+        skills: ['FastAPI'],
+        skill_evidence: [],
+        projects: [],
+        experiences: [],
+        education: null,
+        confidence: 0.92,
+        confidence_score: 0.92,
+      },
+    })
+
+    render(
+      <MemoryRouter
+        initialEntries={[
+          {
+            pathname: '/candidate-profile/candidate-voice',
+            state: { from: '/speech-interview' },
+          },
+        ]}
+      >
+        <Routes>
+          <Route
+            path="/candidate-profile/:candidateId"
+            element={<CandidateProfilePage />}
+          />
+          <Route path="/speech-interview" element={<CurrentPath />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const backLink = await screen.findByRole('link', {
+      name: 'Back to Candidate Profile',
+    })
+    expect(backLink).toHaveAttribute('href', '/speech-interview')
+
+    fireEvent.click(backLink)
+
+    expect(screen.getByTestId('current-path')).toHaveTextContent('/speech-interview')
+    expect(mocks.getCandidateProfile).toHaveBeenCalledOnce()
+  })
+
+  it('opens the existing resume upload screen without mutating the saved profile', async () => {
+    mocks.getCandidateProfile.mockResolvedValue({
+      etag: '"1"',
+      readiness: { is_ready: true, issues: [] },
+      profile: {
+        candidate_id: 'candidate-7',
+        profile_version: 1,
+        name: 'Tran Thi B',
+        skills: ['FastAPI'],
+        skill_evidence: [],
+        projects: [],
+        experiences: [],
+        education: null,
+        confidence: 0.92,
+        confidence_score: 0.92,
+      },
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/candidate-profile/candidate-7']}>
+        <Routes>
+          <Route
+            path="/candidate-profile/:candidateId"
+            element={<CandidateProfilePage />}
+          />
+          <Route path="/text-interview" element={<CurrentPath />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    const uploadLink = await screen.findByRole('link', {
+      name: 'Upload new CV',
+    })
+    expect(uploadLink).toHaveAttribute('href', '/text-interview')
+
+    fireEvent.click(uploadLink)
+
+    expect(screen.getByTestId('current-path')).toHaveTextContent('/text-interview')
+    expect(mocks.getCandidateProfile).toHaveBeenCalledOnce()
+  })
+
   it('loads and displays the owned saved profile in the approved section order', async () => {
     mocks.getCandidateProfile.mockResolvedValue({
       etag: '"1"',

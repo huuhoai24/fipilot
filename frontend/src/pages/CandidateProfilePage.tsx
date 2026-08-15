@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
+import { ArrowLeft, Upload } from 'lucide-react'
 import { Button, ButtonLink } from '@/components/ui/Button'
 import {
   InterviewReadinessSummary,
@@ -7,6 +8,11 @@ import {
 } from '@/components/candidate-profile/InterviewReadinessSummary'
 import { ApiError, api } from '@/lib/api'
 import { getUserFacingError } from '@/lib/userFacingError'
+import {
+  interviewSetupKey,
+  type InterviewSetupRoute,
+  useInterviewSetupNavigationStore,
+} from '@/store/useInterviewSetupNavigationStore'
 import type {
   CandidateEducation,
   CandidateExperience,
@@ -27,6 +33,21 @@ type LoadState =
   | { phase: 'not-found' }
   | { phase: 'authentication-required' }
   | { phase: 'error'; message: string }
+
+type CandidateProfileLocationState = {
+  from?: unknown
+  setup?: unknown
+}
+
+function getReturnRoute(
+  state: CandidateProfileLocationState | null,
+  search: string,
+): InterviewSetupRoute {
+  if (state?.from === '/speech-interview') return '/speech-interview'
+  if (state?.from === '/text-interview') return '/text-interview'
+  const mode = new URLSearchParams(search).get('interviewMode')
+  return mode === 'voice' ? '/speech-interview' : '/text-interview'
+}
 
 const profileSections = [
   { id: 'identity-current-role', label: 'Identity and current role' },
@@ -350,6 +371,18 @@ function ProfileWorkspace({
 
 export function CandidateProfilePage() {
   const { candidateId } = useParams()
+  const location = useLocation()
+  const routeState = location.state as CandidateProfileLocationState | null
+  const returnRoute = getReturnRoute(routeState, location.search)
+  const rememberedSetup = useInterviewSetupNavigationStore((navigation) => (
+    candidateId
+      ? navigation.setups[interviewSetupKey(returnRoute, candidateId)]
+      : undefined
+  ))
+  const returnSetup = routeState?.setup ?? rememberedSetup
+  const returnState = returnSetup
+    ? { setup: returnSetup }
+    : undefined
   const [loadState, setLoadState] = useState<LoadState>({ phase: 'loading' })
 
   const loadProfile = async () => {
@@ -459,12 +492,33 @@ export function CandidateProfilePage() {
   return (
     <div className="mx-auto max-w-6xl">
       <header className="mb-8">
+        <ButtonLink
+          to={returnRoute}
+          state={returnState}
+          variant="ghost"
+          treatment="restrained"
+          className="mb-6 h-12"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          Back to Candidate Profile
+        </ButtonLink>
         <p className="text-sm font-medium text-text-muted">
           Saved profile
         </p>
-        <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight-display text-text-primary">
-          Candidate Profile
-        </h1>
+        <div className="mt-2 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <h1 className="font-display text-3xl font-semibold tracking-tight-display text-text-primary">
+            Candidate Profile
+          </h1>
+          <ButtonLink
+            to={returnRoute}
+            variant="outline"
+            treatment="restrained"
+            className="h-12 w-full lg:w-auto"
+          >
+            <Upload className="h-4 w-4" aria-hidden="true" />
+            Upload new CV
+          </ButtonLink>
+        </div>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
           Review the information saved from your resume. This persisted profile
           is available whenever you return.

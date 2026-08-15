@@ -443,6 +443,9 @@ class VoiceAudioPipelineTests(unittest.IsolatedAsyncioTestCase):
             "Frontend",
             "Data Engineer",
             "DevOps",
+            "LangGraph",
+            "LangChain",
+            "prompt engineering",
         ):
             self.assertIn(term, combined)
 

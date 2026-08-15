@@ -67,6 +67,7 @@ class _VoiceConnectionRuntime:
         self.websocket = websocket
         self.send_lock = asyncio.Lock()
         self.answer_task: asyncio.Task[None] | None = None
+        self.transcription_task: asyncio.Task[None] | None = None
         self.question_speech: QuestionSpeechStreamer | None = None
         self.tts_cancelled = False
 
@@ -85,6 +86,15 @@ class _VoiceConnectionRuntime:
         task = asyncio.create_task(coroutine)
         self.answer_task = task
         task.add_done_callback(self._answer_finished)
+        return True
+
+    def start_transcription(self, coroutine: Coroutine[None, None, None]) -> bool:
+        if self.transcription_task is not None and not self.transcription_task.done():
+            coroutine.close()
+            return False
+        task = asyncio.create_task(coroutine)
+        self.transcription_task = task
+        task.add_done_callback(self._transcription_finished)
         return True
 
     def bind_speech(self, speech: QuestionSpeechStreamer) -> None:
@@ -109,15 +119,25 @@ class _VoiceConnectionRuntime:
     async def close(self) -> None:
         if self.question_speech is not None:
             await self.question_speech.cancel()
-        task = self.answer_task
-        if task is not None and not task.done():
-            task.cancel()
+        tasks = [self.transcription_task, self.answer_task]
+        for task in tasks:
+            if task is not None and not task.done():
+                task.cancel()
+        for task in tasks:
+            if task is None or task.done():
+                continue
             with suppress(asyncio.CancelledError):
                 await task
 
     def _answer_finished(self, task: asyncio.Task[None]) -> None:
         if self.answer_task is task:
             self.answer_task = None
+        with suppress(asyncio.CancelledError, Exception):
+            task.result()
+
+    def _transcription_finished(self, task: asyncio.Task[None]) -> None:
+        if self.transcription_task is task:
+            self.transcription_task = None
         with suppress(asyncio.CancelledError, Exception):
             task.result()
 
@@ -588,7 +608,11 @@ async def _handle_text_message(
         elif event.type == "stop_listening":
             state = await manager.stop_listening(session_id, user_id)
             await runtime.send_json(state_event(state.state))
-            await manager.finish_transcription(session_id, user_id)
+
+            async def finish_transcription() -> None:
+                await manager.finish_transcription(session_id, user_id)
+
+            runtime.start_transcription(finish_transcription())
         elif event.type == "audio_chunk":
             await manager.announce_audio_chunk(
                 session_id,

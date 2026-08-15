@@ -261,6 +261,31 @@ describe('InterviewReportPage coaching report', () => {
     })
   })
 
+  it('opens the report for a completed speech session whose question index remains zero-based', async () => {
+    mocks.getV2InterviewSession.mockResolvedValue({
+      ...completedSession,
+      state: {
+        ...completedSession.state,
+        interview_config: {
+          ...completedSession.state.interview_config,
+          mode: 'voice',
+          question_count: 1,
+        },
+        phase: 'interviewing',
+        current_question_index: 0,
+        current_turn: null,
+        pending_turn: null,
+        completed_turns: [completedSession.state.completed_turns[0]],
+      },
+    })
+
+    renderPage()
+
+    expect(await screen.findByRole('heading', { level: 1, name: 'Interview complete' })).toBeInTheDocument()
+    expect(mocks.getInterviewReport).toHaveBeenCalledWith('session-42')
+    expect(screen.queryByRole('heading', { name: 'Interview still in progress' })).not.toBeInTheDocument()
+  })
+
   it('handles missing optional coaching detail without breaking the report', async () => {
     mocks.getV2InterviewSession.mockResolvedValue({
       ...completedSession,

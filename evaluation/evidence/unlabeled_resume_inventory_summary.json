@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "module": "resume_dataset_inventory",
+  "generated_at": "2026-08-15T00:13:42.018Z",
+  "source_directory": "resumes/",
+  "label_status": "unlabeled",
+  "evidence_type": "verified_from_raw_artifacts",
+  "evidence_scope": "aggregate corpus inventory and local PDF text extractability only",
+  "model_evaluation": false,
+  "external_model_called": false,
+  "privacy_output": "aggregate counts only; no filenames or document text recorded",
+  "file_inventory": {
+    "pdf_files": 2604,
+    "total_bytes": 804208882,
+    "total_mib": 766.95,
+    "average_kib": 301.6,
+    "median_kib": 163.76,
+    "p95_kib": 1015.06,
+    "maximum_mib": 9.06,
+    "at_or_below_10_mib": 2604
+  },
+  "integrity": {
+    "standard_pdf_header": 2602,
+    "nonstandard_or_missing_pdf_header": 2,
+    "standard_pdf_header_rate": 0.999232,
+    "unique_sha256_content_hashes": 2311,
+    "unique_content_rate": 0.887481,
+    "duplicate_content_groups": 292,
+    "duplicate_files_beyond_first_copy": 293,
+    "duplicate_extra_file_rate": 0.112519
+  },
+  "local_pdf_inspection": {
+    "parser": "PyMuPDF 1.28.2",
+    "opened_without_exception": 2604,
+    "open_rate": 1.0,
+    "password_protected": 0,
+    "files_with_extractable_text": 2491,
+    "text_extractable_rate": 0.956605,
+    "files_without_extractable_text": 113,
+    "no_extractable_text_rate": 0.043395,
+    "total_pages": 7569,
+    "average_pages_per_pdf": 2.9067,
+    "total_extracted_characters": 12957387
+  },
+  "category_distribution": [
+    {
+      "category": "software-development",
+      "count": 1533,
+      "rate": 0.5887
+    },
+    {
+      "category": "data-ai",
+      "count": 623,
+      "rate": 0.2392
+    },
+    {
+      "category": "devops-cloud-security",
+      "count": 243,
+      "rate": 0.0933
+    },
+    {
+      "category": "product-qa",
+      "count": 169,
+      "rate": 0.0649
+    },
+    {
+      "category": "architecture-management",
+      "count": 36,
+      "rate": 0.0138
+    }
+  ],
+  "limitations": [
+    "The corpus has no human ground-truth skill labels.",
+    "These measurements cannot be used to calculate skill extraction precision, recall, F1, or accuracy.",
+    "Extractable text indicates that a PDF text layer was detected; it does not establish Resume quality or extraction correctness.",
+    "Duplicate counts use exact SHA-256 file content and do not detect visually equivalent or near-duplicate documents."
+  ]
+}

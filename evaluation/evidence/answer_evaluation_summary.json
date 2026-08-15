@@ -1,0 +1,29 @@
+{
+  "module": "answer_evaluation",
+  "score_scale": "0-10",
+  "metrics": {
+    "mae_vs_human": 0.7,
+    "consistency": 0.9734
+  },
+  "metric_display": {
+    "mae_vs_human": "0.7 / 10",
+    "consistency": "97.34%"
+  },
+  "human_benchmark_sample_count": null,
+  "human_rater_count": null,
+  "consistency_definition": null,
+  "evidence_type": "historical_aggregate_only",
+  "provenance_classification": "reconstructed aggregate summary from previously recorded evaluation results",
+  "reconstructed_summary": true,
+  "raw_sample_records_available": false,
+  "reproduced_result": null,
+  "difference_from_historical": null,
+  "current_framework_methodology_available": "The current framework repeats model scoring, computes MAE between the mean model score and a human label, and defines consistency as 1 - mean absolute deviation / 10 clipped to [0, 1].",
+  "historical_methodology_link_established": false,
+  "warning": "MAE and consistency should not be presented as fully reproducible human-benchmark evidence until sample-level methodology is recovered.",
+  "notes": [
+    "No human/model score pairs, benchmark sample count, human rater count, or historical repetition count was found.",
+    "The current framework definition is documented separately and is not claimed as the recovered definition for the historical 97.34% result.",
+    "Synthetic unit-test human scores and fake model scores are excluded from this evidence package."
+  ]
+}

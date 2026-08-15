@@ -126,6 +126,7 @@ class FakePlaybackSource extends FakeAudioNode {
 
 class FakeAudioContext {
   static instances: FakeAudioContext[] = []
+  static resumeQueue: Array<() => Promise<void>> = []
   sampleRate = 16000
   state: AudioContextState = 'suspended'
   currentTime = 0
@@ -138,6 +139,8 @@ class FakeAudioContext {
     this.state = 'closed'
   })
   resume = vi.fn(async () => {
+    const queuedResume = FakeAudioContext.resumeQueue.shift()
+    if (queuedResume) await queuedResume()
     this.state = 'running'
   })
   createMediaStreamSource = vi.fn(() => this.source as unknown as MediaStreamAudioSourceNode)
@@ -240,6 +243,16 @@ function renderPage() {
   )
 }
 
+function deferred<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void
+  let reject!: (reason?: unknown) => void
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise
+    reject = rejectPromise
+  })
+  return { promise, resolve, reject }
+}
+
 async function connectServer(): Promise<FakeWebSocket> {
   await waitFor(() => expect(FakeWebSocket.instances).toHaveLength(1))
   const socket = FakeWebSocket.instances[0]
@@ -262,6 +275,7 @@ describe('SpeechInterviewPage realtime transport', () => {
   beforeEach(() => {
     FakeWebSocket.instances = []
     FakeAudioContext.instances = []
+    FakeAudioContext.resumeQueue = []
     FakeAudioWorkletNode.instances = []
     FakePlaybackSource.instances = []
     mocks.getSession.mockResolvedValue(voiceSession)
@@ -449,6 +463,212 @@ describe('SpeechInterviewPage realtime transport', () => {
     expect(screen.getByRole('textbox', { name: 'Interview answer transcript' })).toHaveValue('')
   })
 
+  it('starts only one recording while microphone access is pending', async () => {
+    const microphoneRequest = deferred<MediaStream>()
+    getUserMedia.mockReturnValue(microphoneRequest.promise)
+    renderPage()
+    const socket = await connectServer()
+
+    const startButton = screen.getByRole('button', { name: 'Start answer' })
+    fireEvent.click(startButton)
+    fireEvent.click(startButton)
+
+    expect(getUserMedia).toHaveBeenCalledOnce()
+    expect(screen.getByRole('button', { name: 'Start answer' })).toBeDisabled()
+    expect(screen.getByText('Requesting microphone access')).toBeInTheDocument()
+
+    await act(async () => {
+      microphoneRequest.resolve(stream)
+      await microphoneRequest.promise
+    })
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'start_listening' }),
+      )).toHaveLength(1)
+    })
+    expect(FakeAudioContext.instances.filter(
+      (context) => context.createMediaStreamSource.mock.calls.length > 0,
+    )).toHaveLength(1)
+    expect(FakeAudioWorkletNode.instances).toHaveLength(1)
+  })
+
+  it('submits one logical stop when Stop is activated twice in the same task', async () => {
+    renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+
+    const stopButton = screen.getByRole('button', { name: 'Stop and send answer' })
+    act(() => {
+      stopButton.click()
+      stopButton.click()
+    })
+
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'stop_listening' }),
+      )).toHaveLength(1)
+    })
+    expect(stopTrack).toHaveBeenCalledOnce()
+    expect(FakeAudioWorkletNode.instances[0].disconnect).toHaveBeenCalledOnce()
+    expect(FakeAudioContext.instances[0].close).toHaveBeenCalledOnce()
+  })
+
+  it('keeps a delayed second Stop activation idempotent for the same recording', async () => {
+    renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+
+    const stopButton = screen.getByRole('button', { name: 'Stop and send answer' })
+    fireEvent.click(stopButton)
+    await Promise.resolve()
+    fireEvent.click(stopButton)
+
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'stop_listening' }),
+      )).toHaveLength(1)
+    })
+    expect(stopTrack).toHaveBeenCalledOnce()
+  })
+
+  it('cleans the old recording before a rapid Stop and new Record lifecycle', async () => {
+    const stopFirstTrack = vi.fn()
+    const stopSecondTrack = vi.fn()
+    const firstStream = {
+      getTracks: () => [{ stop: stopFirstTrack }],
+    } as unknown as MediaStream
+    const secondStream = {
+      getTracks: () => [{ stop: stopSecondTrack }],
+    } as unknown as MediaStream
+    getUserMedia
+      .mockResolvedValueOnce(firstStream)
+      .mockResolvedValueOnce(secondStream)
+    renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+
+    const firstStopButton = screen.getByRole('button', { name: 'Stop and send answer' })
+    fireEvent.click(firstStopButton)
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'stop_listening' }),
+      )).toHaveLength(1)
+    })
+    expect(stopFirstTrack).toHaveBeenCalledOnce()
+
+    act(() => socket.serverEvent({ type: 'state', value: 'WAITING_FOR_USER' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(getUserMedia).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(2))
+    expect(socket.sent.filter(
+      (message) => message === JSON.stringify({ type: 'start_listening' }),
+    )).toHaveLength(2)
+    expect(stopSecondTrack).not.toHaveBeenCalled()
+
+    const oldAudio = new Uint8Array([1, 2]).buffer
+    const currentAudio = new Uint8Array([3, 4]).buffer
+    act(() => {
+      FakeAudioWorkletNode.instances[0].emitChunk(oldAudio)
+      FakeAudioWorkletNode.instances[1].emitChunk(currentAudio)
+    })
+    await waitFor(() => expect(socket.sent).toContain(currentAudio))
+    expect(socket.sent).not.toContain(oldAudio)
+
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop and send answer' }))
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'stop_listening' }),
+      )).toHaveLength(2)
+    })
+    expect(stopFirstTrack).toHaveBeenCalledOnce()
+    expect(stopSecondTrack).toHaveBeenCalledOnce()
+  })
+
+  it('does not submit Stop again when navigation cleanup follows Stop', async () => {
+    const view = renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop and send answer' }))
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'stop_listening' }),
+      )).toHaveLength(1)
+    })
+
+    view.unmount()
+
+    expect(socket.sent.filter(
+      (message) => message === JSON.stringify({ type: 'stop_listening' }),
+    )).toHaveLength(1)
+    expect(stopTrack).toHaveBeenCalledOnce()
+  })
+
+  it('fails Stop safely when the socket is no longer open', async () => {
+    renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+    socket.readyState = FakeWebSocket.CLOSED
+
+    fireEvent.click(screen.getByRole('button', { name: 'Stop and send answer' }))
+
+    expect(await screen.findByText('The voice connection is not ready.')).toBeInTheDocument()
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'stop_listening' }))
+    expect(screen.getByRole('button', { name: 'Start answer' })).toBeEnabled()
+    expect(stopTrack).toHaveBeenCalledOnce()
+  })
+
+  it('does not let a stale recording failure release the latest recording', async () => {
+    const firstResume = deferred<void>()
+    FakeAudioContext.resumeQueue.push(() => firstResume.promise)
+    const stopFirstTrack = vi.fn()
+    const stopSecondTrack = vi.fn()
+    getUserMedia
+      .mockResolvedValueOnce({
+        getTracks: () => [{ stop: stopFirstTrack }],
+      } as unknown as MediaStream)
+      .mockResolvedValueOnce({
+        getTracks: () => [{ stop: stopSecondTrack }],
+      } as unknown as MediaStream)
+    renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(1))
+    act(() => socket.serverEvent({ type: 'state', value: 'USER_SPEAKING' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Stop and send answer' }))
+    act(() => socket.serverEvent({ type: 'state', value: 'WAITING_FOR_USER' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    await waitFor(() => expect(FakeAudioWorkletNode.instances).toHaveLength(2))
+    expect(stopSecondTrack).not.toHaveBeenCalled()
+
+    await act(async () => {
+      firstResume.reject(new Error('stale resume failed'))
+      await firstResume.promise.catch(() => undefined)
+    })
+
+    expect(stopFirstTrack).toHaveBeenCalled()
+    expect(stopSecondTrack).not.toHaveBeenCalled()
+    expect(FakeAudioWorkletNode.instances[1].port.onmessage).not.toBeNull()
+    expect(screen.queryByText(/microphone could not be opened/i)).not.toBeInTheDocument()
+  })
+
   it('renders interview completion after the server completes evaluation', async () => {
     renderPage()
     const socket = await connectServer()
@@ -533,14 +753,48 @@ describe('SpeechInterviewPage realtime transport', () => {
     expect(screen.getByRole('button', { name: 'Stop and send answer' })).toBeEnabled()
   })
 
-  it('shows a safe permission error when microphone access is denied', async () => {
+  it('releases the pending lock so microphone access can be retried after denial', async () => {
     getUserMedia.mockRejectedValueOnce(new DOMException('denied', 'NotAllowedError'))
     renderPage()
-    await connectServer()
+    const socket = await connectServer()
 
     fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
     expect(await screen.findByText(/Microphone permission was denied/)).toBeInTheDocument()
     expect(screen.getByText('Microphone access denied')).toBeInTheDocument()
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'start_listening' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }))
+    await waitFor(() => expect(getUserMedia).toHaveBeenCalledTimes(2))
+    await waitFor(() => {
+      expect(socket.sent.filter(
+        (message) => message === JSON.stringify({ type: 'start_listening' }),
+      )).toHaveLength(1)
+    })
+    expect(screen.getByText('Microphone access granted')).toBeInTheDocument()
+  })
+
+  it('stops a microphone stream that resolves after the page unmounts', async () => {
+    const microphoneRequest = deferred<MediaStream>()
+    getUserMedia.mockReturnValue(microphoneRequest.promise)
+    const view = renderPage()
+    const socket = await connectServer()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start answer' }))
+    expect(getUserMedia).toHaveBeenCalledOnce()
+    view.unmount()
+
+    await act(async () => {
+      microphoneRequest.resolve(stream)
+      await microphoneRequest.promise
+    })
+
+    expect(stopTrack).toHaveBeenCalledOnce()
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'start_listening' }))
+    expect(socket.sent).not.toContain(JSON.stringify({ type: 'stop_listening' }))
+    expect(FakeAudioWorkletNode.instances).toHaveLength(0)
+    expect(FakeAudioContext.instances.filter(
+      (context) => context.createMediaStreamSource.mock.calls.length > 0,
+    )).toHaveLength(0)
   })
 
   it('reconnects without opening the microphone automatically', async () => {
@@ -570,6 +824,64 @@ describe('SpeechInterviewPage realtime transport', () => {
     expect(secondSocket.sent).not.toContain(JSON.stringify({ type: 'start_listening' }))
     expect(secondSocket.sent).not.toContain(JSON.stringify({ type: 'speak_question' }))
     expect(screen.getByRole('button', { name: 'Start answer' })).toBeEnabled()
+  })
+
+  it('resets the retry budget after each successful reconnect', async () => {
+    renderPage()
+    let socket = await connectServer()
+    vi.useFakeTimers()
+
+    try {
+      for (let outage = 0; outage < 4; outage += 1) {
+        act(() => socket.close(1006, `Outage ${outage + 1}`))
+        await act(async () => {
+          vi.advanceTimersByTime(1000)
+          await Promise.resolve()
+          await Promise.resolve()
+        })
+        expect(FakeWebSocket.instances).toHaveLength(outage + 2)
+        socket = FakeWebSocket.instances[outage + 1]
+        act(() => {
+          socket.open()
+          socket.serverEvent({ type: 'connected', session_id: 'session-1' })
+          socket.serverEvent({ type: 'state', value: 'WAITING_FOR_USER' })
+        })
+      }
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(FakeWebSocket.instances).toHaveLength(5)
+    expect(getUserMedia).not.toHaveBeenCalled()
+  })
+
+  it('stops reconnecting after three failed attempts in one outage', async () => {
+    renderPage()
+    let socket = await connectServer()
+    vi.useFakeTimers()
+
+    try {
+      for (const delay of [1000, 2000, 4000]) {
+        act(() => socket.close(1006, 'Connection still unavailable'))
+        await act(async () => {
+          vi.advanceTimersByTime(delay)
+          await Promise.resolve()
+          await Promise.resolve()
+        })
+        socket = FakeWebSocket.instances[FakeWebSocket.instances.length - 1]
+      }
+      expect(FakeWebSocket.instances).toHaveLength(4)
+
+      act(() => socket.close(1006, 'Connection still unavailable'))
+      await act(async () => {
+        vi.advanceTimersByTime(30_000)
+        await Promise.resolve()
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+
+    expect(FakeWebSocket.instances).toHaveLength(4)
   })
 
   it('closes transport resources when the page unmounts', async () => {

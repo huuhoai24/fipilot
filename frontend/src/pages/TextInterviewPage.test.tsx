@@ -1,14 +1,25 @@
 import React, { act } from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TextInterviewPage } from '@/pages/TextInterviewPage'
+import { CandidateProfilePage } from '@/pages/CandidateProfilePage'
 import { api } from '@/lib/api'
+import { useInterviewSetupNavigationStore } from '@/store/useInterviewSetupNavigationStore'
 
 vi.mock('@/lib/api', () => ({
+  ApiError: class MockApiError extends Error {
+    constructor(
+      message: string,
+      public readonly status: number,
+    ) {
+      super(message)
+    }
+  },
   api: {
     checkHealth: vi.fn(),
+    getCandidateProfile: vi.fn(),
     getV2InterviewSession: vi.fn(),
     uploadResume: vi.fn(),
     prepareV2Interview: vi.fn(),
@@ -46,6 +57,7 @@ function CurrentPath() {
 beforeEach(() => {
   vi.clearAllMocks()
   window.localStorage.clear()
+  useInterviewSetupNavigationStore.setState({ setups: {} })
   vi.mocked(api.checkHealth).mockResolvedValue({ status: 'ok' })
   vi.mocked(api.uploadResume).mockResolvedValue(basicUploadResponse)
   vi.mocked(api.prepareV2Interview).mockResolvedValue({
@@ -117,13 +129,146 @@ describe('TextInterviewPage interview mode', () => {
     expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'View full profile' })).toHaveAttribute(
       'href',
-      '/candidate-profile/candidate-1',
+      '/candidate-profile/candidate-1?interviewMode=text',
     )
     expect(screen.getByLabelText('Interview type')).toBeInTheDocument()
     expect(screen.getByLabelText('Difficulty')).toBeInTheDocument()
     expect(screen.getByLabelText('Language')).toBeInTheDocument()
     expect(screen.getByLabelText('Number of questions')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Start Interview' })).toBeEnabled()
+  })
+
+  it('keeps the analyzed Candidate Profile when returning from the full profile', async () => {
+    vi.mocked(api.getCandidateProfile).mockResolvedValue({
+      etag: '"1"',
+      readiness: { is_ready: true, issues: [] },
+      profile: {
+        ...basicUploadResponse.profile,
+        candidate_id: 'candidate-1',
+        profile_version: 1,
+        education: null,
+      },
+    })
+
+    render(
+      <MemoryRouter initialEntries={['/text-interview']}>
+        <Routes>
+          <Route
+            path="/text-interview"
+            element={<TextInterviewPage mode="text" />}
+          />
+          <Route
+            path="/candidate-profile/:candidateId"
+            element={<CandidateProfilePage />}
+          />
+        </Routes>
+      </MemoryRouter>,
+    )
+
+    await uploadBasicProfile()
+    await waitFor(() => {
+      expect(api.prepareV2Interview).toHaveBeenCalledOnce()
+    }, { timeout: 2500 })
+    fireEvent.click(screen.getByRole('link', { name: 'View full profile' }))
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Candidate Profile' }),
+    ).toBeInTheDocument()
+    fireEvent.click(
+      screen.getByRole('link', { name: 'Back to Candidate Profile' }),
+    )
+
+    expect(
+      await screen.findByRole('heading', { name: 'Tran Thi B' }),
+    ).toBeInTheDocument()
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 900))
+    })
+    expect(api.uploadResume).toHaveBeenCalledOnce()
+    expect(api.prepareV2Interview).toHaveBeenCalledOnce()
+  })
+
+  it('restores the speech setup after Upload new CV and browser Back', async () => {
+    vi.mocked(api.getCandidateProfile).mockResolvedValue({
+      etag: '"1"',
+      readiness: { is_ready: true, issues: [] },
+      profile: {
+        ...basicUploadResponse.profile,
+        candidate_id: 'candidate-1',
+        profile_version: 1,
+        education: null,
+      },
+    })
+
+    window.history.replaceState({}, '', '/speech-interview')
+    render(
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/speech-interview"
+            element={<TextInterviewPage mode="voice" />}
+          />
+          <Route path="/text-interview" element={<CurrentPath />} />
+          <Route
+            path="/candidate-profile/:candidateId"
+            element={<CandidateProfilePage />}
+          />
+        </Routes>
+      </BrowserRouter>,
+    )
+
+    await uploadBasicProfile()
+    fireEvent.change(screen.getByLabelText('Number of questions'), {
+      target: { value: '2' },
+    })
+    fireEvent.click(screen.getByText('More options'))
+    fireEvent.change(screen.getByLabelText('Objective'), {
+      target: { value: 'Preserve the speech setup' },
+    })
+    await waitFor(() => {
+      expect(api.prepareV2Interview).toHaveBeenCalledOnce()
+    }, { timeout: 2500 })
+
+    fireEvent.click(screen.getByRole('link', { name: 'View full profile' }))
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Candidate Profile' }),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'Back to Candidate Profile' }))
+    expect(await screen.findByRole('heading', { name: 'Tran Thi B' })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('link', { name: 'View full profile' }))
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Candidate Profile' }),
+    ).toBeInTheDocument()
+    window.history.replaceState(
+      { ...window.history.state, usr: null },
+      '',
+      window.location.href,
+    )
+    fireEvent.click(screen.getByRole('link', { name: 'Upload new CV' }))
+    expect(
+      await screen.findByText('Start by choosing the CV you want to practice with.'),
+    ).toBeInTheDocument()
+
+    await act(async () => {
+      window.history.back()
+    })
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Candidate Profile' }),
+    ).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('link', { name: 'Back to Candidate Profile' }))
+
+    expect(await screen.findByRole('heading', { name: 'Tran Thi B' })).toBeInTheDocument()
+    expect(screen.getByText('resume.pdf')).toBeInTheDocument()
+    expect(screen.getByLabelText('Number of questions')).toHaveValue(2)
+    expect(screen.getByLabelText('Objective')).toHaveValue('Preserve the speech setup')
+    await act(async () => {
+      await new Promise((resolve) => window.setTimeout(resolve, 900))
+    })
+    expect(screen.queryByTestId('current-path')).not.toBeInTheDocument()
+    expect(api.uploadResume).toHaveBeenCalledOnce()
+    expect(api.prepareV2Interview).toHaveBeenCalledOnce()
+    expect(api.startV2Interview).not.toHaveBeenCalled()
   })
 
   it('presents an active session as a focused conversation without evaluation data', async () => {

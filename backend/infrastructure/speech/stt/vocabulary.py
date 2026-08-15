@@ -11,6 +11,9 @@ TECHNICAL_VOCABULARY: dict[str, tuple[str, ...]] = {
         "YOLO",
         "LLM",
         "RAG",
+        "LangChain",
+        "LangGraph",
+        "prompt engineering",
         "Vertex AI",
     ),
     "backend": (

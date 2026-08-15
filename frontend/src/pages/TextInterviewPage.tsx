@@ -1,5 +1,5 @@
 import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowRight,
   CheckCircle2,
@@ -27,6 +27,11 @@ import {
   getResumeUploadError,
   getUserFacingError,
 } from '@/lib/userFacingError'
+import {
+  type InterviewSetupRoute,
+  type InterviewSetupSnapshot,
+  useInterviewSetupNavigationStore,
+} from '@/store/useInterviewSetupNavigationStore'
 import type {
   CandidateProfile,
   ExperienceLevel,
@@ -47,6 +52,10 @@ const RESUME_MIME_TYPES = new Set([
 
 type ResumeUploadStatus = 'idle' | 'uploading' | 'success' | 'error'
 type BackendAvailability = 'unknown' | 'checking' | 'reachable' | 'unreachable'
+
+interface InterviewSetupLocationState {
+  setup?: InterviewSetupSnapshot
+}
 
 function parseIntegerSetting(value: string, minimum: number, maximum = Number.MAX_SAFE_INTEGER): number | null {
   if (value.trim() === '') return null
@@ -77,9 +86,16 @@ function formatFileSize(bytes: number): string {
 function CandidateProfilePreview({
   profile,
   candidateId,
+  navigationState,
+  onOpen,
 }: {
   profile: CandidateProfile
   candidateId: string
+  navigationState: {
+    from: InterviewSetupRoute
+    setup: InterviewSetupSnapshot
+  }
+  onOpen: () => void
 }) {
   const role = profile.specialization || profile.recent_role || 'Candidate profile'
   const topSkills = profile.skills.slice(0, 5)
@@ -94,7 +110,14 @@ function CandidateProfilePreview({
           </h2>
           <p className="mt-1 break-words text-sm text-text-muted">{role}</p>
         </div>
-        <ButtonLink to={`/candidate-profile/${candidateId}`} variant="outline" size="sm" className="self-start">
+        <ButtonLink
+          to={`/candidate-profile/${candidateId}?interviewMode=${navigationState.from === '/speech-interview' ? 'voice' : 'text'}`}
+          state={navigationState}
+          onClick={onOpen}
+          variant="outline"
+          size="sm"
+          className="self-start"
+        >
           View full profile
         </ButtonLink>
       </div>
@@ -158,25 +181,50 @@ export function TextInterviewPage({
 }: TextInterviewPageProps) {
   const preferences = useMemo(() => loadInterviewPreferences(), [])
   const { sessionId: routeSessionId } = useParams()
+  const location = useLocation()
+  const restoredSetup = (
+    location.state as InterviewSetupLocationState | null
+  )?.setup
   const navigate = useNavigate()
+  const rememberSetup = useInterviewSetupNavigationStore(
+    (navigation) => navigation.rememberSetup,
+  )
   const resumeInputRef = useRef<HTMLInputElement>(null)
   const startInFlightRef = useRef(false)
   const submissionInFlightRef = useRef(false)
-  const [candidateId, setCandidateId] = useState('')
-  const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(null)
+  const [candidateId, setCandidateId] = useState(restoredSetup?.candidateId ?? '')
+  const [uploadedCandidateProfile, setUploadedCandidateProfile] = useState<CandidateProfile | null>(
+    restoredSetup?.uploadedCandidateProfile ?? null,
+  )
   const interviewMode = mode
-  const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(null)
-  const [resumeUploadStatus, setResumeUploadStatus] = useState<ResumeUploadStatus>('idle')
+  const [selectedResumeFile, setSelectedResumeFile] = useState<File | null>(
+    restoredSetup?.selectedResumeFile ?? null,
+  )
+  const [resumeUploadStatus, setResumeUploadStatus] = useState<ResumeUploadStatus>(
+    restoredSetup ? 'success' : 'idle',
+  )
   const [isDraggingResume, setIsDraggingResume] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [backendAvailability, setBackendAvailability] = useState<BackendAvailability>('unknown')
   const [connectivityError, setConnectivityError] = useState<string | null>(null)
-  const [language, setLanguage] = useState<InterviewLanguage>(preferences.language)
-  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>(preferences.experienceLevel)
-  const [interviewStyle, setInterviewStyle] = useState<InterviewStyle>(preferences.interviewStyle)
-  const [durationInput, setDurationInput] = useState(String(preferences.durationMinutes))
-  const [questionCountInput, setQuestionCountInput] = useState(String(preferences.questionCount))
-  const [objective, setObjective] = useState(preferences.objective)
+  const [language, setLanguage] = useState<InterviewLanguage>(
+    restoredSetup?.language ?? preferences.language,
+  )
+  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel>(
+    restoredSetup?.experienceLevel ?? preferences.experienceLevel,
+  )
+  const [interviewStyle, setInterviewStyle] = useState<InterviewStyle>(
+    restoredSetup?.interviewStyle ?? preferences.interviewStyle,
+  )
+  const [durationInput, setDurationInput] = useState(
+    restoredSetup?.durationInput ?? String(preferences.durationMinutes),
+  )
+  const [questionCountInput, setQuestionCountInput] = useState(
+    restoredSetup?.questionCountInput ?? String(preferences.questionCount),
+  )
+  const [objective, setObjective] = useState(
+    restoredSetup?.objective ?? preferences.objective,
+  )
   const [sessionId, setSessionId] = useState(routeSessionId ?? '')
   const [interviewStartedAt, setInterviewStartedAt] = useState<string | null>(null)
   const [state, setState] = useState<V2InterviewSessionState | null>(null)
@@ -187,9 +235,10 @@ export function TextInterviewPage({
   const [showPreparationScreen, setShowPreparationScreen] = useState(false)
   const [preparationStatus, setPreparationStatus] = useState<
     'idle' | 'preparing' | 'ready'
-  >('idle')
+  >(restoredSetup?.preparationStatus ?? 'idle')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const restoredPreparationIsReady = restoredSetup?.preparationStatus === 'ready'
   const uploading = resumeUploadStatus === 'uploading'
   const durationMinutes = useMemo(() => parseIntegerSetting(durationInput, 5, 180), [durationInput])
   const questionCount = useMemo(() => parseIntegerSetting(questionCountInput, 1), [questionCountInput])
@@ -294,7 +343,12 @@ export function TextInterviewPage({
   ])
 
   useEffect(() => {
-    if (!uploadedCandidateProfile || !interviewStartData?.candidate_id || state) return
+    if (
+      !uploadedCandidateProfile
+      || !interviewStartData?.candidate_id
+      || state
+      || restoredPreparationIsReady
+    ) return
 
     let active = true
     setPreparationStatus('idle')
@@ -312,7 +366,12 @@ export function TextInterviewPage({
       active = false
       window.clearTimeout(timer)
     }
-  }, [interviewStartData, state, uploadedCandidateProfile])
+  }, [
+    interviewStartData,
+    restoredPreparationIsReady,
+    state,
+    uploadedCandidateProfile,
+  ])
 
   useEffect(() => {
     if (!starting) {
@@ -622,7 +681,44 @@ export function TextInterviewPage({
           </Card>
 
           {uploadedCandidateProfile && (
-            <CandidateProfilePreview profile={uploadedCandidateProfile} candidateId={candidateId} />
+            <CandidateProfilePreview
+              profile={uploadedCandidateProfile}
+              candidateId={candidateId}
+              navigationState={{
+                from: interviewMode === 'voice'
+                  ? '/speech-interview'
+                  : '/text-interview',
+                setup: {
+                  candidateId,
+                  uploadedCandidateProfile,
+                  selectedResumeFile,
+                  language,
+                  experienceLevel,
+                  interviewStyle,
+                  durationInput,
+                  questionCountInput,
+                  objective,
+                  preparationStatus,
+                },
+              }}
+              onOpen={() => rememberSetup(
+                interviewMode === 'voice'
+                  ? '/speech-interview'
+                  : '/text-interview',
+                {
+                  candidateId,
+                  uploadedCandidateProfile,
+                  selectedResumeFile,
+                  language,
+                  experienceLevel,
+                  interviewStyle,
+                  durationInput,
+                  questionCountInput,
+                  objective,
+                  preparationStatus,
+                },
+              )}
+            />
           )}
 
           {uploadedCandidateProfile && (
