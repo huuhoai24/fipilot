@@ -1,0 +1,33 @@
+{
+  "evaluation_set": "synthetic controlled evaluation set",
+  "sample_count": 10,
+  "successful_count": 10,
+  "failure_count": 0,
+  "ragas_inspired_context_precision_without_reference": 0.8150387377173092,
+  "mean_context_relevance": 0.435,
+  "relevant_at_k_rate": 0.26,
+  "irrelevant_at_k_rate": 0.39,
+  "empty_retrieval_rate": 0.0,
+  "retrieval_latency": {
+    "mean_ms": 10.52481000078842,
+    "median_ms": 10.989250004058704,
+    "p95_ms": 14.780350006185468,
+    "min_ms": 5.600200005574152,
+    "max_ms": 16.288300015730783
+  },
+  "controlled_retrieval": {
+    "classification": "synthetic controlled retrieval test",
+    "hit_rate_at_8": 1.0,
+    "recall_at_8": 1.0,
+    "mrr_at_8": 1.0
+  },
+  "context_recall": null,
+  "context_recall_reason": "No human-reviewed reference contexts or reference answers are available in this pilot.",
+  "judge_repeated_sample_count": 2,
+  "judge_disagreement_rate": 0.0,
+  "evidence_classification": {
+    "latency_and_empty_rate": "A",
+    "reference_free_relevance": "B/C",
+    "controlled_hit_recall_mrr": "A/C"
+  }
+}
