@@ -24,7 +24,7 @@ class ExtractionConfig:
 class Config:
     def __init__(self):
         # Set default values
-        self.direct_model_name = "Qwen3-0.6B"
+        self.azure_openai = None
         self.yolo_model_name = "best.pt"
         self.model_download = {
             "models_dir": {
@@ -49,7 +49,7 @@ class Config:
                 print(f"Error loading config.yaml: {e}")
         
         # Resolve direct_model_name to absolute path if it points to a local directory
-        if self.direct_model_name:
+        if getattr(self, 'direct_model_name', None):
             if os.path.isabs(self.direct_model_name) and os.path.exists(self.direct_model_name):
                 pass
             else:

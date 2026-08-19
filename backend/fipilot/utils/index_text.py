@@ -23,7 +23,7 @@ class IndexedTextResolver:
     def resolve(
         data: Any,
         index_map: Dict[int, str],
-        key_name: str = "jobDescription_refer_index_range",
+        key_name: str = "description_refer_index_range",
         new_key: str = "jobDescription",
     ) -> Any:
         """

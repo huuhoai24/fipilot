@@ -16,6 +16,8 @@ dependencies = [
     "ultralytics>=8.4.67",
     "ollama>=0.6.2",
     "json-repair>=0.61.5",
+    "pdfplumber>=0.11.10",
+    "rapidocr-onnxruntime>=1.4.4",
 ]
 
 [build-system]

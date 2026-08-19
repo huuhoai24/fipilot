@@ -1,5 +1,8 @@
-direct_model_name: "Qwen3-0.6B"
-yolo_model_name: "best.pt"
+azure_openai:
+  base_url: "https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/"
+  api_key_env: "AZURE_OPENAI_API_KEY"
+  model: "gpt41mini"
+yolo_model_name: "best.onnx"
 
 extraction:
   ioa_threshold: 0.85
