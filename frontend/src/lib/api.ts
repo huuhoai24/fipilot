@@ -286,12 +286,13 @@ export const api = {
 
   submitV2InterviewAnswer: async (
     sessionId: string | number,
+    turnId: string,
     answer: string
   ): Promise<V2InterviewSessionResponse> => {
     return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/answer`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answer }),
+      body: JSON.stringify({ turn_id: turnId, answer }),
     })
   },
 

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from shared.schemas import CandidateProfile
 
 
-RESUME_EXTRACTION_VERSION = "resume-extraction-v1"
+RESUME_EXTRACTION_VERSION = "resume-extraction-v3-section-aware-verified"
 
 
 @dataclass(frozen=True)

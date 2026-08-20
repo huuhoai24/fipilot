@@ -18,9 +18,15 @@ from core.dependencies import (
 )
 from core.logging import get_logger
 from core.performance import log_duration, timed_stage
-from infrastructure.documents import DocumentService
+from infrastructure.documents import (
+    DocumentExtractionResult,
+    DocumentExtractionStatus,
+    DocumentProcessingError,
+    DocumentService,
+)
 from infrastructure.repositories import SQLiteInterviewRepository
 from services.profile_scanner.agent import ResumeAgent
+from services.profile_scanner.context import build_resume_context
 from services.profile_scanner.cache import (
     RESUME_EXTRACTION_VERSION,
     ProcessedResumeCache,
@@ -51,7 +57,18 @@ async def upload_resume(
     filename = file.filename or ""
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
     if ext not in ALLOWED_RESUME_EXTENSIONS:
-        raise HTTPException(status_code=400, detail="Only PDF and DOCX resumes are supported.")
+        return JSONResponse(
+            status_code=415,
+            content={
+                "error": {
+                    "code": "unsupported_file_type",
+                    "message": "Only PDF and DOCX resumes are supported.",
+                    "retryable": False,
+                    "issues": [],
+                },
+                "request_id": request.state.request_id,
+            },
+        )
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as tmp:
         shutil.copyfileobj(file.file, tmp)
@@ -65,15 +82,44 @@ async def upload_resume(
             with open(tmp_path, "rb") as resume_stream:
                 content_hash = hashlib.file_digest(resume_stream, "sha256").hexdigest()
 
+        document_result: DocumentExtractionResult
         try:
             with timed_stage(
                 logger,
                 "cv.file_parse",
                 stage="document_extraction",
             ):
-                resume_text = document_service.extract_text(tmp_path, filename)
-        except ValueError as error:
-            raise HTTPException(status_code=400, detail=str(error)) from error
+                if hasattr(document_service, "extract_document"):
+                    document_result = document_service.extract_document(
+                        tmp_path,
+                        filename,
+                        content_type=file.content_type,
+                    )
+                    resume_text = document_result.text
+                else:  # compatibility for narrow dependency-injected test doubles
+                    resume_text = document_service.extract_text(tmp_path, filename)
+                    document_result = DocumentExtractionResult(
+                        text=resume_text,
+                        source_type=ext,
+                        character_count=len(resume_text),
+                        extraction_method="injected",
+                        status=DocumentExtractionStatus.COMPLETE,
+                    )
+        except DocumentProcessingError as error:
+            total_status = "rejected"
+            return JSONResponse(
+                status_code=error.status_code,
+                content={
+                    "error": {
+                        "code": error.code,
+                        "message": error.safe_message,
+                        "retryable": False,
+                        "issues": [],
+                        "warnings": error.warnings,
+                    },
+                    "request_id": request.state.request_id,
+                },
+            )
 
         if not resume_text or len(resume_text.strip()) < 50:
             raise HTTPException(status_code=422, detail="Could not extract enough resume text.")
@@ -117,6 +163,7 @@ async def upload_resume(
             )
         cache_hit = profile is not None
 
+        processing_result = None
         if profile is None:
             try:
                 with timed_stage(
@@ -124,7 +171,11 @@ async def upload_resume(
                     "cv.profile_extraction",
                     stage="profile_model_call",
                 ):
-                    profile = await resume_agent.extract_profile(resume_text)
+                    if hasattr(resume_agent, "extract_profile_result"):
+                        processing_result = await resume_agent.extract_profile_result(resume_text)
+                        profile = processing_result.profile
+                    else:  # compatibility for narrow dependency-injected test doubles
+                        profile = await resume_agent.extract_profile(resume_text)
             except NonResumeDocumentError as error:
                 total_status = "rejected"
                 return JSONResponse(
@@ -162,10 +213,36 @@ async def upload_resume(
             )
 
         total_status = "cached" if cache_hit else "complete"
+        context_summary = build_resume_context(resume_text)
+        warnings = [*document_result.warnings, *context_summary.warnings]
+        if processing_result is not None:
+            warnings.extend(processing_result.warnings)
+        is_partial = document_result.is_partial or context_summary.is_partial or bool(
+            processing_result and processing_result.is_partial
+        )
         return {
             "candidate_id": candidate.candidate_id,
             "profile": persisted_profile,
             "confidence_score": persisted_profile.confidence_score,
+            "extraction": {
+                "status": "partial" if is_partial else "complete",
+                "source_type": document_result.source_type,
+                "page_count": document_result.page_count,
+                "character_count": document_result.character_count,
+                "extraction_method": document_result.extraction_method,
+                "is_partial": is_partial,
+                "warnings": list(dict.fromkeys(warnings)),
+                "context_characters_considered": (
+                    processing_result.context_characters_considered
+                    if processing_result is not None
+                    else context_summary.characters_considered
+                ),
+                "context_total_characters": (
+                    processing_result.context_total_characters
+                    if processing_result is not None
+                    else context_summary.total_characters
+                ),
+            },
         }
     finally:
         if os.path.exists(tmp_path):

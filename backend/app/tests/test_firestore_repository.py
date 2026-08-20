@@ -54,6 +54,14 @@ class FakeDocumentReference:
         else:
             self.client.documents[self.path] = copy.deepcopy(data)
 
+    def create(self, data):
+        if self.path in self.client.documents:
+            raise RuntimeError("document already exists")
+        self.client.documents[self.path] = copy.deepcopy(data)
+
+    def delete(self):
+        self.client.documents.pop(self.path, None)
+
 
 class FakeQuery:
     def __init__(self, collection, limit):
@@ -96,6 +104,21 @@ class FakeFirestoreClient:
 
     def collection(self, name):
         return FakeCollectionReference(self, (name,))
+
+    def batch(self):
+        return FakeBatch()
+
+
+class FakeBatch:
+    def __init__(self):
+        self.operations = []
+
+    def set(self, reference, data, merge=False):
+        self.operations.append((reference, data, merge))
+
+    def commit(self):
+        for reference, data, merge in self.operations:
+            reference.set(data, merge=merge)
 
 
 def profile(name="Candidate", candidate_id=None):
@@ -258,6 +281,44 @@ class FirestoreRepositoryTests(unittest.TestCase):
         ]
         self.assertEqual(data["mode"], "voice")
         self.assertEqual(data["state_payload"]["interview_config"]["mode"], "voice")
+
+    def test_answer_submission_claim_is_unique_and_completed_with_state(self):
+        candidate = self.repository.save_candidate("user-a", profile())
+        session = self.repository.create_session(
+            candidate.candidate_id, user_id="user-a"
+        )
+        session_state = state(profile(candidate_id=candidate.candidate_id), mode="voice")
+
+        first = self.repository.claim_answer_submission(
+            session.session_id, "turn-1", "hash-a", user_id="user-a"
+        )
+        duplicate = self.repository.claim_answer_submission(
+            session.session_id, "turn-1", "hash-a", user_id="user-a"
+        )
+        conflict = self.repository.claim_answer_submission(
+            session.session_id, "turn-1", "hash-b", user_id="user-a"
+        )
+        self.repository.complete_answer_submission(
+            session.session_id,
+            "turn-1",
+            "hash-a",
+            "ENDED",
+            session_state.model_dump(mode="json"),
+            "completed",
+            user_id="user-a",
+        )
+        replay = self.repository.claim_answer_submission(
+            session.session_id, "turn-1", "hash-a", user_id="user-a"
+        )
+
+        self.assertEqual(first.outcome, "claimed")
+        self.assertEqual(duplicate.outcome, "in_progress")
+        self.assertEqual(conflict.outcome, "conflict")
+        self.assertEqual(replay.outcome, "replay")
+        self.assertEqual(
+            self.repository.get_session(session.session_id, user_id="user-a").status,
+            "completed",
+        )
 
     def test_report_save_get_and_idempotency(self):
         candidate = self.repository.save_candidate("user-a", profile())

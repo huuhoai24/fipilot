@@ -22,7 +22,11 @@ from core.dependencies import (
 from core.exceptions import AuthenticationError
 from core.settings import Settings
 from gateway.api.voice import router
-from infrastructure.repositories.base import InterviewSessionRecord
+from infrastructure.repositories.base import (
+    AnswerSubmissionClaim,
+    AnswerSubmissionRecord,
+    InterviewSessionRecord,
+)
 from infrastructure.speech.stt.base import (
     StreamingSTT,
     StreamingSTTFactory,
@@ -113,6 +117,7 @@ class MockVoiceRepository:
     def __init__(self) -> None:
         self.updated_states: list[dict] = []
         self.saved_turns: list[InterviewTurn] = []
+        self.answer_submissions: dict[tuple[str | None, str, str], AnswerSubmissionRecord] = {}
         self.sessions = {
             ("user-a", "voice-session"): InterviewSessionRecord(
                 session_id="voice-session",
@@ -158,6 +163,68 @@ class MockVoiceRepository:
         self.sessions[(user_id, session_id)] = updated
         self.updated_states.append(updated.state_payload)
         return updated
+
+    def get_answer_submission(
+        self, session_id: str, turn_id: str, *, user_id: str | None = None
+    ):
+        return self.answer_submissions.get((user_id, session_id, turn_id))
+
+    def claim_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ):
+        key = (user_id, session_id, turn_id)
+        existing = self.answer_submissions.get(key)
+        if existing is None:
+            record = AnswerSubmissionRecord(
+                turn_id=turn_id, answer_hash=answer_hash, status="processing"
+            )
+            self.answer_submissions[key] = record
+            return AnswerSubmissionClaim(outcome="claimed", record=record)
+        if existing.answer_hash != answer_hash:
+            outcome = "conflict"
+        elif existing.status == "completed":
+            outcome = "replay"
+        else:
+            outcome = "in_progress"
+        return AnswerSubmissionClaim(outcome=outcome, record=existing)
+
+    def complete_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        state: str,
+        state_payload: dict,
+        status: str,
+        *,
+        user_id: str | None = None,
+    ):
+        key = (user_id, session_id, turn_id)
+        self.answer_submissions[key] = AnswerSubmissionRecord(
+            turn_id=turn_id, answer_hash=answer_hash, status="completed"
+        )
+        return self.update_session_state(
+            session_id,
+            state,
+            state_payload,
+            status,
+            user_id=user_id,
+        )
+
+    def abandon_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> None:
+        self.answer_submissions.pop((user_id, session_id, turn_id), None)
 
     def save_turn(
         self,
@@ -933,7 +1000,11 @@ class VoiceWebSocketTests(unittest.TestCase):
             self.assertEqual(len(analytics["response_latencies_ms"]), 1)
 
             websocket.send_json(
-                {"type": "confirm_answer", "text": "duplicate"}
+                {
+                    "type": "confirm_answer",
+                    "turn_id": "turn-1",
+                    "text": "duplicate",
+                }
             )
             self.assertEqual(
                 websocket.receive_json(),
@@ -1073,8 +1144,8 @@ class VoiceWebSocketTests(unittest.TestCase):
                 websocket.receive_json(),
                 {
                     "type": "error",
-                    "code": "no_active_turn",
-                    "message": "There is no active interview question.",
+                    "code": "invalid_interview_turn",
+                    "message": "Turn ID must not be empty.",
                 },
             )
         self.assertEqual(self.orchestrator.calls, [])

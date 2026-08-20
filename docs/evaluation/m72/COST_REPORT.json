@@ -1,0 +1,37 @@
+{
+  "milestone": "M7.2",
+  "historical_costs": {
+    "m7_conservative_estimate_usd": 4.594866,
+    "m71_conservative_estimate_usd": 1.69
+  },
+  "new_m72_cost": {
+    "shared_flash_paid_calls": 8,
+    "shared_flash_cache_hits": 0,
+    "feedback_paid_bundles": 8,
+    "feedback_cache_hits": 0,
+    "static_reference_calls": 0,
+    "flash_provider_usage": {
+      "input_tokens": 8606,
+      "output_tokens": 3246,
+      "total_tokens": 11852,
+      "estimated_cost_usd": 0.003239
+    },
+    "semantic_feedback_judge_cost_envelope_usd": 0.032,
+    "conservative_estimated_cost_usd": 0.035239,
+    "exact_invoice_cost_usd": null
+  },
+  "budget": {
+    "preferred_target_usd": 0.25,
+    "default_budget_usd": 0.5,
+    "hard_ceiling_usd": 1.0,
+    "status": "WITHIN_PREFERRED_TARGET_BY_CONSERVATIVE_ESTIMATE"
+  },
+  "directional_architecture_cost": {
+    "current_text_pro_per_1000_usd": 18.437675,
+    "current_voice_flash_per_1000_usd": 0.2745333,
+    "stage1_shared_flash_per_1000_usd": 0.404875,
+    "directional_text_savings_percent": 97.8041,
+    "note": "The shared-Flash value is based on N=8 and was not activated. Exact invoice cost and semantic-judge provider usage are unavailable."
+  },
+  "production_cost_impact": "NONE — candidate failed Stage 1 and production remains unchanged"
+}

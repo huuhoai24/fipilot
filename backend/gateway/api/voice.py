@@ -70,6 +70,7 @@ class _VoiceConnectionRuntime:
         self.transcription_task: asyncio.Task[None] | None = None
         self.question_speech: QuestionSpeechStreamer | None = None
         self.tts_cancelled = False
+        self.answer_turn_id: str | None = None
 
     async def send_json(self, payload: dict) -> None:
         async with self.send_lock:
@@ -261,6 +262,7 @@ async def voice_interview(
             _handle_confirm_answer(
                 session_id,
                 current_user.uid,
+                runtime.answer_turn_id or "",
                 text,
                 manager,
                 answer_service,
@@ -603,6 +605,10 @@ async def _handle_text_message(
             )
             return True
         if event.type == "start_listening":
+            if not transcription_only:
+                runtime.answer_turn_id = _current_turn_id(
+                    answer_service.repository, session_id, user_id
+                )
             state = await manager.start_listening(session_id, user_id)
             await runtime.send_json(state_event(state.state))
         elif event.type == "stop_listening":
@@ -620,6 +626,9 @@ async def _handle_text_message(
                 event.sequence if event.sequence is not None else -1,
             )
         elif event.type == "start_barge_in":
+            runtime.answer_turn_id = _current_turn_id(
+                answer_service.repository, session_id, user_id
+            )
             await manager.start_barge_in_monitoring(session_id, user_id)
         elif event.type == "playback_complete":
             state = await manager.complete_playback(session_id, user_id)
@@ -632,6 +641,7 @@ async def _handle_text_message(
             started = runtime.start_answer(_handle_confirm_answer(
                 session_id,
                 user_id,
+                event.turn_id or "",
                 event.text or "",
                 manager,
                 answer_service,
@@ -652,9 +662,23 @@ async def _handle_text_message(
     return True
 
 
+def _current_turn_id(
+    repository: InterviewRepository, session_id: str, user_id: str
+) -> str | None:
+    session = repository.get_session(session_id, user_id=user_id)
+    if session is None:
+        return None
+    try:
+        state = InterviewSessionState.model_validate(session.state_payload)
+    except ValidationError:
+        return None
+    return state.current_turn.turn_id if state.current_turn is not None else None
+
+
 async def _handle_confirm_answer(
     session_id: str,
     user_id: str,
+    turn_id: str,
     answer: str,
     manager: VoiceSessionManager,
     answer_service: VoiceAnswerSubmissionService,
@@ -752,6 +776,7 @@ async def _handle_confirm_answer(
         updated_state = await answer_service.submit_answer(
             session_id,
             user_id,
+            turn_id,
             answer,
             question_provider=stream_question,
             voice_analytics=await manager.analytics_snapshot(

@@ -74,6 +74,21 @@ FIREBASE_PROJECT_ID=<project-id>
 CORS_ALLOWED_ORIGINS=https://<frontend-domain>
 ```
 
+Optional Firestore vector retrieval remains disabled by default. After its
+index and catalog are provisioned according to
+[`docs/FIRESTORE_VECTOR_KNOWLEDGE.md`](../docs/FIRESTORE_VECTOR_KNOWLEDGE.md),
+enable it with:
+
+```text
+INTERVIEW_KNOWLEDGE_BACKEND=firestore_vector
+INTERVIEW_KNOWLEDGE_COLLECTION=interview_knowledge_chunks
+INTERVIEW_KNOWLEDGE_VECTOR_FIELD=embedding
+INTERVIEW_KNOWLEDGE_EMBEDDING_MODEL=gemini-embedding-001
+INTERVIEW_KNOWLEDGE_EMBEDDING_LOCATION=global
+INTERVIEW_KNOWLEDGE_EMBEDDING_DIMENSIONS=768
+INTERVIEW_KNOWLEDGE_TOP_K=5
+```
+
 `DATABASE_URL` remains required for SQLite development and rollback. It is not used by interview persistence when `REPOSITORY_BACKEND=firestore`. Keep CORS origins explicit in production.
 
 ## Build locally

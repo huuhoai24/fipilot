@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, Text, ForeignKey, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, Text, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from database import Base
 import datetime
@@ -46,6 +46,21 @@ class Session(Base):
     user = relationship("User", back_populates="sessions")
     messages = relationship("Message", back_populates="session")
     evaluations = relationship("Evaluation", back_populates="session")
+
+
+class AnswerSubmission(Base):
+    __tablename__ = "answer_submissions"
+    __table_args__ = (
+        UniqueConstraint("session_id", "turn_id", name="uq_answer_submission_session_turn"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False, index=True)
+    turn_id = Column(String, nullable=False)
+    answer_hash = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="processing")
+    created_at = Column(DateTime, default=utc_now, nullable=False)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now, nullable=False)
 
 class Message(Base):
     __tablename__ = "messages"

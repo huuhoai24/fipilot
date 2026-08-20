@@ -44,8 +44,11 @@ configuration and ranked retrieval state are redrawn after every query.
 
 ## Important boundary
 
-Production FiPilot currently uses `LocalKnowledgeRetriever`, which performs
-deterministic lexical overlap. This prototype does **not** prove that FiPilot
-currently uses embeddings, RAG, or a vector database. Before production use,
+Production FiPilot still defaults to `LocalKnowledgeRetriever`, which performs
+deterministic lexical overlap. A real opt-in Firestore adapter and indexing tool
+now live outside this throwaway prototype; see
+[`docs/FIRESTORE_VECTOR_KNOWLEDGE.md`](../../../../docs/FIRESTORE_VECTOR_KNOWLEDGE.md).
+The deployed application must not be described as using vector retrieval until
+its environment explicitly enables that adapter. Before broad production use,
 evaluate Top-K and retrieval quality on an approved, labelled Vietnamese and
 English interview dataset.

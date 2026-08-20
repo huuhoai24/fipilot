@@ -285,11 +285,50 @@ def get_processed_resume_cache():
     return ProcessedResumeCache()
 
 
-@lru_cache
-def get_interview_knowledge_retriever():
+def build_interview_knowledge_retriever(
+    settings: Settings,
+    *,
+    firestore_client=None,
+    embedding_client=None,
+):
     from services.interview_knowledge import LocalKnowledgeRetriever
 
-    return LocalKnowledgeRetriever()
+    if settings.interview_knowledge_backend == "local":
+        return LocalKnowledgeRetriever()
+    if not settings.google_cloud_project:
+        raise RuntimeError(
+            "GOOGLE_CLOUD_PROJECT is required for Firestore vector retrieval"
+        )
+
+    from google.cloud import firestore
+    from infrastructure.interview_knowledge.firestore_vector import (
+        FirestoreVectorKnowledgeRetriever,
+        VertexTextEmbedder,
+    )
+
+    active_firestore_client = firestore_client or firestore.Client(
+        project=settings.google_cloud_project,
+        database=settings.firestore_database,
+    )
+    embedder = VertexTextEmbedder(
+        project=settings.google_cloud_project,
+        location=settings.interview_knowledge_embedding_location,
+        model=settings.interview_knowledge_embedding_model,
+        dimensions=settings.interview_knowledge_embedding_dimensions,
+        client=embedding_client,
+    )
+    return FirestoreVectorKnowledgeRetriever(
+        firestore_client=active_firestore_client,
+        embedder=embedder,
+        collection_name=settings.interview_knowledge_collection,
+        vector_field=settings.interview_knowledge_vector_field,
+        top_k=settings.interview_knowledge_top_k,
+    )
+
+
+@lru_cache
+def get_interview_knowledge_retriever():
+    return build_interview_knowledge_retriever(get_app_settings())
 
 
 def get_interview_planner_agent():
@@ -355,6 +394,18 @@ def get_voice_answer_submission_service(
     from services.voice_session.answer_service import VoiceAnswerSubmissionService
 
     return VoiceAnswerSubmissionService(
+        repository=repository,
+        orchestrator=orchestrator,
+    )
+
+
+def get_interview_answer_submission_service(
+    repository=Depends(get_interview_repository),
+    orchestrator=Depends(get_interview_orchestrator),
+):
+    from services.interview_answer_service import InterviewAnswerSubmissionService
+
+    return InterviewAnswerSubmissionService(
         repository=repository,
         orchestrator=orchestrator,
     )

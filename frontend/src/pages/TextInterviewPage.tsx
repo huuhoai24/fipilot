@@ -488,13 +488,18 @@ export function TextInterviewPage({
     event.preventDefault()
     const text = answer.trim()
     if (!sessionId || !text || submissionInFlightRef.current || !state?.current_turn) return
+    const turnId = state.current_turn.turn_id
     submissionInFlightRef.current = true
     setSubmitting(true)
     setPendingAnswer(text)
     setAnswer('')
     setError(null)
     try {
-      const response: V2InterviewSessionResponse = await api.submitV2InterviewAnswer(sessionId, text)
+      const response: V2InterviewSessionResponse = await api.submitV2InterviewAnswer(
+        sessionId,
+        turnId,
+        text,
+      )
       setInterviewStartedAt((current) => response.started_at ?? current)
       setState(response.state)
       setPendingAnswer(null)

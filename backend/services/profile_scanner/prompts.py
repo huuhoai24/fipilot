@@ -13,7 +13,9 @@ RESUME_EXTRACTION_SYSTEM_INSTRUCTION = (
 
 
 def build_resume_extraction_prompt(resume_text: str) -> str:
-    untrusted_document = json.dumps(resume_text[:12000], ensure_ascii=True)
+    # The caller supplies a bounded, section-aware context. Truncating here would
+    # silently discard its tail-preservation guarantees.
+    untrusted_document = json.dumps(resume_text, ensure_ascii=True)
     return f"""
 Classify the uploaded document, then extract a structured candidate profile only when
 the document is a valid resume or CV belonging to one of the 10 supported technology domains.

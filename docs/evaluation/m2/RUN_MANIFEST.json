@@ -1,0 +1,58 @@
+{
+  "run_id": "m2-20260818-resume-upgrade",
+  "created_at": "2026-08-18T13:32:13.668879+00:00",
+  "command": "python -m evaluation.m2.run_resume --execute-paid --resume-from-raw m2-20260818-resume-upgrade",
+  "model": "gemini-2.5-flash-lite",
+  "temperature": 0.1,
+  "fixed_m1_fixture_count": 30,
+  "scanned_pdf_count": 6,
+  "long_resume_count": 6,
+  "invalid_document_count": 4,
+  "git_commit": "3a38b4818a0bb4d2c9e51efd013c295a4f039894",
+  "cache_root": "evaluation/m2/raw/cache",
+  "offline_recompute_command": "python -m evaluation.m2.run_resume --recompute-from-raw m2-20260818-resume-upgrade",
+  "status": "CLOSED",
+  "recomputed_at": "2026-08-18T13:35:53.134505+00:00",
+  "recomputed_from_raw": true,
+  "python": "3.12.7",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "dependency_versions": {
+    "pypdf": "6.14.2",
+    "python-docx": "1.2.0",
+    "PyMuPDF": "1.28.2",
+    "Pillow": "12.3.0",
+    "rapidocr": "3.9.2",
+    "onnxruntime": "1.28.0",
+    "google-genai": "2.14.0"
+  },
+  "dataset_hashes": {
+    "m1_fixed_samples_jsonl": "847c3e51fa3baaa8855c8d5c13a65d962b2e8fa669565cd56990f8ab149b68db",
+    "m2_robustness_files": {
+      "evaluation/m2/fixtures/invalid_binary.exe": "d2ab4fee8d37f2b892ea08737a9bf66b49b3bd54376fb89d806739b618495101",
+      "evaluation/m2/fixtures/invalid_malformed.docx": "92f3777ab69c895b2b69beee8385a46b4c2810eed3dd479bfbddce5015227145",
+      "evaluation/m2/fixtures/invalid_plain_as_pdf.pdf": "641e1695a32c6d4ebf38c1f5afb82a391d6ed1f6eb44679b49d837494b5f9a37",
+      "evaluation/m2/fixtures/invalid_zip_as_pdf.pdf": "49029745e3ea6eaca97e36dc12fbe2b27f94956b4cab0afa93b80b6c5865d704",
+      "evaluation/m2/fixtures/long_01_before.docx": "bd454b722a6cebddf96e35518476b881b6286f457289a8542a4808f66bcbedbe",
+      "evaluation/m2/fixtures/long_02_before.docx": "95a0267caaf457fff40b240a3975a1a3b75f3b27d965ee72c58d61d7a8076cff",
+      "evaluation/m2/fixtures/long_03_near.docx": "dc10f252597f516db097eafb45644e3bead40ad21c31943de82d2c81a4d508fc",
+      "evaluation/m2/fixtures/long_04_near.docx": "2cf574b43fabd6396d9f1e330867b1c90ba7205f24db40450f8667ef187eed43",
+      "evaluation/m2/fixtures/long_05_after.docx": "ebf9fdab590fe90ef1214c0f150c3725202c5e6b47ef7401541acc102bb3b0f8",
+      "evaluation/m2/fixtures/long_06_after.docx": "8c216c0f4f18121101cd46d63f99c9f4b70e0069bb0aabb1d3ce070c8beef054",
+      "evaluation/m2/fixtures/ocr_01.pdf": "55ba4648fa5daa8762c7b3ef0b20a3ec72de777b3e4fa34892539e87ebc7a53b",
+      "evaluation/m2/fixtures/ocr_02.pdf": "b0cf7cb98447f4089e75db7dd74091a8bb1b2083476bf589a982103b2a65dbd7",
+      "evaluation/m2/fixtures/ocr_03.pdf": "81ce9d4003d888c2a0f9424dff404fda83ece7246fe9c7c2ce65df345f42ddd6",
+      "evaluation/m2/fixtures/ocr_04.pdf": "d93bd8bce43b20ad0c8848cdcd8004f79939216df4c27a595ddc2c76b8c16144",
+      "evaluation/m2/fixtures/ocr_05.pdf": "414070bb6bc8e5107ac2c19e6d7215b56f25b1e9550fe31425986775c0b7a889",
+      "evaluation/m2/fixtures/ocr_06.pdf": "825141f81e37c3203358dc073736a26f6f79c5e39091a21d249bfcc5c00140ba"
+    }
+  },
+  "implementation_hashes": {
+    "backend/infrastructure/documents/pdf_service.py": "bb6202285547e65b3440195c7f77cd7df54cb600de5846980f487b17f1101ad1",
+    "backend/services/profile_scanner/context.py": "5f9f1510090d70ea2a762267bb09633651943cd52306cf6d19f6e88197309c75",
+    "backend/services/profile_scanner/verification.py": "40ebdb0170aa059502ae2c6d6718b937f97a507b2a8f1c396740bfd8bb0d3050",
+    "backend/services/profile_scanner/prompts.py": "775059424e9300d63168ec968d412c3b189e4a71b736f9de75f0a3ab885cf1c2",
+    "evaluation/m2/run_resume.py": "ba0970f280307afa1f990a197db70ec21b3dde8df60df8702da249d328fab862"
+  },
+  "raw_cache_entry_count": 54,
+  "execution_history_note": "Initial bulk execution and each resume pass were separately dry-run and budget-gated; per-attempt timestamps and cache identities are retained in resume/samples.jsonl."
+}

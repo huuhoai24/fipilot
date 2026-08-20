@@ -10,7 +10,13 @@ from sqlalchemy.orm import Session
 
 import crud
 import models
-from infrastructure.repositories.base import CandidateRecord, InterviewRepository, InterviewSessionRecord
+from infrastructure.repositories.base import (
+    AnswerSubmissionClaim,
+    AnswerSubmissionRecord,
+    CandidateRecord,
+    InterviewRepository,
+    InterviewSessionRecord,
+)
 from shared.schemas import (
     AnswerEvaluation,
     CandidateProfile,
@@ -266,6 +272,122 @@ class SQLiteInterviewRepository(InterviewRepository):
         self.db.refresh(session)
         return self._session_from_model(session)
 
+    def get_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionRecord | None:
+        if self._get_session_model(session_id, user_id) is None:
+            return None
+        submission = (
+            self.db.query(models.AnswerSubmission)
+            .filter(
+                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.turn_id == turn_id,
+            )
+            .first()
+        )
+        return self._answer_submission_from_model(submission) if submission else None
+
+    def claim_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionClaim:
+        if self._get_session_model(session_id, user_id) is None:
+            raise ValueError(f"Session {session_id} does not exist for this user")
+        result = self.db.execute(
+            sqlite_insert(models.AnswerSubmission)
+            .values(
+                session_id=self._int_id(session_id),
+                turn_id=turn_id,
+                answer_hash=answer_hash,
+                status="processing",
+            )
+            .on_conflict_do_nothing(index_elements=["session_id", "turn_id"])
+        )
+        self.db.commit()
+        submission = (
+            self.db.query(models.AnswerSubmission)
+            .filter(
+                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.turn_id == turn_id,
+            )
+            .one()
+        )
+        record = self._answer_submission_from_model(submission)
+        if result.rowcount == 1:
+            outcome = "claimed"
+        elif record.answer_hash != answer_hash:
+            outcome = "conflict"
+        elif record.status == "completed":
+            outcome = "replay"
+        else:
+            outcome = "in_progress"
+        return AnswerSubmissionClaim(outcome=outcome, record=record)
+
+    def complete_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        state: str,
+        state_payload: dict[str, Any],
+        status: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewSessionRecord | None:
+        session = self._get_session_model(session_id, user_id)
+        if session is None:
+            return None
+        submission = (
+            self.db.query(models.AnswerSubmission)
+            .filter(
+                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.turn_id == turn_id,
+                models.AnswerSubmission.answer_hash == answer_hash,
+                models.AnswerSubmission.status == "processing",
+            )
+            .first()
+        )
+        if submission is None:
+            raise ValueError("Answer submission claim is no longer active")
+        session.state = state
+        session.status = self._normalize_status(status)
+        session.question_plan_json = json.dumps(state_payload)
+        if session.status in {
+            InterviewStatus.COMPLETED.value,
+            InterviewStatus.REPORT_GENERATED.value,
+        } and session.completed_at is None:
+            session.completed_at = datetime.now(timezone.utc)
+        submission.status = "completed"
+        self.db.commit()
+        self.db.refresh(session)
+        return self._session_from_model(session)
+
+    def abandon_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> None:
+        if self._get_session_model(session_id, user_id) is None:
+            return
+        self.db.query(models.AnswerSubmission).filter(
+            models.AnswerSubmission.session_id == self._int_id(session_id),
+            models.AnswerSubmission.turn_id == turn_id,
+            models.AnswerSubmission.answer_hash == answer_hash,
+            models.AnswerSubmission.status == "processing",
+        ).delete(synchronize_session=False)
+        self.db.commit()
+
     def update_session_status(
         self,
         session_id: str,
@@ -478,6 +600,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         inspector = inspect(bind)
         models.InterviewBlueprintArtifact.__table__.create(bind, checkfirst=True)
         models.ResumeExtractionArtifact.__table__.create(bind, checkfirst=True)
+        models.AnswerSubmission.__table__.create(bind, checkfirst=True)
         user_columns = {column["name"] for column in inspector.get_columns("users")}
         for column_name, column_type in {
             "user_id": "VARCHAR",
@@ -520,6 +643,16 @@ class SQLiteInterviewRepository(InterviewRepository):
             text("CREATE INDEX IF NOT EXISTS ix_sessions_user_id ON sessions (user_id)")
         )
         self.db.commit()
+
+    @staticmethod
+    def _answer_submission_from_model(
+        submission: models.AnswerSubmission,
+    ) -> AnswerSubmissionRecord:
+        return AnswerSubmissionRecord(
+            turn_id=submission.turn_id,
+            answer_hash=submission.answer_hash,
+            status=submission.status,
+        )
 
     def _session_from_model(self, session: models.Session) -> InterviewSessionRecord:
         return InterviewSessionRecord(

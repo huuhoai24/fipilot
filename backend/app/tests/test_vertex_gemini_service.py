@@ -4,9 +4,11 @@ import unittest
 from types import SimpleNamespace
 
 from pydantic import BaseModel
+from shared.schemas.interview import InterviewPlan
 
 from app.config.settings import Settings
 from app.services.vertex_gemini_service import (
+    LLMConfigurationError,
     LLMResponseValidationError,
     LLMTimeoutError,
     RetryConfig,
@@ -100,7 +102,14 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(models.calls[0]["contents"], "Say hello")
 
     async def test_generate_json_validates_with_pydantic_schema(self):
-        models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])
+        models = FakeModels(responses=[SimpleNamespace(
+            text='{"name":"Alice","score":9}',
+            usage_metadata=SimpleNamespace(
+                prompt_token_count=12,
+                candidates_token_count=7,
+                total_token_count=19,
+            ),
+        )])
         service = self.make_service(models)
 
         result = await service.generate_json("Return a score", MockJSONOutput)
@@ -110,7 +119,80 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(models.calls[0]["model"], "gemini-complex")
         config = models.calls[0]["config"]
         self.assertEqual(config.response_mime_type, "application/json")
-        self.assertEqual(config.response_json_schema["title"], "MockJSONOutput")
+        self.assertIs(config.response_schema, MockJSONOutput)
+        self.assertEqual(service.last_usage_record["availability"], "provider_reported")
+        self.assertEqual(service.last_usage_record["input_tokens"], 12)
+        self.assertEqual(service.last_usage_record["output_tokens"], 7)
+
+    async def test_generate_json_uses_sdk_parsed_result_when_text_is_unusable(self):
+        models = FakeModels(responses=[SimpleNamespace(
+            text="",
+            parsed={"name": "Alice", "score": 9},
+            usage_metadata=SimpleNamespace(
+                prompt_token_count=12,
+                candidates_token_count=7,
+                total_token_count=19,
+            ),
+        )])
+        service = self.make_service(
+            models,
+            retry_config=RetryConfig(
+                max_attempts=1,
+                initial_backoff_seconds=0,
+                jitter_seconds=0,
+            ),
+        )
+
+        result = await service.generate_json("Return a score", MockJSONOutput)
+
+        self.assertEqual(result, MockJSONOutput(name="Alice", score=9))
+        self.assertIs(models.calls[0]["config"].response_schema, MockJSONOutput)
+
+    async def test_interview_plan_schema_accepts_valid_nested_output(self):
+        models = FakeModels(responses=[SimpleNamespace(text=(
+            '{"duration_minutes":5,"rounds":[{"round_id":"r1",'
+            '"topic":"API design","difficulty":"medium","weight":1,'
+            '"question_budget":2}]}'
+        ))])
+        service = self.make_service(
+            models,
+            retry_config=RetryConfig(max_attempts=1),
+        )
+
+        result = await service.generate_json("Build a plan", InterviewPlan)
+
+        self.assertEqual(result.rounds[0].topic, "API design")
+        self.assertEqual(result.rounds[0].difficulty, "medium")
+
+    async def test_interview_plan_schema_rejects_invalid_contract_shapes(self):
+        invalid_payloads = {
+            "invalid_nested_value": (
+                '{"rounds":[{"round_id":"r1","topic":"API design",'
+                '"weight":2,"question_budget":1}]}'
+            ),
+            "missing_required_nested_field": (
+                '{"rounds":[{"round_id":"r1","difficulty":"medium"}]}'
+            ),
+            "wrong_container_type": '{"rounds":"not-a-list"}',
+            "unsupported_enum": (
+                '{"rounds":[{"round_id":"r1","topic":"API design",'
+                '"difficulty":"extreme"}]}'
+            ),
+        }
+        for label, payload in invalid_payloads.items():
+            with self.subTest(label=label):
+                models = FakeModels(responses=[SimpleNamespace(text=payload)])
+                service = self.make_service(
+                    models,
+                    retry_config=RetryConfig(max_attempts=1),
+                )
+
+                with self.assertRaises(LLMResponseValidationError):
+                    await service.generate_json("Build a plan", InterviewPlan)
+
+                attempt = service.attempt_records[0]
+                self.assertEqual(attempt["status"], "schema_parse_failed")
+                self.assertEqual(attempt["exception_category"], "schema_validation")
 
     async def test_generate_json_logs_safe_model_latency_metadata(self):
         models = FakeModels(responses=[SimpleNamespace(text='{"name":"Alice","score":9}')])
@@ -189,11 +271,35 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(models.calls), 2)
 
     async def test_generate_json_raises_after_validation_retries(self):
-        models = FakeModels(responses=[SimpleNamespace(text="bad"), SimpleNamespace(text='{"name":"Missing score"}')])
+        models = FakeModels(responses=[
+            SimpleNamespace(
+                text="bad",
+                usage_metadata=SimpleNamespace(
+                    prompt_token_count=8,
+                    candidates_token_count=2,
+                    total_token_count=10,
+                ),
+            ),
+            SimpleNamespace(text='{"name":"Missing score"}'),
+        ])
         service = self.make_service(models, retry_config=RetryConfig(max_attempts=2, initial_backoff_seconds=0, jitter_seconds=0))
 
         with self.assertRaises(LLMResponseValidationError):
             await service.generate_json("Return a score", MockJSONOutput)
+
+        self.assertEqual(len(service.attempt_records), 2)
+        first, second = service.attempt_records
+        self.assertEqual(first["status"], "schema_parse_failed")
+        self.assertTrue(first["provider_request_sent"])
+        self.assertTrue(first["provider_response_received"])
+        self.assertEqual(first["schema_parse"], "failed")
+        self.assertEqual(first["usage"]["availability"], "provider_reported")
+        self.assertEqual(first["usage"]["total_tokens"], 10)
+        self.assertEqual(first["exception_category"], "invalid_json")
+        self.assertEqual(second["exception_category"], "schema_validation")
+        self.assertEqual(second["validation_errors"][0]["loc"], ["score"])
+        self.assertNotIn("response", first)
+        self.assertNotIn("prompt", first)
 
     async def test_generate_text_retries_retryable_error(self):
         models = FakeModels(
@@ -213,6 +319,53 @@ class VertexGeminiServiceTests(unittest.IsolatedAsyncioTestCase):
 
         with self.assertRaises(LLMTimeoutError):
             await service.generate_text("Slow prompt")
+
+    async def test_generate_json_timeout_records_failed_provider_attempt(self):
+        models = FakeModels(sleep_seconds=0.05)
+        service = self.make_service(
+            models,
+            retry_config=RetryConfig(max_attempts=1),
+            default_timeout_seconds=0.001,
+        )
+
+        with self.assertRaises(LLMTimeoutError):
+            await service.generate_json("Slow JSON", MockJSONOutput)
+
+        self.assertEqual(len(service.attempt_records), 1)
+        attempt = service.attempt_records[0]
+        self.assertEqual(attempt["status"], "failed")
+        self.assertTrue(attempt["provider_request_sent"])
+        self.assertFalse(attempt["provider_response_received"])
+        self.assertEqual(attempt["usage"]["availability"], "unavailable")
+        self.assertEqual(attempt["exception_category"], "timeout")
+
+    async def test_generate_json_exposes_configuration_failure_before_request(self):
+        settings = Settings(
+            APP_ENV="test",
+            GOOGLE_CLOUD_PROJECT=None,
+            GEMINI_SIMPLE_MODEL="gemini-simple",
+            GEMINI_COMPLEX_MODEL="gemini-complex",
+        )
+        service = VertexGeminiService(
+            settings=settings,
+            retry_config=RetryConfig(max_attempts=1),
+        )
+
+        with self.assertRaisesRegex(
+            LLMConfigurationError,
+            "GOOGLE_CLOUD_PROJECT is required",
+        ):
+            await service.generate_json("Build a plan", InterviewPlan)
+
+        attempt = service.attempt_records[0]
+        self.assertFalse(attempt["provider_request_sent"])
+        self.assertFalse(attempt["provider_response_received"])
+        self.assertEqual(attempt["exception_type"], "LLMConfigurationError")
+        self.assertEqual(attempt["exception_category"], "configuration_error")
+        self.assertNotIn(
+            "provider_request_sent",
+            [event["state"] for event in attempt["events"]],
+        )
 
     async def test_stream_text_yields_ordered_vertex_deltas(self):
         async_models = FakeAsyncModels(

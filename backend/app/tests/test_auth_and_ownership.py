@@ -234,7 +234,10 @@ class OwnershipTests(unittest.TestCase):
     def test_user_cannot_submit_answer_to_another_users_session(self):
         response = self.client.post(
             f"/api/v2/interview/{self.session_b.session_id}/answer",
-            json={"answer": "Attempted cross-user answer."},
+            json={
+                "turn_id": "foreign-turn",
+                "answer": "Attempted cross-user answer.",
+            },
         )
         self.assertEqual(response.status_code, 404)
 

@@ -161,6 +161,18 @@ class RepositorySettings(BaseModel):
     interviews_collection: str = "interviews"
 
 
+class InterviewKnowledgeSettings(BaseModel):
+    """Interview knowledge retrieval and vector-index configuration."""
+
+    backend: Literal["local", "firestore_vector"] = "local"
+    collection: str = "interview_knowledge_chunks"
+    vector_field: str = "embedding"
+    embedding_model: str = "gemini-embedding-001"
+    embedding_location: str = "global"
+    embedding_dimensions: int = Field(default=768, ge=1, le=2048)
+    top_k: int = Field(default=5, ge=1, le=1000)
+
+
 def _env_bool(name: str, default: bool = False) -> bool:
     value = os.getenv(name)
     if value is None:
@@ -222,6 +234,9 @@ class Settings(BaseSettings):
     authentication: AuthenticationSettings = Field(default_factory=AuthenticationSettings)
     cors: CorsSettings = Field(default_factory=CorsSettings)
     repository: RepositorySettings = Field(default_factory=RepositorySettings)
+    interview_knowledge: InterviewKnowledgeSettings = Field(
+        default_factory=InterviewKnowledgeSettings
+    )
 
     if HAS_PYDANTIC_SETTINGS:
         model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -238,6 +253,7 @@ class Settings(BaseSettings):
         auth_data = dict(data.pop("authentication", {}) or {})
         cors_data = dict(data.pop("cors", {}) or {})
         repository_data = dict(data.pop("repository", {}) or {})
+        knowledge_data = dict(data.pop("interview_knowledge", {}) or {})
 
         app_data.setdefault("app_env", os.getenv("APP_ENV", os.getenv("ENVIRONMENT", "local")))
         app_data.setdefault("debug", _env_bool("DEBUG", False))
@@ -373,6 +389,33 @@ class Settings(BaseSettings):
         repository_data.setdefault(
             "interviews_collection",
             os.getenv("FIRESTORE_INTERVIEWS_COLLECTION", "interviews"),
+        )
+        knowledge_data.setdefault(
+            "backend", os.getenv("INTERVIEW_KNOWLEDGE_BACKEND", "local")
+        )
+        knowledge_data.setdefault(
+            "collection",
+            os.getenv(
+                "INTERVIEW_KNOWLEDGE_COLLECTION", "interview_knowledge_chunks"
+            ),
+        )
+        knowledge_data.setdefault(
+            "vector_field", os.getenv("INTERVIEW_KNOWLEDGE_VECTOR_FIELD", "embedding")
+        )
+        knowledge_data.setdefault(
+            "embedding_model",
+            os.getenv("INTERVIEW_KNOWLEDGE_EMBEDDING_MODEL", "gemini-embedding-001"),
+        )
+        knowledge_data.setdefault(
+            "embedding_location",
+            os.getenv("INTERVIEW_KNOWLEDGE_EMBEDDING_LOCATION", "global"),
+        )
+        knowledge_data.setdefault(
+            "embedding_dimensions",
+            _env_int("INTERVIEW_KNOWLEDGE_EMBEDDING_DIMENSIONS", 768),
+        )
+        knowledge_data.setdefault(
+            "top_k", _env_int("INTERVIEW_KNOWLEDGE_TOP_K", 5)
         )
 
         app_env = _take(data, "app_env", "APP_ENV", "environment")
@@ -534,6 +577,35 @@ class Settings(BaseSettings):
         if interviews_collection is not None:
             repository_data["interviews_collection"] = interviews_collection
 
+        knowledge_aliases = {
+            "backend": ("interview_knowledge_backend", "INTERVIEW_KNOWLEDGE_BACKEND"),
+            "collection": (
+                "interview_knowledge_collection",
+                "INTERVIEW_KNOWLEDGE_COLLECTION",
+            ),
+            "vector_field": (
+                "interview_knowledge_vector_field",
+                "INTERVIEW_KNOWLEDGE_VECTOR_FIELD",
+            ),
+            "embedding_model": (
+                "interview_knowledge_embedding_model",
+                "INTERVIEW_KNOWLEDGE_EMBEDDING_MODEL",
+            ),
+            "embedding_location": (
+                "interview_knowledge_embedding_location",
+                "INTERVIEW_KNOWLEDGE_EMBEDDING_LOCATION",
+            ),
+            "embedding_dimensions": (
+                "interview_knowledge_embedding_dimensions",
+                "INTERVIEW_KNOWLEDGE_EMBEDDING_DIMENSIONS",
+            ),
+            "top_k": ("interview_knowledge_top_k", "INTERVIEW_KNOWLEDGE_TOP_K"),
+        }
+        for field_name, aliases in knowledge_aliases.items():
+            value = _take(data, *aliases)
+            if value is not None:
+                knowledge_data[field_name] = value
+
         super().__init__(
             application=ApplicationSettings(**app_data),
             google_cloud=GoogleCloudSettings(**google_data),
@@ -544,6 +616,7 @@ class Settings(BaseSettings):
             authentication=AuthenticationSettings(**auth_data),
             cors=CorsSettings(**cors_data),
             repository=RepositorySettings(**repository_data),
+            interview_knowledge=InterviewKnowledgeSettings(**knowledge_data),
             **data,
         )
 
@@ -770,6 +843,34 @@ class Settings(BaseSettings):
     @property
     def firestore_interviews_collection(self) -> str:
         return self.repository.interviews_collection
+
+    @property
+    def interview_knowledge_backend(self) -> str:
+        return self.interview_knowledge.backend
+
+    @property
+    def interview_knowledge_collection(self) -> str:
+        return self.interview_knowledge.collection
+
+    @property
+    def interview_knowledge_vector_field(self) -> str:
+        return self.interview_knowledge.vector_field
+
+    @property
+    def interview_knowledge_embedding_model(self) -> str:
+        return self.interview_knowledge.embedding_model
+
+    @property
+    def interview_knowledge_embedding_location(self) -> str:
+        return self.interview_knowledge.embedding_location
+
+    @property
+    def interview_knowledge_embedding_dimensions(self) -> int:
+        return self.interview_knowledge.embedding_dimensions
+
+    @property
+    def interview_knowledge_top_k(self) -> int:
+        return self.interview_knowledge.top_k
 
 
 @lru_cache

@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import random
 import re
 import time
 from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any, TypeVar
+from uuid import uuid4
 
 from pydantic import BaseModel, ValidationError
 
@@ -67,6 +70,8 @@ class VertexGeminiService(BaseLLMService):
         self.retry_config = retry_config or RetryConfig()
         self.default_timeout_seconds = default_timeout_seconds
         self.logger = get_logger(__name__)
+        self.last_usage_record: dict[str, int | str | None] | None = None
+        self.attempt_records: list[dict[str, Any]] = []
 
     def route_model(self, task_type: LLMTaskType = "simple", model: str | None = None) -> str:
         if model:
@@ -92,6 +97,7 @@ class VertexGeminiService(BaseLLMService):
             system_instruction=system_instruction,
             temperature=temperature,
             response_mime_type=None,
+            response_schema=None,
             response_json_schema=None,
             timeout_seconds=timeout_seconds,
         )
@@ -180,7 +186,6 @@ class VertexGeminiService(BaseLLMService):
         selected_model = self.route_model(task_type=task_type, model=model)
         operation_name = operation or output_schema.__name__
         schema_prompt = self._build_json_prompt(prompt)
-        response_json_schema = output_schema.model_json_schema()
         active_timeout = timeout_seconds or self.default_timeout_seconds
         log_duration(
             self.logger,
@@ -200,18 +205,35 @@ class VertexGeminiService(BaseLLMService):
 
         for attempt in range(1, self.retry_config.max_attempts + 1):
             started_at = time.perf_counter()
+            attempt_record = self._start_attempt_record(
+                model=selected_model,
+                operation=operation_name,
+                output_schema=output_schema,
+                prompt=schema_prompt,
+                temperature=temperature,
+                thinking_budget=thinking_budget,
+                attempt=attempt,
+            )
             try:
                 request_started_at = time.perf_counter()
                 try:
+                    def mark_request_sent() -> None:
+                        attempt_record["provider_request_sent"] = True
+                        self._transition_attempt(
+                            attempt_record, "provider_request_sent"
+                        )
+
                     response = await self._call_once_with_timeout(
                         selected_model,
                         schema_prompt,
                         system_instruction=system_instruction,
                         temperature=temperature,
                         response_mime_type="application/json",
-                        response_json_schema=response_json_schema,
+                        response_schema=output_schema,
+                        response_json_schema=None,
                         timeout_seconds=timeout_seconds,
                         thinking_budget=thinking_budget,
+                        on_request_sent=mark_request_sent,
                     )
                 except BaseException:
                     log_duration(
@@ -231,6 +253,10 @@ class VertexGeminiService(BaseLLMService):
                         thinking_budget=thinking_budget,
                     )
                     raise
+                attempt_record["provider_response_received"] = True
+                self._transition_attempt(
+                    attempt_record, "provider_response_received"
+                )
                 log_duration(
                     self.logger,
                     "llm.model_request",
@@ -247,11 +273,36 @@ class VertexGeminiService(BaseLLMService):
                     thinking_budget=thinking_budget,
                 )
 
-                response_text = self._extract_text(response)
+                self._capture_usage(response, selected_model, operation_name)
+                attempt_record["usage"] = dict(self.last_usage_record or {})
+                response_text = self._safe_extract_text(response)
+                attempt_record["response_chars"] = len(response_text)
+                attempt_record["response_hash"] = hashlib.sha256(
+                    response_text.encode("utf-8")
+                ).hexdigest()
                 parsing_started_at = time.perf_counter()
                 try:
-                    result = self._validate_json_text(response_text, output_schema)
-                except BaseException:
+                    parsed = getattr(response, "parsed", None)
+                    result = (
+                        output_schema.model_validate(parsed)
+                        if parsed is not None
+                        else self._validate_json_text(response_text, output_schema)
+                    )
+                except BaseException as error:
+                    attempt_record["schema_parse"] = "failed"
+                    attempt_record["status"] = "schema_parse_failed"
+                    attempt_record["exception_category"] = (
+                        self._exception_category(error)
+                    )
+                    attempt_record["exception_message"] = (
+                        self._safe_exception_message(error, output_schema)
+                    )
+                    attempt_record["validation_errors"] = (
+                        self._validation_error_details(error)
+                    )
+                    self._transition_attempt(
+                        attempt_record, "schema_parse_failed"
+                    )
                     log_duration(
                         self.logger,
                         "llm.response_parsing",
@@ -265,6 +316,8 @@ class VertexGeminiService(BaseLLMService):
                         attempt=attempt,
                     )
                     raise
+                attempt_record["schema_parse"] = "success"
+                self._transition_attempt(attempt_record, "schema_parse_success")
                 log_duration(
                     self.logger,
                     "llm.response_parsing",
@@ -302,8 +355,20 @@ class VertexGeminiService(BaseLLMService):
                     timeout_seconds=active_timeout,
                     thinking_budget=thinking_budget,
                 )
+                attempt_record["status"] = "completed"
+                attempt_record["latency_ms"] = round(
+                    (time.perf_counter() - started_at) * 1000, 2
+                )
+                self._transition_attempt(attempt_record, "completed")
                 return result
             except (ValidationError, ValueError, json.JSONDecodeError) as error:
+                self._finalize_failed_attempt(
+                    attempt_record,
+                    error,
+                    started_at=started_at,
+                    output_schema=output_schema,
+                    schema_failed=True,
+                )
                 self._log_json_latency(
                     model=selected_model,
                     task_type=task_type,
@@ -319,6 +384,13 @@ class VertexGeminiService(BaseLLMService):
                     break
                 await self._sleep_before_retry(attempt)
             except Exception as error:
+                self._finalize_failed_attempt(
+                    attempt_record,
+                    error,
+                    started_at=started_at,
+                    output_schema=output_schema,
+                    schema_failed=False,
+                )
                 self._log_json_latency(
                     model=selected_model,
                     task_type=task_type,
@@ -351,7 +423,170 @@ class VertexGeminiService(BaseLLMService):
         )
         if isinstance(last_error, LLMTimeoutError):
             raise last_error
-        raise LLMResponseValidationError(f"Could not produce valid {output_schema.__name__} JSON") from last_error
+        if isinstance(last_error, LLMConfigurationError):
+            raise last_error
+        category = self._exception_category(last_error) if last_error else "unknown"
+        raise LLMResponseValidationError(
+            f"Could not produce valid {output_schema.__name__} JSON ({category})"
+        ) from last_error
+
+    def _capture_usage(self, response: Any, model: str, operation: str) -> None:
+        usage = getattr(response, "usage_metadata", None)
+        if usage is None:
+            self.last_usage_record = {
+                "model": model,
+                "operation": operation,
+                "availability": "unavailable",
+            }
+            return
+        self.last_usage_record = {
+            "model": model,
+            "operation": operation,
+            "availability": "provider_reported",
+            "input_tokens": getattr(usage, "prompt_token_count", None),
+            "output_tokens": getattr(usage, "candidates_token_count", None),
+            "total_tokens": getattr(usage, "total_token_count", None),
+        }
+
+    def _start_attempt_record(
+        self,
+        *,
+        model: str,
+        operation: str,
+        output_schema: type[BaseModel],
+        prompt: str,
+        temperature: float,
+        thinking_budget: int | None,
+        attempt: int,
+    ) -> dict[str, Any]:
+        schema = output_schema.model_json_schema()
+        request_identity = {
+            "model": model,
+            "operation": operation,
+            "output_schema": output_schema.__name__,
+            "prompt_hash": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
+            "schema": schema,
+            "temperature": temperature,
+            "thinking_budget": thinking_budget,
+        }
+        record: dict[str, Any] = {
+            "attempt_id": uuid4().hex,
+            "attempt": attempt,
+            "stage": operation,
+            "model": model,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "request_config_hash": hashlib.sha256(
+                json.dumps(
+                    request_identity,
+                    sort_keys=True,
+                    ensure_ascii=False,
+                ).encode("utf-8")
+            ).hexdigest(),
+            "output_schema": output_schema.__name__,
+            "prompt_chars": len(prompt),
+            "provider_request_sent": False,
+            "provider_response_received": False,
+            "schema_parse": "not_started",
+            "status": "attempt_started",
+            "usage": {"availability": "unavailable"},
+            "response_chars": None,
+            "response_hash": None,
+            "exception_category": None,
+            "exception_type": None,
+            "exception_message": None,
+            "validation_errors": [],
+            "latency_ms": None,
+            "events": [],
+        }
+        self.attempt_records.append(record)
+        self._transition_attempt(record, "attempt_started")
+        return record
+
+    @staticmethod
+    def _transition_attempt(record: dict[str, Any], state: str) -> None:
+        events = record.setdefault("events", [])
+        if events and events[-1]["state"] == state:
+            return
+        events.append(
+            {
+                "state": state,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        )
+
+    def _finalize_failed_attempt(
+        self,
+        record: dict[str, Any],
+        error: BaseException,
+        *,
+        started_at: float,
+        output_schema: type[BaseModel],
+        schema_failed: bool,
+    ) -> None:
+        record["status"] = "schema_parse_failed" if schema_failed else "failed"
+        if schema_failed:
+            record["schema_parse"] = "failed"
+        record["exception_category"] = self._exception_category(error)
+        record["exception_type"] = type(error).__name__
+        record["exception_message"] = self._safe_exception_message(
+            error, output_schema
+        )
+        record["validation_errors"] = self._validation_error_details(error)
+        record["latency_ms"] = round(
+            (time.perf_counter() - started_at) * 1000, 2
+        )
+        self._transition_attempt(record, record["status"])
+
+    @staticmethod
+    def _validation_error_details(error: BaseException) -> list[dict[str, Any]]:
+        if not isinstance(error, ValidationError):
+            return []
+        return [
+            {
+                "loc": [str(part) for part in detail.get("loc", ())],
+                "type": str(detail.get("type") or "validation_error"),
+                "message": str(detail.get("msg") or "Schema validation failed."),
+            }
+            for detail in error.errors(include_input=False, include_url=False)
+        ]
+
+    @staticmethod
+    def _exception_category(error: BaseException | None) -> str:
+        if isinstance(error, LLMTimeoutError):
+            return "timeout"
+        if isinstance(error, LLMConfigurationError):
+            return "configuration_error"
+        if isinstance(error, ValidationError):
+            if any(
+                detail.get("type") == "json_invalid"
+                for detail in error.errors(include_input=False, include_url=False)
+            ):
+                return "invalid_json"
+            return "schema_validation"
+        if isinstance(error, (json.JSONDecodeError, ValueError)):
+            return "invalid_json"
+        return "provider_error"
+
+    @staticmethod
+    def _safe_exception_message(
+        error: BaseException, output_schema: type[BaseModel]
+    ) -> str:
+        category = VertexGeminiService._exception_category(error)
+        if category == "timeout":
+            return "Provider request timed out."
+        if category == "configuration_error":
+            return "Provider configuration is incomplete."
+        if category == "schema_validation":
+            return f"Provider response did not match {output_schema.__name__}."
+        if category == "invalid_json":
+            return "Provider response did not contain valid JSON."
+        return "Provider request failed."
+
+    def _safe_extract_text(self, response: Any) -> str:
+        try:
+            return self._extract_text(response)
+        except (AttributeError, TypeError, ValueError):
+            return ""
 
     def _log_json_latency(
         self,
@@ -410,9 +645,11 @@ class VertexGeminiService(BaseLLMService):
         system_instruction: str | None,
         temperature: float,
         response_mime_type: str | None,
+        response_schema: type[BaseModel] | None,
         response_json_schema: dict[str, Any] | None,
         timeout_seconds: float | None,
         thinking_budget: int | None = None,
+        on_request_sent: Callable[[], None] | None = None,
     ) -> Any:
         last_error: Exception | None = None
         for attempt in range(1, self.retry_config.max_attempts + 1):
@@ -423,9 +660,11 @@ class VertexGeminiService(BaseLLMService):
                     system_instruction=system_instruction,
                     temperature=temperature,
                     response_mime_type=response_mime_type,
+                    response_schema=response_schema,
                     response_json_schema=response_json_schema,
                     timeout_seconds=timeout_seconds,
                     thinking_budget=thinking_budget,
+                    on_request_sent=on_request_sent,
                 )
             except Exception as error:
                 last_error = error
@@ -444,9 +683,11 @@ class VertexGeminiService(BaseLLMService):
         system_instruction: str | None,
         temperature: float,
         response_mime_type: str | None,
+        response_schema: type[BaseModel] | None,
         response_json_schema: dict[str, Any] | None,
         timeout_seconds: float | None,
         thinking_budget: int | None = None,
+        on_request_sent: Callable[[], None] | None = None,
     ) -> Any:
         timeout = timeout_seconds or self.default_timeout_seconds
         try:
@@ -458,8 +699,10 @@ class VertexGeminiService(BaseLLMService):
                     system_instruction=system_instruction,
                     temperature=temperature,
                     response_mime_type=response_mime_type,
+                    response_schema=response_schema,
                     response_json_schema=response_json_schema,
                     thinking_budget=thinking_budget,
+                    on_request_sent=on_request_sent,
                 ),
                 timeout=timeout,
             )
@@ -474,20 +717,26 @@ class VertexGeminiService(BaseLLMService):
         system_instruction: str | None,
         temperature: float,
         response_mime_type: str | None,
+        response_schema: type[BaseModel] | None,
         response_json_schema: dict[str, Any] | None,
         thinking_budget: int | None = None,
+        on_request_sent: Callable[[], None] | None = None,
     ) -> Any:
         config = self._build_generation_config(
             system_instruction=system_instruction,
             temperature=temperature,
             response_mime_type=response_mime_type,
+            response_schema=response_schema,
             response_json_schema=response_json_schema,
             thinking_budget=thinking_budget,
         )
         kwargs = {"model": model, "contents": prompt}
         if config is not None:
             kwargs["config"] = config
-        return self.client.models.generate_content(**kwargs)
+        models = self.client.models
+        if on_request_sent is not None:
+            on_request_sent()
+        return models.generate_content(**kwargs)
 
     async def _start_async_stream(
         self,
@@ -505,6 +754,7 @@ class VertexGeminiService(BaseLLMService):
             response_mime_type=(
                 "application/json" if output_schema is not None else None
             ),
+            response_schema=None,
             response_json_schema=(
                 output_schema.model_json_schema()
                 if output_schema is not None
@@ -523,6 +773,7 @@ class VertexGeminiService(BaseLLMService):
         system_instruction: str | None,
         temperature: float,
         response_mime_type: str | None,
+        response_schema: type[BaseModel] | None,
         response_json_schema: dict[str, Any] | None,
         thinking_budget: int | None = None,
     ) -> Any:
@@ -531,6 +782,8 @@ class VertexGeminiService(BaseLLMService):
             config_values["system_instruction"] = system_instruction
         if response_mime_type:
             config_values["response_mime_type"] = response_mime_type
+        if response_schema is not None:
+            config_values["response_schema"] = response_schema
         if response_json_schema:
             config_values["response_json_schema"] = response_json_schema
 

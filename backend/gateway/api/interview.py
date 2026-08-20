@@ -4,10 +4,12 @@ from datetime import datetime, timezone
 import time
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
 from core.dependencies import (
     get_current_user,
+    get_interview_answer_submission_service,
     get_interview_orchestrator,
     get_interview_preparation_cache,
     get_interview_repository,
@@ -23,15 +25,16 @@ from services.interview_preparation import InterviewPreparationCache
 from shared.schemas import (
     CurrentUser,
     InterviewConfig,
+    InterviewMode,
     InterviewPlan,
     InterviewSessionState,
     InterviewStatus,
     PersistedCandidateProfile,
 )
-from orchestrator.conversation_flow import (
-    answer_opening,
-    begin_text_conversation,
-    enter_closing_if_finished,
+from orchestrator.conversation_flow import begin_text_conversation
+from services.interview_answer_service import (
+    InterviewAnswerSubmissionError,
+    InterviewAnswerSubmissionService,
 )
 
 
@@ -45,6 +48,7 @@ class InterviewStartRequest(BaseModel):
 
 
 class InterviewAnswerRequest(BaseModel):
+    turn_id: str = Field(min_length=1, max_length=200)
     answer: str = Field(min_length=1, max_length=12000)
 
 
@@ -52,6 +56,7 @@ class InterviewSessionResponse(BaseModel):
     session_id: str
     started_at: datetime | None = None
     state: InterviewSessionState
+    answer_replayed: bool = False
 
 
 class InterviewPreparationResponse(BaseModel):
@@ -179,41 +184,33 @@ async def start_interview(
 async def submit_answer(
     session_id: str,
     request: InterviewAnswerRequest,
-    repository: SQLiteInterviewRepository = Depends(get_interview_repository),
-    orchestrator: InterviewOrchestrator = Depends(get_interview_orchestrator),
+    service: InterviewAnswerSubmissionService = Depends(
+        get_interview_answer_submission_service
+    ),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
     total_started_at = time.perf_counter()
-    with timed_stage(
-        logger,
-        "answer.load_session",
-        stage="session_state_load",
-        session_id=session_id,
-    ):
-        session = _load_session(repository, session_id, current_user.uid)
-        state = _state_from_session(session)
-    with timed_stage(
-        logger,
-        "answer.orchestration",
-        stage="evaluation_and_next_question",
-        session_id=session_id,
-    ):
-        updated_state = answer_opening(state, request.answer)
-        if updated_state is None:
-            updated_state = await orchestrator.submit_answer(state, request.answer)
-            updated_state = enter_closing_if_finished(updated_state)
-    with timed_stage(
-        logger,
-        "answer.persistence",
-        stage="session_state_save",
-        session_id=session_id,
-    ):
-        _save_state(repository, session_id, updated_state, current_user.uid)
-
-        if updated_state.current_turn is not None:
-            repository.save_turn(
-                session_id, updated_state.current_turn, user_id=current_user.uid
-            )
+    try:
+        result = await service.submit_answer(
+            session_id,
+            current_user.uid,
+            request.turn_id,
+            request.answer,
+            expected_mode=InterviewMode.TEXT,
+        )
+    except InterviewAnswerSubmissionError as error:
+        status_code = 404 if error.code == "session_not_found" else 409
+        return JSONResponse(
+            status_code=status_code,
+            content={
+                "error": {
+                    "code": error.code,
+                    "message": str(error),
+                    "retryable": error.code == "answer_submission_in_progress",
+                    "issues": [],
+                }
+            },
+        )
 
     log_duration(
         logger,
@@ -224,8 +221,9 @@ async def submit_answer(
 
     return InterviewSessionResponse(
         session_id=session_id,
-        started_at=_utc_timestamp(session.started_at),
-        state=updated_state,
+        started_at=_utc_timestamp(result.started_at),
+        state=result.state,
+        answer_replayed=result.replayed,
     )
 
 

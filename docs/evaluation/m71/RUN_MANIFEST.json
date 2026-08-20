@@ -1,0 +1,72 @@
+{
+  "milestone": "M7.1",
+  "status": "PARTIAL",
+  "created_at": "2026-08-19",
+  "git": {
+    "commit_at_execution": "3a38b4818a0bb4d2c9e51efd013c295a4f039894",
+    "dirty": true
+  },
+  "m7_immutable_evidence": {
+    "integrity": "PASS",
+    "canonical_benchmark_hash": "3dac48984cd57ef65621628e631c0da68cfd1010d84acd38f890a28a124e0c4e",
+    "canonical_development_hash": "58796ae7d3971cae71885cd47b22ca02c01f39343a342adfc73958c06ffd1ab7",
+    "canonical_holdout_hash": "074e7e8763e8677059a66ee0550c653e580548f4934cbb70bd4b99b43d3ee2f8",
+    "canonical_holdout_lock_hash": "b44bc0394a880c2324745e063ae3a1d5bc7b04b1129a434238e712b9be783cd3",
+    "reference_file_sha256": "61981a29a4fbc1a569d2c5fc07fc6828948671265047093aa0927f1176c03e1e",
+    "development_file_sha256": "e66d9a8bbd53136300b1d12ca137790df313379c111ad2cb208c4e6057e7078f",
+    "holdout_file_sha256": "43d323c9d4cb7b7dd6351e87f5777f7f69e847ceaec6839f8a39abff27e71734",
+    "holdout_lock_file_sha256": "481555746ecb9fd29b4b0fca654d9f369a71cfdf2e5bfca79dcc628af7dc23a2",
+    "m7_metrics_file_sha256": "2b91d837b6fe7cb7704a34f468dd92629d6640bc4a956c35c9436b2a464fba80",
+    "m7_manifest_file_sha256": "1f4b16c4aa8553848b4dca82d5ca54f33292657bddedcc61b95e1a64fb673597"
+  },
+  "production_answer_evaluator": {
+    "activation": "NOT_ACTIVATED",
+    "agent_sha256": "aca9e25df2a06bd84dfd482d057f8ed64fd9f37c5a615541aad37226cdab4254",
+    "prompt_sha256": "7e5d97056a45492ddac54452275f1aae2e70ff3743c25df0acce0967a8fce91f",
+    "schema_sha256": "ac2df3625228942a372008c65ee96e279959e094367cf006cf28d4c2aabe86f6",
+    "matches_m7_frozen_hashes": true
+  },
+  "frozen_inputs": {
+    "candidate_catalog_file_sha256": "11331a85bb54c10e6ddf448bc145a54f08b5a80a42cb0b25ddb521681d3261a6",
+    "selection_rule_file_sha256": "00330a35e4a231361a3539ae1bb5ea90866bc538cc4125d8d0745412cd858b79",
+    "a2_candidate_config_hash": "c6b44ac2e39753c8737836c60ac274ef3a6fc563560c3c2cf83bf7cfb8ebdc89",
+    "a2_prompt_hash": "cf69a5632e9fce5ce257984acfd3fe8d1b84b73dd09664ac9e02243c6ce26877",
+    "evaluation_only_snapshot_file_sha256": "c7b1cfda6bfef049cfdbcf1719615e9f74b8e5bc9d357b05ef5e4a34bfde7c68"
+  },
+  "dry_run": {
+    "command": "python -m evaluation.m71.run_calibration --dry-run",
+    "paid_calls": 0,
+    "artifact_sha256": "4d4b214ac8bc0fabf628b0a8b89f7f0733b8964b492b03e5739304d044ba6790"
+  },
+  "development_run": {
+    "run_id": "20260819T063135Z-development-a2",
+    "config_id": "a2-shared-critical-anchors",
+    "primary_text_calls": 48,
+    "primary_voice_calls": 48,
+    "feedback_bundles": 96,
+    "repeatability_paid_calls": 40,
+    "reference_re_evaluation_calls": 0,
+    "raw_sha256": {
+      "execution_summary.json": "60df9bfe5c905889fc2bbb810f0b53333a7caad90022a11ae0960526e60efe70",
+      "metrics.json": "aedb50f33e151ca80f5399281abb77019de61e6a393ad33284d27d24c62e7377",
+      "provider_usage.jsonl": "24f2a4f84ee091c0cc74578ec3f6ad40d7155bfb1903034260d0eb86b1b9cd6a",
+      "repeatability.jsonl": "cc43a08186c8c96f3135c299cc9442337d6848923caaf6b79ac78d154335d567",
+      "text_evaluator.jsonl": "5b48e9d171766e23d81d51b2bb3df82831efbc1072050feb82c30b325b33c901",
+      "text_judged.jsonl": "8a052c04ef1a9032011df7701d713cc7a20e7a5c666ed87cd18870d6b981e4c5",
+      "voice_evaluator.jsonl": "165e9124bb4fbe5df8b50914bdd05015d828c8a1a1cfd5ea61f541a1b9cec8d3",
+      "voice_judged.jsonl": "88fcf5458d1d2eec108a4486fccffd873a25deef674e8197b30abde5ebf8cc59"
+    }
+  },
+  "selection": {
+    "status": "NO_SAFE_WINNER",
+    "winner": null,
+    "m71_frozen_config_hash": null
+  },
+  "holdout": {
+    "status": "NOT RUN — NO SAFE DEVELOPMENT WINNER",
+    "paid_calls": 0,
+    "post_holdout_tuning": false
+  },
+  "human_sanity_check": "NOT COMPLETED",
+  "production_activation_ready": false
+}

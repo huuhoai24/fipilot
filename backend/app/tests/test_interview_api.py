@@ -73,6 +73,7 @@ class MockInterviewOrchestrator:
     def __init__(self):
         self.start_calls = 0
         self.plan_calls = 0
+        self.submit_calls = 0
 
     async def create_plan(self, candidate_profile, interview_config):
         self.plan_calls += 1
@@ -118,6 +119,7 @@ class MockInterviewOrchestrator:
         )
 
     async def submit_answer(self, session_state, answer):
+        self.submit_calls += 1
         evaluated_turn = session_state.current_turn.model_copy(
             update={
                 "answer": answer,
@@ -313,13 +315,20 @@ class InterviewApiTests(unittest.TestCase):
             (second, "I optimized the second pipeline differently."),
         ):
             session_id = response.json()["session_id"]
+            opening_turn_id = response.json()["state"]["current_turn"]["turn_id"]
             opening = self.client.post(
                 f"/api/v2/interview/{session_id}/answer",
-                json={"answer": "I build computer vision systems."},
+                json={
+                    "turn_id": opening_turn_id,
+                    "answer": "I build computer vision systems.",
+                },
             )
             technical = self.client.post(
                 f"/api/v2/interview/{session_id}/answer",
-                json={"answer": answer},
+                json={
+                    "turn_id": opening.json()["state"]["current_turn"]["turn_id"],
+                    "answer": answer,
+                },
             )
             self.assertEqual(opening.status_code, 200)
             self.assertEqual(technical.status_code, 200)
@@ -337,10 +346,14 @@ class InterviewApiTests(unittest.TestCase):
             },
         )
         session_id = start_response.json()["session_id"]
+        opening_turn_id = start_response.json()["state"]["current_turn"]["turn_id"]
 
         opening_response = self.client.post(
             f"/api/v2/interview/{session_id}/answer",
-            json={"answer": "I build and optimize computer vision systems."},
+            json={
+                "turn_id": opening_turn_id,
+                "answer": "I build and optimize computer vision systems.",
+            },
         )
 
         self.assertEqual(opening_response.status_code, 200)
@@ -360,7 +373,10 @@ class InterviewApiTests(unittest.TestCase):
         with self.assertLogs("gateway.api.interview", level="INFO") as logs:
             final_response = self.client.post(
                 f"/api/v2/interview/{session_id}/answer",
-                json={"answer": "I profile bottlenecks and export to TensorRT."},
+                json={
+                    "turn_id": opening_body["state"]["current_turn"]["turn_id"],
+                    "answer": "I profile bottlenecks and export to TensorRT.",
+                },
             )
 
         self.assertEqual(final_response.status_code, 200)
@@ -377,15 +393,47 @@ class InterviewApiTests(unittest.TestCase):
             repository.get_session(session_id, user_id="user-1").status,
             "completed",
         )
-        events = {record.event for record in logs.records}
-        self.assertTrue(
-            {
-                "answer.load_session",
-                "answer.orchestration",
-                "answer.persistence",
-                "answer.total",
-            }.issubset(events)
+        self.assertIn("answer.total", {record.event for record in logs.records})
+
+    def test_exact_answer_replay_returns_current_state_without_second_evaluation(self):
+        started = self.client.post(
+            "/api/v2/interview/start",
+            json={
+                "candidate_id": self.candidate.candidate_id,
+                "interview_config": {
+                    "language": "en",
+                    "experience_level": "middle",
+                    "question_count": 1,
+                },
+            },
         )
+        session_id = started.json()["session_id"]
+        opening_turn_id = started.json()["state"]["current_turn"]["turn_id"]
+        opening = self.client.post(
+            f"/api/v2/interview/{session_id}/answer",
+            json={"turn_id": opening_turn_id, "answer": "I build CV systems."},
+        )
+        technical_turn_id = opening.json()["state"]["current_turn"]["turn_id"]
+        payload = {
+            "turn_id": technical_turn_id,
+            "answer": "I profile bottlenecks and validate the optimized model.",
+        }
+
+        first = self.client.post(
+            f"/api/v2/interview/{session_id}/answer", json=payload
+        )
+        replay = self.client.post(
+            f"/api/v2/interview/{session_id}/answer", json=payload
+        )
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(replay.status_code, 200)
+        self.assertFalse(first.json()["answer_replayed"])
+        self.assertTrue(replay.json()["answer_replayed"])
+        self.assertEqual(replay.json()["state"], first.json()["state"])
+        self.assertEqual(self.orchestrator.submit_calls, 1)
+        repository = SQLiteInterviewRepository(self.db)
+        self.assertEqual(len(repository.get_turns(session_id, user_id="user-1")), 2)
 
     def test_get_interview_session(self):
         start_response = self.client.post(

@@ -212,6 +212,7 @@ export interface V2InterviewSessionResponse {
   session_id: string
   started_at?: string | null
   state: V2InterviewSessionState
+  answer_replayed?: boolean
 }
 
 export interface V2InterviewPreparationResponse {

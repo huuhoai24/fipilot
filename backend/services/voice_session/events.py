@@ -44,6 +44,8 @@ class ClientVoiceEvent(BaseModel):
         if self.type == "confirm_answer":
             if self.text is None or not self.text.strip():
                 raise ValueError("confirm_answer requires non-empty text")
+            if self.turn_id is None:
+                raise ValueError("confirm_answer requires turn_id")
         elif self.text is not None:
             raise ValueError("text is only valid for confirm_answer")
         if self.type == "speak_interviewer":
@@ -53,7 +55,9 @@ class ClientVoiceEvent(BaseModel):
                 raise ValueError(
                     "speak_interviewer requires exactly one dialogue selector"
                 )
-        elif self.turn_id is not None or self.message_kind is not None:
+        elif self.type != "confirm_answer" and (
+            self.turn_id is not None or self.message_kind is not None
+        ):
             raise ValueError(
                 "dialogue selectors are only valid for speak_interviewer"
             )

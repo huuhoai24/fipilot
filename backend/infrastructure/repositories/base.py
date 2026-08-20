@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -39,6 +39,17 @@ class InterviewSessionRecord(BaseModel):
     started_at: datetime | None = None
     completed_at: datetime | None = None
     report_id: str | None = None
+
+
+class AnswerSubmissionRecord(BaseModel):
+    turn_id: str
+    answer_hash: str
+    status: Literal["processing", "completed"]
+
+
+class AnswerSubmissionClaim(BaseModel):
+    outcome: Literal["claimed", "replay", "in_progress", "conflict"]
+    record: AnswerSubmissionRecord
 
 
 class CandidateRepository(ABC):
@@ -151,6 +162,52 @@ class InterviewSessionRepository(ABC):
         status: str | None = None,
         user_id: str | None = None,
     ) -> InterviewSessionRecord | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionRecord | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def claim_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionClaim:
+        raise NotImplementedError
+
+    @abstractmethod
+    def complete_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        state: str,
+        state_payload: dict[str, Any],
+        status: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewSessionRecord | None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def abandon_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod

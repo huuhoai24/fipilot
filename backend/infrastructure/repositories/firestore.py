@@ -1,10 +1,17 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import datetime, timezone
 from typing import Any
 
-from infrastructure.repositories.base import CandidateRecord, InterviewRepository, InterviewSessionRecord
+from infrastructure.repositories.base import (
+    AnswerSubmissionClaim,
+    AnswerSubmissionRecord,
+    CandidateRecord,
+    InterviewRepository,
+    InterviewSessionRecord,
+)
 from shared.schemas import (
     AnswerEvaluation,
     CandidateProfile,
@@ -361,6 +368,149 @@ class FirestoreRepository(InterviewRepository):
         reference.set(payload, merge=True)
         return self.get_session(session_id, user_id=owner_id)
 
+    def get_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionRecord | None:
+        owner_id = self._require_user_id(user_id)
+        if self.get_session(session_id, user_id=owner_id) is None:
+            return None
+        snapshot = self._answer_submission_document(
+            owner_id, session_id, turn_id
+        ).get()
+        if not snapshot.exists:
+            return None
+        data = snapshot.to_dict() or {}
+        return AnswerSubmissionRecord(
+            turn_id=str(data.get("turn_id") or turn_id),
+            answer_hash=str(data.get("answer_hash") or ""),
+            status=str(data.get("status") or "processing"),
+        )
+
+    def claim_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> AnswerSubmissionClaim:
+        owner_id = self._require_user_id(user_id)
+        if self.get_session(session_id, user_id=owner_id) is None:
+            raise ValueError(f"Session {session_id} does not exist for this user")
+        reference = self._answer_submission_document(owner_id, session_id, turn_id)
+        try:
+            reference.create(
+                {
+                    "turn_id": turn_id,
+                    "answer_hash": answer_hash,
+                    "status": "processing",
+                    "created_at": self._now(),
+                    "updated_at": self._now(),
+                }
+            )
+            return AnswerSubmissionClaim(
+                outcome="claimed",
+                record=AnswerSubmissionRecord(
+                    turn_id=turn_id,
+                    answer_hash=answer_hash,
+                    status="processing",
+                ),
+            )
+        except Exception:
+            snapshot = reference.get()
+            if not snapshot.exists:
+                raise
+        data = snapshot.to_dict() or {}
+        record = AnswerSubmissionRecord(
+            turn_id=str(data.get("turn_id") or turn_id),
+            answer_hash=str(data.get("answer_hash") or ""),
+            status=str(data.get("status") or "processing"),
+        )
+        if record.answer_hash != answer_hash:
+            outcome = "conflict"
+        elif record.status == "completed":
+            outcome = "replay"
+        else:
+            outcome = "in_progress"
+        return AnswerSubmissionClaim(outcome=outcome, record=record)
+
+    def complete_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        state: str,
+        state_payload: dict[str, Any],
+        status: str,
+        *,
+        user_id: str | None = None,
+    ) -> InterviewSessionRecord | None:
+        owner_id = self._require_user_id(user_id)
+        session_reference = self._interview_collection(owner_id).document(session_id)
+        session_snapshot = session_reference.get()
+        if not session_snapshot.exists:
+            return None
+        submission_reference = self._answer_submission_document(
+            owner_id, session_id, turn_id
+        )
+        submission_snapshot = submission_reference.get()
+        submission_data = (
+            submission_snapshot.to_dict() if submission_snapshot.exists else {}
+        ) or {}
+        if (
+            submission_data.get("answer_hash") != answer_hash
+            or submission_data.get("status") != "processing"
+        ):
+            raise ValueError("Answer submission claim is no longer active")
+        normalized_status = self._normalize_status(status)
+        session_payload: dict[str, Any] = {
+            "state": state,
+            "state_payload": state_payload,
+            "status": normalized_status,
+            "updated_at": self._now(),
+        }
+        config_payload = state_payload.get("interview_config")
+        if isinstance(config_payload, dict) and config_payload.get("mode") in {
+            "text",
+            "voice",
+        }:
+            session_payload["mode"] = config_payload["mode"]
+        if normalized_status in {
+            InterviewStatus.COMPLETED.value,
+            InterviewStatus.REPORT_GENERATED.value,
+        }:
+            session_payload["completed_at"] = (
+                (session_snapshot.to_dict() or {}).get("completed_at") or self._now()
+            )
+        batch = self.client.batch()
+        batch.set(session_reference, session_payload, merge=True)
+        batch.set(
+            submission_reference,
+            {"status": "completed", "updated_at": self._now()},
+            merge=True,
+        )
+        batch.commit()
+        return self.get_session(session_id, user_id=owner_id)
+
+    def abandon_answer_submission(
+        self,
+        session_id: str,
+        turn_id: str,
+        answer_hash: str,
+        *,
+        user_id: str | None = None,
+    ) -> None:
+        owner_id = self._require_user_id(user_id)
+        reference = self._answer_submission_document(owner_id, session_id, turn_id)
+        snapshot = reference.get()
+        data = snapshot.to_dict() if snapshot.exists else None
+        if data and data.get("answer_hash") == answer_hash and data.get("status") == "processing":
+            reference.delete()
+
     def update_session_status(
         self,
         session_id: str,
@@ -541,6 +691,17 @@ class FirestoreRepository(InterviewRepository):
 
     def _interview_collection(self, user_id: str) -> Any:
         return self._user_document(user_id).collection(self.interviews_collection)
+
+    def _answer_submission_document(
+        self, user_id: str, session_id: str, turn_id: str
+    ) -> Any:
+        document_id = hashlib.sha256(turn_id.encode("utf-8")).hexdigest()
+        return (
+            self._interview_collection(user_id)
+            .document(session_id)
+            .collection("answer_submissions")
+            .document(document_id)
+        )
 
     def _blueprint_collection(self, user_id: str) -> Any:
         return self._user_document(user_id).collection("interview_blueprints")

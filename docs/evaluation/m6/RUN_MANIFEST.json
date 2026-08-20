@@ -1,0 +1,47 @@
+{
+  "dataset_manifest": {
+    "development_count": 48,
+    "development_hash": "821dafe730d0b3e1566f07e579e44b3fdf4449f3c8efe52ac4f15ac76dceb9b7",
+    "holdout_count": 32,
+    "holdout_hash": "25314ff61371591ede5bcc9ef63933c36824c86e682ba854eec4ebcf38730c71",
+    "scenario_count": 80,
+    "schema_version": "m6.dataset.v1",
+    "seed": 20260819
+  },
+  "frozen_configuration": {
+    "compatible_level_strategy": "same_plus_unspecified",
+    "configuration_hash": "6f68de3e4b72cdd27acbbf9a2c51d45c90a68010201dfa61266fd65c1696773b",
+    "development_hash": "821dafe730d0b3e1566f07e579e44b3fdf4449f3c8efe52ac4f15ac76dceb9b7",
+    "holdout_hash": "25314ff61371591ede5bcc9ef63933c36824c86e682ba854eec4ebcf38730c71",
+    "hybrid_top_k": 8,
+    "judge_model": "gemini-2.5-pro",
+    "judge_prompt_hash": "e00be7cc4733cb5e6b7d6e1d432402c99f306d399dcaa6c9014db08a7244fad4",
+    "judge_temperature": 0.0,
+    "judge_thinking_budget": 128,
+    "lexical_top_k": 8,
+    "lexical_weight": 0.75,
+    "question_model": "gemini-2.5-flash",
+    "question_prompt_hash": "06e041187a7c8f5183565aa25795ecb248fa91306786b5adf0da6abd997802c5",
+    "question_temperature": 0.2,
+    "question_thinking_budget": 0,
+    "random_seed": 20260819,
+    "rrf_k": 60,
+    "rubric_version": "m6.question-quality.v1",
+    "schema_version": "m6.freeze.v1",
+    "vector_top_k": 8,
+    "vector_weight": 1.0
+  },
+  "human_validation": "NOT COMPLETED",
+  "production_changed": false,
+  "provider_compatibility_incident": "3 non-billable Pro 400s; resumed after locking minimum supported thinking budget 128",
+  "raw_files": {
+    "judge_outputs.jsonl": "evaluation/m6/raw/m6-holdout-v1/judge_outputs.jsonl",
+    "pairwise.jsonl": "evaluation/m6/raw/m6-holdout-v1/pairwise.jsonl",
+    "questions.jsonl": "evaluation/m6/raw/m6-holdout-v1/questions.jsonl",
+    "repeatability.jsonl": "evaluation/m6/raw/m6-holdout-v1/repeatability.jsonl",
+    "retrieval_contexts.jsonl": "evaluation/m6/raw/m6-holdout-v1/retrieval_contexts.jsonl",
+    "scenarios.jsonl": "evaluation/m6/raw/m6-holdout-v1/scenarios.jsonl"
+  },
+  "run_id": "m6-holdout-v1",
+  "schema_version": "m6.run.v1"
+}

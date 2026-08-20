@@ -17,6 +17,7 @@ from app.schemas import CandidateProfile, CurrentUser
 from database import Base, get_db
 from models import User
 from infrastructure.llm.vertex_gemini import LLMTimeoutError
+from infrastructure.documents import DocumentProcessingError
 from services.profile_scanner.exceptions import NonResumeDocumentError
 from services.profile_scanner.cache import ProcessedResumeCache
 
@@ -223,6 +224,35 @@ class ResumeUploadV2Tests(unittest.TestCase):
             self.process_cache.key_for("user-1", "content-hash", "schema-v2"),
         )
         self.assertNotIn("user-1", owner_key)
+
+    def test_structured_document_validation_error_is_returned(self):
+        class RejectingDocumentService:
+            def extract_document(self, *args, **kwargs):
+                raise DocumentProcessingError(
+                    "file_type_mismatch",
+                    "The file content does not match its filename.",
+                    status_code=415,
+                )
+
+        main.app.dependency_overrides[get_document_service] = lambda: RejectingDocumentService()
+
+        response = self.client.post(
+            "/api/v2/resume/upload",
+            files={"file": ("resume.pdf", b"PK mismatched", "application/pdf")},
+        )
+
+        self.assertEqual(response.status_code, 415)
+        self.assertEqual(response.json()["error"]["code"], "file_type_mismatch")
+
+    def test_upload_response_exposes_non_silent_extraction_status(self):
+        response = self.client.post(
+            "/api/v2/resume/upload",
+            files={"file": ("resume.pdf", b"%PDF mocked", "application/pdf")},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["extraction"]["status"], "complete")
+        self.assertFalse(response.json()["extraction"]["is_partial"])
 
 
 if __name__ == "__main__":

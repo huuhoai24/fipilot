@@ -376,6 +376,7 @@ describe('TextInterviewPage interview mode', () => {
     await waitFor(() => {
       expect(api.submitV2InterviewAnswer).toHaveBeenCalledWith(
         'session-42',
+        'turn-2',
         'I used queue-depth alarms and a circuit breaker.',
       )
     })
