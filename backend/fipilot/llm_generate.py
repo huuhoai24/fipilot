@@ -3,10 +3,14 @@ import json
 import os
 import random
 import re
+from datetime import datetime
+from html import escape
 from pathlib import Path
 
+import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
 from openai import OpenAI
+from pydantic import BaseModel, Field
 
 from fipilot.knowledge_index import search_domain
 
@@ -45,11 +49,44 @@ resume = {
 
 TOP_K_DOMAIN_FILES = 3
 MAX_FOLLOW_UPS = 2
-PASS_THRESHOLD = 6
+INTERVIEW_GREETING = (
+    "Xin chào, rất vui được gặp bạn. Rất hoan nghênh bạn đã tham gia buổi phỏng vấn. "
+    "Tôi là người phỏng vấn AI của bạn ngày hôm nay. Chúng ta sẽ lần lượt trao đổi "
+    "qua từng câu hỏi một."
+)
+SPEECH_VOICE = "en-US-Harper:MAI-Voice-2-Flash"
+
+
+class QuestionRubric(BaseModel):
+    evaluation_goal: str
+    critical_points: list[str] = Field(min_length=1, max_length=5)
+    met: str
+    partially_met: str
+    not_met: str
+
+
+class InterviewQuestion(BaseModel):
+    company: str
+    topic: str
+    question: str
+    rubric: QuestionRubric
+
+
+class AnswerEvaluation(BaseModel):
+    score: int = Field(ge=0, le=3)
+    evidence_quote: str
+    justification: str
+    should_follow_up: bool
+    next_direction: str
+    matched_points: list[str] = Field(default_factory=list)
+    missing_points: list[str] = Field(default_factory=list)
+    technical_errors: list[str] = Field(default_factory=list)
+
 
 QUESTION_SYSTEM_PROMPT = """
 You are a professional technical interviewer.
-Based ONLY on the candidate's project and the related knowledge topics provided, generate interview questions.
+Based ONLY on the candidate's project and the related knowledge topics provided,
+generate one interview question and the private rubric used to evaluate that question.
 Rules:
 - Write all questions in Vietnamese.
 - Keep each question SHORT: 1-2 sentences maximum. No long preambles.
@@ -59,42 +96,106 @@ Rules:
   at a reasonable technical depth. Do NOT ask about topics unrelated to the project.
 - Do NOT fabricate details that are not in the project description.
 - Use the candidate's real company names, positions, and project descriptions.
-Return a JSON array of objects, each with:
+- Keep the spoken question natural. Do NOT reveal the rubric, expected answer, or a list of
+  technical keywords in the question.
+- The rubric must evaluate only the generated question. Its critical_points must be concrete,
+  observable technical evidence rather than keyword matches.
+Return one JSON object with:
   "company": the company name of the project,
   "topic": the knowledge topic this question targets,
-  "question": the interview question itself (in Vietnamese).
+  "question": the interview question itself (in Vietnamese),
+  "rubric": {
+    "evaluation_goal": the exact capability this question evaluates (in Vietnamese),
+    "critical_points": 2-5 concrete points to look for in the answer,
+    "met": evidence required for score 3,
+    "partially_met": evidence required for score 2,
+    "not_met": evidence required for score 1
+  }
 """
 
-JUDGE_SYSTEM_PROMPT = """
-You are an experienced technical interviewer evaluating a candidate's answer.
-Use this rubric for the candidate's level ({level}) — it defines exactly what depth
-and which evaluation dimensions to judge:
+ANSWER_EVALUATION_SYSTEM_PROMPT = """
+You are a strict technical interview answer evaluator. Evaluate the candidate's answer
+only against the saved rubric supplied inside the question. This is a provisional
+per-turn evaluation used to decide whether a follow-up is useful. The final report is
+produced separately after the interview.
 
-{rubric}
+Scoring rules:
+- 3 / MET: the answer satisfies the saved `met` anchor and provides evidence for the
+  important critical points.
+- 2 / PARTIALLY_MET: the answer satisfies the saved `partially_met` anchor but is
+  missing concrete depth or one or more important critical points.
+- 1 / NOT_MET: the answer satisfies the saved `not_met` anchor, is technically wrong,
+  evasive, or fails to answer the question.
+- 0 / NOT_ASSESSED: the answer is empty, unusable, or contains no relevant statement
+  that can be evaluated. Do not use 0 merely because the answer is weak.
 
-Evaluate the answer using these criteria:
-1. Technical correctness: is the answer technically accurate? Does it show real understanding, or is it vague/fabricated?
-2. Depth vs rubric: does the answer meet the depth and evaluation focus defined by the rubric above for level {level}?
-   Award full depth points if the answer meets that bar; do NOT require higher-level analysis.
-3. Grounding: does the answer directly address the question and the candidate's own project claims, without rambling?
+Evidence rules:
+- For scores 1-3, `evidence_quote` must be one exact, verbatim substring copied from
+  the candidate's answer. Never paraphrase it.
+- For score 0, `evidence_quote` must be empty.
+- Judge meaning, not keyword overlap. Accept technically valid alternatives allowed by
+  the question even when they use different terminology.
 
-Score 0-10, where:
-- 0-3: wrong, fabricated, or completely off-topic
-- 4-5: vague, shallow, partially correct
-- 6-7: correct and reasonably deep for the level
-- 8-10: excellent, precise, clearly above the level bar
+Follow-up rules:
+- Set `should_follow_up` to true only when one focused follow-up can collect missing
+  evidence from this rubric.
+- Set it to false when the answer already meets the rubric or when no useful focused
+  probe remains.
+- When true, `next_direction` must describe exactly one missing detail in Vietnamese.
+- When false, `next_direction` must be an empty string.
 
-Be strict but fair. Do not inflate scores.
 Return a JSON object with:
-  "score": integer 0-10,
-  "strengths": string in Vietnamese (1-2 sentences),
-  "weaknesses": string in Vietnamese (1-2 sentences),
-  "next_direction": string in Vietnamese, what to ask next (deeper on same topic, or move to another project).
+  "score": integer 0-3,
+  "evidence_quote": exact quote from the candidate answer, or empty for score 0,
+  "justification": concise explanation in Vietnamese tied to the saved rubric,
+  "should_follow_up": boolean,
+  "next_direction": one missing detail in Vietnamese, or empty when no follow-up,
+  "matched_points": array containing critical points supported by the answer,
+  "missing_points": array containing critical points not yet supported by the answer,
+  "technical_errors": array of concrete technical errors found in the answer.
 """
 
 
 def _normalize(name: str) -> str:
     return "".join(ch.lower() for ch in name if ch.isalnum())
+
+
+def speak_text(text: str, rate: str | None = None) -> None:
+    speech_key = os.getenv("AZURE_SPEECH_KEY")
+    speech_region = os.getenv("AZURE_SPEECH_REGION")
+    if not speech_key or not speech_region:
+        raise RuntimeError(
+            "Thiếu AZURE_SPEECH_KEY hoặc AZURE_SPEECH_REGION trong biến môi trường."
+        )
+
+    speech_config = speechsdk.SpeechConfig(
+        subscription=speech_key, region=speech_region
+    )
+    audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
+    synthesizer = speechsdk.SpeechSynthesizer(
+        speech_config=speech_config, audio_config=audio_config
+    )
+    spoken_text = escape(text)
+    if rate:
+        spoken_text = f"<prosody rate='{rate}'>{spoken_text}</prosody>"
+
+    ssml = (
+        "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' "
+        "xmlns:mstts='http://www.w3.org/2001/mstts' "
+        "xml:lang='vi-VN'>"
+        f"<voice xml:lang='vi-VN' name='{SPEECH_VOICE}'>"
+        f"{spoken_text}"
+        "</voice>"
+        "</speak>"
+    )
+    result = synthesizer.speak_ssml_async(ssml).get()
+
+    if result.reason != speechsdk.ResultReason.SynthesizingAudioCompleted:
+        cancellation = result.cancellation_details
+        raise RuntimeError(
+            f"Azure Speech không thể phát nội dung: {cancellation.reason}. "
+            f"{cancellation.error_details or ''}".strip()
+        )
 
 
 def load_level_file(role: str, level: str) -> str:
@@ -118,18 +219,16 @@ def load_level_file(role: str, level: str) -> str:
     )
 
 
-def extract_json_array(text: str):
-    match = re.search(r"\[.*\]", text, re.DOTALL)
-    if not match:
-        raise ValueError(f"No JSON array found in response: {text}")
-    return json.loads(match.group(0))
-
-
 def extract_json_object(text: str):
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
         raise ValueError(f"No JSON object found in response: {text}")
     return json.loads(match.group(0))
+
+
+def _parse_interview_question(text: str) -> dict:
+    question = InterviewQuestion.model_validate(extract_json_object(text))
+    return question.model_dump()
 
 
 def _format_topics(domain_hits: list) -> str:
@@ -147,7 +246,7 @@ def generate_question(
         f"Candidate project:\n{json.dumps(project, ensure_ascii=False, indent=2)}\n\n"
         f"Related knowledge topics (from the role's knowledge base):\n{related_topics}\n\n"
         f"Generate exactly 1 interview question closely based on this project. "
-        f"Return a JSON array of objects."
+        f"Generate and return its evaluation rubric in the same JSON object."
     )
     response = client.responses.create(
         model="gpt41mini",
@@ -156,7 +255,7 @@ def generate_question(
             {"role": "user", "content": user_prompt},
         ],
     )
-    return extract_json_array(response.output_text)[0]
+    return _parse_interview_question(response.output_text)
 
 
 def generate_followup(
@@ -178,7 +277,8 @@ def generate_followup(
         f"Generate exactly 1 follow-up interview question in Vietnamese, SHORT (1-2 sentences), "
         f"more specific and guided than the previous one (e.g. ask for concrete pipeline steps, "
         f"mechanisms, or a method comparison). Do NOT repeat the previous question. "
-        f"Return a JSON array of objects."
+        f"Generate a NEW rubric that evaluates only this follow-up question. Do not copy the "
+        f"entire rubric of the previous question. Return the question and rubric in one JSON object."
     )
     response = client.responses.create(
         model="gpt41mini",
@@ -187,79 +287,150 @@ def generate_followup(
             {"role": "user", "content": user_prompt},
         ],
     )
-    return extract_json_array(response.output_text)[0]
+    return _parse_interview_question(response.output_text)
 
 
-def evaluate_answer(
-    client: OpenAI, question: dict, answer: str, project: dict, level: str, rubric: str
-) -> dict:
+def evaluate_answer(client: OpenAI, question: dict, answer: str) -> dict:
     user_prompt = (
         f"Question asked:\n{json.dumps(question, ensure_ascii=False, indent=2)}\n\n"
-        f"Candidate's project (for grounding context):\n{json.dumps(project, ensure_ascii=False, indent=2)}\n\n"
         f"Candidate's answer:\n{answer}\n\n"
-        f"Evaluate this answer and return the JSON object."
+        "Evaluate this answer against the saved question rubric and return the JSON object."
     )
     response = client.responses.create(
         model="gpt41mini",
         input=[
-            {
-                "role": "system",
-                "content": JUDGE_SYSTEM_PROMPT.format(level=level, rubric=rubric),
-            },
+            {"role": "system", "content": ANSWER_EVALUATION_SYSTEM_PROMPT},
             {"role": "user", "content": user_prompt},
         ],
     )
-    verdict = extract_json_object(response.output_text)
-    verdict["pass"] = verdict["score"] >= PASS_THRESHOLD
-    return verdict
+    evaluation = AnswerEvaluation.model_validate(
+        extract_json_object(response.output_text)
+    )
+    result = evaluation.model_dump()
+
+    evidence_quote = result["evidence_quote"].strip()
+    if result["score"] > 0 and (
+        not evidence_quote or evidence_quote not in answer
+    ):
+        result.update(
+            score=0,
+            status="NOT_ASSESSED",
+            evidence_quote="",
+            justification="Không tìm thấy bằng chứng nguyên văn hợp lệ trong câu trả lời.",
+            should_follow_up=False,
+            next_direction="",
+        )
+    elif result["score"] == 0:
+        result["status"] = "NOT_ASSESSED"
+        result["evidence_quote"] = ""
+    else:
+        result["status"] = {
+            1: "NOT_MET",
+            2: "PARTIALLY_MET",
+            3: "MET",
+        }[result["score"]]
+
+    if result["score"] in (0, 3):
+        result["should_follow_up"] = False
+
+    if not result["should_follow_up"]:
+        result["next_direction"] = ""
+
+    return result
 
 
 REPORT_SYSTEM_PROMPT = """
-You are a senior hiring manager writing the final interview report.
-Input: the full interview log (each question, the candidate's answer, the judge's
-score and feedback) and the level rubric. Produce the report in Vietnamese.
+You are the Reporter Agent for a technical interview. Evaluate only the supplied
+transcript against the saved rubric attached to each question. The level rubric is
+background context only. Do not create new criteria after seeing the candidate's
+answers, and do not infer knowledge that the candidate did not state.
+
+For every asked question, return one expectation object with:
+  "criterion": string in Vietnamese,
+  "raw_score": integer 0-3,
+  "status": one of "MET", "PARTIALLY_MET", "NOT_MET", "NOT_ASSESSED",
+  "rationale": string in Vietnamese,
+  "evidence": array of {"timestamp": string, "quote": string}.
+
+Rules:
+- Every score 1-3 requires at least one exact, verbatim quote from a candidate answer
+  and its matching timestamp.
+- 3: concrete mechanism, structured reasoning, project ownership, or a specific example.
+- 2: relevant evidence but incomplete, generic, or missing depth/trade-offs.
+- 1: evidence shows incorrect reasoning, evasion, or a vague answer to the criterion.
+- 0 / NOT_ASSESSED: no relevant evidence exists. Its evidence array must be empty.
+- Quotes must be copied exactly from the transcript. Never invent a quote or timestamp.
+- Use the question's saved evaluation_goal as criterion and its met, partially_met,
+  not_met, and critical_points as the scoring anchors.
+
 Return a JSON object with:
-  "solutions_summary": string. For each project that was discussed, summarize the
-    technical solutions the candidate actually implemented and HOW they implemented
-    them (mechanisms, pipeline steps, tools). Base this ONLY on the interview log;
-    do not invent details.
-  "overall_assessment": string. Assess the candidate against the level rubric:
-    demonstrated strengths and weaknesses during this interview.
-  "verdict": string "PASS" or "FAIL" for the {level} level, with a brief justification.
-  "recommendations": string. What should be probed in a next interview round, if any.
+  "expectations": array described above,
+  "solutions_summary": string based only on the transcript,
+  "overall_assessment": string based only on assessed expectations,
+  "recommendations": string for the next round.
 """
 
 
-def _build_interview_log(sessions: dict) -> str:
+def _build_interview_log(sessions: dict) -> tuple[str, dict[str, str]]:
     lines = []
+    answers_by_timestamp = {}
     for name, s in sessions.items():
         lines.append(f"### Project: {name}")
-        for i, (q, a, v) in enumerate(
-            zip(s["questions"], s["answers"], s["verdicts"]), start=1
+        for i, (q, a, timestamp) in enumerate(
+            zip(s["questions"], s["answers"], s["timestamps"]), start=1
         ):
             lines.append(
-                f"Q{i}: {q['question']}\n"
-                f"A{i}: {a}\n"
-                f"Score: {v['score']}/10 ({'PASS' if v['pass'] else 'FAIL'})\n"
-                f"Strengths: {v['strengths']}\n"
-                f"Weaknesses: {v['weaknesses']}\n"
+                f"[{timestamp}] Q{i}: {q['question']}\n"
+                f"[{timestamp}] Saved rubric: "
+                f"{json.dumps(q['rubric'], ensure_ascii=False)}\n"
+                f"[{timestamp}] Candidate: {a}\n"
             )
-    return "\n".join(lines)
+            answers_by_timestamp[timestamp] = a
+    return "\n".join(lines), answers_by_timestamp
+
+
+def _validate_report_evidence(report: dict, answers_by_timestamp: dict[str, str]) -> dict:
+    for expectation in report.get("expectations", []):
+        valid_evidence = [
+            evidence
+            for evidence in expectation.get("evidence", [])
+            if evidence.get("timestamp") in answers_by_timestamp
+            and evidence.get("quote", "").strip()
+            in answers_by_timestamp[evidence["timestamp"]]
+        ]
+        expectation["evidence"] = valid_evidence
+        if not valid_evidence:
+            expectation["raw_score"] = 0
+            expectation["status"] = "NOT_ASSESSED"
+            expectation["rationale"] = "Không có bằng chứng nguyên văn hợp lệ trong transcript."
+        else:
+            expectation["raw_score"] = max(1, min(3, int(expectation.get("raw_score", 1))))
+    assessed_scores = [
+        item["raw_score"]
+        for item in report.get("expectations", [])
+        if item["raw_score"] > 0
+    ]
+    report["normalized_score"] = round(
+        sum(assessed_scores) / len(assessed_scores) * 5 / 3, 2
+    ) if assessed_scores else 0.0
+    return report
 
 
 def generate_report(client: OpenAI, sessions: dict, level: str, rubric: str) -> dict:
-    log = _build_interview_log(sessions)
+    log, answers_by_timestamp = _build_interview_log(sessions)
     response = client.responses.create(
         model="gpt41mini",
         input=[
-            {"role": "system", "content": REPORT_SYSTEM_PROMPT.format(level=level)},
+            {"role": "system", "content": REPORT_SYSTEM_PROMPT},
             {
                 "role": "user",
-                "content": f"Level rubric:\n{rubric}\n\nInterview log:\n{log}\n\nWrite the report and return the JSON object.",
+                "content": f"Level rubric for {level}:\n{rubric}\n\nInterview transcript:\n{log}\n\nWrite the report and return the JSON object.",
             },
         ],
     )
-    return extract_json_object(response.output_text)
+    return _validate_report_evidence(
+        extract_json_object(response.output_text), answers_by_timestamp
+    )
 
 
 load_dotenv()
@@ -271,6 +442,9 @@ client = OpenAI(
 role = resume["role"]
 level = resume["level"]
 rubric = load_level_file(role, level)
+
+print(INTERVIEW_GREETING)
+speak_text(INTERVIEW_GREETING, rate="+8%")
 
 try:
     n_total = int(input("Số câu hỏi muốn phỏng vấn: "))
@@ -288,7 +462,7 @@ last_answer = None
 while asked < n_total:
     if (
         current is None
-        or (last_verdict["pass"] if last_verdict else True)
+        or (not last_verdict["should_follow_up"] if last_verdict else True)
         or follow_ups >= MAX_FOLLOW_UPS
     ):
         current = random.choice(resume["workExperience"])
@@ -299,9 +473,10 @@ while asked < n_total:
                 "domain_hits": search_domain(
                     current["jobDescription"], role, TOP_K_DOMAIN_FILES
                 ),
-                "verdicts": [],
                 "questions": [],
                 "answers": [],
+                "evaluations": [],
+                "timestamps": [],
             }
         s = sessions[current["name"]]
         last_question = generate_question(client, current, role, s["domain_hits"])
@@ -322,40 +497,41 @@ while asked < n_total:
 
     print(f"\n[{qtype}] [{current['name']}] ({last_question['topic']})")
     print(f"Q: {last_question['question']}\n")
+
+    # Freeze the generated question and its rubric before the candidate answers.
+    s = sessions[current["name"]]
+    s["questions"].append(last_question)
+    s["timestamps"].append(
+        datetime.now().astimezone().isoformat(timespec="microseconds")
+    )
+
+    speak_text(last_question["question"])
     last_answer = input("Câu trả lời của bạn: ")
 
-    last_verdict = evaluate_answer(
-        client, last_question, last_answer, current, level, rubric
-    )
-    s = sessions[current["name"]]
-    s["verdicts"].append(last_verdict)
-    s["questions"].append(last_question)
+    last_verdict = evaluate_answer(client, last_question, last_answer)
     s["answers"].append(last_answer)
+    s["evaluations"].append(last_verdict)
 
-    print(
-        f"Score: {last_verdict['score']}/10 -> {'PASS' if last_verdict['pass'] else 'FAIL'}"
-    )
-    print(f"Yếu: {last_verdict['weaknesses']}\n")
+    if last_verdict["should_follow_up"]:
+        print(f"Sẽ hỏi sâu thêm: {last_verdict['next_direction']}\n")
     asked += 1
 
 report = generate_report(client, sessions, level, rubric)
 
-print("\n=== BÁO CÁO CHI TIẾT TỪNG CÂU ===")
-for name, s in sessions.items():
-    for i, (q, a, v) in enumerate(
-        zip(s["questions"], s["answers"], s["verdicts"]), start=1
-    ):
-        print(f"[{name}] Q{i} ({q['topic']})")
-        print(f"Q: {q['question']}")
-        print(f"A: {a}")
-        print(f"Score: {v['score']}/10 -> {'PASS' if v['pass'] else 'FAIL'}")
-        print(f"Mạnh: {v['strengths']}")
-        print(f"Yếu: {v['weaknesses']}\n")
+print("\n=== BÁO CÁO EVIDENCE-ANCHORED ===")
+print(f"Điểm chuẩn hóa: {report['normalized_score']}/5")
+for expectation in report["expectations"]:
+    print(
+        f"\n[{expectation['raw_score']}/3 - {expectation['status']}] "
+        f"{expectation['criterion']}"
+    )
+    print(f"Lý do: {expectation['rationale']}")
+    for evidence in expectation["evidence"]:
+        print(f"Bằng chứng [{evidence['timestamp']}]: \"{evidence['quote']}\"")
 
-print("=== TỔNG HỢP CUỐI BUỔI ===")
+print("\n=== TỔNG HỢP CUỐI BUỔI ===")
 print("--- Giải pháp ứng viên đã làm và cách làm ---")
 print(report["solutions_summary"])
 print("\n--- Đánh giá so với level ---")
 print(report["overall_assessment"])
-print(f"\n--- Kết luận: {report['verdict']} ---")
 print(f"--- Khuyến nghị: {report['recommendations']} ---")

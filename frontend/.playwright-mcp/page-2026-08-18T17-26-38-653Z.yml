@@ -1,0 +1,75 @@
+- generic [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - banner [ref=f1e3]:
+      - generic [ref=f1e4]:
+        - link "HackerRank home" [ref=f1e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f1e6]: HackerRank
+        - navigation "Primary navigation" [ref=f1e9]:
+          - button "Prepare" [ref=f1e10] [cursor=pointer]
+          - button "Certify" [ref=f1e11] [cursor=pointer]
+          - button "Compete" [ref=f1e12] [cursor=pointer]
+      - generic [ref=f1e13]:
+        - searchbox "Search" [ref=f1e18]
+        - button "Notifications" [ref=f1e20] [cursor=pointer]
+        - button "Theme" [ref=f1e24] [cursor=pointer]
+        - button "Applications" [ref=f1e28] [cursor=pointer]
+        - button "Profile menu" [ref=f1e32] [cursor=pointer]:
+          - generic [ref=f1e33]: H
+    - main [ref=f1e36]:
+      - generic [ref=f1e38]:
+        - heading "AI Fluency" [level=1] [ref=f1e39]
+        - paragraph [ref=f1e40]: Practice with AI-powered voice interviews
+        - generic [ref=f1e41]: You have 1 mock interview available
+        - generic [ref=f1e42]:
+          - article [ref=f1e43]:
+            - generic [ref=f1e47]:
+              - heading "Focus on AI concepts and experience" [level=2] [ref=f1e48]
+              - paragraph [ref=f1e49]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+          - article [ref=f1e50]:
+            - generic [ref=f1e54]:
+              - heading "A realistic, voice-based interview" [level=2] [ref=f1e55]
+              - paragraph [ref=f1e56]: Build confidence by speaking naturally, just like you would in a real interview.
+          - article [ref=f1e57]:
+            - generic [ref=f1e61]:
+              - heading "Demonstrate AI fluency" [level=2] [ref=f1e62]
+              - paragraph [ref=f1e63]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+          - article [ref=f1e64]:
+            - generic [ref=f1e69]:
+              - heading "Improve with clear, actionable feedback" [level=2] [ref=f1e70]
+              - paragraph [ref=f1e71]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+        - button "Try for free" [active] [ref=f1e72] [cursor=pointer]
+      - complementary "AI interview preview" [ref=f1e73]:
+        - generic [ref=f1e74]:
+          - generic [ref=f1e75]: 30:00
+          - generic [ref=f1e81]:
+            - generic [ref=f1e87]:
+              - button "Mute microphone" [ref=f1e88] [cursor=pointer]
+              - button "Disable video" [ref=f1e92] [cursor=pointer]
+            - paragraph [ref=f1e102]: LISTENING...
+    - dialog [ref=f1e114]:
+      - heading "Audio & Camera Settings" [level=2] [ref=f1e115]
+      - generic [ref=f1e116]:
+        - strong [ref=f1e122]: Camera Access Required
+        - paragraph [ref=f1e123]: You must enable camera access before joining the AI interview.
+        - generic [ref=f1e124]:
+          - text: "How to allow camera access:"
+          - list [ref=f1e125]:
+            - listitem [ref=f1e126]: Click the camera or lock icon in the address bar
+            - listitem [ref=f1e127]: Set Camera to Allow
+            - listitem [ref=f1e128]: Refresh this page
+      - generic [ref=f1e129]:
+        - generic [ref=f1e130]:
+          - generic [ref=f1e131]: Microphone
+          - generic [ref=f1e135]: Access Required
+        - generic [ref=f1e138]:
+          - generic [ref=f1e139]: Sound
+          - generic [ref=f1e144]: Access Required
+        - generic [ref=f1e147]:
+          - generic [ref=f1e148]: Camera
+          - generic [ref=f1e152]: Access Required
+      - contentinfo [ref=f1e155]:
+        - button "Cancel" [ref=f1e156] [cursor=pointer]
+        - button "Start Interview" [disabled] [ref=f1e157]
+  - button "Open Next.js Dev Tools" [ref=f1e108] [cursor=pointer]
+  - alert [ref=f1e112]

@@ -1,0 +1,77 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - list [ref=e6]:
+        - listitem [ref=e7]:
+          - link [ref=e8] [cursor=pointer]:
+            - /url: /dashboard
+            - img "HackerRank Home" [ref=e9]
+        - listitem [ref=e10]: "|"
+        - listitem [ref=e11] [cursor=pointer]:
+          - link "Prepare" [ref=e12]:
+            - /url: /dashboard
+        - listitem [ref=e13] [cursor=pointer]:
+          - link "Certify" [ref=e14]:
+            - /url: /skills-verification
+        - listitem [ref=e15] [cursor=pointer]:
+          - link "Compete" [ref=e16]:
+            - /url: /contests
+      - generic [ref=e17]:
+        - button [ref=e18]:
+          - textbox "Search" [ref=e21]
+        - button [expanded] [ref=e27] [cursor=pointer]
+        - button [ref=e33] [cursor=pointer]
+        - button [ref=e36] [cursor=pointer]
+        - button "Drop Down Menu Trigger" [ref=e39] [cursor=pointer]:
+          - img "Avatar" [ref=e42]
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - heading "AI Fluency" [level=1] [ref=e49]
+        - heading "Practice with AI-powered voice interviews" [level=2] [ref=e50]
+        - heading "You have 1 mock interview available" [level=2] [ref=e52]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - heading "Focus on AI concepts and experience" [level=1] [ref=e59]
+            - heading "Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts." [level=2] [ref=e60]
+            - separator [ref=e61]
+          - generic [ref=e62]:
+            - heading "A realistic, voice-based interview" [level=1] [ref=e68]
+            - heading "Build confidence by speaking naturally, just like you would in a real interview." [level=2] [ref=e69]
+            - separator [ref=e70]
+          - generic [ref=e71]:
+            - heading "Demonstrate AI fluency" [level=1] [ref=e76]
+            - heading "Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios." [level=2] [ref=e77]
+            - separator [ref=e78]
+          - generic [ref=e79]:
+            - heading "Improve with clear, actionable feedback" [level=1] [ref=e85]
+            - heading "Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience." [level=2] [ref=e86]
+        - button "Try for free" [ref=e88] [cursor=pointer]
+      - generic [ref=e91]:
+        - generic [ref=e92]:
+          - generic [ref=e93]:
+            - generic [ref=e94]: ⏱
+            - generic [ref=e95]: 30:00
+          - generic [ref=e97] [cursor=pointer]
+        - generic [ref=e98]:
+          - generic [ref=e105]:
+            - button "Mute microphone" [ref=e106] [cursor=pointer]
+            - button "Disable video" [ref=e111] [cursor=pointer]
+          - generic [ref=e116]: LISTENING...
+  - alert [ref=e131]: AI Fluency Mock Interview Practice | HackerRank
+  - dialog "Notifications" [active] [ref=e141]:
+    - generic [ref=e143]:
+      - generic [ref=e144]:
+        - heading "Notifications" [level=3] [ref=e145]
+        - link "Show All" [ref=e146] [cursor=pointer]:
+          - /url: /notifications
+      - generic [ref=e147]:
+        - link [ref=e148] [cursor=pointer]:
+          - /url: https://www.hackerrank.com/interview/preparation-kits
+          - heading "Get interview ready for top companies." [level=4] [ref=e149]
+          - heading [level=5] [ref=e150]:
+            - time [ref=e151]: 1 hour ago
+        - link [ref=e152] [cursor=pointer]:
+          - /url: /domains/tutorials/30-days-of-code
+          - heading "Improve your coding skills. Join our 30 Days of Code challenge!" [level=4] [ref=e153]
+          - heading [level=5] [ref=e154]:
+            - time [ref=e155]: 1 hour ago

@@ -1,0 +1,120 @@
+- generic [ref=f3e1]:
+  - main [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - generic [ref=f3e5]:
+        - button "Toggle navigation menu" [ref=f3e6] [cursor=pointer]
+        - link "Fipilot Home" [ref=f3e9] [cursor=pointer]:
+          - /url: /dashboard
+          - text: Fipilot
+      - generic [ref=f3e10]:
+        - button "Log In" [ref=f3e11] [cursor=pointer]
+        - button "Sign Up" [ref=f3e12] [cursor=pointer]
+    - generic [ref=f3e14]:
+      - generic [ref=f3e15]:
+        - generic [ref=f3e16]:
+          - generic [ref=f3e17]:
+            - generic [ref=f3e18]:
+              - heading "AI-powered Mock Interviews" [level=2] [ref=f3e19]
+              - generic [ref=f3e20]: New
+            - paragraph [ref=f3e21]: Ace your next job interview by practicing with AI-powered mock interviews.
+          - link "Know More" [ref=f3e22] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/mock-interviews
+        - generic [ref=f3e23]:
+          - generic [ref=f3e25]:
+            - button "Start Technical Screen mock interview" [ref=f3e27] [cursor=pointer]:
+              - generic [ref=f3e29]:
+                - heading "Technical Screen" [level=2] [ref=f3e30]
+                - paragraph [ref=f3e31]: Practice a recruiter screening to identify gaps in CS fundamentals, role fit, and interview readiness.
+                - generic [ref=f3e32]: 30 mins
+            - button "Start Coding mock interview" [ref=f3e198] [cursor=pointer]:
+              - generic [ref=f3e98]:
+                - heading "Coding" [level=2] [ref=f3e199]
+                - paragraph [ref=f3e100]: Solve algorithmic and data structure problems designed to test your problem-solving skills.
+                - generic [ref=f3e101]: 60 mins
+            - button "Start System Design mock interview" [ref=f3e201] [cursor=pointer]:
+              - generic [ref=f3e203]:
+                - heading "System Design" [level=2] [ref=f3e204]
+                - paragraph [ref=f3e205]: Improve your ability to design scalable systems and clearly justify architectural decisions.
+                - generic [ref=f3e206]: 60 mins
+            - link "Start AI Fluency mock interview" [ref=f3e219] [cursor=pointer]:
+              - /url: /mock-interviews/all-roles/ai-fluency
+              - generic [ref=f3e221]:
+                - heading "AI Fluency" [level=2] [ref=f3e222]
+                - paragraph [ref=f3e223]: Demonstrate your ability to build with AI and use AI tools to solve problems and improve your workflow.
+                - generic [ref=f3e224]: 30 mins
+            - button "Start Behavioral mock interview" [ref=f3e237] [cursor=pointer]:
+              - generic [ref=f3e239]:
+                - heading "Behavioral" [level=2] [ref=f3e240]
+                - paragraph [ref=f3e241]: Practice behavioral questions in a mock setting. Refine your storytelling and STAR method.
+                - generic [ref=f3e242]: 45 mins
+            - button "Start Frontend - React JS mock interview" [ref=f3e255] [cursor=pointer]:
+              - generic [ref=f3e257]:
+                - heading "Frontend - React JS" [level=2] [ref=f3e258]
+                - paragraph [ref=f3e259]: Work on challenges covering React, Javascript, and CSS, testing your core frontend knowledge.
+                - generic [ref=f3e260]: 60 mins
+            - button "Start Backend - Node JS mock interview" [ref=f3e273] [cursor=pointer]:
+              - generic [ref=f3e275]:
+                - heading "Backend - Node JS" [level=2] [ref=f3e276]
+                - paragraph [ref=f3e277]: Work on challenges covering Node.js, JavaScript and Express to test your backend expertise.
+                - generic [ref=f3e278]: 60 mins
+          - generic [ref=f3e147]:
+            - button "Previous mock interviews" [disabled] [ref=f3e148] [cursor=pointer]
+            - generic [ref=f3e151]:
+              - button "Go to mock interviews page 1" [ref=f3e152] [cursor=pointer]
+              - button "Go to mock interviews page 2" [ref=f3e153] [cursor=pointer]
+              - button "Go to mock interviews page 3" [ref=f3e290] [cursor=pointer]
+              - button "Go to mock interviews page 4" [ref=f3e291] [cursor=pointer]
+              - button "Go to mock interviews page 5" [ref=f3e292] [cursor=pointer]
+              - button "Go to mock interviews page 6" [ref=f3e293] [cursor=pointer]
+              - button "Go to mock interviews page 7" [ref=f3e294] [cursor=pointer]
+            - button "Next mock interviews" [ref=f3e154] [cursor=pointer]
+      - generic [ref=f3e157]:
+        - heading "Practice Skills" [level=2] [ref=f3e158]
+        - generic [ref=f3e159]:
+          - link "Algorithms" [ref=f3e160] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/algorithms
+          - link "Data Structures" [ref=f3e162] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/data-structures
+          - link "Mathematics" [ref=f3e164] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/mathematics
+          - link "Artificial Intelligence" [ref=f3e166] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/artificial-intelligence
+          - link "C" [ref=f3e168] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/c
+          - link "C++" [ref=f3e170] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/cpp
+          - link "Java" [ref=f3e172] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/java
+          - link "Python" [ref=f3e174] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/python
+          - link "Ruby" [ref=f3e176] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/ruby
+          - link "SQL" [ref=f3e178] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/sql
+          - link "Databases" [ref=f3e180] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/databases
+          - link "Linux Shell" [ref=f3e182] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/shell
+          - link "Functional Programming" [ref=f3e184] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/functions
+          - link "Regex" [ref=f3e186] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/regex
+          - link "React" [ref=f3e188] [cursor=pointer]:
+            - /url: https://www.hackerrank.com/domains/react
+    - generic [ref=f3e190]:
+      - link "Environment" [ref=f3e191] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/environment
+      - link "FAQ" [ref=f3e192] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/faq
+      - link "About Us" [ref=f3e193] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/about-us
+      - link "Helpdesk" [ref=f3e194] [cursor=pointer]:
+        - /url: https://help.hackerrank.com/
+      - link "Careers" [ref=f3e195] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/careers
+      - link "Terms Of Service" [ref=f3e196] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/about-us/terms-of-service
+      - link "Privacy Policy" [ref=f3e197] [cursor=pointer]:
+        - /url: https://www.hackerrank.com/privacy
+  - button "Open Next.js Dev Tools" [ref=f3e300] [cursor=pointer]
+  - alert [ref=f3e304]

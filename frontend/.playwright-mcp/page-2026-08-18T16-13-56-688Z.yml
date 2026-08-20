@@ -1,0 +1,54 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - button
+            - link:
+              - /url: /dashboard
+        - generic:
+          - generic:
+            - generic:
+              - button
+          - button
+          - button [expanded]
+      - generic:
+        - generic:
+          - heading [level=1]: AI Fluency
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Focus on AI concepts and experience
+              - heading [level=2]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally, just like you would in a real interview.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Demonstrate AI fluency
+              - heading [level=2]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+          - generic:
+            - button: Try for free
+  - generic:
+    - alert: AI Fluency Mock Interview Practice | HackerRank
+  - menu "Drop Down Menu Trigger" [active] [ref=e138] [cursor=pointer]:
+    - menuitem "Profile" [ref=e139]
+    - menuitem "Leaderboard" [ref=e140]
+    - menuitem "Settings" [ref=e141]
+    - menuitem "Plans" [ref=e142]
+    - menuitem "Bookmarks" [ref=e143]
+    - menuitem "Submissions" [ref=e144]
+    - menuitem "Administration" [ref=e145]
+    - menuitem "Logout" [ref=e146]

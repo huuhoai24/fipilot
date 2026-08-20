@@ -1,0 +1,107 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - list:
+            - listitem:
+              - link:
+                - /url: /dashboard
+            - listitem: "|"
+            - listitem:
+              - link:
+                - /url: /dashboard
+                - text: Prepare
+            - listitem:
+              - link:
+                - /url: /skills-verification
+                - text: Certify
+            - listitem:
+              - link:
+                - /url: /contests
+                - text: Compete
+        - generic:
+          - button:
+            - generic:
+              - generic:
+                - textbox:
+                  - /placeholder: Search
+          - button
+          - generic:
+            - generic:
+              - button
+          - button
+          - button
+      - generic:
+        - generic:
+          - heading [level=1]: Technical Screen
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Personalized interviews for your job hunt
+              - heading [level=2]: Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Work on behavioral & technical questions that matter
+              - heading [level=2]: Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills.
+          - generic:
+            - button: Try for free
+            - button: View Previous Interviews
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: ⏱
+                  - generic: 30:00
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - button
+                      - button
+                - generic: LISTENING...
+  - generic:
+    - alert
+  - dialog [ref=f1e133]:
+    - generic [ref=f1e169]:
+      - heading "Audio & Camera Settings" [level=4] [ref=f1e170]
+      - generic [ref=f1e173]:
+        - generic [ref=f1e175]:
+          - generic [ref=f1e180]:
+            - generic [ref=f1e181]:
+              - generic [ref=f1e182]: Built-in Audio Analog Stereo
+              - combobox [ref=f1e189]
+            - img [ref=f1e192] [cursor=pointer]
+          - meter [ref=f1e195]
+        - separator [ref=f1e196]
+        - generic [ref=f1e198]:
+          - generic [ref=f1e203]:
+            - generic [ref=f1e204]:
+              - generic [ref=f1e205]: Built-in Audio Analog Stereo
+              - combobox [ref=f1e211]
+            - img [ref=f1e214] [cursor=pointer]
+          - button "Test Speakers" [ref=f1e217] [cursor=pointer]
+        - separator [ref=f1e218]
+        - generic [ref=f1e224]:
+          - generic [ref=f1e225]:
+            - generic [ref=f1e226]: Integrated Webcam
+            - combobox [ref=f1e233]
+          - img [ref=f1e236] [cursor=pointer]
+    - generic [ref=f1e163]:
+      - button "Back" [active] [ref=f1e166] [cursor=pointer]
+      - button "Continue" [ref=f1e239] [cursor=pointer]

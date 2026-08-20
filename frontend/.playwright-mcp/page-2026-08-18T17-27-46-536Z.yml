@@ -1,0 +1,17 @@
+- generic [active] [ref=f1e1]:
+  - button "Open Next.js Dev Tools" [ref=f1e108] [cursor=pointer]
+  - alert [ref=f1e112]
+  - generic [ref=f1e202]:
+    - banner [ref=f1e203]:
+      - generic [ref=f1e204]:
+        - link "HackerRank home" [ref=f1e205] [cursor=pointer]:
+          - /url: /mock-interviews/all-roles/ai-fluency
+          - text: HackerRank
+        - generic [ref=f1e208]: AI Fluency Mock Interview
+      - generic [ref=f1e209]:
+        - time [ref=f1e210]: 29:12 mins
+        - button "End Interview" [ref=f1e212] [cursor=pointer]
+    - main [ref=f1e213]:
+      - status [ref=f1e325]:
+        - strong [ref=f1e327]: Preparing your feedback
+        - generic [ref=f1e328]: Your interview has ended.

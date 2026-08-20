@@ -215,7 +215,7 @@ class ResumeExtract:
 
     def llm_analyzer(self, resume_text, resume_id):
         llm_client = LLMClient()
-        extract_types = ["work_experience", "education"]
+        extract_types = ["work_experience"]
         result = llm_client.extract_info(
             text_content=resume_text,
             extract_types=extract_types,

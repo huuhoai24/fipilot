@@ -1,0 +1,20 @@
+- generic [ref=e1]:
+  - generic [ref=e358]:
+    - generic [ref=e359]:
+      - generic [ref=e360]:
+        - button "Go to Dashboard" [ref=e361]:
+          - img "HackerRank Home" [ref=e362]
+        - heading "|" [level=2] [ref=e363]
+        - heading "AI Fluency Mock Interview" [level=2] [ref=e364]
+      - generic [ref=e365]:
+        - generic [ref=e366]: 25:50 mins
+        - heading "|" [level=2] [ref=e367]
+        - button "End Interview" [ref=e368] [cursor=pointer]
+    - main [ref=e369]:
+      - generic [ref=e456]:
+        - button "Toggle microphone" [ref=e459] [cursor=pointer]
+        - button "Toggle camera" [ref=e466] [cursor=pointer]
+        - button "Show transcript" [active] [ref=e522] [cursor=pointer]:
+          - img "Transcript disabled" [ref=e523]
+  - alert [ref=e131]: AI Fluency Mock Interview | HackerRank
+  - tooltip "Show transcript" [ref=e524]

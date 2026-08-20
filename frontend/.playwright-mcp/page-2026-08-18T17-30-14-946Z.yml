@@ -1,0 +1,25 @@
+- generic [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - banner [ref=f3e3]:
+      - generic [ref=f3e4]:
+        - link "HackerRank home" [ref=f3e5] [cursor=pointer]:
+          - /url: /mock-interviews/all-roles/ai-fluency
+          - text: HackerRank
+        - generic [ref=f3e8]: AI Fluency Mock Interview
+      - generic [ref=f3e9]:
+        - time [ref=f3e10]: 29:55 mins
+        - button "End Interview" [ref=f3e12] [cursor=pointer]
+    - main [ref=f3e13]:
+      - generic [ref=f3e68]:
+        - generic [ref=f3e69]:
+          - paragraph [ref=f3e78]: It looks like we have lost connection. I am going to end the session here. If you want to reschedule or try again, just let me know. Good luck with your preparation.
+          - paragraph [ref=f3e87]: Thanks for jumping in. So tell me a bit about your role, how many years have you worked with AI tools, and where are you at with AI tools right now?
+          - generic [ref=f3e88]: I'm listening...
+        - generic "Self view" [ref=f3e90]:
+          - generic "Strong connection" [ref=f3e92]
+      - generic "Interview controls" [ref=f3e97]:
+        - button "Mute microphone" [ref=f3e98] [cursor=pointer]
+        - button "Hide self view" [ref=f3e102] [cursor=pointer]
+        - button "Hide transcript" [ref=f3e106] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f3e23] [cursor=pointer]
+  - alert [ref=f3e27]

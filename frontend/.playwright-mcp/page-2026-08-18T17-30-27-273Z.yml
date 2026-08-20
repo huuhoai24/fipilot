@@ -1,0 +1,59 @@
+- generic [ref=f4e2]:
+  - banner [ref=f4e3]:
+    - generic [ref=f4e4]:
+      - link "HackerRank home" [ref=f4e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f4e7]: HackerRank
+      - paragraph [ref=f4e10]: AI Fluency Mock Interview Feedback
+    - generic [ref=f4e11]:
+      - button "Theme settings" [ref=f4e12] [cursor=pointer]
+      - button "Done" [ref=f4e15] [cursor=pointer]
+  - main [ref=f4e16]:
+    - complementary "Interview summary" [ref=f4e17]:
+      - generic [ref=f4e18]:
+        - generic [ref=f4e19]:
+          - generic [ref=f4e20]: H
+          - generic [ref=f4e21]:
+            - paragraph [ref=f4e22]: nguyen huy
+            - paragraph [ref=f4e23]: Attempted today
+        - generic [ref=f4e25]:
+          - paragraph [ref=f4e26]: Recommendation
+          - strong [ref=f4e27]: Needs Development
+        - generic [ref=f4e29]:
+          - heading "Overall Summary" [level=2] [ref=f4e30]
+          - paragraph [ref=f4e31]: The session was not completed due to lack of substantive candidate responses. The candidate provided minimal engagement throughout the interview, with only brief acknowledgments and no meaningful answers to core AI fluency questions. Without concrete examples, reasoning, or evidence of AI collaboration practices, no reliable assessment of AI fluency can be made across any dimension. To receive actionable feedback, please complete the full interview by providing detailed answers about your AI tool usage, prompting approach, mistake-catching processes, and data handling practices.
+    - generic [ref=f4e32]:
+      - region [ref=f4e33]:
+        - generic [ref=f4e34]:
+          - heading "Audio Transcripts" [level=1] [ref=f4e39]
+          - tablist "Transcript format" [ref=f4e40]:
+            - tab "Audio transcripts" [selected] [ref=f4e41] [cursor=pointer]
+            - tab "Chat transcripts" [ref=f4e45] [cursor=pointer]
+        - tabpanel "Audio transcripts" [ref=f4e48]:
+          - slider "Audio progress" [ref=f4e49] [cursor=pointer]: "0"
+          - generic [ref=f4e50]:
+            - generic [ref=f4e51]:
+              - button "Play transcript" [ref=f4e52] [cursor=pointer]
+              - generic [ref=f4e55]: 00:00 / 05:47
+            - button "Speed 1x" [ref=f4e57] [cursor=pointer]
+      - generic [ref=f4e61]:
+        - article [ref=f4e62]:
+          - generic [ref=f4e63]:
+            - heading "Delegation" [level=2] [ref=f4e64]
+            - generic [ref=f4e65]: Not Assessed
+          - paragraph [ref=f4e66]: This section was not meaningfully assessed. The candidate did not provide substantive answers about which AI tools they use, how they choose between them, or their reasoning for delegating specific tasks to AI versus handling them manually. Without concrete examples of tool selection or cost-benefit analysis, delegation fluency cannot be evaluated.
+        - article [ref=f4e67]:
+          - generic [ref=f4e68]:
+            - heading "Description" [level=2] [ref=f4e69]
+            - generic [ref=f4e70]: Not Assessed
+          - paragraph [ref=f4e71]: This section was not meaningfully assessed. The candidate did not describe their prompting structure, provide examples of multi-turn refinement, or explain how they provide context to AI tools. Without evidence of systematic prompt engineering or iteration practices, description fluency cannot be evaluated.
+        - article [ref=f4e72]:
+          - generic [ref=f4e73]:
+            - heading "Discernment" [level=2] [ref=f4e74]
+            - generic [ref=f4e75]: Not Assessed
+          - paragraph [ref=f4e76]: This section was not meaningfully assessed. The candidate did not share any stories about catching AI mistakes, describe their review process, or demonstrate awareness of hallucination risks and failure modes. Without concrete examples of quality assurance or mistake detection, discernment fluency cannot be evaluated.
+        - article [ref=f4e77]:
+          - generic [ref=f4e78]:
+            - heading "Diligence" [level=2] [ref=f4e79]
+            - generic [ref=f4e80]: Not Assessed
+          - paragraph [ref=f4e81]: This section was not meaningfully assessed. The candidate did not articulate their position on transparency, data privacy boundaries, or ownership of AI-generated code. Without evidence of responsible AI practices or governance thinking, diligence fluency cannot be evaluated.

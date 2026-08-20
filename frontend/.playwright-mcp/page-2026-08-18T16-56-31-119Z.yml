@@ -1,0 +1,24 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e358]:
+    - generic [ref=e359]:
+      - generic [ref=e360]:
+        - button "Go to Dashboard" [ref=e361]:
+          - img "HackerRank Home" [ref=e362]
+        - heading "|" [level=2] [ref=e363]
+        - heading "AI Fluency Mock Interview" [level=2] [ref=e364]
+      - generic [ref=e365]:
+        - generic [ref=e366]: 26:48 mins
+        - heading "|" [level=2] [ref=e367]
+        - button "End Interview" [ref=e368] [cursor=pointer]
+    - main [ref=e369]:
+      - generic [ref=e370]:
+        - generic [ref=e379]:
+          - generic [ref=e380]: Hey, nice to meet you. Good on you for taking this AI fluency interview. I am your AI interviewer today. We will talk through how you actually use AI in your day-to-day work, one question at a time. To start, tell me a bit about yourself and how you currently use AI in your work.
+          - generic [ref=e396]: No pressure, take your time. Just give me a quick overview of your background and what you do, and then we can dig into how you are actually using AI.
+          - generic [ref=e412]: I am going to assume we might have a connection issue. If you are still there, just type whenever you are ready. Otherwise, I will wrap up in a moment.
+          - generic [ref=e428]: It looks like we have lost connection. I am going to end the session here. If you want to reschedule or try again, just let me know. Good luck with your preparation.
+        - generic [ref=e456]:
+          - button "Toggle microphone" [ref=e459] [cursor=pointer]
+          - button "Toggle camera" [ref=e466] [cursor=pointer]
+          - button "Hide transcript" [ref=e471] [cursor=pointer]
+  - alert [ref=e131]: AI Fluency Mock Interview | HackerRank

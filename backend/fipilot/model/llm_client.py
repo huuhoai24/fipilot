@@ -22,6 +22,8 @@ class LLMClient:
             self.remote_client = OpenAI(
                 base_url=azure['base_url'],
                 api_key=os.environ.get(azure.get('api_key_env', 'AZURE_OPENAI_API_KEY')),
+                timeout=60.0,
+                max_retries=0,
             )
             print(f"SmartResume: using Azure OpenAI endpoint {azure['base_url']} (model: {self.model})")
 
@@ -87,7 +89,7 @@ class LLMClient:
                 }
                 with open(f"contents/{resume_id}_{prompt_key}_direct_error.json", "w", encoding='utf-8') as f:
                     json.dump(error_info, f, ensure_ascii=False, indent=2)
-                return {}
+                raise RuntimeError(f"Failed to extract {prompt_key}: {e}") from e
 
         combined_result = {}
         for extract_type in extract_types:

@@ -1,0 +1,82 @@
+Total messages: 18 (Errors: 0, Warnings: 2)
+
+[WARNING] No LOG_LEVEL supplied to logger. Falling back to error @ https://www.hackerrank.com/dashboard:1
+[INFO] connection state changed: disconnected -> connecting {room: , roomID: undefined, participant: , participantID: } @ https://www.hackerrank.com/dashboard:1
+[INFO] signal connecting to wss://mock-interviewer-rv3qs9bi.livekit.cloud/rtc/v1?access_token=%3Credacted%3E&join_request=CAES1RAfiwgAAAAAAAAD7VzNbhy5EYYCJFgI0ALxaY-8B61hkcX-oTEHSWMlG-wawsp2klta3ZxRx9M_6G5JI7_bPkdeIA8SsGekbg1JrW05l4AHGdLHYn2smqrqYX-AD7__7uDVH9gxJMfshz_-8-DV7747YP_59eDw9_VyqdpX__714HZOjw7reUAAkYaYRAKRcwGJQCCM_PiW_HiBBFh0TI_pMRwddvPg6LCfU0KPDtO52vRl2gTpel3fBWWxUblGy67Ig06VadUXmSTkbz9fanjV1jeNPH3_dvHTG0KJ9s8JEkHCo8Nynt7kRU0S8n5xMXv30-Xsl3cXs8uTDxfnBABIyElCKIkJcAJACbDw6DCb785Hh9MNJ2r7pkwbqffUzU03w5hSOmOTpZCTVuWWhYT8OWJspvEJSsnF2c_v99FYoyf7KHBy9tYAgZJerVVzXVcqULeq6rfkUxsWGjYPJsuy38ZTFlXTF6WaA31906miukqrfKmyOTyahTo7MAOArfNMR2VLUtYEy6vBa9v27RTT6dmDEgOhBhIbCJiOdCoMjIUWOyB9m1ZdU7d9kGVjqUkgN20lC9UvZZO2adnJtm-C67xVm152XZsFQyEFa3Wr1pN9jFz3fSNns7u7u-M7ddX22XHdrmZq06i2KFXVd7PR0yy96oJOVXmgEz5xw6du9CkGJ0U-y9t02QfX9bpUbdCWWdoHYwR3Ra6CLAvUpldVV9RVF1CYeMVng8pVJ8ti6KxO9TeNTLO-SbtuaLUil9uPVGW3dbW-178XmQpulm26kkkGf3pAmrtc_iu5nP2VvfvH31fL983bT6dYZM1FeFUPBVRUK9U2bVH1srtOAyZCEjO5OJNCSDiVZ1wuYplE8lRIWEh-KsNYMiYR5QlIeirZG7kAbXNO5XkoTxf630UoxUKeCBktJL6RZ0LSc3nCZBzK0_OHo9VNr5Mi-7bIPq7VYymUN5vH39uu-DSubFrZZrdt0Pb9PF2v_QDxA8QPkK8dIOAHiB8gfoD4AfK1A4T5AaIHyG2RK_sASUKSRCSJSZIQoJQABcIF4SHhEeExAcoIUE6AIgEaEaAaSwgAEgBBAEICEBGeEKQEgSAjyAkiQUEwJBgRjAmA_kkIMD2egGBCBCUCiGAEmP7hBBgSwZ-dXElIPlzEs4Q-nRBJRNp-Y8Ix-XCRmHBitdbB28x1Qmz2XFjNeWi3juzWseMsjPyFhWhZ4I4N6Npgz43-GB0bHOkBFwMIx4bQtcF-JJ7Y7ZFazREc5sxuzh3maDcX5OQDmLD908XIbu34dMGVe3DknlHHBmavTRxSKQxc2FMpwGFuT6VuWP0twcQdxcmQ3KybpcpMBk6Wa7VZqiygfFwdntdJRNKmnyfhiMSkaetlsVZBkc8nlsnWMh6_ElA6NWWTBRhsYULExdR2_MLAw8GUixGJppZ8xOOtZTThYWR4zAZpd1-Wqm_vt--iVD6H102afVR98SnVoz0o61xpcOd5u63I58goheXEJd8dfRoOfhkN_QyaaEeDEyz-BtGopzTJjmbyqcG3iOYpDYgtDUyigfDl0eRPkwa7pMFYrTx5eTBPWZBuyywZEXhxJEt8ysEGDhzbAPmL49jnwC3H2EAoyIPxZi4eHMzp675Q7aTTcduSOLYkRtadYOzctihOWhReXtQh7pXBrqhhUtSMvjh_-zRsN8TYJL7kMQ9ziEcf-s8hF8Fyna50RjdbmstfLt897hbbysKxsgQ4_bHP8LetIgGTM--mFxunl9C3zSYt2uCuqPL6Tk9lOj4hfuOClph3I_1FcB8yL1-JeWfTzwsTMy-AXJiQeQxuHoNb7oCUWTDLxZCiBTMp9JA2MUusYPEHZmB6TJqYJTSTAs1soplMNONHM3w0T4vmYdE8K5pHRUuGwIZZssZs13NLUOZWYe4U5kZhqQZmwywVwswcCcuripCs6noVtKq82sP3XyhMlrKsJMti31GVZh8tEGnWxV732SljN2VspYxNythKqVvZyqkXXKR6zcKq4X3aB2yflws7LRdOVi5spFwYnDvIoIwclJGbMrJSRiZl5Mguc2WXPZNdZs8us2SXOXjRxYvP8KKdFy286OB1VLBecPNaa1jDJq-jisEVLzwTL9jjBUu84IgXHENCL7h5rWNCwyavfVDwxFHKibuUE2spJ2YpJ1ZKBDslmu9XJ0sWSgSDcgcZlNxByd2U3ErJTUpup3SMJXSPJbSOJTTHEtrHEjrGErrHElrHEppjCR1jCVxtCs-0KdjbFCxtCo42Za6HDXvmYcPsDxtmedgw-8MGHe2C7nZBa7ug2S5obxfhaBfhbhdhbRdhtouwt4twtIsw2-VBAXlWLejr5bJT_dE3Vz6AD7R81TRyeNUe1G2hqn641R39rxUS8WVBNOv0vr7pg1yt0_uJm_DL3GzjzOqqV1Uf9PfNNCHR1_jqi7KoVhMv8Zd5yep13QZdk2bTo3y2fvTwWdLf3KD_7vpWpWXwdOvzAtywdbjvqjwwfFjlq-ENiZevvHw1gb185eWrEffylZevvHzl5SsvX3n5ystXI-LlKy9fefnqyYskL189ol6-8vKVl6-8fPW45uUrC-Tlqz3cy1devvLylZevvHz1efLV8NLKy1devprAXr7y8tWIe_nKy1devvLylZevvHzl5asR8fKVl6-8fPXkRZKXrx5RL195-crLV16-elzz8pUF8vLVHu7lKy9fefnKy1devvo8-Wp4z-Hlq7Rp1kU2dNNOxFpoFevy7N0F2dZFkKd9ml2nVaX_X0mbhGTNb_j_ktMu65tATwspdu9PynQTlKrr0pUKdH4lCxkgHh3-cPBfLzC-zvxeAAA%3D {room: undefined, roomID: undefined, participant: undefined, participantID: undefined, reconnect: undefined} @ https://www.hackerrank.com/dashboard:1
+[INFO] signal connected {room: undefined, roomID: undefined, participant: undefined, participantID: undefined} @ https://www.hackerrank.com/dashboard:1
+[INFO] connected to Livekit Server edition: 1, version: 1.13.5, protocol: 17, region: India South, nodeId: NM_OHYDERABAD1A_oBREoBDYkZ6F, debugInfo: , agentProtocol: 0 {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE} @ https://www.hackerrank.com/dashboard:1
+[INFO] publishing track {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE, trackID: undefined} @ https://www.hackerrank.com/dashboard:1
+[INFO] connection state changed: connecting -> connected {room: mock_interviewer_room_275804, roomID: RM_9kffmzAW7A6C, participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE} @ https://www.hackerrank.com/dashboard:1
+[INFO] publishing track {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE, trackID: undefined} @ https://www.hackerrank.com/dashboard:1
+[INFO] client leave request received (action=0) {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE, reason: 5} @ https://www.hackerrank.com/dashboard:1
+[INFO] unpublishing track {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE, trackID: TR_AMyDvczysmxas4} @ https://www.hackerrank.com/dashboard:1
+[INFO] unpublishing track {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE, trackID: TR_VCHjurUxAkimdQ} @ https://www.hackerrank.com/dashboard:1
+[INFO] connection state changed: connected -> disconnected {room: mock_interviewer_room_275804, roomID: RM_9kffmzAW7A6C, participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE} @ https://www.hackerrank.com/dashboard:1
+[WARNING] could not createOffer with closed peer connection {room: mock_interviewer_room_275804, roomID: , participant: mock_interviewer_user_275804, participantID: PA_58inEE4cPyKE} @ https://www.hackerrank.com/dashboard:1
+[LOG] # Output Plan
+
+- Source: https://www.hackerrank.com/mock-interviews/all-roles/ai-fluency
+- Site key: hackerrank-com-bdd059db
+- Page key: mock-interviews-all-roles-ai-fluency-6d460d29
+- Planned route: /mock-interviews/all-roles/ai-fluency
+- Phase 1 only; no application source changed. @ https://www.hackerrank.com/dashboard:1
+[LOG] # Output Plan
+
+- Source: https://www.hackerrank.com/mock-interviews/all-roles/ai-fluency
+- Site key: hackerrank-com-bdd059db
+- Page key: mock-interviews-all-roles-ai-fluency-6d460d29
+- Planned route: /mock-interviews/all-roles/ai-fluency
+- Artifact root: docs/research/hackerrank-com-bdd059db/mock-interviews-all-roles-ai-fluency-6d460d29/
+- Screenshot root: docs/design-references/hackerrank-com-bdd059db/mock-interviews-all-roles-ai-fluency-6d460d29/
+- Planned component root: src/components/sites/hackerrank-com-bdd059db/mock-interviews-all-roles-ai-fluency-6d460d29/
+- Planned asset root: public/sites/hackerrank-com-bdd059db/mock-interviews-all-roles-ai-fluency-6d460d29/
+
+Preserve the source pathname, existing dashboard, and unrelated routes. Numeric attempt route 275804 is session data and must not be hard-coded. No application source changed. Build and filesystem inventory are deferred because Phase 1 was restricted to Playwright-browser MCP. @ https://www.hackerrank.com/dashboard:1
+[LOG] # Global Extraction
+
+## Typography
+Computed stack: Satoshi, "Open Sans", OpenSans, arial, helvetica, sans-serif. Loaded Satoshi weights: 400, 500, 700.
+Landing title: 40px/46px desktop, 32px/36.8px tablet/mobile, weight 500. Subtitle 24px/27.6px. Section titles 16px/24px weight 700. Body 14px/20px or 16px/18.4px. Dialog and feedback titles 20px/32px weight 700.
+
+## Colors
+Header rgb(18,20,24); interview rgb(0,0,0); dark dialog rgb(31,32,42); primary text rgb(18,20,24); secondary rgb(74,75,83); tertiary rgb(144,145,168); light text/border rgb(214,215,228); muted rgb(235,235,243); card rgb(247,248,253); CTA rgb(19,129,58), hover rgb(14,97,44); Done rgb(32,215,97); destructive rgb(230,27,63); confirm End rgb(255,81,107); disabled rgb(193,194,214); listening dot rgb(29,194,87).
+
+## Global Behavior
+body scroll-behavior smooth; html auto. No Lenis, Locomotive, or scroll snap. Headers are normal flow. Common button transition: color/backgroundColor/borderColor 0.2s ease-in-out.
+
+## Metadata
+Title: AI Fluency Mock Interview Practice | HackerRank.
+Description: Practice a real AI Fluency interview with HackerRank's AI interviewer. Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts. Get personalized feedback to improve your interview performance.
+OG: https://hrcdn.net/og/default.jpg
+Favicon: https://hrcdn.net/hrc/_next/static/next_assets/brand/favicon.png @ https://www.hackerrank.com/dashboard:1
+[LOG] # Page Topology
+
+## Landing
+60px global header; relative two-column shell; left content; right call preview; fixed decorative background; reversible header overlays; device settings modal.
+Interaction: static content plus click/hover controls. Mobile has short native scroll.
+
+## Live Attempt
+51px dark header; countdown and End; black stage; full-screen waveform canvas; dynamic transcript; mirrored self-view; bottom media controls; end confirmation.
+Interaction: timer/waveform/transcript time-driven; media/end controls click-driven.
+
+## Feedback
+54px feedback header; horizontal shell; sticky summary aside; Audio/Chat transcript card; four assessment cards.
+Interaction: click tabs, audio playback, progress and speed; static feedback content. @ https://www.hackerrank.com/dashboard:1
+[LOG] # Directly Observed Routes and States
+
+## Routes
+1. /mock-interviews/all-roles/ai-fluency
+2. /mock-interviews/all-roles/ai-fluency/275804
+3. /mock-interviews/all-roles/ai-fluency/275804/feedback
+
+## Landing States
+Default; search focus; Notifications; App Switcher; Profile Menu; preview mic muted; preview camera disabled; device access required; device ready; microphone selector open; speaker test.
+
+## Live States
+Setup/connecting; live listening; representative interviewer transcript; muted mic; disabled camera; hidden transcript; question transition; end confirmation; processing.
+
+## Feedback States
+Audio tab; Chat tab; Play/Pause; 0.5x through 2x speed menu; Needs Development; Delegation, Description, Discernment, Diligence all Not Assessed.
+
+## Not Observed
+No substantive candidate-answer state, full multi-question scored interview, natural timer expiry, or feedback from a substantive completion. Nothing missing is inferred. @ https://www.hackerrank.com/dashboard:1

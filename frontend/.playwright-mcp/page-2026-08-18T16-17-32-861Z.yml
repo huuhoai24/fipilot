@@ -1,0 +1,120 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - list:
+            - listitem:
+              - link:
+                - /url: /dashboard
+            - listitem: "|"
+            - listitem:
+              - link:
+                - /url: /dashboard
+                - text: Prepare
+            - listitem:
+              - link:
+                - /url: /skills-verification
+                - text: Certify
+            - listitem:
+              - link:
+                - /url: /contests
+                - text: Compete
+        - generic:
+          - button:
+            - generic:
+              - generic:
+                - textbox:
+                  - /placeholder: Search
+          - button
+          - generic:
+            - generic:
+              - button
+          - button
+          - button [expanded]
+      - generic:
+        - generic:
+          - heading [level=1]: AI Fluency
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Focus on AI concepts and experience
+              - heading [level=2]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally, just like you would in a real interview.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Demonstrate AI fluency
+              - heading [level=2]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+          - generic:
+            - button: Try for free
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: ⏱
+                  - generic: 30:00
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - button
+                      - button
+                - generic: LISTENING...
+  - generic:
+    - alert: AI Fluency Mock Interview Practice | HackerRank
+  - menu [active] [ref=e147] [cursor=pointer]:
+    - menuitem [ref=e148]: Profile
+    - menuitem [ref=e149]: Leaderboard
+    - menuitem [ref=e150]: Settings
+    - menuitem [ref=e151]: Plans
+    - menuitem [ref=e152]: Bookmarks
+    - menuitem [ref=e153]: Submissions
+    - menuitem [ref=e154]: Administration
+    - menuitem [ref=e155]: Logout
+  - generic [ref=e156] [cursor=pointer]
+  - dialog [ref=e157] [cursor=pointer]:
+    - generic [ref=e160]:
+      - heading "Audio & Camera Settings" [level=4] [ref=e161]
+      - generic [ref=e163]:
+        - generic [ref=e166]:
+          - heading "Camera Access Required" [level=4] [ref=e167]
+          - paragraph [ref=e168]: You must enable camera access before joining the AI interview.
+        - generic [ref=e169]:
+          - paragraph [ref=e170]: "How to allow camera access:"
+          - list [ref=e171]:
+            - listitem [ref=e172]: Click the camera or lock icon in the address bar
+            - listitem [ref=e173]: Set Camera to Allow
+            - listitem [ref=e174]: Refresh this page
+      - generic [ref=e175]:
+        - generic [ref=e177]:
+          - generic [ref=e183]:
+            - generic [ref=e184]: Built-in Audio Analog Stereo
+            - combobox [ref=e191]
+          - meter [ref=e197]
+        - separator [ref=e198]
+        - generic [ref=e200]:
+          - generic [ref=e206]:
+            - generic [ref=e207]: Built-in Audio Analog Stereo
+            - combobox [ref=e213]
+          - button "Test Speakers" [ref=e219]
+        - separator [ref=e220]
+        - generic [ref=e222]:
+          - generic [ref=e227]: Camera
+          - generic [ref=e228]: Access Required
+    - generic [ref=e232]:
+      - button "Cancel" [ref=e233]
+      - button "Start Interview" [disabled] [ref=e234]

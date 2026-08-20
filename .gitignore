@@ -13,6 +13,7 @@ wheels/
 
 # FE
 node_modules
+frontend/feclone/
 dist
 dist-ssr
 *.local

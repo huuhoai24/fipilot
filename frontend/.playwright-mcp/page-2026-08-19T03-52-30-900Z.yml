@@ -1,0 +1,38 @@
+- generic [ref=f4e1]:
+  - generic [ref=f4e2]:
+    - banner [ref=f4e3]:
+      - generic [ref=f4e4]:
+        - button "Open navigation" [ref=f4e5] [cursor=pointer]
+        - link "Fipilot home" [ref=f4e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f4e8]: Fipilot
+      - generic [ref=f4e10]:
+        - button "Theme" [ref=f4e11] [cursor=pointer]
+        - button "Applications" [ref=f4e15] [cursor=pointer]
+        - button "Profile menu" [ref=f4e19] [cursor=pointer]:
+          - generic [ref=f4e20]: H
+    - main [ref=f4e23]:
+      - generic [ref=f4e24]:
+        - heading "AI Fluency" [level=1] [ref=f4e25]
+        - paragraph [ref=f4e26]: Practice with AI-powered voice interviews
+        - generic [ref=f4e27]: You have 1 mock interview available
+        - generic [ref=f4e28]:
+          - article [ref=f4e29]:
+            - generic [ref=f4e33]:
+              - heading "Focus on AI concepts and experience" [level=2] [ref=f4e34]
+              - paragraph [ref=f4e35]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+          - article [ref=f4e36]:
+            - generic [ref=f4e40]:
+              - heading "A realistic, voice-based interview" [level=2] [ref=f4e41]
+              - paragraph [ref=f4e42]: Build confidence by speaking naturally, just like you would in a real interview.
+          - article [ref=f4e43]:
+            - generic [ref=f4e47]:
+              - heading "Demonstrate AI fluency" [level=2] [ref=f4e48]
+              - paragraph [ref=f4e49]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+          - article [ref=f4e50]:
+            - generic [ref=f4e55]:
+              - heading "Improve with clear, actionable feedback" [level=2] [ref=f4e56]
+              - paragraph [ref=f4e57]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+        - button "Try for free" [ref=f4e58] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f4e64] [cursor=pointer]
+  - alert [ref=f4e68]

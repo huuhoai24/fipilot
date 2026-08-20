@@ -1,0 +1,111 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - list:
+            - listitem:
+              - link:
+                - /url: /dashboard
+            - listitem: "|"
+            - listitem:
+              - link:
+                - /url: /dashboard
+                - text: Prepare
+            - listitem:
+              - link:
+                - /url: /skills-verification
+                - text: Certify
+            - listitem:
+              - link:
+                - /url: /contests
+                - text: Compete
+        - generic:
+          - button:
+            - generic:
+              - generic:
+                - textbox:
+                  - /placeholder: Search
+          - button
+          - generic:
+            - generic:
+              - button
+          - button
+          - button
+      - generic:
+        - generic:
+          - heading [level=1]: Technical Screen
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Personalized interviews for your job hunt
+              - heading [level=2]: Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Work on behavioral & technical questions that matter
+              - heading [level=2]: Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills.
+          - generic:
+            - button: Try for free
+            - button: View Previous Interviews
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: ⏱
+                  - generic: 30:00
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - button
+                      - button
+                - generic: LISTENING...
+  - generic:
+    - alert
+  - dialog [ref=f1e133]:
+    - generic [ref=f1e135]:
+      - heading "Choose Your Mock Interview Experience" [level=1] [ref=f1e136]
+      - paragraph [ref=f1e137]: Start with popular ready-made roles or build your own based on a specific job description.
+      - generic [ref=f1e138]:
+        - button [ref=f1e139] [cursor=pointer]:
+          - generic [ref=f1e140]:
+            - heading "Software Engineer" [level=3] [ref=f1e141]
+            - paragraph [ref=f1e142]: DSA, system design, coding patterns, and problem-solving
+        - button [ref=f1e143] [cursor=pointer]:
+          - generic [ref=f1e144]:
+            - heading "Frontend Developer" [level=3] [ref=f1e145]
+            - paragraph [ref=f1e146]: React, Angular, Vue, and problem-solving
+        - button [ref=f1e147] [cursor=pointer]:
+          - generic [ref=f1e148]:
+            - heading "Backend Developer" [level=3] [ref=f1e149]
+            - paragraph [ref=f1e150]: Node, Python, Java, and problem-solving
+        - button [ref=f1e151] [cursor=pointer]:
+          - generic [ref=f1e152]:
+            - heading "AI Engineer" [level=3] [ref=f1e153]
+            - paragraph [ref=f1e154]: Machine Learning, Deep Learning, Generative AI, LLMs, and problem-solving
+        - button [ref=f1e155] [cursor=pointer]:
+          - generic [ref=f1e156]:
+            - heading "Forward Deployed Engineer" [level=3] [ref=f1e157]
+            - paragraph [ref=f1e158]: AWS, Azure, and problem-solving
+        - button [ref=f1e159] [cursor=pointer]:
+          - generic [ref=f1e160]:
+            - heading "+ Custom Role" [level=3] [ref=f1e161]
+            - paragraph [ref=f1e162]: Paste a job description for a tailored interview
+    - generic [ref=f1e163]:
+      - button "Cancel" [active] [ref=f1e164] [cursor=pointer]
+      - button "Continue" [disabled] [ref=f1e165]

@@ -1,0 +1,28 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - button
+              - heading [level=2]: "|"
+              - heading [level=2]: AI Fluency Mock Interview
+            - generic:
+              - heading [level=2]: "|"
+              - button: End Interview
+          - main:
+            - generic:
+              - heading [level=2]: Setting up your interview
+              - paragraph: Connecting to your interviewer...
+  - generic:
+    - alert: AI Fluency Mock Interview | HackerRank
+  - dialog [ref=e650]:
+    - generic [ref=e651]:
+      - generic [ref=e652]:
+        - heading "End interview and view feedback?" [level=2] [ref=e653]
+        - button "Dialog close button" [active] [ref=e654] [cursor=pointer]
+      - generic [ref=e657]: Ending now means you'll receive limited feedback and miss insights we use to create a more personalized improvement plan.
+      - generic [ref=e658]:
+        - button "Continue" [ref=e659] [cursor=pointer]
+        - button "End" [ref=e660] [cursor=pointer]

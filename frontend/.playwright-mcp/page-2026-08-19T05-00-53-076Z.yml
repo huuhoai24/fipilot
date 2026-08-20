@@ -1,0 +1,55 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - banner [ref=f2e3]:
+      - generic [ref=f2e231]:
+        - button "Open navigation" [ref=f2e232] [cursor=pointer]
+        - link "Fipilot home" [ref=f2e234] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f2e235]: Fipilot
+      - generic [ref=f2e12]:
+        - button "Theme" [ref=f2e23] [cursor=pointer]
+        - button "Applications" [ref=f2e27] [cursor=pointer]
+        - button "Profile menu" [ref=f2e31] [cursor=pointer]:
+          - generic [ref=f2e32]: H
+    - main [ref=f2e35]:
+      - generic [ref=f2e37]:
+        - heading "AI Fluency" [level=1] [ref=f2e38]
+        - paragraph [ref=f2e39]: Practice with AI-powered voice interviews
+        - generic [ref=f2e40]: You have 1 mock interview available
+        - generic [ref=f2e41]:
+          - article [ref=f2e42]:
+            - generic [ref=f2e46]:
+              - heading "Focus on AI concepts and experience" [level=2] [ref=f2e47]
+              - paragraph [ref=f2e48]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+          - article [ref=f2e49]:
+            - generic [ref=f2e53]:
+              - heading "A realistic, voice-based interview" [level=2] [ref=f2e54]
+              - paragraph [ref=f2e55]: Build confidence by speaking naturally, just like you would in a real interview.
+          - article [ref=f2e56]:
+            - generic [ref=f2e60]:
+              - heading "Demonstrate AI fluency" [level=2] [ref=f2e61]
+              - paragraph [ref=f2e62]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+          - article [ref=f2e63]:
+            - generic [ref=f2e68]:
+              - heading "Improve with clear, actionable feedback" [level=2] [ref=f2e69]
+              - paragraph [ref=f2e70]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+        - button "Try for free" [ref=f2e71] [cursor=pointer]
+    - dialog [ref=f2e282]:
+      - generic [ref=f2e283]:
+        - heading "Upload Resume" [level=2] [ref=f2e284]
+        - paragraph [ref=f2e285]: Add your resume so mock interviewer can reference it during conversation. (Optional)
+        - generic [ref=f2e315]:
+          - generic [ref=f2e316]:
+            - strong [ref=f2e317]: Your resume has been added
+            - paragraph [ref=f2e318]: You can update this resume in your profile anytime
+          - generic [ref=f2e319]:
+            - generic [ref=f2e320]:
+              - generic "CV_hoainh.pdf"
+            - generic [ref=f2e324]:
+              - button "Preview CV_hoainh.pdf" [ref=f2e325] [cursor=pointer]
+              - button "Remove CV_hoainh.pdf" [ref=f2e329] [cursor=pointer]
+        - contentinfo [ref=f2e304]:
+          - button "Back" [ref=f2e305] [cursor=pointer]
+          - button "Continue" [ref=f2e306] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f2e107] [cursor=pointer]
+  - alert [ref=f2e111]

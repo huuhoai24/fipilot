@@ -32,10 +32,16 @@ class IndexedTextResolver:
         """
         if isinstance(data, dict):
             if key_name in data:
-                start, end = data.pop(key_name)
-                data[new_key] = " ".join(
-                    index_map[i] for i in range(start, end + 1) if i in index_map
-                )
+                index_range = data.pop(key_name)
+                if (
+                    isinstance(index_range, list)
+                    and len(index_range) == 2
+                    and all(isinstance(index, int) for index in index_range)
+                ):
+                    start, end = index_range
+                    data[new_key] = " ".join(
+                        index_map[i] for i in range(start, end + 1) if i in index_map
+                    )
             for v in data.values():
                 IndexedTextResolver.resolve(v, index_map, key_name, new_key)
         elif isinstance(data, list):

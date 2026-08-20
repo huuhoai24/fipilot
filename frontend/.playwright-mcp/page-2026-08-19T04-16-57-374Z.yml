@@ -1,0 +1,33 @@
+- generic [ref=f6e1]:
+  - generic [ref=f6e3]:
+    - banner [ref=f6e4]:
+      - generic [ref=f6e6]:
+        - button [ref=f6e7] [cursor=pointer]
+        - link [ref=f6e10] [cursor=pointer]:
+          - /url: /dashboard
+          - img "HackerRank Home" [ref=f6e11]
+      - generic [ref=f6e13]:
+        - button "Log In" [ref=f6e14] [cursor=pointer]
+        - button "Sign Up" [ref=f6e15] [cursor=pointer]
+    - generic [ref=f6e17]:
+      - heading "Technical Screen" [level=1] [ref=f6e18]
+      - heading "Practice with AI-powered voice interviews" [level=2] [ref=f6e19]
+      - heading "You have no mock interviews left" [level=2] [ref=f6e21]
+      - generic [ref=f6e22]:
+        - generic [ref=f6e23]:
+          - heading "Personalized interviews for your job hunt" [level=1] [ref=f6e28]
+          - heading "Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description." [level=2] [ref=f6e29]
+          - separator [ref=f6e30]
+        - generic [ref=f6e31]:
+          - heading "A realistic, voice-based interview" [level=1] [ref=f6e37]
+          - heading "Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call." [level=2] [ref=f6e38]
+          - separator [ref=f6e39]
+        - generic [ref=f6e40]:
+          - heading "Work on behavioral & technical questions that matter" [level=1] [ref=f6e45]
+          - heading "Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect." [level=2] [ref=f6e46]
+          - separator [ref=f6e47]
+        - generic [ref=f6e48]:
+          - heading "Improve with clear, actionable feedback" [level=1] [ref=f6e54]
+          - heading "Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills." [level=2] [ref=f6e55]
+      - button "Start Interview" [ref=f6e57] [cursor=pointer]
+  - alert [ref=f6e58]

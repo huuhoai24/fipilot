@@ -1,0 +1,52 @@
+- generic:
+  - generic:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - button
+              - heading [level=2]: "|"
+              - heading [level=2]: AI Fluency Mock Interview
+            - generic:
+              - generic: 24:38 mins
+              - heading [level=2]: "|"
+              - button: End Interview
+          - main:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic: Hey, nice to meet you. Good on you for taking this AI fluency interview. I am your AI interviewer today. We will talk through how you actually use AI in your day-to-day work, one question at a time. To start, tell me a bit about yourself and how you currently use AI in your work.
+                            - generic: No pressure, take your time. Just give me a quick overview of your background and what you do, and then we can dig into how you are actually using AI.
+                            - generic: I am going to assume we might have a connection issue. If you are still there, just type whenever you are ready. Otherwise, I will wrap up in a moment.
+                            - generic: It looks like we have lost connection. I am going to end the session here. If you want to reschedule or try again, just let me know. Good luck with your preparation.
+                            - generic: Thanks for jumping in. So tell me a bit about yourself—what is your role, how many years have you been coding, and where are you at with AI tools right now?
+                            - generic: I’m listening...
+                        - generic:
+                          - button
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - button
+                    - generic:
+                      - generic:
+                        - button
+                    - button
+  - generic:
+    - alert: AI Fluency Mock Interview | HackerRank
+  - dialog [ref=e621]:
+    - generic [ref=e622]:
+      - generic [ref=e623]:
+        - heading "End interview and view feedback?" [level=2] [ref=e624]
+        - button "Dialog close button" [active] [ref=e625] [cursor=pointer]
+      - generic [ref=e628]: You still have 24 mins remaining. Ending now means you'll receive limited feedback and miss insights we use to create a more personalized improvement plan.
+      - generic [ref=e629]:
+        - button "Continue" [ref=e630] [cursor=pointer]
+        - button "End" [ref=e631] [cursor=pointer]

@@ -1,0 +1,106 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - list:
+            - listitem:
+              - link:
+                - /url: /dashboard
+            - listitem: "|"
+            - listitem:
+              - link:
+                - /url: /dashboard
+                - text: Prepare
+            - listitem:
+              - link:
+                - /url: /skills-verification
+                - text: Certify
+            - listitem:
+              - link:
+                - /url: /contests
+                - text: Compete
+        - generic:
+          - button:
+            - generic:
+              - generic:
+                - textbox:
+                  - /placeholder: Search
+          - button
+          - generic:
+            - generic:
+              - button
+          - button
+          - button
+      - generic:
+        - generic:
+          - heading [level=1]: AI Fluency
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Focus on AI concepts and experience
+              - heading [level=2]: Discuss your experience with AI tools, how you use AI in your work, and your understanding of AI concepts.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally, just like you would in a real interview.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Demonstrate AI fluency
+              - heading [level=2]: Show how you stay current with AI trends, evaluate tools, and apply AI effectively in real-world scenarios.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Get specific feedback on your clarity, depth of examples, and how well you communicate your AI experience.
+          - generic:
+            - button: Try for free
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic: ⏱
+                  - generic: 30:00
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - button
+                      - button
+                - generic: LISTENING...
+  - generic:
+    - alert: AI Fluency Mock Interview Practice | HackerRank
+  - dialog [ref=e198]:
+    - generic [ref=e201]:
+      - heading "Audio & Camera Settings" [level=4] [ref=e202]
+      - generic [ref=e204]:
+        - generic [ref=e207]:
+          - heading "Camera Access Required" [level=4] [ref=e208]
+          - paragraph [ref=e209]: You must enable camera access before joining the AI interview.
+        - generic [ref=e210]:
+          - paragraph [ref=e211]: "How to allow camera access:"
+          - list [ref=e212]:
+            - listitem [ref=e213]: Click the camera or lock icon in the address bar
+            - listitem [ref=e214]: Set Camera to Allow
+            - listitem [ref=e215]: Refresh this page
+      - generic [ref=e216]:
+        - generic [ref=e218]:
+          - generic [ref=e223]: Microphone
+          - generic [ref=e224]: Access Required
+        - separator [ref=e228]
+        - generic [ref=e230]:
+          - generic [ref=e234]: Sound
+          - generic [ref=e235]: Access Required
+        - separator [ref=e239]
+        - generic [ref=e241]:
+          - generic [ref=e246]: Camera
+          - generic [ref=e247]: Access Required
+    - generic [ref=e251]:
+      - button "Cancel" [ref=e252] [cursor=pointer]
+      - button "Start Interview" [disabled] [ref=e253]

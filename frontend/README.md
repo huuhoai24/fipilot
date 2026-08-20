@@ -1,105 +1,219 @@
-# AI Interview Platform
+<div align="center">
 
-Nền tảng phỏng vấn AI full-stack: React + TypeScript frontend, FastAPI backend (STT/TTS, LLM evaluation, CV parsing qua Ollama/Groq/OpenAI), kết nối real-time qua WebSocket.
+# AI Website Cloner Template
 
-## Kiến trúc
+## Resume API
 
-- **Frontend**: React 18 + TypeScript + Tailwind, dark navy/indigo design system, Zustand cho state, React Query cho data fetching.
-- **Backend**: FastAPI (`backend/main.py`) — quản lý session, trích xuất CV, chấm điểm AI, text-to-speech, WebSocket cho phòng phỏng vấn real-time.
-- **Giao tiếp**: REST (`/api/...`) cho CRUD + CV extraction; WebSocket (`/ws/interview/{session_id}`) cho luồng audio/text real-time trong lúc phỏng vấn.
+Set `RESUME_API_URL` to the public base URL of the FastAPI resume service. The app proxies
+resume uploads through `/api/resume/upload`, so browsers do not need direct cross-origin access.
 
-## Đã triển khai
+### Clone any website with one command
 
-| Màn hình | Route | File | Trạng thái |
-|---|---|---|---|
-| Dashboard | `/` | `src/pages/DashboardPage.tsx` | Nối API (`api.getSessions`) |
-| Interview Flow Wizard | `/interview-flow` | `src/pages/InterviewFlowPage.tsx` | Nối API (`api.extractCv`, `api.createSession`) |
-| Interview Session (video/audio thật) | `/interview-flow/session/:id` | `src/pages/InterviewSessionPage.tsx` | WebSocket + webcam + mic thật |
-| Template Manager | `/templates` | `src/pages/TemplateManagerPage.tsx` | Mock (chưa nối API) |
-| Interview History | `/history` | `src/pages/HistoryPage.tsx` | Nối API (`api.getSessions`) |
-| Evaluation Report | `/history/:id` | `src/pages/EvaluationReportPage.tsx` | Nối API (`api.getReport`) |
-| Interview Settings | `/settings` | `src/pages/SettingsPage.tsx` | Mock (chưa nối API) |
+Give your AI coding agent a URL and watch it recreate the website as a clean Next.js app.
 
-Auth (login/register), phân quyền admin/user, danh sách "phỏng vấn đang chờ" vẫn dùng state phía client (`useAuthStore`, `useScheduleStore`) — chưa có endpoint backend tương ứng.
+**Best results with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) + Opus 5. Works with Codex, Cursor, Gemini, and more.**
 
-## Cài đặt & chạy
+[![Use this template](https://img.shields.io/badge/Use_this_template-Create_your_copy-2ea44f?style=for-the-badge&logo=github&logoColor=white)](https://github.com/JCodesMore/ai-website-cloner-template/generate) [![Discord](https://img.shields.io/badge/Join_the_community-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/hrTSX5yTpB)
 
-### Backend
+[Quick Start](#quick-start) · [Watch Demo](#demo) · [Supported Platforms](#supported-platforms)
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
+<a href="https://github.com/JCodesMore/ai-website-cloner-template/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a> <a href="https://github.com/JCodesMore/ai-website-cloner-template"><img src="https://img.shields.io/github/stars/JCodesMore/ai-website-cloner-template?style=flat" alt="Stars" /></a> <img src="https://img.shields.io/endpoint?url=https://gittokens.rsamf.com/badge/JCodesMore/ai-website-cloner-template" alt="tokens" />
+
+  <a href="https://trendshift.io/repositories/24302?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-24302" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/24302" alt="JCodesMore%2Fai-website-cloner-template | Trendshift" width="250" height="55" /></a> <a href="https://www.star-history.com/jcodesmore/ai-website-cloner-template/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=JCodesMore/ai-website-cloner-template&amp;theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=JCodesMore/ai-website-cloner-template" /><img alt="Star History Global Rank" src="https://api.star-history.com/badge?repo=JCodesMore/ai-website-cloner-template" width="216" height="55" /></picture></a>
+
+<br />
+<sub><strong>SPONSORED BY</strong></sub>
+<br /><br />
+<a href="https://www.rapidproxy.io/?ref=JCM"><img src="docs/assets/sponsors/rapidproxy-banner.png" alt="RapidProxy residential proxy service" width="680" /></a>
+<br />
+<sub>Power your scraping and automation with 90M+ residential IPs, 500MB free traffic, and non-expiring bandwidth. <a href="https://www.rapidproxy.io/?ref=JCM">Explore RapidProxy →</a></sub>
+<br /><br />
+<a href="https://www.atlascloud.ai/?utm_source=github&amp;utm_medium=sponsor&amp;utm_campaign=ai-website-cloner-template">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/sponsors/atlas-cloud-logo-white.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/sponsors/atlas-cloud-logo.svg" />
+    <img src="docs/assets/sponsors/atlas-cloud-logo.svg" alt="Atlas Cloud" width="240" />
+  </picture>
+</a>
+<br />
+<sub>Generate AI images, video, audio, and 3D assets through one API. <a href="https://www.atlascloud.ai/?utm_source=github&amp;utm_medium=sponsor&amp;utm_campaign=ai-website-cloner-template">Explore Atlas Cloud →</a></sub>
+
+</div>
+
+---
+
+## Demo
+
+[![Watch the demo](docs/design-references/comparison.png)](https://youtu.be/O669pVZ_qr0)
+
+> Click the image above to watch the full demo on YouTube.
+
+## Quick Start
+
+> **Important:** Start by making your own copy with GitHub's **Use this template** button. Do not clone this template repository directly for your website project, and do not open pull requests here with your generated website.
+
+1. **Create your own repository from this template**
+
+   On the GitHub page for this project, click **Use this template**, then click **Create a new repository**.
+
+   Give your new repository a name, choose whether it should be public or private, then click **Create repository**. If GitHub shows an **Include all branches** option, you can leave it off.
+
+   This gives you your own separate project to work in, so your website changes stay in your account instead of coming back to the main template.
+
+2. **Open your new repository on your computer**
+
+   After GitHub creates your copy, open that new repository. Click **Code** and open or clone your new repository with your preferred coding tool.
+
+   If you use the terminal, the command will look like this:
+
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/YOUR-NEW-REPOSITORY.git
+   cd YOUR-NEW-REPOSITORY
+   ```
+
+3. **Install dependencies**
+   ```bash
+   npm install
+   ```
+4. **Start your AI agent** — Claude Code recommended:
+   ```bash
+   claude --chrome
+   ```
+5. **Run the skill**:
+   ```
+   /clone-website <target-url1> [<target-url2> ...]
+   ```
+6. **Customize** (optional) — after the base clone is built, modify as needed
+
+> Most supported clients expose `/clone-website` directly. If your client activates skills from natural-language requests, enter `Clone <target-url> using the clone-website workflow`. Project instructions are in `AGENTS.md`.
+
+## Supported Platforms
+
+| Agent                                                         | Status                     |
+| ------------------------------------------------------------- | -------------------------- |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | **Recommended** — Opus 5   |
+| [Codex CLI](https://github.com/openai/codex)                  | Supported                  |
+| [OpenCode](https://opencode.ai/)                              | Supported                  |
+| [GitHub Copilot](https://github.com/features/copilot)         | Supported                  |
+| [Kiro](https://kiro.dev/)                                    | Supported                  |
+| [Cursor](https://cursor.com/)                                 | Supported                  |
+| [Windsurf](https://codeium.com/windsurf)                      | Supported                  |
+| [Gemini CLI](https://github.com/google-gemini/gemini-cli)     | Supported                  |
+| [Cline](https://github.com/cline/cline)                       | Supported                  |
+| [Roo Code](https://github.com/RooCodeInc/Roo-Code)            | Supported                  |
+| [Continue](https://continue.dev/)                             | Supported                  |
+| [Amazon Q](https://aws.amazon.com/q/developer/)               | Supported                  |
+| [Augment Code](https://www.augmentcode.com/)                  | Supported                  |
+
+## Prerequisites
+
+- [Node.js](https://nodejs.org/) 24+
+- An AI coding agent (see [Supported Platforms](#supported-platforms))
+
+## Tech Stack
+
+- **Next.js 16** — App Router, React 19, TypeScript strict
+- **shadcn/ui** — Radix primitives + Tailwind CSS v4
+- **Tailwind CSS v4** — oklch design tokens
+- **Lucide React** — default icons (replaced by extracted SVGs during cloning)
+
+## How It Works
+
+The `/clone-website` skill runs a multi-phase pipeline:
+
+```mermaid
+flowchart LR
+    P1["1. Reconnaissance"] --> P2["2. Foundation"]
+    P2 --> P3["3. Component Specs"]
+    P3 --> P4["4. Parallel Build"]
+    P4 --> P5["5. Assembly and QA"]
 ```
 
-Backend cần các biến môi trường cho LLM/TTS provider (xem `ai_services.py`, `tts_service.py` — dùng Groq/OpenAI/Ollama tuỳ cấu hình) và Ollama chạy local nếu dùng cho CV extraction. Database SQLite (`interview_app.db`) đã có sẵn, tự migrate khi khởi động (`migrate_db()` trong `main.py`).
+1. **Reconnaissance** — screenshots, design token extraction, interaction sweep (scroll, click, hover, responsive)
+2. **Foundation** — updates fonts, colors, globals, downloads all assets
+3. **Component Specs** — writes detailed spec files (`docs/research/components/`) with exact computed CSS values, states, behaviors, and content
+4. **Parallel Build** — dispatches builder agents in git worktrees, one per section/component
+5. **Assembly & QA** — merges worktrees, wires up the page, runs visual diff against the original
 
-### Frontend
+Each builder agent receives the full component specification inline — exact `getComputedStyle()` values, interaction models, multi-state content, responsive breakpoints, and asset paths. No guessing.
 
-Yêu cầu Node.js ≥ 18.
+## Use Cases
 
-```bash
-npm install
-npm run dev
-```
+- **Platform migration** — rebuild a site you own from WordPress/Webflow/Squarespace into a modern Next.js codebase
+- **Lost source code** — your site is live but the repo is gone, the developer left, or the stack is legacy. Get the code back in a modern format
+- **Learning** — deconstruct how production sites achieve specific layouts, animations, and responsive behavior by working with real code
 
-Mở `http://localhost:5173`. File `.env` đã cấu hình sẵn:
+## Not Intended For
 
-```
-VITE_API_URL=http://localhost:8000/api
-VITE_WS_URL=ws://localhost:8000/ws
-```
+- **Phishing or impersonation** — this project must not be used for deceptive purposes, impersonation, or any activity that breaks the law.
+- **Passing off someone's design as your own** — logos, brand assets, and original copy belong to their owners.
+- **Violating terms of service** — some sites explicitly prohibit scraping or reproduction. Check first.
 
-Đổi giá trị này nếu backend chạy ở host/port khác.
-
-Build production:
-
-```bash
-npm run build
-npm run preview
-```
-
-## Cấu trúc frontend
+## Project Structure
 
 ```
 src/
-├── components/
-│   ├── ui/                      # Button, Card, Badge, Input, Toggle, Slider — design system
-│   ├── layout/                  # Sidebar (có sublist phiên đang chạy), AppLayout, UserMenu
-│   ├── WaveformVisualizer.tsx   # dùng ở các màn hình mock, KHÔNG dùng trong InterviewSessionPage
-│   ├── StepIndicator.tsx
-│   └── CvDropzone.tsx
-├── pages/                       # 7 màn hình chính
-├── lib/api.ts                   # toàn bộ lời gọi REST tới backend FastAPI
-├── data/mockData.ts             # mock data cho các phần chưa nối API (Templates, Settings)
-├── types/index.ts
-├── store/
-│   ├── useAuthStore.ts          # auth giả lập phía client (chưa có endpoint backend)
-│   ├── useScheduleStore.ts      # danh sách "đang chờ phỏng vấn", phía client
-│   ├── useActiveSessionStore.ts # track các phòng phỏng vấn đang mở, phục vụ sidebar sublist
-│   └── useAppStore.ts           # sidebar collapse, user menu toggle
-└── lib/utils.ts
+  app/              # Next.js routes
+  components/       # React components
+    ui/             # shadcn/ui primitives
+    icons.tsx       # Extracted SVG icons
+  lib/utils.ts      # cn() utility
+  types/            # TypeScript interfaces
+  hooks/            # Custom React hooks
+public/
+  images/           # Downloaded images from target
+  videos/           # Downloaded videos from target
+  seo/              # Favicons, OG images
+docs/
+  research/         # Extraction output & component specs
+  design-references/ # Screenshots
+scripts/
+  sync-agent-rules.sh  # Regenerate agent instruction files
+  sync-skills.mjs      # Regenerate /clone-website for all platforms
+.kiro/skills/          # Generated Kiro workspace skill
+.cline/skills/         # Generated Cline workspace skill
+.roo/skills/           # Generated Roo Code workspace skill
+.roo/commands/         # Generated Roo Code slash command
+AGENTS.md           # Agent instructions (single source of truth)
+CLAUDE.md           # Claude Code config (imports AGENTS.md)
+GEMINI.md           # Gemini CLI config (imports AGENTS.md)
 ```
 
-## Lưu ý quan trọng về `InterviewSessionPage`
+## Commands
 
-Trang phỏng vấn thực tế (`/interview-flow/session/:id`) **không dùng** `WaveformVisualizer` hay mock data — đây là giao diện video-call thật:
-- Mở webcam (`getUserMedia`) hiển thị video người dùng.
-- Kết nối WebSocket tới `ws://.../ws/interview/{session_id}`.
-- Ghi âm bằng `MediaRecorder` theo kiểu push-to-talk (giữ nút "Giữ để Trả lời"), gửi audio blob qua WebSocket.
-- Nhận audio trả về từ AI, phát qua `AudioContext`; nhận text để hiển thị transcript (render markdown).
-- Khi server gửi `status: "ENDED"` hoặc người dùng bấm nút kết thúc, gọi `api.endSession()` rồi chuyển sang trang Evaluation Report.
+```bash
+npm run dev    # Start dev server
+npm run build  # Production build
+npm run lint   # ESLint check
+npm run typecheck # TypeScript check
+npm run check  # Run lint + typecheck + build
+```
 
-`useActiveSessionStore` chỉ làm nhiệm vụ phụ: ghi nhớ "phiên nào đang mở" để Sidebar hiển thị danh sách quay lại nhanh khi có nhiều phiên phỏng vấn chạy song song — nó không thay thế hay can thiệp vào logic WebSocket/audio ở trên.
+### If using docker
 
-## Việc còn thiếu để hoàn thiện tích hợp backend
+```bash
+docker compose up app --build # build and run the app
+docker compose up dev --build # run the app in dev mode on port 3001
+```
 
-- `TemplateManagerPage` và `SettingsPage` vẫn dùng mock data — cần thêm endpoint backend tương ứng rồi nối qua React Query giống các trang khác.
-- Auth (`useAuthStore`) hoàn toàn phía client, không có bảng user/JWT thật ở backend — cần thêm nếu muốn nhiều người dùng thật đăng nhập độc lập.
-- `useScheduleStore` (danh sách chờ) không persist ở backend — mất khi reload trang.
+## Updating for Other Platforms
 
-## Design tokens
+Two source-of-truth files power all platform support. Edit the source, then run the sync script:
 
-- Background `#0F1117`, surface `#1A1D27`, accent indigo `#6366F1`
-- Font: Inter (display/body) + JetBrains Mono (data/code)
-- Xem `tailwind.config.js` cho toàn bộ token màu/spacing.
+| What                   | Source of truth                         | Sync command                       |
+| ---------------------- | --------------------------------------- | ---------------------------------- |
+| Project instructions   | `AGENTS.md`                             | `bash scripts/sync-agent-rules.sh` |
+| `/clone-website` skill | `.claude/skills/clone-website/SKILL.md` | `node scripts/sync-skills.mjs`     |
+
+Each script regenerates the platform-specific copies automatically. Agents that read the source files natively need no regeneration.
+
+
+## Star History
+
+![Star History Chart](docs/assets/star-history.png)
+
+## License
+
+MIT
+
+<sub>Translations: <a href="README.ja.md">日本語</a> · <a href="README.zh-CN.md">Simplified Chinese</a></sub>

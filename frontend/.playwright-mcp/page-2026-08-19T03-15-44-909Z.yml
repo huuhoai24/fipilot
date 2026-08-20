@@ -1,0 +1,58 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - button
+            - link:
+              - /url: /dashboard
+        - generic:
+          - generic:
+            - generic:
+              - button
+          - button
+          - button
+      - generic:
+        - generic:
+          - heading [level=1]: Technical Screen
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Personalized interviews for your job hunt
+              - heading [level=2]: Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Work on behavioral & technical questions that matter
+              - heading [level=2]: Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills.
+          - generic:
+            - button: Try for free
+            - button: View Previous Interviews
+  - generic:
+    - alert
+  - dialog [ref=f1e133]:
+    - generic [ref=f1e319]:
+      - heading "Upload Resume" [level=1] [ref=f1e320]
+      - paragraph [ref=f1e321]: Add your resume so mock interviewer can reference it during conversation. (Optional)
+      - button [ref=f1e324] [cursor=pointer]:
+        - generic [ref=f1e325]:
+          - heading "Drag and drop your resume here" [level=3] [ref=f1e330]
+          - 'heading "Supported formats: PDF" [level=4] [ref=f1e331]'
+          - 'heading "Max size: 5 MB" [level=4] [ref=f1e332]'
+    - generic [ref=f1e163]:
+      - button "Back" [ref=f1e333] [cursor=pointer]
+      - button "Continue" [active] [ref=f1e239] [cursor=pointer]

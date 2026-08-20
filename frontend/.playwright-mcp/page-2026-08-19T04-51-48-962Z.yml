@@ -1,0 +1,62 @@
+- generic:
+  - generic:
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - button
+            - link:
+              - /url: /dashboard
+        - generic:
+          - generic:
+            - generic:
+              - button
+          - button
+          - button
+      - generic:
+        - generic:
+          - heading [level=1]: Technical Screen
+          - heading [level=2]: Practice with AI-powered voice interviews
+          - generic:
+            - heading [level=2]: You have 1 mock interview available
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=1]: Personalized interviews for your job hunt
+              - heading [level=2]: Practice with pre-built interviewers for popular roles or create a custom interview by sharing a job description.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: A realistic, voice-based interview
+              - heading [level=2]: Build confidence by speaking naturally with an AI recruiter as you would in a real recruiter call.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Work on behavioral & technical questions that matter
+              - heading [level=2]: Refine how you tell stories about your experiences and demonstrate technical thinking in a way interviewers expect.
+              - separator
+            - generic:
+              - generic:
+                - heading [level=1]: Improve with clear, actionable feedback
+              - heading [level=2]: Build an action plan to improve with specific feedback on your clarity, confidence, and technical skills.
+          - generic:
+            - button: Try for free
+  - generic:
+    - alert
+  - dialog [ref=f1e133]:
+    - generic [ref=f1e168]:
+      - heading "Upload Resume" [level=1] [ref=f1e169]
+      - paragraph [ref=f1e170]: Add your resume so mock interviewer can reference it during conversation. (Optional)
+      - button "Your resume has been added You can update this resume in your profile anytime CV_hoainh.pdf" [ref=f1e202]:
+        - generic [ref=f1e174]:
+          - generic [ref=f1e191]:
+            - generic [ref=f1e192]: Your resume has been added
+            - generic [ref=f1e203]: You can update this resume in your profile anytime
+          - generic [ref=f1e204]:
+            - heading "CV_hoainh.pdf" [level=3] [ref=f1e210]
+            - generic [ref=f1e211]:
+              - button [ref=f1e212] [cursor=pointer]
+              - button [ref=f1e217] [cursor=pointer]
+    - generic [ref=f1e163]:
+      - button "Back" [ref=f1e166] [cursor=pointer]
+      - button "Continue" [ref=f1e220] [cursor=pointer]
