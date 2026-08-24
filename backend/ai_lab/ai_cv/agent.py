@@ -4,10 +4,7 @@ from infrastructure.llm.base import BaseLLMService
 
 from ai_lab.ai_cv.prompt import SYSTEM_INSTRUCTION, build_prompt
 from ai_lab.ai_cv.schemas import CVInput, CandidateProfile, ResumeExtractionResult
-
-
-class NonResumeDocumentError(ValueError):
-    pass
+from ai_lab.ai_cv.exceptions import NonResumeDocumentError, MarginalResumeDocumentError
 
 
 class CVLabAgent:
@@ -36,10 +33,15 @@ class CVLabAgent:
             thinking_budget=0,
             operation="ai_lab_resume_extraction",
         )
-        if (
+        if extraction.document_type == "marginal_resume":
+            raise MarginalResumeDocumentError(
+                closest_domains=extraction.closest_domains,
+                match_percentage=extraction.match_percentage,
+            )
+        elif (
             extraction.document_type != "resume"
             or extraction.classification_confidence
             < self.MIN_RESUME_CLASSIFICATION_CONFIDENCE
         ):
-            raise NonResumeDocumentError("The document was not classified as a Resume")
+            raise NonResumeDocumentError()
         return extraction.to_candidate_profile()

@@ -1,0 +1,10 @@
+{
+  "ai": "ai_cv",
+  "model": "gemini-2.5-flash",
+  "task_type": "simple",
+  "temperature": 0.2,
+  "timestamp": "2026-08-17T07:11:09.623346+00:00",
+  "success": false,
+  "raw_response_captured": false,
+  "error": "LLMResponseValidationError: Could not produce valid ResumeExtractionResult JSON"
+}

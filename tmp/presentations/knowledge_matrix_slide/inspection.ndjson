@@ -1,0 +1,61 @@
+{"kind":"slide","id":"sl/0zajlk","slide":1,"title":"03  DATA & KNOWLEDGE","textShapes":36}
+{"kind":"shape","id":"sh/u58nqxcv","slide":1,"bbox":[410,346,40,24]}
+{"kind":"shape","id":"sh/h8zm1cv6","slide":1,"bbox":[818,346,40,24]}
+{"kind":"textbox","id":"sh/g7q5s7ul","slide":1,"text":"03  DATA & KNOWLEDGE","textPreview":"03  DATA & KNOWLEDGE","textChars":20,"textLines":1,"bbox":[56,28,330,24]}
+{"kind":"textbox","id":"sh/3uh43mdc","slide":1,"text":"The knowledge matrix aligns role, level and topic evidence","textPreview":"The knowledge matrix aligns role, level and topic evidence","textChars":58,"textLines":1,"bbox":[56,57,1120,48]}
+{"kind":"textbox","id":"sh/it8nuhcr","slide":1,"text":"Two catalog dimensions become bounded, traceable context for the interview planner.","textPreview":"Two catalog dimensions become bounded, traceable context for the interview planner.","textChars":83,"textLines":1,"bbox":[58,112,1090,30]}
+{"kind":"shape","id":"sh/5wjm5cvi","slide":1,"bbox":[1174,28,38,38]}
+{"kind":"shape","id":"sh/4vq5w7ux","slide":1,"bbox":[1219,28,38,38]}
+{"kind":"shape","id":"sh/ry147mdo","slide":1,"bbox":[56,151,1200,2]}
+{"kind":"shape","id":"sh/qxsnyhc3","slide":1,"bbox":[58,180,346,404]}
+{"kind":"textbox","id":"sh/03etsju5","slide":1,"text":"SOURCE MATRIX","textPreview":"SOURCE MATRIX","textChars":13,"textLines":1,"bbox":[82,202,298,28]}
+{"kind":"textbox","id":"sh/14nu1ovq","slide":1,"text":"10 roles  ×  4 levels","textPreview":"10 roles  ×  4 levels","textChars":21,"textLines":1,"bbox":[82,241,298,42]}
+{"kind":"shape","id":"sh/ehcbq9cz","slide":1,"bbox":[90,296,282,2]}
+{"kind":"textbox","id":"sh/zilczedk","slide":1,"text":"DOMAIN TOPICS","textPreview":"DOMAIN TOPICS","textChars":13,"textLines":1,"bbox":[84,314,146,24]}
+{"kind":"textbox","id":"sh/o7edw3u1","slide":1,"text":"domains[role]","textPreview":"domains[role]","textChars":13,"textLines":1,"bbox":[236,314,136,24]}
+{"kind":"textbox","id":"sh/98nu5ovm","slide":1,"text":"Category  →  Subcategory  →  Topic","textPreview":"Category  →  Subcategory  →  Topic","textChars":34,"textLines":1,"bbox":[84,349,288,28]}
+{"kind":"textbox","id":"sh/m5wvutcb","slide":1,"text":"Each topic stores a title, path and interview anchors.","textPreview":"Each topic stores a title, path and interview anchors.","textChars":54,"textLines":1,"bbox":[86,384,284,48]}
+{"kind":"shape","id":"sh/n65c3ydw","slide":1,"bbox":[90,445,282,2]}
+{"kind":"textbox","id":"sh/wbyd03ud","slide":1,"text":"LEVEL GUIDANCE","textPreview":"LEVEL GUIDANCE","textChars":14,"textLines":1,"bbox":[84,463,166,24]}
+{"kind":"textbox","id":"sh/xc7u98vy","slide":1,"text":"levels[role][level]","textPreview":"levels[role][level]","textChars":19,"textLines":1,"bbox":[234,463,138,24]}
+{"kind":"shape","id":"sh/lgj2x4jq","slide":1,"bbox":[84,500,288,48]}
+{"kind":"textbox","id":"sh/kfal4zi5","slide":1,"text":"Intern  |  Junior  |  Middle  |  Senior","textPreview":"Intern  |  Junior  |  Middle  |  Senior","textChars":39,"textLines":1,"bbox":[94,514,268,24]}
+{"kind":"shape","id":"sh/je1kvu1k","slide":1,"bbox":[452,180,360,404]}
+{"kind":"textbox","id":"sh/yds3290f","slide":1,"text":"CATALOG RECORDS","textPreview":"CATALOG RECORDS","textChars":15,"textLines":1,"bbox":[478,202,308,28]}
+{"kind":"shape","id":"sh/tk3m1oz2","slide":1,"bbox":[482,247,300,114]}
+{"kind":"textbox","id":"sh/8jul8jih","slide":1,"text":"TOPIC RECORD","textPreview":"TOPIC RECORD","textChars":12,"textLines":1,"bbox":[500,262,264,22]}
+{"kind":"textbox","id":"sh/7i1kzehw","slide":1,"text":"title · path · anchors\nrole + topic path + anchor text","textPreview":"title · path · anchors | role + topic path + anchor text","textChars":54,"textLines":2,"bbox":[500,294,264,48]}
+{"kind":"shape","id":"sh/6hs3690b","slide":1,"bbox":[482,377,300,86]}
+{"kind":"textbox","id":"sh/9oz2pkji","slide":1,"text":"LEVEL RECORD","textPreview":"LEVEL RECORD","textChars":12,"textLines":1,"bbox":[500,391,264,22]}
+{"kind":"textbox","id":"sh/onqlwfix","slide":1,"text":"knowledge depth · evaluation focus","textPreview":"knowledge depth · evaluation focus","textChars":34,"textLines":1,"bbox":[500,424,264,24]}
+{"kind":"shape","id":"sh/etoz6lgv","slide":1,"bbox":[482,480,300,78]}
+{"kind":"textbox","id":"sh/zux0zqhg","slide":1,"text":"topic_id = role :: path :: title","textPreview":"topic_id = role :: path :: title","textChars":32,"textLines":1,"bbox":[496,494,272,22]}
+{"kind":"textbox","id":"sh/0v6h8vy1","slide":1,"text":"document_id = SHA-256(topic_id)[:32]","textPreview":"document_id = SHA-256(topic_id)[:32]","textChars":36,"textLines":1,"bbox":[490,524,284,22]}
+{"kind":"shape","id":"sh/1wfi10zm","slide":1,"bbox":[860,180,362,404]}
+{"kind":"textbox","id":"sh/mxoja5g7","slide":1,"text":"RUNTIME SELECTION","textPreview":"RUNTIME SELECTION","textChars":17,"textLines":1,"bbox":[888,202,306,28]}
+{"kind":"textbox","id":"sh/nyx03ahc","slide":1,"text":"CandidateProfile: role · skills · evidence","textPreview":"CandidateProfile: role · skills · evidence","textChars":42,"textLines":1,"bbox":[886,239,310,22]}
+{"kind":"textbox","id":"sh/oj61cvyx","slide":1,"text":"InterviewConfig: target experience level","textPreview":"InterviewConfig: target experience level","textChars":40,"textLines":1,"bbox":[886,265,310,22]}
+{"kind":"shape","id":"sh/9kzi50fi","slide":1,"bbox":[884,302,314,58]}
+{"kind":"shape","id":"sh/i14zy1gn","slide":1,"bbox":[896,314,34,34]}
+{"kind":"textbox","id":"sh/32d0r6h8","slide":1,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[896,320,34,22]}
+{"kind":"textbox","id":"sh/ji5gv29w","slide":1,"text":"Select domain","textPreview":"Select domain","textChars":13,"textLines":1,"bbox":[942,310,236,22]}
+{"kind":"textbox","id":"sh/ihwfmx8r","slide":1,"text":"Profile tokens + domain terms","textPreview":"Profile tokens + domain terms","textChars":29,"textLines":1,"bbox":[942,332,240,22]}
+{"kind":"shape","id":"sh/5knyxcr2","slide":1,"bbox":[884,368,314,58]}
+{"kind":"shape","id":"sh/kjexo7qh","slide":1,"bbox":[896,380,34,34]}
+{"kind":"textbox","id":"sh/7m5gz298","slide":1,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[896,386,34,22]}
+{"kind":"textbox","id":"sh/6lwfqx8n","slide":1,"text":"Attach level guidance","textPreview":"Attach level guidance","textChars":21,"textLines":1,"bbox":[942,376,236,22]}
+{"kind":"textbox","id":"sh/tony1cre","slide":1,"text":"Up to 10 guidance statements","textPreview":"Up to 10 guidance statements","textChars":28,"textLines":1,"bbox":[942,398,240,22]}
+{"kind":"shape","id":"sh/snexs7qt","slide":1,"bbox":[884,434,314,58]}
+{"kind":"shape","id":"sh/fqpg3m94","slide":1,"bbox":[896,446,34,34]}
+{"kind":"textbox","id":"sh/upgzuh8j","slide":1,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[896,452,34,22]}
+{"kind":"textbox","id":"sh/cfyxkr6x","slide":1,"text":"Score domain topics","textPreview":"Score domain topics","textChars":19,"textLines":1,"bbox":[942,442,236,22]}
+{"kind":"textbox","id":"sh/dgretwni","slide":1,"text":"Token overlap + exact-title boost","textPreview":"Token overlap + exact-title boost","textChars":33,"textLines":1,"bbox":[942,464,240,22]}
+{"kind":"shape","id":"sh/qtgfihor","slide":1,"bbox":[884,500,314,58]}
+{"kind":"shape","id":"sh/repwrm5c","slide":1,"bbox":[896,512,34,34]}
+{"kind":"textbox","id":"sh/4ryxg76l","slide":1,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[896,518,34,22]}
+{"kind":"textbox","id":"sh/ps7epc76","slide":1,"text":"Return bounded context","textPreview":"Return bounded context","textChars":22,"textLines":1,"bbox":[942,508,236,22]}
+{"kind":"textbox","id":"sh/2pgfehov","slide":1,"text":"Top-8 topics → Interview Planner","textPreview":"Top-8 topics → Interview Planner","textChars":32,"textLines":1,"bbox":[942,530,240,22]}
+{"kind":"shape","id":"sh/3qpwn2pg","slide":1,"bbox":[58,606,1164,58]}
+{"kind":"textbox","id":"sh/gnexc76p","slide":1,"text":"Production uses deterministic lexical scoring; embeddings and vector search remain a research shadow.","textPreview":"Production uses deterministic lexical scoring; embeddings and vector search remain a research shadow.","textChars":101,"textLines":1,"bbox":[88,623,1104,28]}
+{"kind":"textbox","id":"sh/ho7elc7a","slide":1,"text":"Source: Knowledge/; catalog.json; chunks.py; local.py; interview_planner/agent.py","textPreview":"Source: Knowledge/; catalog.json; chunks.py; local.py; interview_planner/agent.py","textChars":81,"textLines":1,"bbox":[56,686,1168,16]}
+{"kind":"notes","id":"nt/0zajlk","slide":1,"text":"[VỊ TRÍ VÀ HƯỚNG DẪN CHỈNH SỬA]\nLoại: SLIDE MỚI - BỔ SUNG\nVị trí: Chèn sau slide 15 - Resume-to-CandidateProfile Method và trước slide 16 - RAG Knowledge Retrieval Pipeline trong deck cũ.\nCách thực hiện: Dùng slide này để trả lời cấu trúc Knowledge Matrix, nguồn dữ liệu và cách matrix đi vào Interview Planner.\n\n[SPEAKER NOTES NHANH]\nKnowledge Matrix không phải model được train; đây là catalog kiến thức curated và có thể truy vết.\nMatrix có hai cấu trúc liên kết theo role: domains[role] chứa cây Category → Subcategory → Topic; levels[role][level] chứa hướng dẫn theo Intern, Junior, Middle, Senior.\nMỗi topic có title, path và anchors. Hệ thống tạo topic_id ổn định; document_id là 32 ký tự đầu của SHA-256(topic_id), đồng thời giữ content hash để so sánh nội dung.\nỞ runtime, CandidateProfile cung cấp role/skills/evidence; target experience level đến từ InterviewConfig.\nProduction chọn domain bằng token matching, ghép tối đa 10 level-guidance statements, chấm điểm topic bằng token overlap và exact-title boost, rồi trả tối đa 8 topic cho Interview Planner.\nCần giữ ranh giới: production hiện dùng lexical scoring; embedding/vector là research shadow.\n\n[Sources]\n- Knowledge\\Domains\\<Role>\\<Category>\\<Subcategory>\\<Topic>.md\n- Knowledge\\Levels\\<Role>\\<Intern|Junior|Middle|Senior>.md\n- backend\\services\\interview_knowledge\\catalog.json\n- backend\\services\\interview_knowledge\\chunks.py\n- backend\\services\\interview_knowledge\\local.py\n- backend\\services\\interview_planner\\agent.py"}

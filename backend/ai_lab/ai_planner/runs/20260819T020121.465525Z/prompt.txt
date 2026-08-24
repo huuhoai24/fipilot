@@ -1,0 +1,42 @@
+System instruction:
+You are an interview planning agent for a CV-driven AI interviewer. Use only the candidate profile as input. Do not assume a job description. Return JSON only.
+
+Language instruction:
+The interview language is Vietnamese.
+
+Rules:
+- Ask questions in Vietnamese.
+- Provide feedback in Vietnamese.
+- Keep technical terms such as YOLO, PyTorch, TensorRT, FastAPI in English.
+- Do not translate programming concepts.
+
+Task:
+interview_planning
+
+Agent task:
+Create an interview plan from this CandidateProfile.
+
+The system is CV-driven. No job description is provided or required.
+
+Planner requirements:
+- Generate interview topics from the candidate's skills, projects, experiences, education, and specialization.
+- Assign a difficulty level for each topic: easy, medium, or hard.
+- Include reasoning based on candidate evidence, especially skill_evidence, projects, and experiences.
+- Keep each objective and reasoning field to one concise sentence.
+- Include 3 to 5 short phrases in recommended_question_areas for each topic; use directions, not fully written questions.
+- Keep each recommended question area under 100 characters.
+- Prefer project deep dives and evidence-backed skills over generic trivia.
+- Use curated_knowledge only to choose relevant topic depth and question direction; candidate evidence remains authoritative.
+- Do not plan broad definition questions such as "What is Machine Learning?" when the profile contains specific evidence.
+- For evidence-backed topics, plan questions about mechanisms, implementation decisions, trade-offs, debugging, measurement, or failure cases.
+- Do not repeat candidate summaries already present in CandidateProfile.
+- Use interview language 'vi' for objectives and reasoning.
+- Keep technical terms such as YOLO, PyTorch, TensorRT, FastAPI, and Python in English.
+- Calibrate difficulty for experience_level 'junior'.
+- Match interview_style 'technical'.
+- Allocate question_budget for each round such that the sum of question_budget across all rounds exactly equals question_count (10).
+- Total planned questions across all rounds must be exactly 10.
+- Keep the plan focused enough for a 30 minute interview.
+
+Context:
+{"candidate_profile": {"candidate_id": null, "name": "Nguyen Tran Truong Chinh", "years_experience": 0.5, "recent_role": "Artificial Intelligence Engineer", "skills": ["Python", "PyTorch", "TensorFlow", "OpenCV", "Scikit-learn", "YOLOX", "PaddleOCR", "ArcFace", "AdaFace", "3D CNN", "Docker", "MySQL", "MS SQL Server"], "skill_evidence": [{"skill": "PyTorch", "evidence": ["Fine-tuned ArcFace and AdaFace models on custom face datasets; developed 3D CNN models for video behavior analysis."], "source_section": "projects"}, {"skill": "OpenCV / Computer Vision", "evidence": ["Integrated real-time detection systems with surveillance cameras via OpenCV, optimized for high FPS."], "source_section": "projects"}, {"skill": "YOLOX & PaddleOCR", "evidence": ["Developed a two-stage detector pipeline using YOLOX for vehicle/plate detection and PaddleOCR for character recognition with mAP and Word Accuracy evaluation."], "source_section": "projects"}, {"skill": "ArcFace / Face Recognition", "evidence": ["Implemented feature embedding extraction and cosine similarity-based matching for face identification and verification."], "source_section": "projects"}], "projects": [{"name": "Face recognition system", "description": "Developed a robust face recognition pipeline leveraging deep learning models (ArcFace, AdaFace, ResNet) for identification and verification with feature embedding extraction and cosine similarity matching.", "technologies": ["Python", "PyTorch", "ArcFace", "AdaFace", "ResNet", "OpenCV", "Scikit-learn", "Docker"], "role": "AI Engineer"}, {"name": "Violence detection", "description": "Developed a real-time surveillance system detecting violent behaviors using 3D CNN deep learning models and OpenCV with high FPS optimization.", "technologies": ["Python", "PyTorch", "TensorFlow", "3D CNN", "OpenCV", "Scikit-learn", "Docker"], "role": "AI Engineer"}, {"name": "Vehicle and license plate detection", "description": "Developed a two-stage detector pipeline combining YOLOX for vehicle/plate detection and PaddleOCR for license plate recognition, evaluated with mAP and Word Accuracy under real-world conditions.", "technologies": ["Python", "YOLOX", "PaddleOCR", "OpenCV", "Scikit-learn", "Docker"], "role": "AI Engineer"}], "experiences": [], "education": [{"institution": "FPT Quy Nhon University", "degree": "Bachelor", "field_of_study": "Artificial Intelligence", "start_date": "2022", "end_date": "2026"}], "specialization": "Computer Vision", "seniority_signal": "Fresher / Junior", "confidence": 0.95, "confidence_score": 0.95, "extraction_method": null}, "interview_config": {"mode": "text", "language": "vi", "experience_level": "junior", "duration_minutes": 30, "interview_style": "technical", "question_count": 10, "objective": "Evaluate Computer Vision, Deep Learning practical knowledge and project experience", "interviewer_personality": "professional"}, "curated_knowledge": ["Face recognition loss functions (ArcFace, AdaFace, CosFace)", "3D CNN architectures for spatiotemporal action recognition", "Two-stage pipeline: Object Detection (YOLO/YOLOX) + OCR (PaddleOCR)", "Real-time video inference and FPS optimization techniques"]}

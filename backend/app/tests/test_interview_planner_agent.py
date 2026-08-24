@@ -31,10 +31,7 @@ class MockLLMService:
                     question_budget=3,
                     weight=0.4,
                 )
-            ],
-            coverage_goals=["Validate evidence-backed FastAPI experience."],
-            risk_areas=["Confirm whether model-serving work was production-grade."],
-            planner_summary="Plan prioritizes project-backed AI interview experience.",
+            ]
         )
 
 

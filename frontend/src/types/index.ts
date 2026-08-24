@@ -138,9 +138,9 @@ export interface V2InterviewRound {
 export interface V2InterviewPlan {
   duration_minutes: number
   rounds: V2InterviewRound[]
-  coverage_goals: string[]
-  risk_areas: string[]
-  planner_summary: string
+  coverage_goals?: string[]
+  risk_areas?: string[]
+  planner_summary?: string
 }
 
 export interface V2InterviewQuestion {

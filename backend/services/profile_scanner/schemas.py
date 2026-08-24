@@ -16,6 +16,7 @@ class ExtractedSkillEvidence(BaseModel):
 class ResumeExtractionResult(BaseModel):
     document_type: Literal[
         "resume",
+        "marginal_resume",
         "portfolio",
         "job_description",
         "academic_report",
@@ -25,6 +26,8 @@ class ResumeExtractionResult(BaseModel):
         "other",
     ]
     classification_confidence: float = Field(ge=0.0, le=1.0)
+    closest_domains: list[str] = Field(default_factory=list)
+    match_percentage: int | None = Field(default=None, ge=0, le=100)
     name: str = "Candidate"
     years_experience: float | None = None
     recent_role: str | None = None

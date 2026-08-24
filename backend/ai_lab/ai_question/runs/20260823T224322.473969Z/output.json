@@ -1,0 +1,19 @@
+{
+  "question": "Trong dự án Face Recognition System, bạn đã fine-tune các mô hình ArcFace và AdaFace. Bạn có thể giải thích sự khác biệt chính giữa ArcFace và AdaFace, và tại sao bạn lại chọn sử dụng cả hai mô hình này thay vì chỉ một không?",
+  "language": "vi",
+  "topic": "Face Recognition Systems",
+  "difficulty": "medium",
+  "reasoning": "Ứng viên đã liệt kê việc sử dụng ArcFace và AdaFace trong dự án nhận diện khuôn mặt. Câu hỏi này đánh giá kiến thức sâu hơn về cơ chế hoạt động, điểm mạnh/yếu của từng mô hình và khả năng đưa ra quyết định kỹ thuật dựa trên yêu cầu dự án.",
+  "expected_answer_points": [
+    "Giải thích cơ chế của ArcFace (Additive Angular Margin Loss) và AdaFace (Adaptive Face Recognition).",
+    "Nêu bật sự khác biệt chính trong cách chúng xử lý khoảng cách giữa các embedding và cách chúng tối ưu hóa không gian đặc trưng.",
+    "Thảo luận về lý do chọn sử dụng cả hai, có thể là để so sánh hiệu suất, tận dụng điểm mạnh của từng mô hình trong các điều kiện khác nhau, hoặc kết hợp chúng để đạt được độ chính xác cao hơn/khả năng thích ứng tốt hơn.",
+    "Đề cập đến các yếu tố như dữ liệu huấn luyện, điều kiện môi trường thực tế (ánh sáng, góc nhìn) có thể ảnh hưởng đến lựa chọn mô hình."
+  ],
+  "follow_up_questions": [
+    "Bạn đã đánh giá hiệu suất của ArcFace và AdaFace như thế nào trên tập dữ liệu tùy chỉnh của mình?",
+    "Có trường hợp nào mà một mô hình hoạt động tốt hơn đáng kể so với mô hình còn lại không? Tại sao?",
+    "Bạn có gặp phải thách thức nào khi fine-tune các mô hình này không và bạn đã giải quyết chúng như thế nào?",
+    "Bạn có xem xét các phương pháp kết hợp (ensemble) ArcFace và AdaFace để cải thiện hiệu suất không?"
+  ]
+}

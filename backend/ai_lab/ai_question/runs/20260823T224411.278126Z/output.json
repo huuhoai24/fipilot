@@ -1,0 +1,19 @@
+{
+  "question": "Trong dự án phát hiện bạo lực, bạn đã sử dụng mô hình 3D CNN để phân tích hành vi video. Bạn có thể giải thích cách 3D CNN xử lý dữ liệu video khác với 2D CNN và những lợi ích chính mà nó mang lại trong việc phát hiện hành vi không?",
+  "language": "vi",
+  "topic": "3D CNN for Video Analysis",
+  "difficulty": "medium",
+  "reasoning": "Ứng viên đã phát triển mô hình 3D CNN để phân tích hành vi video, cho thấy kinh nghiệm với các mô hình học sâu cho dữ liệu không gian-thời gian. Câu hỏi này đi sâu vào kiến thức của ứng viên về cơ chế hoạt động của 3D CNN và lý do lựa chọn nó cho tác vụ cụ thể này.",
+  "expected_answer_points": [
+    "Giải thích sự khác biệt cơ bản về cách 3D CNN và 2D CNN trích xuất đặc trưng từ dữ liệu video (3D CNN xem xét cả không gian và thời gian, 2D CNN chỉ xem xét không gian trên từng khung hình).",
+    "Nêu bật khả năng của 3D CNN trong việc nắm bắt các mối quan hệ không gian-thời gian (spatio-temporal relationships) và chuyển động (motion patterns) trong video.",
+    "Thảo luận về lợi ích của 3D CNN trong việc phát hiện hành vi, nơi ngữ cảnh thời gian là rất quan trọng.",
+    "Đề cập đến cách 3D CNN có thể học được các đặc trưng phức tạp hơn liên quan đến chuỗi hành động."
+  ],
+  "follow_up_questions": [
+    "Bạn đã chuẩn bị dữ liệu video cho mô hình 3D CNN như thế nào?",
+    "Bạn có gặp phải thách thức nào khi huấn luyện mô hình 3D CNN không, và bạn đã giải quyết chúng như thế nào?",
+    "Bạn đã tối ưu hóa hiệu suất (FPS) của hệ thống phát hiện bạo lực sử dụng 3D CNN như thế nào?",
+    "Bạn có xem xét các kiến trúc mạng khác ngoài 3D CNN cho tác vụ này không? Nếu có, tại sao bạn lại chọn 3D CNN?"
+  ]
+}

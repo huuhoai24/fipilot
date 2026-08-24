@@ -1,0 +1,24 @@
+Communication job: By the end, the defense panel should understand how FiPilot's role/level knowledge catalog becomes bounded planner context because the slide maps source structure, catalog records, and the production selection path.
+
+Repository evidence:
+- Knowledge/Domains/<Role>/<Category>/<Subcategory>/<Topic>.md
+- Knowledge/Levels/<Role>/<Intern|Junior|Middle|Senior>.md
+- backend/services/interview_knowledge/catalog.json
+- backend/services/interview_knowledge/chunks.py
+- backend/services/interview_knowledge/local.py
+- backend/services/interview_planner/agent.py
+
+Verified facts used:
+- The catalog exposes 10 domain keys.
+- Every domain has Intern, Junior, Middle, and Senior guidance.
+- Topic records contain title, path, anchors, stable topic_id, document_id, and content_sha256.
+- document_id is the first 32 characters of SHA-256(topic_id).
+- CandidateProfile drives profile-token matching; InterviewConfig supplies experience_level.
+- Production LocalKnowledgeRetriever returns at most 8 scored topics and up to 10 level-guidance statements.
+- Vector retrieval is not represented as the active production path.
+
+Insertion contract:
+- New slide.
+- Insert after old slide 15 (Resume-to-CandidateProfile Method).
+- Insert before old slide 16 (RAG Knowledge Retrieval Pipeline).
+- Visible copy is English; speaker notes are Vietnamese; Sources are retained in notes and footer.

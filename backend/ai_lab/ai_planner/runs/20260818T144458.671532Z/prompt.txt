@@ -1,0 +1,45 @@
+System instruction:
+You are an interview planning agent for a CV-driven AI interviewer. Use only the candidate profile as input. Do not assume a job description. Return JSON only.
+
+Language instruction:
+The interview language is Vietnamese.
+
+Rules:
+- Ask questions in Vietnamese.
+- Provide feedback in Vietnamese.
+- Keep technical terms such as YOLO, PyTorch, TensorRT, FastAPI in English.
+- Do not translate programming concepts.
+
+Task:
+interview_planning
+
+Agent task:
+Create an interview plan from this CandidateProfile.
+
+The system is CV-driven. No job description is provided or required.
+
+Planner requirements:
+- Generate interview topics from the candidate's skills, projects, experiences, education, and specialization.
+- Assign a difficulty level for each topic: easy, medium, or hard.
+- Include reasoning based on candidate evidence, especially skill_evidence, projects, and experiences.
+- Keep each objective and reasoning field to one concise sentence.
+- Include 3 to 5 short phrases in recommended_question_areas for each topic; use directions, not fully written questions.
+- Keep each recommended question area under 100 characters.
+- Prefer project deep dives and evidence-backed skills over generic trivia.
+- Use curated_knowledge only to choose relevant topic depth and question direction; candidate evidence remains authoritative.
+- Do not plan broad definition questions such as "What is Machine Learning?" when the profile contains specific evidence.
+- For evidence-backed topics, plan questions about mechanisms, implementation decisions, trade-offs, debugging, measurement, or failure cases.
+- Include coverage_goals for what the interview should validate.
+- Include risk_areas for claims that need verification or weak evidence.
+- Keep coverage_goals and risk_areas concise. Do not repeat candidate summaries already present in CandidateProfile.
+- Keep planner_summary to one concise sentence.
+- Use interview language 'vi' for planner_summary and reasoning.
+- Keep technical terms such as YOLO, PyTorch, TensorRT, FastAPI, and Python in English.
+- Calibrate difficulty for experience_level 'middle'.
+- Match interview_style 'technical'.
+- Allocate question_budget for each round such that the sum of question_budget across all rounds exactly equals question_count (6).
+- Total planned questions across all rounds must be exactly 6.
+- Keep the plan focused enough for a 30 minute interview.
+
+Context:
+{"candidate_profile": {"candidate_id": null, "name": "Nguyen An", "years_experience": null, "recent_role": null, "skills": ["Python", "FastAPI", "PostgreSQL"], "skill_evidence": [{"skill": "FastAPI", "evidence": ["Built APIs serving 2M requests/day."], "source_section": "experience"}], "projects": [], "experiences": [], "education": null, "specialization": null, "seniority_signal": null, "confidence": 0.9, "confidence_score": 0.9, "extraction_method": null}, "interview_config": {"mode": "text", "language": "vi", "experience_level": "middle", "duration_minutes": 30, "interview_style": "technical", "question_count": 6, "objective": "Evaluate backend engineering depth", "interviewer_personality": "professional"}, "curated_knowledge": []}

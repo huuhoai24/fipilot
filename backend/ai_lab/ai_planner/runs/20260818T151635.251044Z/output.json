@@ -1,0 +1,88 @@
+{
+  "duration_minutes": 30,
+  "rounds": [
+    {
+      "round_id": "1",
+      "topic": "Face Recognition Systems",
+      "objective": "Đánh giá kiến thức về các mô hình nhận diện khuôn mặt và cách triển khai chúng.",
+      "difficulty": "medium",
+      "reasoning": "Ứng viên đã phát triển hệ thống nhận diện khuôn mặt sử dụng ArcFace và AdaFace, cho thấy kinh nghiệm thực tế với các mô hình này.",
+      "recommended_question_areas": [
+        "So sánh ArcFace và AdaFace",
+        "Quy trình trích xuất embedding",
+        "Xử lý dữ liệu khuôn mặt",
+        "Thách thức trong nhận diện",
+        "Tối ưu hóa hiệu suất"
+      ],
+      "weight": 0.3,
+      "target_skills": [
+        "PyTorch",
+        "ArcFace",
+        "AdaFace",
+        "OpenCV"
+      ],
+      "question_budget": 3
+    },
+    {
+      "round_id": "2",
+      "topic": "Real-time Object Detection and OCR",
+      "objective": "Đánh giá khả năng của ứng viên trong việc xây dựng pipeline phát hiện đối tượng và nhận dạng ký tự.",
+      "difficulty": "medium",
+      "reasoning": "Ứng viên đã phát triển pipeline hai giai đoạn sử dụng YOLOX và PaddleOCR, có kinh nghiệm đánh giá hiệu suất.",
+      "recommended_question_areas": [
+        "Cấu trúc pipeline YOLOX + PaddleOCR",
+        "Thách thức tích hợp hai mô hình",
+        "Đánh giá mAP và Word Accuracy",
+        "Tối ưu hóa tốc độ inference",
+        "Xử lý biển số xe khó đọc"
+      ],
+      "weight": 0.3,
+      "target_skills": [
+        "YOLOX",
+        "PaddleOCR",
+        "OpenCV",
+        "Python"
+      ],
+      "question_budget": 3
+    },
+    {
+      "round_id": "3",
+      "topic": "3D CNN for Video Analysis",
+      "objective": "Kiểm tra kiến thức về 3D CNN và ứng dụng của chúng trong phân tích video thời gian thực.",
+      "difficulty": "medium",
+      "reasoning": "Ứng viên đã phát triển mô hình 3D CNN để phân tích hành vi trong video, cho thấy kinh nghiệm với dữ liệu thời gian.",
+      "recommended_question_areas": [
+        "Ưu điểm của 3D CNN",
+        "Xử lý dữ liệu video đầu vào",
+        "Tối ưu hóa FPS trong video",
+        "Thách thức phát hiện hành vi"
+      ],
+      "weight": 0.2,
+      "target_skills": [
+        "3D CNN",
+        "PyTorch",
+        "TensorFlow",
+        "OpenCV"
+      ],
+      "question_budget": 2
+    },
+    {
+      "round_id": "4",
+      "topic": "Docker and Deployment",
+      "objective": "Đánh giá kinh nghiệm của ứng viên với Docker trong các dự án AI.",
+      "difficulty": "easy",
+      "reasoning": "Ứng viên đã sử dụng Docker trong nhiều dự án, cho thấy kinh nghiệm triển khai và quản lý môi trường.",
+      "recommended_question_areas": [
+        "Lợi ích của Docker trong AI",
+        "Dockerfile cơ bản",
+        "Xử lý dependency với Docker",
+        "Triển khai mô hình với Docker"
+      ],
+      "weight": 0.2,
+      "target_skills": [
+        "Docker"
+      ],
+      "question_budget": 2
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "candidate_profile": {
+    "candidate_id": null,
+    "name": "Nguyen Tran Truong Chinh",
+    "years_experience": 0.5,
+    "recent_role": "Artificial Intelligence Engineer",
+    "skills": [
+      "Python",
+      "PyTorch",
+      "TensorFlow",
+      "OpenCV",
+      "Scikit-learn",
+      "YOLOX",
+      "PaddleOCR",
+      "ArcFace",
+      "AdaFace",
+      "3D CNN",
+      "Docker",
+      "MySQL",
+      "MS SQL Server"
+    ],
+    "skill_evidence": [
+      {
+        "skill": "PyTorch",
+        "evidence": [
+          "Fine-tuned ArcFace and AdaFace models on custom face datasets; developed 3D CNN models for video behavior analysis."
+        ],
+        "source_section": "projects"
+      },
+      {
+        "skill": "OpenCV / Computer Vision",
+        "evidence": [
+          "Integrated real-time detection systems with surveillance cameras via OpenCV, optimized for high FPS."
+        ],
+        "source_section": "projects"
+      },
+      {
+        "skill": "YOLOX & PaddleOCR",
+        "evidence": [
+          "Developed a two-stage detector pipeline using YOLOX for vehicle/plate detection and PaddleOCR for character recognition with mAP and Word Accuracy evaluation."
+        ],
+        "source_section": "projects"
+      },
+      {
+        "skill": "ArcFace / Face Recognition",
+        "evidence": [
+          "Implemented feature embedding extraction and cosine similarity-based matching for face identification and verification."
+        ],
+        "source_section": "projects"
+      }
+    ],
+    "projects": [
+      {
+        "name": "Face recognition system",
+        "description": "Developed a robust face recognition pipeline leveraging deep learning models (ArcFace, AdaFace, ResNet) for identification and verification with feature embedding extraction and cosine similarity matching.",
+        "technologies": [
+          "Python",
+          "PyTorch",
+          "ArcFace",
+          "AdaFace",
+          "ResNet",
+          "OpenCV",
+          "Scikit-learn",
+          "Docker"
+        ],
+        "role": "AI Engineer"
+      },
+      {
+        "name": "Violence detection",
+        "description": "Developed a real-time surveillance system detecting violent behaviors using 3D CNN deep learning models and OpenCV with high FPS optimization.",
+        "technologies": [
+          "Python",
+          "PyTorch",
+          "TensorFlow",
+          "3D CNN",
+          "OpenCV",
+          "Scikit-learn",
+          "Docker"
+        ],
+        "role": "AI Engineer"
+      },
+      {
+        "name": "Vehicle and license plate detection",
+        "description": "Developed a two-stage detector pipeline combining YOLOX for vehicle/plate detection and PaddleOCR for license plate recognition, evaluated with mAP and Word Accuracy under real-world conditions.",
+        "technologies": [
+          "Python",
+          "YOLOX",
+          "PaddleOCR",
+          "OpenCV",
+          "Scikit-learn",
+          "Docker"
+        ],
+        "role": "AI Engineer"
+      }
+    ],
+    "experiences": [],
+    "education": [
+      {
+        "institution": "FPT Quy Nhon University",
+        "degree": "Bachelor",
+        "field_of_study": "Artificial Intelligence",
+        "start_date": "2022",
+        "end_date": "2026"
+      }
+    ],
+    "specialization": "Computer Vision",
+    "seniority_signal": "Fresher / Junior",
+    "confidence": 0.95,
+    "confidence_score": 0.95,
+    "extraction_method": null
+  },
+  "interview_round": {
+    "round_id": "1",
+    "topic": "Face Recognition Systems",
+    "objective": "Đánh giá kiến thức thực tế về triển khai và tối ưu hóa hệ thống nhận diện khuôn mặt.",
+    "difficulty": "medium",
+    "reasoning": "Ứng viên đã phát triển hệ thống nhận diện khuôn mặt sử dụng ArcFace và AdaFace, cho thấy kinh nghiệm thực tế với các mô hình và kỹ thuật liên quan.",
+    "recommended_question_areas": [
+      "So sánh ArcFace và AdaFace",
+      "Tối ưu hóa hiệu suất nhận diện",
+      "Xử lý dữ liệu khuôn mặt",
+      "Thách thức triển khai thực tế"
+    ],
+    "weight": 0.3,
+    "target_skills": [
+      "PyTorch",
+      "ArcFace",
+      "AdaFace",
+      "OpenCV"
+    ],
+    "question_budget": 3
+  },
+  "interview_config": {
+    "mode": "text",
+    "language": "vi",
+    "experience_level": "junior",
+    "duration_minutes": 30,
+    "interview_style": "technical",
+    "question_count": 10,
+    "objective": "Evaluate Computer Vision, Deep Learning practical knowledge and project experience",
+    "interviewer_personality": "professional"
+  }
+}

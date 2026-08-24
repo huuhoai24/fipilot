@@ -1,0 +1,20 @@
+{
+  "question": "Trong dự án phát hiện phương tiện và biển số xe, bạn đã sử dụng YOLOX cho việc phát hiện và PaddleOCR cho nhận dạng ký tự. Bạn có thể giải thích lý do chính đằng sau việc lựa chọn kết hợp hai mô hình này thay vì một giải pháp end-to-end không?",
+  "language": "vi",
+  "topic": "Real-time Object Detection and OCR",
+  "difficulty": "medium",
+  "reasoning": "Ứng viên đã làm việc với YOLOX và PaddleOCR trong một pipeline hai giai đoạn. Câu hỏi này đi sâu vào quyết định thiết kế kiến trúc, yêu cầu ứng viên giải thích lý do lựa chọn và hiểu biết về ưu nhược điểm của từng phương pháp.",
+  "expected_answer_points": [
+    "Thảo luận về ưu điểm của việc tách biệt các tác vụ (phát hiện đối tượng và nhận dạng ký tự) như tính linh hoạt, khả năng tối ưu hóa độc lập từng phần.",
+    "Đề cập đến việc YOLOX mạnh về phát hiện đối tượng tổng quát và PaddleOCR tối ưu cho nhận dạng văn bản, đặc biệt là trong các điều kiện thực tế.",
+    "So sánh với các giải pháp end-to-end (ví dụ: một số mô hình OCR có khả năng phát hiện) và giải thích tại sao cách tiếp cận hai giai đoạn được ưu tiên trong trường hợp này (ví dụ: độ chính xác, hiệu suất, khả năng tùy chỉnh).",
+    "Đề cập đến các thách thức có thể gặp phải khi kết hợp hai mô hình và cách giải quyết (ví dụ: truyền dữ liệu giữa các giai đoạn, đồng bộ hóa).",
+    "Nói về các chỉ số đánh giá riêng biệt cho từng giai đoạn (mAP cho YOLOX, Word Accuracy cho PaddleOCR) và cách chúng đóng góp vào hiệu suất tổng thể."
+  ],
+  "follow_up_questions": [
+    "Bạn đã tối ưu hóa như thế nào để đảm bảo hiệu suất thời gian thực khi kết hợp YOLOX và PaddleOCR?",
+    "Có những trường hợp nào mà giải pháp end-to-end sẽ phù hợp hơn cho bài toán này không?",
+    "Bạn đã xử lý những thách thức nào liên quan đến việc truyền kết quả từ YOLOX sang PaddleOCR, đặc biệt là với các biển số bị che khuất hoặc chất lượng hình ảnh kém?",
+    "Nếu phải cải thiện độ chính xác của hệ thống, bạn sẽ tập trung vào giai đoạn nào trước và tại sao?"
+  ]
+}

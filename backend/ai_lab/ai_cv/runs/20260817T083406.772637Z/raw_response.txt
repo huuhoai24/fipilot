@@ -1,0 +1,1 @@
+Unavailable: BaseLLMService.generate_json returns only the validated model; the provider raw response is not exposed.

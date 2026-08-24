@@ -95,9 +95,6 @@ class InterviewRound(BaseModel):
 class InterviewPlan(BaseModel):
     duration_minutes: int = Field(default=30, ge=5, le=180)
     rounds: list[InterviewRound] = Field(default_factory=list)
-    coverage_goals: list[str] = Field(default_factory=list)
-    risk_areas: list[str] = Field(default_factory=list)
-    planner_summary: str = ""
 
 
 class InterviewQuestion(BaseModel):

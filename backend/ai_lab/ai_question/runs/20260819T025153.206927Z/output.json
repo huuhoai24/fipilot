@@ -1,0 +1,18 @@
+{
+  "question": "Trong dự án phát hiện phương tiện và biển số xe, bạn đã sử dụng YOLOX cho phát hiện đối tượng và PaddleOCR cho nhận dạng ký tự. Bạn có thể giải thích lý do tại sao bạn chọn kết hợp hai mô hình này thay vì một giải pháp end-to-end duy nhất không?",
+  "language": "vi",
+  "topic": "Real-time Object Detection and OCR",
+  "difficulty": "medium",
+  "reasoning": "Ứng viên đã phát triển pipeline hai giai đoạn sử dụng YOLOX và PaddleOCR để phát hiện phương tiện/biển số. Câu hỏi này đi sâu vào quyết định thiết kế cốt lõi của họ, yêu cầu họ biện minh cho lựa chọn kỹ thuật và thể hiện sự hiểu biết về các trade-off liên quan đến các kiến trúc mô hình khác nhau trong bối cảnh phát hiện đối tượng và OCR thời gian thực. Điều này phù hợp với mục tiêu đánh giá khả năng của ứng viên trong việc xây dựng pipeline phát hiện đối tượng và nhận dạng ký tự trong thời gian thực và các kỹ năng mục tiêu như YOLOX và PaddleOCR.",
+  "expected_answer_points": [
+    "Thảo luận về ưu và nhược điểm của cách tiếp cận hai giai đoạn so với end-to-end cho bài toán cụ thể này.",
+    "Giải thích lý do chọn YOLOX (ví dụ: hiệu suất, tốc độ, tính linh hoạt) và PaddleOCR (ví dụ: độ chính xác, hỗ trợ đa ngôn ngữ, khả năng tùy chỉnh).",
+    "Đề cập đến các yếu tố như độ phức tạp của dữ liệu, yêu cầu về độ chính xác, và tài nguyên tính toán.",
+    "Nêu bật những thách thức khi tích hợp hai mô hình và cách bạn giải quyết chúng."
+  ],
+  "follow_up_questions": [
+    "Bạn đã tối ưu hóa hiệu suất của pipeline hai giai đoạn này như thế nào để đạt được khả năng xử lý thời gian thực?",
+    "Bạn đã đánh giá hiệu suất của pipeline bằng các chỉ số mAP và Word Accuracy như thế nào, và những thách thức nào bạn gặp phải trong quá trình đánh giá?",
+    "Có trường hợp nào mà giải pháp end-to-end sẽ phù hợp hơn cho bài toán này không?"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "duration_minutes": 30,
+  "rounds": [
+    {
+      "round_id": "fastapi_performance",
+      "topic": "FastAPI Performance and Scaling",
+      "objective": "Đánh giá khả năng của ứng viên trong việc tối ưu hóa và mở rộng các API FastAPI để xử lý lưu lượng truy cập cao.",
+      "difficulty": "medium",
+      "reasoning": "Ứng viên có kinh nghiệm xây dựng API phục vụ 2M requests/ngày, cho thấy kinh nghiệm thực tế với FastAPI ở quy mô lớn.",
+      "recommended_question_areas": [
+        "Tối ưu hóa FastAPI cho hiệu suất",
+        "Xử lý 2M requests/ngày",
+        "Công cụ giám sát hiệu suất",
+        "Thiết kế API chịu tải cao"
+      ],
+      "weight": 0.5,
+      "target_skills": [
+        "FastAPI",
+        "Python"
+      ],
+      "question_budget": 2
+    },
+    {
+      "round_id": "fastapi_implementation_details",
+      "topic": "FastAPI Implementation Details",
+      "objective": "Khám phá các quyết định thiết kế và triển khai cụ thể của ứng viên khi làm việc với FastAPI.",
+      "difficulty": "medium",
+      "reasoning": "Ứng viên đã xây dựng API, cho thấy cần đi sâu vào các chi tiết triển khai và lựa chọn kỹ thuật.",
+      "recommended_question_areas": [
+        "Cấu trúc dự án FastAPI",
+        "Xử lý lỗi trong FastAPI",
+        "Bảo mật API",
+        "Tích hợp với cơ sở dữ liệu"
+      ],
+      "weight": 0.3,
+      "target_skills": [
+        "FastAPI",
+        "Python"
+      ],
+      "question_budget": 2
+    },
+    {
+      "round_id": "python_fundamentals",
+      "topic": "Python Fundamentals",
+      "objective": "Đánh giá kiến thức cơ bản về Python của ứng viên, nền tảng cho việc sử dụng FastAPI.",
+      "difficulty": "easy",
+      "reasoning": "Python là kỹ năng được liệt kê và là ngôn ngữ cơ bản cho FastAPI, cần xác nhận kiến thức nền tảng.",
+      "recommended_question_areas": [
+        "Cấu trúc dữ liệu Python",
+        "Lập trình hướng đối tượng",
+        "Quản lý môi trường",
+        "Xử lý bất đồng bộ"
+      ],
+      "weight": 0.2,
+      "target_skills": [
+        "Python"
+      ],
+      "question_budget": 2
+    }
+  ],
+  "coverage_goals": [
+    "Đánh giá khả năng xây dựng và tối ưu hóa API với FastAPI.",
+    "Xác minh kinh nghiệm xử lý tải cao (2M requests/ngày)."
+  ],
+  "risk_areas": [
+    "Kinh nghiệm với PostgreSQL chưa được làm rõ.",
+    "Không có thông tin về các dự án hoặc kinh nghiệm khác ngoài FastAPI."
+  ],
+  "planner_summary": "Kế hoạch phỏng vấn tập trung vào kinh nghiệm của ứng viên với FastAPI và khả năng xử lý các hệ thống có tải trọng cao."
+}

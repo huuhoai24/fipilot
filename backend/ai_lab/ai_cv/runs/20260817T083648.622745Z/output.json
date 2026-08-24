@@ -1,0 +1,88 @@
+{
+  "candidate_id": null,
+  "name": "TRAN MINH",
+  "years_experience": 4.0,
+  "recent_role": "AI Engineer",
+  "skills": [
+    "YOLO",
+    "TensorRT",
+    "PyTorch",
+    "Docker",
+    "Python"
+  ],
+  "skill_evidence": [
+    {
+      "skill": "YOLO",
+      "evidence": [
+        "Trained YOLO models for defect detection"
+      ],
+      "source_section": "experiences"
+    },
+    {
+      "skill": "TensorRT",
+      "evidence": [
+        "optimized inference with TensorRT, reducing p95 latency by 38%"
+      ],
+      "source_section": "experiences"
+    },
+    {
+      "skill": "PyTorch",
+      "evidence": [
+        "built a PyTorch training pipeline"
+      ],
+      "source_section": "projects"
+    },
+    {
+      "skill": "Docker",
+      "evidence": [
+        "deployed the model in Docker"
+      ],
+      "source_section": "projects"
+    },
+    {
+      "skill": "Python",
+      "evidence": [
+        "AI Engineer at Vision Labs"
+      ],
+      "source_section": "experiences"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Factory Vision",
+      "description": "Built a PyTorch training pipeline, evaluated mAP, and deployed the model in Docker.",
+      "technologies": [
+        "PyTorch",
+        "Docker"
+      ],
+      "role": null
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Vision Labs",
+      "title": "AI Engineer",
+      "start_date": "2022",
+      "end_date": "present",
+      "description": "Trained YOLO models for defect detection and optimized inference with TensorRT, reducing p95 latency by 38%.",
+      "technologies": [
+        "YOLO",
+        "TensorRT"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example University",
+      "degree": "BSc",
+      "field_of_study": "Computer Science",
+      "start_date": "2018",
+      "end_date": "2022"
+    }
+  ],
+  "specialization": "AI Engineer",
+  "seniority_signal": null,
+  "confidence": 0.9,
+  "confidence_score": 0.9,
+  "extraction_method": null
+}

@@ -1,0 +1,80 @@
+{
+  "candidate_id": null,
+  "name": "NGUYEN AN",
+  "years_experience": 4.0,
+  "recent_role": "Backend Developer",
+  "skills": [
+    "FastAPI",
+    "Python",
+    "PostgreSQL",
+    "Docker"
+  ],
+  "skill_evidence": [
+    {
+      "skill": "FastAPI",
+      "evidence": [
+        "Built FastAPI services and reduced API latency by 35%."
+      ],
+      "source_section": "WORK EXPERIENCE"
+    },
+    {
+      "skill": "Python",
+      "evidence": [
+        "Built FastAPI services and reduced API latency by 35%."
+      ],
+      "source_section": "WORK EXPERIENCE"
+    },
+    {
+      "skill": "PostgreSQL",
+      "evidence": [
+        "Designed PostgreSQL schemas and containerized services with Docker."
+      ],
+      "source_section": "PROJECTS"
+    },
+    {
+      "skill": "Docker",
+      "evidence": [
+        "Designed PostgreSQL schemas and containerized services with Docker."
+      ],
+      "source_section": "PROJECTS"
+    }
+  ],
+  "projects": [
+    {
+      "name": "Order Platform",
+      "description": "Designed PostgreSQL schemas and containerized services with Docker.",
+      "technologies": [
+        "PostgreSQL",
+        "Docker"
+      ],
+      "role": null
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Acme",
+      "title": "Backend Developer",
+      "start_date": "2022",
+      "end_date": "present",
+      "description": "Built FastAPI services and reduced API latency by 35%.",
+      "technologies": [
+        "Python",
+        "FastAPI"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "Example University",
+      "degree": "BSc",
+      "field_of_study": "Computer Science",
+      "start_date": "2018",
+      "end_date": "2022"
+    }
+  ],
+  "specialization": "Backend Developer",
+  "seniority_signal": null,
+  "confidence": 0.9,
+  "confidence_score": 0.9,
+  "extraction_method": null
+}

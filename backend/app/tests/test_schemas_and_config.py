@@ -205,7 +205,6 @@ class V2FoundationTests(unittest.TestCase):
         self.assertEqual(plan.rounds[0].topic, "Machine Learning")
         self.assertEqual(plan.rounds[0].reasoning, "Candidate has ML project evidence.")
         self.assertEqual(plan.rounds[0].recommended_question_areas, ["model evaluation", "feature engineering"])
-        self.assertEqual(plan.planner_summary, "")
 
     def test_interview_config_defaults(self):
         config = InterviewConfig(experience_level="junior")

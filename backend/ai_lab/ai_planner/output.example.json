@@ -12,8 +12,5 @@
       "target_skills": ["FastAPI", "Python"],
       "question_budget": 3
     }
-  ],
-  "coverage_goals": ["Validate API design and operational trade-offs"],
-  "risk_areas": ["Clarify the candidate's individual contribution"],
-  "planner_summary": "Tập trung vào kinh nghiệm backend có bằng chứng trong hồ sơ."
+  ]
 }

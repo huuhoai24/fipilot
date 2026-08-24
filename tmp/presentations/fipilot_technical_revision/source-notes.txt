@@ -1,0 +1,21 @@
+Communication job: By the end, the capstone defense panel should understand which FiPilot technical paths are production-active, which are evaluated research shadows, and what the M1-M7 evidence does and does not establish.
+
+Primary sources:
+- D:\Downloads\FiPilot_Capstone_Presentation (1).pdf (27-slide visual and narrative reference)
+- D:\Downloads\FiPilot_Evaluation_Master_M1_M7.md (metric and evaluation content source)
+
+Visual direction reconstructed from the PDF reference because no editable source PPTX was supplied:
+- 16:9 white/off-white canvas
+- dark navy section titles; medium blue subtitles
+- restrained pale-blue surfaces and rules
+- green for validated production paths, purple for research/shadow paths, orange for claim-boundary warnings
+- large left-aligned titles and paired pale-blue squares in the upper-right corner
+
+Scope:
+- 19-slide technical revision deck only
+- revised technical slides and new M1-M7 evaluation slides
+- unchanged member, introduction, demo, and thank-you slides are not recreated
+
+Claim language:
+- Use synthetic-controlled, deterministic audit, LLM-as-judge, automated reference, evaluated shadow.
+- Avoid human-level, expert-validated, production accuracy, zero hallucination as a universal claim.

@@ -4,7 +4,10 @@ from pydantic import BaseModel, Field
 
 from infrastructure.llm.base import BaseLLMService
 from services.profile_scanner.context import ResumeContext, build_resume_context
-from services.profile_scanner.exceptions import NonResumeDocumentError
+from services.profile_scanner.exceptions import (
+    MarginalResumeDocumentError,
+    NonResumeDocumentError,
+)
 from services.profile_scanner.prompts import (
     RESUME_EXTRACTION_SYSTEM_INSTRUCTION,
     build_resume_extraction_prompt,
@@ -42,6 +45,11 @@ class ResumeAgent:
             thinking_budget=0,
             operation="resume_extraction",
         )
+        if extraction.document_type == "marginal_resume":
+            raise MarginalResumeDocumentError(
+                closest_domains=extraction.closest_domains,
+                match_percentage=extraction.match_percentage,
+            )
         if (
             extraction.document_type != "resume"
             or extraction.classification_confidence

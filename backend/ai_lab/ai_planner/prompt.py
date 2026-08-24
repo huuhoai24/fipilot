@@ -45,14 +45,13 @@ Planner requirements:
 - Use curated_knowledge only to choose relevant topic depth and question direction; candidate evidence remains authoritative.
 - Do not plan broad definition questions such as "What is Machine Learning?" when the profile contains specific evidence.
 - For evidence-backed topics, plan questions about mechanisms, implementation decisions, trade-offs, debugging, measurement, or failure cases.
-- Include coverage_goals for what the interview should validate.
-- Include risk_areas for claims that need verification or weak evidence.
-- Keep coverage_goals and risk_areas concise. Do not repeat candidate summaries already present in CandidateProfile.
-- Keep planner_summary to one concise sentence.
-- Use interview language '{config.language}' for planner_summary and reasoning.
+- Do not repeat candidate summaries already present in CandidateProfile.
+- Use interview language '{config.language}' for objectives and reasoning.
 - Keep technical terms such as YOLO, PyTorch, TensorRT, FastAPI, and Python in English.
 - Calibrate difficulty for experience_level '{config.experience_level}'.
 - Match interview_style '{config.interview_style}'.
+- Allocate question_budget for each round such that the sum of question_budget across all rounds exactly equals question_count ({config.question_count}).
+- Total planned questions across all rounds must be exactly {config.question_count}.
 - Keep the plan focused enough for a {config.duration_minutes} minute interview.
 """.strip()
     context = {

@@ -93,7 +93,13 @@ def write_artifacts(
 
 
 def print_output(output: BaseModel) -> None:
-    print(json.dumps(output.model_dump(mode="json"), ensure_ascii=False, indent=2))
+    text = json.dumps(output.model_dump(mode="json"), ensure_ascii=False, indent=2)
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        import sys
+        sys.stdout.buffer.write((text + "\n").encode("utf-8"))
+        sys.stdout.flush()
 
 
 def validate_temperature(value: float) -> float:

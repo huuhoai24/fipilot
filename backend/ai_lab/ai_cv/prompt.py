@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import json
 
 
@@ -14,7 +15,13 @@ SYSTEM_INSTRUCTION = (
 
 def build_prompt(resume_text: str) -> str:
     untrusted_document = json.dumps(resume_text[:12000], ensure_ascii=True)
+    current_date = datetime.date.today().strftime("%B %Y")
+    current_year = datetime.date.today().year
     return f"""
+Temporal reference for calculations:
+- Today's date is {current_date} (Year {current_year}).
+- Use this as reference when parsing "present" or ongoing durations for work experience.
+
 Classify the uploaded document, then extract a structured candidate profile only when
 the document is a valid resume or CV belonging to one of the 10 supported technology domains.
 
@@ -33,16 +40,20 @@ Supported technology domains:
 Document classification requirements:
 - Set document_type to "resume" ONLY when the document's primary purpose is to present
   one person's qualifications for employment in one of the 10 supported technology domains listed above.
-- Non-IT or unsupported domain resumes (such as Marketing, Sales, Accounting, Finance, Human Resources,
-  Legal, Healthcare, Administration, Graphic Design outside software, or general non-tech roles) must be classified as "other".
+- Set document_type to "marginal_resume" when the document is a resume/CV but is only slightly suitable or tech-adjacent (e.g. Digital Marketing, Product Manager, UI/UX Designer, Graphic Design inside software/web projects, Sales in Tech, or other roles that interact closely with tech/software teams but are not core IT/software engineering roles).
+- Set document_type to "other" (or "portfolio", "job_description", etc.) when the document is completely not a resume, is in a completely non-IT domain (e.g., Nursing, Cooking, general non-tech roles with no IT involvement), or its primary purpose is ambiguous.
 - Project reports, capstone reports, theses, research papers, product documentation,
   job descriptions, certificates, and team portfolios are not resumes.
 - A technical report does not become a resume merely because it names authors,
   technologies, project roles, education, or implementation work.
-- If the document's primary purpose is ambiguous or outside the 10 supported domains, use "other" instead of "resume".
 - classification_confidence measures confidence in document_type, not extraction quality.
-- For every non-resume document_type, leave candidate profile fields empty/default and
+- For every non-resume or marginal_resume document_type, leave candidate profile fields empty/default and
   set confidence_score to 0.0.
+- For closest_domains, list the technology domain name(s) (from the 10 supported technology domains listed above) that the CV's content is closest or most related to. Leave empty if the document is completely unrelated.
+- For match_percentage, estimate the percentage suitability (integer from 0 to 100) of the CV against the closest supported technology domains:
+  - If document_type is "resume", match_percentage must be >= 70.
+  - If document_type is "marginal_resume", match_percentage must be between 10 and 69.
+  - If document_type is "other" or other non-resume types, match_percentage must be < 10 (or 0).
 
 Quality requirements:
 - Normalize skills into concise canonical names.
@@ -54,10 +65,15 @@ Quality requirements:
 - Prefer evidence from projects and work experience over keyword-only skill lists.
 - Do not repeat the same resume fact across multiple evidence entries.
 - Extract at most 6 projects with name, description, technologies, and candidate role when available.
-- Extract at most 6 experiences with company, title, dates, description, and technologies when available.
+- Extract at most 6 experiences with company, title, dates, description, and technologies when available. For current/ongoing job experiences, set `end_date` to "present" (do not output the current date/year or null).
 - Keep each project and experience description under 240 characters.
 - Do not return an empty skills, projects, experiences, or education collection when the resume contains that content.
+- Support resumes where section headings (like "SKILLS", "WORK EXPERIENCE", "PROJECTS", "EDUCATION") are missing, merged, or omitted:
+  - Do not fail to extract skills, experiences, projects, or education just because they lack explicit headings.
+  - Rely on text patterns and context (e.g., lists of technologies represent skills, lines like "Company at Role, Date" or "Role at Company" represent experience, project-specific lines represent projects, and degrees/universities represent education) to detect and extract them.
+  - If a project description is mixed inside the experience section without a separate "PROJECTS" heading, parse it out as a separate project if it describes a specific project and technologies.
 - Extract structured education when available.
+- Calculate years_experience (as a float, e.g. 4.0 or 4.5) based ONLY on professional work experience (excluding university/education years). Sum the durations of all job roles. For ongoing jobs (e.g., "2022-present" or "2022-now"), compute duration from the job start date to the current date ({current_date}).
 - Infer specialization from repeated evidence, not from a single isolated keyword.
 - For a confirmed resume, set confidence_score from 0.0 to 1.0 based on resume clarity
   and evidence quality.

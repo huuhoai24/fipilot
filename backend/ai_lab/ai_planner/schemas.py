@@ -96,9 +96,14 @@ class InterviewRound(BaseModel):
 class InterviewPlan(BaseModel):
     duration_minutes: int = Field(default=30, ge=5, le=180)
     rounds: list[InterviewRound] = Field(default_factory=list)
-    coverage_goals: list[str] = Field(default_factory=list)
-    risk_areas: list[str] = Field(default_factory=list)
-    planner_summary: str = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def keep_rounds_compatible(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "rounds" not in data and "interview_rounds" in data:
+                data["rounds"] = data["interview_rounds"]
+        return data
 
 
 class PlannerInput(BaseModel):

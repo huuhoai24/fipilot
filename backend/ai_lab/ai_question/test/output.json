@@ -1,0 +1,17 @@
+{
+  "question": "Trong dự án \"Face recognition system\", bạn đã sử dụng Docker để đóng gói ứng dụng. Bạn có thể giải thích lợi ích chính của việc sử dụng Docker trong dự án này là gì không?",
+  "language": "vi",
+  "topic": "Docker and Deployment",
+  "difficulty": "easy",
+  "reasoning": "Ứng viên đã liệt kê Docker trong các công nghệ được sử dụng cho dự án nhận diện khuôn mặt. Câu hỏi này đánh giá hiểu biết cơ bản về lợi ích của Docker trong bối cảnh dự án thực tế.",
+  "expected_answer_points": [
+    "Đảm bảo môi trường nhất quán giữa các môi trường phát triển, thử nghiệm và triển khai.",
+    "Đơn giản hóa việc cài đặt và quản lý các thư viện và phụ thuộc (ví dụ: PyTorch, OpenCV).",
+    "Tăng tính di động của ứng dụng, dễ dàng triển khai trên các máy chủ khác nhau.",
+    "Cô lập ứng dụng khỏi hệ thống máy chủ, tránh xung đột phụ thuộc."
+  ],
+  "follow_up_questions": [
+    "Bạn có gặp phải thách thức nào khi cấu hình Docker cho dự án này không?",
+    "Bạn đã sử dụng Dockerfile để định nghĩa môi trường như thế nào?"
+  ]
+}
