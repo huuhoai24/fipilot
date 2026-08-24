@@ -1,0 +1,14 @@
+%% Answer submission and next action
+flowchart TB
+  Request[Authenticated Answer Request] --> Ownership[Load Owned Session and Turn]
+  Ownership --> Claim[Claim Turn and Check Request Hash]
+  Claim --> Existing{Existing Result?}
+  Existing -->|Yes| Replay[Replay Stored Response]
+  Existing -->|No| Evaluate[Evaluate Answer]
+  Evaluate --> Persist[Persist Evaluation]
+  Persist --> Decide[Apply Follow-up and Difficulty Rules]
+  Decide --> Complete{Session Complete?}
+  Complete -->|No| Next[Create Next Question]
+  Complete -->|Yes| Finish[Mark Session Completed]
+  Next --> Response[Return Updated Session]
+  Finish --> Response

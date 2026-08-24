@@ -1,0 +1,15 @@
+%% Language components connected through schemas
+flowchart TB
+  Profile[Candidate Profile] --> Planner[Interview Planner]
+  Knowledge[Retrieved Knowledge] --> Planner
+  Planner --> PlanSchema[Validated Interview Plan]
+  PlanSchema --> Generator[Question Generator]
+  Profile --> Generator
+  Generator --> QuestionSchema[Validated Interview Question]
+  QuestionSchema --> Evaluator[Answer Evaluator]
+  Answer[Candidate Answer] --> Evaluator
+  Evaluator --> EvaluationSchema[Validated Answer Evaluation]
+  EvaluationSchema --> Decision[Deterministic Decision Service]
+  EvaluationSchema --> Reporter[Report Generator]
+  Session[Completed Session Evidence] --> Reporter
+  Reporter --> ReportSchema[Validated Interview Report]

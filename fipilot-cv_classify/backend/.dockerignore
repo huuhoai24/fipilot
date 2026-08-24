@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+.venv
+.git
+.codex
+.agents
+.env
+data
+contents
+models/*
+!models/best.onnx
+*.ipynb
+*.ses

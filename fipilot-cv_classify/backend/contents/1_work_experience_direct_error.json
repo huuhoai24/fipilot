@@ -1,0 +1,6 @@
+{
+  "error_type": "InternalServerError",
+  "error_message": "stream timeout",
+  "prompt_key": "work_experience",
+  "model_name": "/home/hoai/user/resource/fipilot/backend/models/Qwen3-0.6B"
+}

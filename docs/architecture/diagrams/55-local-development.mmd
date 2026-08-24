@@ -1,0 +1,19 @@
+﻿%% Local Development Architecture
+%% Status: IMPLEMENTED
+%% Evidence: scripts/run_backend.ps1; scripts/run_speech_service.ps1; docker-compose.local.yml; docs/local-development.md
+flowchart LR
+  Dev["Developer Machine"] --> Vite["Vite 5173"]
+  Vite --> Gateway["FastAPI 8000"]
+  Gateway --> SQLite["SQLite File [STORAGE]"]
+  Gateway --> Cloud["Firebase Firestore Vertex via ADC [EXTERNAL]"]
+  Gateway --> Choice{"SPEECH_SERVICE_URL"}
+  Choice -->|unset| LocalModels["In-process VAD STT TTS"]
+  Choice -->|set| Speech["Speech Service 9000"]
+  Env["backend .env.local"] --> Gateway
+  AppEnv["backend app .env"] -.->|not loaded by helper| Gateway
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

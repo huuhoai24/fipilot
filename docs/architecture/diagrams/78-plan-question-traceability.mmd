@@ -1,0 +1,19 @@
+﻿%% Interview Plan to Question Traceability
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/shared/schemas/interview.py; backend/services/question_generator/prompts.py; backend/orchestrator/interview_orchestrator.py
+flowchart LR
+  Profile["Candidate Profile Evidence"] --> Prompt["Question Prompt"]
+  Knowledge["Curated Knowledge Strings"] --> Plan["Interview Plan"]
+  Plan --> Round["InterviewRound round_id topic difficulty skills"]
+  Round --> Prompt
+  Config["Role Level Language Style"] --> Prompt
+  Prompt --> Question["InterviewQuestion reasoning expected points"]
+  Question --> Turn["InterviewTurn round_id topic difficulty expected_signal"]
+  Chunk["Knowledge Chunk ID"] -.->|not persisted| Turn
+  EvidenceId["Skill evidence ID [SPEC-PENDING]"] -.-> Turn
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

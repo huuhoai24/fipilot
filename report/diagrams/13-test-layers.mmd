@@ -1,0 +1,7 @@
+%% Software verification layers
+flowchart TB
+  Pure[Pure Rules and Schema Tests] --> Service[Service Tests with Controlled Dependencies]
+  Service --> Repository[SQLite and Firestore Contract Tests]
+  Repository --> API[Authenticated API and Ownership Tests]
+  API --> Frontend[React Component and Route Tests]
+  Frontend --> Build[Type Check Lint and Production Build]

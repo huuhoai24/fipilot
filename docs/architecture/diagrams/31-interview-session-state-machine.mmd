@@ -1,0 +1,13 @@
+﻿%% Interview Session State Machine
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/shared/schemas/interview.py; backend/gateway/api/interview.py; backend/services/report_generator/service.py
+stateDiagram-v2
+  [*] --> Planning: prepare or start before session row
+  Planning --> Created: create_session after first question
+  Created --> InProgress: state saved with current turn
+  InProgress --> InProgress: evaluated answer and next turn
+  InProgress --> Completed: current turn becomes null
+  Completed --> ReportGenerated: report saved
+  ReportGenerated --> [*]
+  Planning --> Failed: provider or validation error
+

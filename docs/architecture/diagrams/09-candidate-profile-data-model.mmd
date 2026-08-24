@@ -1,0 +1,34 @@
+﻿%% Candidate Profile Data Model
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/shared/schemas/candidate.py; frontend/src/types/index.ts
+classDiagram
+  class CandidateProfile {
+    candidate_id optional string
+    name string
+    years_experience optional float
+    recent_role optional string
+    skills string array
+    specialization optional string
+    seniority_signal optional string
+    confidence float
+    confidence_score float
+    extraction_method optional string
+  }
+  class PersistedCandidateProfile {
+    candidate_id string
+    profile_version integer
+  }
+  class SkillEvidence {
+    skill string
+    evidence string array
+    source_section optional string
+  }
+  class CandidateProject
+  class CandidateExperience
+  class CandidateEducation
+  PersistedCandidateProfile --|> CandidateProfile
+  CandidateProfile "1" *-- "many" SkillEvidence
+  CandidateProfile "1" *-- "many" CandidateProject
+  CandidateProfile "1" *-- "many" CandidateExperience
+  CandidateProfile "1" *-- "many" CandidateEducation
+

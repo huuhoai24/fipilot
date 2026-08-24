@@ -1,0 +1,24 @@
+﻿%% Knowledge Chunk Data Model
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/interview_knowledge/chunks.py; backend/infrastructure/interview_knowledge/firestore_vector.py
+classDiagram
+  class KnowledgeChunk {
+    document_id string
+    topic_id string
+    domain_key string
+    domain_label string
+    path string tuple
+    title string
+    anchors string tuple
+    content string
+    content_sha256 string
+  }
+  class FirestoreVectorRecord {
+    schema_version integer
+    embedding_model string
+    embedding_dimensions integer
+    embedding vector
+    updated_at timestamp
+  }
+  KnowledgeChunk --> FirestoreVectorRecord : indexed as
+

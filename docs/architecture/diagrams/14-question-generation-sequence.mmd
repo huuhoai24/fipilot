@@ -1,0 +1,23 @@
+﻿%% Question Generation Sequence
+%% Status: IMPLEMENTED
+%% Evidence: backend/gateway/api/interview.py; backend/orchestrator/interview_orchestrator.py; backend/services/question_generator/agent.py
+sequenceDiagram
+  participant FE as Frontend IMPLEMENTED
+  participant API as FastAPI Gateway IMPLEMENTED
+  participant DB as Repository STORAGE
+  participant OR as Interview Orchestrator IMPLEMENTED
+  participant PL as Planner and Retriever IMPLEMENTED
+  participant QG as Question Generator IMPLEMENTED
+  participant LLM as Vertex Gemini EXTERNAL
+  FE->>API: POST interview start
+  API->>DB: Load owned Candidate Profile
+  API->>PL: Get or create Interview Plan
+  PL->>LLM: Structured plan call on cache miss
+  API->>OR: Start with profile config plan
+  OR->>QG: Generate first question
+  QG->>LLM: Structured question call
+  LLM-->>QG: InterviewQuestion
+  OR-->>API: InterviewSessionState
+  API->>DB: Create session and persist state
+  API-->>FE: Session response
+

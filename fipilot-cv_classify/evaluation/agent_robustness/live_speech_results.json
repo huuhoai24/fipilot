@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "PASS": 0,
+    "FAIL": 0,
+    "PARTIAL": 0,
+    "BLOCKED": 2,
+    "NOT TESTED": 0,
+    "NOT EVALUATED": 0
+  },
+  "results": [
+    {
+      "test_id": "SPEECH-LIVE-001",
+      "agent": "synthesize_speech",
+      "scenario": "Vietnamese text to WAV",
+      "expected": "Non-empty decodable WAV within proxy timeout",
+      "actual": "FileNotFoundError: [WinError 2] The system cannot find the file specified",
+      "status": "BLOCKED",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "SPEECH-LIVE-002",
+      "agent": "recognize_vietnamese",
+      "scenario": "Recognize generated Vietnamese speech",
+      "expected": "Non-empty transcript",
+      "actual": "TTS prerequisite blocked",
+      "status": "BLOCKED",
+      "severity": "MEDIUM"
+    }
+  ]
+}

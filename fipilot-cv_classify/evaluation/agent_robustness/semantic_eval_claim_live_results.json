@@ -1,0 +1,26 @@
+{
+  "provider_calls": 3,
+  "results": [
+    {
+      "test_id": "LIVE-EVAL-CLAIM-01",
+      "status": "PASS",
+      "expected_status": "NOT_ASSESSED",
+      "answer_status": "NOT_ASSESSED",
+      "raw_score": 0,
+      "final_score": 0
+    },
+    {
+      "test_id": "LIVE-EVAL-CLAIM-02",
+      "status": "PASS",
+      "expected_status": "NOT_ASSESSED",
+      "answer_status": "NOT_ASSESSED",
+      "raw_score": 0,
+      "final_score": 0
+    },
+    {
+      "test_id": "LIVE-EVAL-CLAIM-03",
+      "status": "BLOCKED",
+      "error": "ValidationError: 1 validation error for AnswerEvaluation\ntechnical_errors\n  Input should be a valid list [type=list_type, input_value='Redis không ghi mọi g...vững ghi dữ liệu.', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.12/v/list_type"
+    }
+  ]
+}

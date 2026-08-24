@@ -1,0 +1,86 @@
+\documentclass[12pt,letterpaper,oneside]{report}
+\usepackage[letterpaper,top=0.85in,right=0.80in,bottom=0.80in,left=0.90in,headheight=15pt,headsep=0.22in]{geometry}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Consolas}[Scale=0.82]
+\usepackage{microtype}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage[nottoc]{tocbibind}
+\usepackage{tocloft}
+\usepackage{url,xurl}
+\usepackage[backend=biber,style=ieee,sorting=none,maxbibnames=8]{biblatex}
+\addbibresource{references.bib}
+\usepackage[unicode,colorlinks=true,linkcolor=blue!45!black,citecolor=blue!45!black,urlcolor=blue!45!black]{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+\input{report_macros}
+
+\title{\textbf{FIPILOT}\\[0.35em]\Large AI-POWERED CV-TO-INTERVIEW SYSTEM\\[1.0em]\large Graduation Project Report}
+\author{Software Engineering and Artificial Intelligence Project}
+\date{Quy Nhon, August 2026}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{FiPilot Project Report}
+\fancyhead[R]{Front Matter}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[L]{FiPilot Project Report}
+  \fancyhead[R]{Front Matter}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0.4pt}}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\setlength{\cftchapnumwidth}{4.2em}
+\setlength{\cftsecnumwidth}{4.8em}
+\setlength{\cftsubsecnumwidth}{5.6em}
+\setlength{\cftfignumwidth}{4.2em}
+\setlength{\cfttabnumwidth}{4.2em}
+
+\begin{document}
+\pagenumbering{roman}
+\maketitle
+\input{frontmatter}
+\clearpage
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\pagenumbering{arabic}
+\renewcommand{\thechapter}{\Roman{chapter}}
+\fancyhead[R]{Chapter \thechapter}
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[L]{FiPilot Project Report}
+  \fancyhead[R]{Chapter \thechapter}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0.4pt}}
+
+\input{chapters/01_project_introduction}
+\input{chapters/02_project_management}
+\input{chapters/03_theoretical_background}
+\input{chapters/04_ai_methodology}
+\input{chapters/05_system_design}
+\input{chapters/06_requirements}
+\input{chapters/07_software_testing}
+\input{chapters/08_deliverables_user_guide}
+\input{chapters/09_conclusion}
+
+\printbibliography[heading=bibintoc,title={References}]
+\appendix
+\input{appendices/runtime_appendices}
+\end{document}

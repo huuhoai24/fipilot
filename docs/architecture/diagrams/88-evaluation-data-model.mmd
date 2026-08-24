@@ -1,0 +1,44 @@
+﻿%% Evaluation Data Model
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/m6/schemas.py; evaluation/m6/engine.py; evaluation/defense_extension/e3_ablation_analysis.py
+classDiagram
+  class M6Scenario {
+    scenario_id string
+    candidate_profile object
+    role string
+    level enum
+    language enum
+    target_topic string
+    expected_topic_ids array
+  }
+  class RetrievalCondition {
+    condition enum
+    contexts array
+    retrieval_latency_ms float
+  }
+  class GeneratedQuestion {
+    question string
+    topic string
+    difficulty enum
+    expected_answer_points array
+  }
+  class QualityJudgment {
+    technical_validity binary
+    role_relevance binary
+    cv_alignment binary
+    specificity integer
+    rag_grounding optional_integer
+  }
+  class PairwiseChoice {
+    left string
+    right string
+    preference enum
+    reason string
+  }
+  class ExperimentAggregate
+  M6Scenario "1" --> "many" RetrievalCondition
+  RetrievalCondition "1" --> "1" GeneratedQuestion
+  GeneratedQuestion "1" --> "1" QualityJudgment
+  QualityJudgment --> ExperimentAggregate
+  PairwiseChoice --> ExperimentAggregate
+

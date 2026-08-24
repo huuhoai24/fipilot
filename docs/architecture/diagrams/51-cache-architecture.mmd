@@ -1,0 +1,20 @@
+﻿%% Cache Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/profile_scanner/cache.py; backend/services/interview_preparation/service.py; frontend/src/lib/api.ts; backend/infrastructure/repositories
+flowchart TB
+  ResumeKey["Owner plus Content Hash plus Extraction Version"] --> ResumeMem["ProcessedResumeCache 1h 256 [MEMORY]"]
+  ResumeKey --> ResumeStore["Resume Extraction Artifact [STORAGE]"]
+  ResumeMem --> ResumeLLM["Resume Gemini on Miss"]
+  ResumeStore --> ResumeLLM
+  PlanKey["Owner Candidate ProfileVersion Config"] --> PlanMem["Preparation Cache 300s 128 [MEMORY]"]
+  PlanKey --> PlanStore["Blueprint Artifact [STORAGE]"]
+  PlanMem --> PlanLLM["Planner Gemini on Miss"]
+  PlanStore --> PlanLLM
+  ReportKey["Session ID"] --> BrowserMap["Frontend Inflight Report Map [MEMORY]"]
+  Redis["Redis [SPEC-PENDING]"] -.-> ResumeMem
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

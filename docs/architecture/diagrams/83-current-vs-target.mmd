@@ -1,0 +1,21 @@
+﻿%% Current versus Target Pipeline
+%% Status: IMPLEMENTED/SPEC-PENDING
+%% Evidence: docs/PIPELINE_CV_TO_INTERVIEW_DEEP_DIVE_VI.md; docs/adr; backend/gateway; backend/services
+flowchart TB
+  subgraph Current["CURRENT RUNTIME"]
+    C1["Upload and OCR"] --> C2["Persist Profile"] --> C3["Plan and Start"] --> C4["Answer Loop"] --> C5["Report"]
+  end
+  subgraph Target["TARGET CONTRACT"]
+    T1["Idempotent Upload Operation"] --> T2["Editable Versioned Review"] --> T3["Atomic Ready Snapshot"] --> T4["Shared Answer Loop"] --> T5["Snapshot-only Report"]
+  end
+  C1 -.->|idempotency status replacement| T1
+  C2 -.->|PATCH If-Match audit provenance| T2
+  C3 -.->|readiness and version transaction| T3
+  C4 --> T4
+  C5 -.->|latest-profile dependency| T5
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

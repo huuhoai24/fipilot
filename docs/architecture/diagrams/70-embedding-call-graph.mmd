@@ -1,0 +1,20 @@
+﻿%% Embedding Call Graph
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/infrastructure/interview_knowledge/firestore_vector.py; backend/scripts/index_interview_knowledge_vectors.py
+flowchart LR
+  Catalog["Catalog KnowledgeChunk"] --> DocEmbed["VertexTextEmbedder embed_document"]
+  DocEmbed --> Model["gemini-embedding-001"]
+  Model --> Stored["Firestore Vector Field 768d"]
+  Profile["Profile plus Config"] --> QueryText["Privacy-reduced Query Text"]
+  QueryText --> QueryEmbed["VertexTextEmbedder embed_query"]
+  QueryEmbed --> Model
+  Model --> QueryVector["Query Vector"]
+  QueryVector --> KNN["Firestore Cosine KNN"]
+  Stored --> KNN
+  Local["Local Lexical Retriever"] -.->|bypasses embeddings| KNN
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

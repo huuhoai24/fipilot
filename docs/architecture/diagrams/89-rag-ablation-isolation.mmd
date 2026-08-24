@@ -1,0 +1,21 @@
+﻿%% RAG Ablation Isolation Controls
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/defense_extension/e3_ablation_analysis.py; evaluation/m6/benchmark/FROZEN_CONFIG.json
+flowchart TB
+  Fixed["CONTROLLED"] --> Profile["Same Candidate Profile"]
+  Fixed --> Role["Same Role Level Language Objective"]
+  Fixed --> Prompt["Same Prompt Logic and Output Schema"]
+  Fixed --> Model["Same Question Model and Temperature"]
+  Changed["ONLY CHANGED"] --> Mode["NO_RAG versus LEXICAL versus VECTOR"]
+  Mode --> Context["Retrieved Context Supplied to Generator"]
+  Profile --> Run["Paired Scenario Run"]
+  Role --> Run
+  Prompt --> Run
+  Model --> Run
+  Context --> Run
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

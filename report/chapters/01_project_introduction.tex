@@ -1,0 +1,94 @@
+\chapter{PROJECT INTRODUCTION}\label{ch:introduction}
+
+\section{Overview}
+
+\subsection{Project information}
+
+FiPilot is an AI-assisted web application for technical interview practice. Its defining input is a candidate Resume, and its defining output is a completed interview record with structured feedback. The application does not operate as a general conversation page. It maintains authenticated resources, a Candidate Profile, an Interview Plan, ordered turns, answer evaluations, adaptive decisions, and a final report.
+
+\begin{table}[htbp]\centering
+\caption{Project overview information.}\label{tab:project-overview}
+\begin{tabularx}{\textwidth}{p{0.25\textwidth}Y}\toprule
+Item & Description\\ \midrule
+Project name & FiPilot\\
+Product type & Web-based CV-to-interview application\\
+Primary users & Candidates practising information-technology interviews\\
+Input & One authenticated PDF or DOCX Resume and subsequent text or voice answers\\
+Core output & Structured Candidate Profile, interview session, per-turn feedback, and final report\\
+Frontend & React, TypeScript, Vite, React Router, TanStack Query, and Zustand\\
+Backend & FastAPI gateway, application services, interview orchestrator, and infrastructure adapters\\
+Language service & Vertex AI Gemini accessed through the backend integration layer\\
+Default knowledge retrieval & Deterministic weighted lexical retrieval over the local Knowledge catalog\\
+Identity & Firebase Authentication with server-side token verification\\
+Persistence & SQLite or Firestore through a common repository contract\\
+Interaction channels & HTTPS REST for text workflows and WebSocket for voice sessions\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\subsection{Product overview}
+
+The user signs in, uploads a Resume, and receives a structured Candidate Profile. The application uses this committed profile when preparing an interview. A local knowledge retriever selects technical topics related to the candidate's role, specialization, skills, and evidence. The planning service combines the profile, configuration, and retrieved context to produce an Interview Plan. The question service generates one question at a time from the current plan round. After the candidate answers, the evaluation service produces structured scores and feedback, and a deterministic decision service chooses whether to ask a follow-up, adjust difficulty, continue the plan, or complete the session.
+
+The text and voice experiences share the same interview state. In text mode, answers arrive through an authenticated REST request. In voice mode, PCM audio reaches an authenticated WebSocket; speech components detect voice activity and produce a transcript; the transcript then enters the same answer service used by text mode. This shared boundary prevents the two channels from developing different scoring and progression rules.
+
+\reportfigure{01-system-context.png}{FiPilot system context and connected external boundaries.}{system-context}
+
+\section{Project context}
+
+Technical interviews require candidates to connect conceptual knowledge with concrete experience. A static list of questions cannot adapt to a Resume, while an unconstrained chat cannot reliably provide ownership, state recovery, repeatable data contracts, or a durable report. Resume documents also vary in layout, format, text quality, and completeness. The application therefore needs both flexible language interpretation and deterministic software controls.
+
+FiPilot addresses this context through a staged workflow. Document bytes are validated before extraction. Language output is accepted only through defined schemas. Knowledge selection is performed before planning. Interview state is persisted rather than left in a browser conversation. User identity is resolved by the server, and every candidate/session/report operation is scoped to that identity. These controls allow the application to use language models without delegating authentication, persistence, or workflow authority to them.
+
+\section{Objectives}
+
+The implemented objectives are:
+\begin{enumerate}
+  \item accept one PDF or DOCX Resume, reject invalid structures, extract native text, and use OCR when a PDF does not contain enough readable text;
+  \item transform extracted text into the canonical Candidate Profile used by the application;
+  \item calculate structured profile-readiness information for the user interface;
+  \item select relevant technical topics from the local Knowledge catalog using deterministic lexical scoring;
+  \item create a structured Interview Plan and generate candidate-specific questions;
+  \item evaluate text or transcribed voice answers and apply deterministic continuation rules;
+  \item persist interview history and generate a final report;
+  \item protect user resources through Firebase identity verification and ownership-scoped repository operations; and
+  \item provide a responsive React interface for upload, profile review, text interview, voice interview, history, settings, and reports.
+\end{enumerate}
+
+\section{Problem statement}
+
+The central engineering problem is a sequence of transformations with different trust levels:
+\begin{equation}
+\text{Resume}\rightarrow\text{Profile}\rightarrow\text{Plan}\rightarrow\text{Question}\rightarrow\text{Answer}\rightarrow\text{Evaluation}\rightarrow\text{Report}.
+\end{equation}
+Document content is untrusted input. Profile fields are model-assisted interpretations that require structural validation. Retrieved knowledge is technical context and must not be confused with a candidate claim. A model-generated score is an application signal and must not directly control persistence or ownership. The architecture must preserve these distinctions throughout a multi-turn session.
+
+A second problem is continuity. A technical interview can contain retries, browser refreshes, double submissions, slow external calls, and voice disconnections. FiPilot therefore stores sessions and turns, uses an idempotent answer-claim mechanism, and returns server state to the client. The workflow is stateful even though individual AI operations are request-response calls.
+
+\reportfigure{02-runtime-pipeline.png}{Connected runtime pipeline from Resume upload to interview report.}{runtime-pipeline}
+
+\section{Significance}
+
+The project demonstrates how language services can be integrated into a governed application instead of exposed as an unrestricted chat box. Candidate evidence, technical knowledge, plan structure, interview state, and evaluation output are separate domain objects. This separation makes the code testable and lets the frontend display explicit progress and errors.
+
+The project is also significant as a full-stack integration. Resume parsing, OCR, typed model output, retrieval, orchestration, REST, WebSocket audio, authentication, two persistence adapters, and a React UI operate behind one product workflow. The resulting system is suitable for demonstrating software architecture and applied AI integration, provided that its automated feedback remains advisory.
+
+\section{Scope and limitations}
+
+\begin{table}[htbp]\centering
+\caption{Implemented scope and present limitations.}\label{tab:scope}
+\begin{tabularx}{\textwidth}{YY}\toprule
+Included in the application & Present limitation\\ \midrule
+PDF and DOCX validation and extraction & Unusual layouts can still produce imperfect reading order.\\
+OCR fallback for sparse/image PDFs & No broad real-document OCR accuracy claim is made.\\
+Canonical Candidate Profile & Complete field-level source provenance is not exposed to the user.\\
+Readiness information on profile responses & Start operations do not yet use readiness as a server-side rejection rule.\\
+Local lexical knowledge retrieval & Returned planner strings do not expose a user-facing citation score.\\
+Text and voice interview sessions & Voice quality depends on microphone, language, and speech components.\\
+Answer evaluation and feedback & Scores are advisory and are not a substitute for a professional interviewer.\\
+SQLite and Firestore repositories & Operational deployment state is environment-specific.\\
+Firebase authentication and ownership checks & This report is not a security certification.\\
+Final report generation & Historical profile consistency is constrained by the current report service behavior.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+The report intentionally limits itself to the connected application. Alternative retrieval studies, disconnected prototypes, and specification-only features are outside the described system.

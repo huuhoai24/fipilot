@@ -72,6 +72,14 @@ _Avoid_: Warning deletion, extraction correction
 A text or speech interview created for a candidate from a saved Candidate Profile and an interview configuration.
 _Avoid_: Interview run, practice run
 
+**Interview Role**:
+The canonical professional focus selected for an Interview Session. A supported Interview Role has a corresponding body of interview knowledge and may be suggested from Resume evidence.
+_Avoid_: Job probability, Resume category, knowledge folder name
+
+**Role Evidence Share**:
+The percentage distribution of matched Resume evidence across supported Interview Roles. It explains how the Resume evidence is distributed and is not a hiring probability or a measure of candidate competence.
+_Avoid_: Role probability, hiring score, proficiency score
+
 **Interview Session Snapshot**:
 The immutable copy of the saved Candidate Profile stored when an Interview Session starts. Later Profile Corrections do not alter this snapshot or reports derived from it.
 _Avoid_: Live profile, profile reference

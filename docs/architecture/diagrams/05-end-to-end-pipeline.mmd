@@ -1,0 +1,21 @@
+﻿%% Complete End-to-End Pipeline
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: docs/PIPELINE_CV_TO_INTERVIEW_DEEP_DIVE_VI.md; backend/gateway/api; backend/orchestrator/interview_orchestrator.py
+flowchart LR
+  Upload["Upload Resume [IMPLEMENTED]"] --> Validate["Validate File [IMPLEMENTED]"]
+  Validate --> Extract["Native Extract or OCR [IMPLEMENTED]"]
+  Extract --> Profile["Candidate Profile [IMPLEMENTED]"]
+  Profile --> Ready["Readiness Read Model [IMPLEMENTED]"]
+  Profile --> Plan["Interview Plan [IMPLEMENTED]"]
+  Plan --> Question["Question Generation [IMPLEMENTED]"]
+  Question --> Answer["Candidate Answer [IMPLEMENTED]"]
+  Answer --> Evaluate["Answer Evaluation [IMPLEMENTED]"]
+  Evaluate --> Decide{"Continue or Complete"}
+  Decide -->|Continue| Question
+  Decide -->|Complete| Report["Interview Report [PARTIAL]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

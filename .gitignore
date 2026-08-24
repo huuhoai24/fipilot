@@ -59,3 +59,5 @@ backend/pretrained/
 
 # Unlabelled local Resume corpus (may contain personal data)
 resumes/
+.playwright-mcp/
+.pytest-*/

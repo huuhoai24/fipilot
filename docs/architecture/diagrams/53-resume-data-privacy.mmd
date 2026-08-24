@@ -1,0 +1,22 @@
+﻿%% Resume Data Privacy Flow
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/api/resume.py; backend/infrastructure/repositories; backend/services/*/prompts.py; docs/local-architecture.md
+flowchart LR
+  File["Resume File Bytes"] --> Temp["OS Temporary File [TRANSIENT]"]
+  Temp --> Text["Extracted Resume Text [PERSISTED]"]
+  Text --> Context["Bounded Resume Context"]
+  Context --> Vertex["Vertex Gemini [EXTERNAL]"]
+  Vertex --> Profile["Candidate Profile [PERSISTED]"]
+  Profile --> Session["Session Snapshot [PERSISTED PARTIAL]"]
+  Answers["Candidate Answers [PERSISTED]"] --> Session
+  Session --> Vertex
+  Vertex --> Report["Interview Report [PERSISTED]"]
+  Temp --> Delete["Deleted in finally"]
+  Audio["Voice PCM [MEMORY ONLY]"] --> Transcript["Final Transcript"]
+  Transcript --> Answers
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

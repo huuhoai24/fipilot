@@ -1,0 +1,26 @@
+﻿%% Service Call Graph
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/api; backend/core/dependencies.py; backend/services; backend/orchestrator
+flowchart LR
+  ResumeRoute["Resume Route"] --> Document["DocumentService"]
+  ResumeRoute --> ResumeAgent["ResumeAgent"]
+  ResumeRoute --> Repository["InterviewRepository"]
+  ProfileRoute["Profile Route"] --> Readiness["Readiness Evaluator"]
+  ProfileRoute --> Repository
+  InterviewRoute["Interview Route"] --> Preparation["Preparation Cache"]
+  InterviewRoute --> Orchestrator["InterviewOrchestrator"]
+  InterviewRoute --> Repository
+  AnswerRoute["Answer Route"] --> AnswerService["AnswerSubmissionService"]
+  AnswerService --> Orchestrator
+  AnswerService --> Repository
+  Orchestrator --> Planner["PlannerAgent"]
+  Orchestrator --> Question["QuestionGeneratorAgent"]
+  Orchestrator --> Evaluator["EvaluatorAgent"]
+  ReportRoute["Report Route"] --> ReportService["ReportService"]
+  ReportService --> Repository
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

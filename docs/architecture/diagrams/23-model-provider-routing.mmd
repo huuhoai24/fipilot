@@ -1,0 +1,23 @@
+﻿%% Model and Provider Routing
+%% Status: IMPLEMENTED
+%% Evidence: backend/core/settings.py; backend/core/dependencies.py; backend/infrastructure/llm/vertex_gemini.py
+flowchart TB
+  Task{"AI Task"} --> Resume["Resume Extraction"]
+  Task --> Simple["Planner or Question"]
+  Task --> TextEval["Text Evaluation or Report"]
+  Task --> VoiceEval["Voice Evaluation"]
+  Resume --> FlashLite["gemini-2.5-flash-lite default"]
+  Simple --> Flash["gemini-2.5-flash default"]
+  VoiceEval --> Flash
+  TextEval --> Pro["gemini-2.5-pro default"]
+  FlashLite --> Vertex["Vertex AI Provider"]
+  Flash --> Vertex
+  Pro --> Vertex
+  Embed["Knowledge Embedding"] --> EmbedModel["gemini-embedding-001"]
+  EmbedModel --> Vertex
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

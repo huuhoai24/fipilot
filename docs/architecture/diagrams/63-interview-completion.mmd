@@ -1,0 +1,21 @@
+﻿%% Interview Completion Flow
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/orchestrator/interview_orchestrator.py; backend/orchestrator/conversation_flow.py; backend/gateway/api/interview.py
+flowchart TB
+  Eval["Evaluated Turn"] --> Count{"Completed turns at question_count"}
+  Count -->|Yes| End["current_turn null and session completed"]
+  Count -->|No| Decision{"Adaptive Decision"}
+  Decision -->|follow up| Follow["Follow-up Question"]
+  Decision -->|increase difficulty| Harder["Same Round Harder Question"]
+  Decision -->|next question| Next{"Next Plan Round Exists"}
+  Next -->|Yes| Generate["Generate Next Round Question"]
+  Next -->|No| End
+  Follow --> Continue["Persist In-progress State"]
+  Harder --> Continue
+  Generate --> Continue
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

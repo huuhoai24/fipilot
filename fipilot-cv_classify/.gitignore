@@ -1,0 +1,31 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+.ipynb_checkpoints/
+
+# FE
+node_modules
+frontend/feclone/
+dist
+dist-ssr
+*.local
+.DS_Store
+.env
+.env.local
+*.log
+
+# BE
+data/
+models/
+*.zip
+backend/test/page_image/
+backend/SmartResume_git/
+backend/SmartResume_hungingface/

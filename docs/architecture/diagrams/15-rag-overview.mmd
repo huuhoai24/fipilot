@@ -1,0 +1,23 @@
+﻿%% RAG Overview
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/interview_knowledge; backend/infrastructure/interview_knowledge/firestore_vector.py; evaluation/m6
+flowchart TB
+  Catalog["Knowledge Catalog [STORAGE]"] --> Local["Local Lexical Retriever [IMPLEMENTED]"]
+  Catalog --> Chunker["Catalog Chunk Builder [IMPLEMENTED]"]
+  Chunker --> Embed["Vertex Document Embeddings [EXTERNAL]"]
+  Embed --> VectorStore["Firestore Vector Collection [STORAGE]"]
+  Profile["Candidate Profile"] --> Select{"Configured Backend"}
+  Config["Interview Config"] --> Select
+  Select -->|local default| Local
+  Select -->|firestore_vector| QueryEmbed["Vertex Query Embedding"]
+  QueryEmbed --> VectorStore
+  Local --> Context["Curated Planner Context"]
+  VectorStore --> Context
+  Context --> Planner["Interview Planner Prompt"]
+  Offline["Hybrid and A B C Harness [IMPLEMENTED OFFLINE]"] -.-> Catalog
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

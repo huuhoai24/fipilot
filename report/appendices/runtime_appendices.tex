@@ -1,0 +1,56 @@
+\chapter{RUNTIME CONTRACT REFERENCE}\label{app:runtime}
+
+\section{Canonical profile structure}
+
+\begin{longtable}{p{0.25\textwidth}p{0.64\textwidth}}
+\caption{Candidate Profile nested structure.}\label{tab:appendix-profile}\\
+\toprule Structure & Canonical fields\\ \midrule\endfirsthead
+\toprule Structure & Canonical fields\\ \midrule\endhead
+Candidate Profile & \codepath{name}, \codepath{years\_experience}, \codepath{recent\_role}, \codepath{specialization}, \codepath{skills}, \codepath{skill\_evidence}, \codepath{projects}, \codepath{experiences}, \codepath{education}.\\
+Project & \codepath{name}, \codepath{description}, \codepath{technologies}, \codepath{role}.\\
+Experience & \codepath{company}, \codepath{title}, \codepath{start\_date}, \codepath{end\_date}, \codepath{description}, \codepath{technologies}.\\
+Structured education & \codepath{institution}, \codepath{degree}, \codepath{field\_of\_study}, \codepath{start\_date}, \codepath{end\_date}.\\
+Skill evidence & \codepath{skill}, \codepath{evidence}, and server-issued \codepath{evidence\_id} for an existing entry.\\
+\bottomrule
+\end{longtable}
+
+\section{Runtime source index}
+
+\begin{longtable}{p{0.37\textwidth}p{0.52\textwidth}}
+\caption{Principal source locations supporting the report.}\label{tab:source-index}\\
+\toprule Location & Responsibility\\ \midrule\endfirsthead
+\toprule Location & Responsibility\\ \midrule\endhead
+\codepath{backend/gateway/main.py} & Active FastAPI application and router composition.\\
+\codepath{backend/gateway/api} & REST and WebSocket transport endpoints.\\
+\codepath{backend/core/dependencies.py} & Authentication and application dependency composition.\\
+\codepath{backend/shared/schemas} & Canonical backend transport and domain contracts.\\
+\codepath{backend/services/profile\_scanner} & Resume-to-profile language operation.\\
+\codepath{backend/services/interview\_knowledge} & Local catalog loading and lexical retrieval.\\
+\codepath{backend/services/interview\_planner} & Structured Interview Plan generation.\\
+\codepath{backend/services/question\_generator} & Turn-level question generation.\\
+\codepath{backend/services/answer\_evaluator} & Structured answer evaluation.\\
+\codepath{backend/services/interview\_answer\_service.py} & Shared idempotent answer use case.\\
+\codepath{backend/orchestrator} & Conversation progression and deterministic decisions.\\
+\codepath{backend/services/report\_generator} & Report generation and retrieval service.\\
+\codepath{backend/infrastructure/documents} & PDF, DOCX, and OCR extraction.\\
+\codepath{backend/infrastructure/repositories} & SQLite and Firestore persistence adapters.\\
+\codepath{backend/infrastructure/llm} & Vertex AI Gemini integration.\\
+\codepath{backend/infrastructure/speech} & Speech integration adapters.\\
+\codepath{frontend/src/App.tsx} & Production route declaration.\\
+\codepath{frontend/src/lib/api.ts} & Centralized backend API client.\\
+\codepath{frontend/src/types} & Canonical frontend contracts.\\
+\bottomrule
+\end{longtable}
+
+\section{Report build}
+
+The report sources are in \codepath{report/}. Mermaid sources under \codepath{report/diagrams} are rendered to high-resolution PNG files before XeLaTeX compilation. Each report figure is placed at a readable page width with a bounded height and an intervening float barrier, which prevents later text or figures from overlaying it.
+
+From the repository root, build the report with:
+
+\begin{lstlisting}[language={},caption={Project report build command.}]
+powershell -ExecutionPolicy Bypass `
+  -File .\report\scripts\build_report.ps1
+\end{lstlisting}
+
+The build performs diagram rendering, XeLaTeX and Biber passes, and log checks for unresolved references and material page overflow.

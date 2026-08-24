@@ -1,0 +1,20 @@
+{
+  "provider_calls": 3,
+  "results": [
+    {
+      "test_id": "LIVE-QSEM-01",
+      "status": "PASS",
+      "question": "Bạn có thể giải thích cách bạn sử dụng Redis để xây dựng bộ nhớ đệm cá nhân trong dự án của mình không?"
+    },
+    {
+      "test_id": "LIVE-QSEM-02",
+      "status": "PASS",
+      "question": "Bạn có thể mô tả cách bạn thiết kế và viết các bài kiểm thử cục bộ cho API Python của mình như thế nào không?"
+    },
+    {
+      "test_id": "LIVE-QSEM-03",
+      "status": "PASS",
+      "question": "Bạn có thể mô tả cách bạn phối hợp với nhóm khi phát triển prototype tìm kiếm thử nghiệm không?"
+    }
+  ]
+}

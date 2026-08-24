@@ -1,0 +1,20 @@
+﻿%% End-to-End Data Transformation
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/infrastructure/documents/models.py; backend/services/profile_scanner/schemas.py; backend/shared/schemas; backend/services/report_generator/schemas.py
+flowchart LR
+  Bytes["Resume Bytes"] --> Doc["DocumentExtractionResult"]
+  Doc --> Context["ResumeContext"]
+  Context --> Raw["ResumeExtractionResult"]
+  Raw --> Profile["PersistedCandidateProfile"]
+  Profile --> Plan["InterviewPlan"]
+  Plan --> Question["InterviewQuestion"]
+  Question --> Turn["InterviewTurn plus Answer"]
+  Turn --> Eval["AnswerEvaluation"]
+  Eval --> State["InterviewSessionState"]
+  State --> Report["InterviewReport"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

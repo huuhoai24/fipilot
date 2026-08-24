@@ -1,0 +1,22 @@
+{
+  "cost_is_invoice": false,
+  "llm_judge": {
+    "calls": 150,
+    "estimated_cost_usd": 0.8567275,
+    "input_tokens": 310134,
+    "model": "gemini-2.5-pro",
+    "output_tokens": 46906,
+    "pricing_basis": "evaluation.cv_question_rag.cost.PRICES_PER_MILLION",
+    "usage_complete": true
+  },
+  "question_generation": {
+    "calls": 150,
+    "estimated_cost_usd": 0.08331329999999999,
+    "input_tokens": 326134,
+    "model": "gemini-2.5-flash",
+    "output_tokens": 57322,
+    "pricing_basis": "evaluation.cv_question_rag.cost.PRICES_PER_MILLION",
+    "usage_complete": true
+  },
+  "total_estimated_cost_usd": 0.9400408
+}

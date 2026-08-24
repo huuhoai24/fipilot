@@ -1,0 +1,72 @@
+\chapter{PROJECT DEVELOPMENT AND MANAGEMENT}\label{ch:management}
+
+\section{Development organization}
+
+The repository is organized around responsibility boundaries rather than one large application module. The frontend, gateway, shared schemas, domain services, orchestrator, infrastructure adapters, speech service, tests, Knowledge catalog, documentation, and scripts form distinct work areas. This organization provides a practical work-breakdown structure even when contributors work across more than one area.
+
+\begin{table}[htbp]\centering
+\caption{Repository work areas and deliverables.}\label{tab:work-areas}
+\begin{tabularx}{\textwidth}{p{0.25\textwidth}YY}\toprule
+Work area & Main responsibility & Repository deliverable\\ \midrule
+Product interface & Routes, forms, text/voice experiences, report views & \codepath{frontend/src}\\
+HTTP boundary & Authentication, request validation, response contracts & \codepath{backend/gateway}\\
+Domain contracts & Canonical Pydantic request and response models & \codepath{backend/shared/schemas}\\
+Application services & Profile, readiness, planning, questions, evaluation, reports & \codepath{backend/services}\\
+Workflow control & Session progression and answer decisions & \codepath{backend/orchestrator}\\
+Infrastructure & Documents, Firebase, Gemini, speech, repositories & \codepath{backend/infrastructure}\\
+Speech process & Optional independently started speech service & \codepath{backend/speech_service}\\
+Knowledge & Role/topic/level Markdown documents and catalog & \codepath{Knowledge} and catalog builder\\
+Verification & Backend and frontend behavior checks & \codepath{backend/app/tests} and frontend test files\\
+Architecture records & ADRs, behavior specifications, deep dives & \codepath{docs}\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Change management}
+
+Changes to a domain contract require reading the repository context, applicable specifications, testing seams, risk documents, and architecture decisions. Runtime source remains authoritative for what the current application does, while ADRs explain why a boundary exists. This distinction prevents a detailed proposal from being reported as completed behavior.
+
+Canonical names are controlled centrally. For example, the Candidate Profile uses \codepath{name}, \codepath{years_experience}, \codepath{recent_role}, \codepath{specialization}, \codepath{skills}, \codepath{skill_evidence}, \codepath{projects}, \codepath{experiences}, and \codepath{education}. A change that introduces a parallel alias affects schemas, routes, repositories, tests, and UI state, so it must be reviewed as a domain change rather than a local convenience.
+
+Small implementation changes are verified with focused tests before broader suites. Final validation includes backend tests and compilation, frontend type checking, lint, tests, and production build. No source-control commit is created automatically by report generation.
+
+\section{Risk management}
+
+\begin{longtable}{p{0.22\textwidth}p{0.26\textwidth}p{0.42\textwidth}}
+\caption{Project risk matrix.}\label{tab:risk-matrix}\\
+\toprule Risk & Impact & Implemented control\\ \midrule\endfirsthead
+Unsupported Resume field & Incorrect personalization & File/text separation, schema-constrained profile output, normalization, and source reconciliation.\\
+Malformed document & Parser failure or resource waste & Type, signature, size, container, timeout, and extraction checks.\\
+Cross-user resource access & Privacy and integrity breach & Firebase token verification and ownership-scoped repository calls.\\
+Invalid language response & Application contract failure & Pydantic validation and bounded integration retry behavior.\\
+Duplicate answer submission & Repeated cost and inconsistent state & Persistent turn claim, request hash, stored result, and replay behavior.\\
+Slow external response & Poor interaction quality & Timeouts, question prefetch, progress state, and structured errors.\\
+Voice overload & Memory pressure & Bounded audio queues, message limits, endpoint detection, and session cleanup.\\
+Inconsistent text/voice logic & Different evaluation outcomes & Final transcript enters the shared answer service.\\
+Sensitive logging & Disclosure of Resume or answer content & Structured metadata logging; raw audio is not intentionally persisted.\\
+Configuration confusion & Wrong process settings & Repository helper loads \codepath{backend/.env.local} or \codepath{BACKEND_ENV_FILE}.\\
+\bottomrule
+\end{longtable}
+
+\section{Quality management}
+
+Quality controls are applied at four levels. Static contracts define types and allowed fields. Deterministic tests verify parsing, readiness, decisions, ownership, persistence, and error responses. Integration tests replace external services with controlled dependencies to exercise application behavior. Build checks ensure that the frontend and active backend packages remain executable.
+
+\begin{table}[htbp]\centering
+\caption{Quality gates used by the project.}\label{tab:quality-gates}
+\begin{tabularx}{\textwidth}{p{0.24\textwidth}YY}\toprule
+Gate & Purpose & Evidence\\ \midrule
+Schema validation & Reject malformed request/model output & Shared Pydantic models and schema tests\\
+Ownership tests & Prevent cross-user disclosure & API and repository ownership scenarios\\
+Repository parity & Preserve application behavior across adapters & SQLite/Firestore contract tests\\
+Document tests & Verify valid, corrupt, mismatched, OCR, and timeout paths & Document-processing test module\\
+Workflow tests & Verify start, answer, completion, and report behavior & Interview/orchestrator/API tests\\
+Voice tests & Verify WebSocket, STT/TTS, interruption, and cleanup contracts & Voice service and gateway tests\\
+Frontend tests & Verify routes, forms, errors, interaction, and accessibility behavior & React Testing Library suites\\
+Release checks & Reject syntax/type/lint/build failures & Python compilation and frontend build commands\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Documentation management}
+
+The report uses local source paths as traceability notes for implementation details. It does not reproduce environment secret values or private Resume content. Architecture figures are generated from report-owned Mermaid sources so their content can be reviewed and re-rendered. The build script regenerates figures, compiles the document, resolves the bibliography, and rejects missing references or major layout overflow.
+

@@ -1,0 +1,19 @@
+﻿%% Context Assembly and Prompt Augmentation
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/prompt_builder.py; backend/services/interview_planner/prompts.py; backend/services/question_generator/prompts.py
+flowchart LR
+  System["System Instruction"] --> Final["Final Agent Prompt"]
+  Language["Language Instruction"] --> Final
+  Candidate["Candidate Profile JSON"] --> Final
+  Config["Interview Config JSON"] --> Final
+  Knowledge["Curated Knowledge"] --> Planner["Planner Prompt"]
+  Planner --> Plan["Interview Round"]
+  Plan --> Final
+  Requirements["Task Rules and Output Schema"] --> Final
+  Final --> Gemini["Vertex Gemini"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

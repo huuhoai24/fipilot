@@ -1,0 +1,40 @@
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+
+This report records the design and implementation of FiPilot as a graduation software project. The work combines document processing, web application development, language-model integration, knowledge retrieval, interview orchestration, speech interaction, persistence, and software verification. The authors acknowledge the guidance of lecturers, reviewers, and collaborators who supported the project. Personal names are intentionally omitted from this repository edition so that they can be inserted by the submitting team in the institutional cover and approval pages.
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+FiPilot is a web-based system that converts a PDF or DOCX Resume into a structured Candidate Profile and uses that profile to conduct a personalized technical interview. The implemented workflow validates the uploaded document, performs native extraction with OCR fallback when necessary, requests a schema-constrained profile from Gemini, normalizes the result, and persists it under the authenticated user. The interview service then retrieves role-relevant knowledge from the local Knowledge catalog, creates an Interview Plan, generates questions, evaluates answers, applies deterministic continuation and difficulty rules, stores the session, and produces a final report.
+
+The system supports both text and voice interaction. Text answers use authenticated REST operations. Voice sessions use an authenticated WebSocket, voice activity detection, speech-to-text, the shared answer-processing service, and streamed text-to-speech. The frontend is implemented with React and TypeScript; the active backend is a FastAPI modular monolith; persistence is provided through repository adapters; Firebase supplies identity verification; and Vertex AI Gemini supplies the language operations used by the application.
+
+This document is an as-built report. It explains only components connected to the application workflow and avoids presenting research-only alternatives as system features. Software validation for the inspected revision completed 286 backend tests and 119 frontend tests, together with backend compilation, frontend type checking, linting, and a production frontend build. These results verify software behavior covered by the test suites; they are not a claim that automated interview scores replace professional human judgment.
+
+\chapter*{List of Abbreviations}
+\addcontentsline{toc}{chapter}{List of Abbreviations}
+
+\begin{longtable}{p{0.20\textwidth}p{0.70\textwidth}}
+\toprule Abbreviation & Meaning\\ \midrule\endhead
+AI & Artificial Intelligence\\
+API & Application Programming Interface\\
+CV & Curriculum Vitae / Resume\\
+DOCX & Office Open XML document format\\
+ETag & HTTP entity tag\\
+HTTP & Hypertext Transfer Protocol\\
+JSON & JavaScript Object Notation\\
+LLM & Large Language Model\\
+NLP & Natural Language Processing\\
+OCR & Optical Character Recognition\\
+PDF & Portable Document Format\\
+PII & Personally Identifiable Information\\
+RAG & Retrieval-Augmented Generation\\
+REST & Representational State Transfer\\
+STT & Speech-to-Text\\
+TTS & Text-to-Speech\\
+UI & User Interface\\
+VAD & Voice Activity Detection\\
+WebSocket & Full-duplex communication protocol over one connection\\
+\bottomrule
+\end{longtable}

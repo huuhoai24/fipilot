@@ -1,0 +1,20 @@
+﻿%% Feature Flags and Experiment Configuration
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/core/settings.py; backend/core/dependencies.py; evaluation/m6/benchmark/FROZEN_CONFIG.json
+flowchart TB
+  Runtime["Runtime Settings"] --> Repo{"REPOSITORY_BACKEND"}
+  Repo --> SQLite["sqlite"]
+  Repo --> Firestore["firestore"]
+  Runtime --> Knowledge{"INTERVIEW_KNOWLEDGE_BACKEND"}
+  Knowledge --> Local["local"]
+  Knowledge --> Vector["firestore_vector"]
+  Runtime --> Speech{"SPEECH_SERVICE_URL set"}
+  Speech --> LocalSpeech["Local Models"]
+  Speech --> RemoteSpeech["Remote Speech Service"]
+  Eval["Offline Frozen Config"] --> Conditions["NO_RAG LEXICAL VECTOR HYBRID"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

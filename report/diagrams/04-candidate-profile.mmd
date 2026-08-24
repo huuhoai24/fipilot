@@ -1,0 +1,40 @@
+%% Canonical Candidate Profile
+classDiagram
+  class CandidateProfile {
+    name
+    years_experience
+    recent_role
+    specialization
+    skills
+    skill_evidence
+    projects
+    experiences
+    education
+  }
+  class SkillEvidence {
+    skill
+    evidence
+  }
+  class Project {
+    name
+    description
+    technologies
+    role
+  }
+  class Experience {
+    company
+    title
+    dates
+    description
+    technologies
+  }
+  class Education {
+    institution
+    degree
+    field_of_study
+    dates
+  }
+  CandidateProfile "1" *-- "many" SkillEvidence
+  CandidateProfile "1" *-- "many" Project
+  CandidateProfile "1" *-- "many" Experience
+  CandidateProfile "1" *-- "many" Education

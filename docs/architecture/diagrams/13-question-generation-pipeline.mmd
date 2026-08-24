@@ -1,0 +1,17 @@
+﻿%% Question Generation Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/question_generator/agent.py; backend/services/question_generator/prompts.py; backend/shared/schemas/interview.py
+flowchart LR
+  Profile["Candidate Profile"] --> Prompt["Question Prompt Builder"]
+  Round["Selected Interview Round"] --> Prompt
+  Config["Interview Config"] --> Prompt
+  History["Asked Questions for Follow-up [PARTIAL]"] --> Round
+  Prompt --> LLM["Gemini Simple Route"]
+  LLM --> Schema["InterviewQuestion Validation"]
+  Schema --> Question["Question Expected Points Follow-ups"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

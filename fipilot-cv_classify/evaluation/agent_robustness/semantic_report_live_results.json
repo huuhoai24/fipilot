@@ -1,0 +1,57 @@
+{
+  "provider_calls": 3,
+  "results": [
+    {
+      "test_id": "LIVE-REPORT-CLAIM-01",
+      "status": "PASS",
+      "assessment": {
+        "turn_index": 0,
+        "evaluation_goal": "Validate only the supplied evidence",
+        "raw_score": 8,
+        "status": "MET",
+        "rationale": "Strong grounded project testing evidence.",
+        "evidence": [
+          {
+            "timestamp": "2026-08-24T10:00:00+07:00",
+            "quote": "I used unit and integration tests for the university project."
+          }
+        ]
+      },
+      "normalized_score": 8.0,
+      "claim_violations": []
+    },
+    {
+      "test_id": "LIVE-REPORT-CLAIM-02",
+      "status": "PASS",
+      "assessment": {
+        "turn_index": 0,
+        "evaluation_goal": "Validate only the supplied evidence",
+        "raw_score": 8,
+        "status": "MET",
+        "rationale": "Strong grounded API failure-handling evidence without a duration claim.",
+        "evidence": [
+          {
+            "timestamp": "2026-08-24T10:00:00+07:00",
+            "quote": "I used rollback and returned controlled errors."
+          }
+        ]
+      },
+      "normalized_score": 8.0,
+      "claim_violations": []
+    },
+    {
+      "test_id": "LIVE-REPORT-CLAIM-03",
+      "status": "PASS",
+      "assessment": {
+        "turn_index": 0,
+        "evaluation_goal": "Validate only the supplied evidence",
+        "raw_score": null,
+        "status": "NOT_ASSESSED",
+        "rationale": "This interaction was not assessed and provides no candidate competency conclusion.",
+        "evidence": []
+      },
+      "normalized_score": 0.0,
+      "claim_violations": []
+    }
+  ]
+}

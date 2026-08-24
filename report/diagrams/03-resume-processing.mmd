@@ -1,0 +1,23 @@
+%% Resume document processing
+flowchart TB
+  subgraph Admission[Document Admission]
+    direction LR
+    File[One Resume File] --> Checks[Extension Signature and Size Checks]
+    Checks --> Type{PDF or DOCX}
+  end
+  subgraph Extraction[Text Extraction]
+    direction LR
+    PDF[Native PDF Text] --> Sparse{Enough Text?}
+    Sparse -->|No| OCR[Render Pages and Run OCR]
+    DOCX[DOCX Paragraphs and Tables] --> Normalize[Normalized Resume Text]
+    Sparse -->|Yes| Normalize
+    OCR --> Normalize
+  end
+  subgraph Profile[Profile Construction]
+    direction LR
+    Gemini[Schema-Constrained Profile] --> Verify[Normalize Fields]
+    Verify --> Save[Persist Owned Candidate Resources]
+  end
+  Type -->|PDF| PDF
+  Type -->|DOCX| DOCX
+  Normalize --> Gemini

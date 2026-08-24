@@ -1,0 +1,27 @@
+﻿%% OCR and Document Extraction Decision Tree
+%% Status: IMPLEMENTED
+%% Evidence: backend/infrastructure/documents/quality.py; backend/infrastructure/documents/pdf_service.py; backend/infrastructure/documents/ocr.py
+flowchart TB
+  PDF["PDF Pages"] --> Native["pypdf extract_text"]
+  Native --> Quality{"Quality is IMAGE_ONLY or SPARSE"}
+  Quality -->|No| Normalize["Normalize Native Text"]
+  Quality -->|Yes| Page{"Page has at least 50 alphanumeric chars"}
+  Page -->|Yes| Keep["Keep Native Page"]
+  Page -->|No| Limit{"Within first 20 pages and deadline"}
+  Limit -->|No| Warning["Partial Warning"]
+  Limit -->|Yes| Render["Render Page at 2x"]
+  Render --> OCR["RapidOCR"]
+  OCR -->|Text| Use["Use OCR Page"]
+  OCR -->|Empty Timeout Failure| Warning
+  Keep --> Normalize
+  Use --> Normalize
+  Warning --> Normalize
+  Normalize --> Enough{"Final text at least 50 chars"}
+  Enough -->|Yes| Result["Complete or Partial Result"]
+  Enough -->|No| Reject["no_extractable_text"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,23 @@
+﻿%% Metric Dependency Graph
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/m6/metrics.py; evaluation/defense_extension/e3_ablation_analysis.py
+flowchart TB
+  Question["Generated Question"] --> Valid["Technical Validity"]
+  Question --> Role["Role Relevance"]
+  Question --> Difficulty["Difficulty Alignment"]
+  Question --> Clarity["Clarity and Specificity"]
+  Profile["Candidate Profile"] --> CV["CV Alignment and Unsupported Claims"]
+  Question --> CV
+  Context["Retrieved Contexts"] --> Relevance["Relevant at 5 and Rank"]
+  Context --> Grounding["RAG Grounding 0 to 2"]
+  Question --> Grounding
+  Grounding --> Utilization["Knowledge Utilization"]
+  Context --> Utilization
+  Timers["Stage Timers"] --> RetrievalLatency["Retrieval Latency P50 P95"]
+  Timers --> TotalLatency["Question and Total Latency P50 P95"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

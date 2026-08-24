@@ -1,0 +1,26 @@
+﻿%% Answer Submission Flow
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/interview_answer_service.py; backend/infrastructure/repositories/base.py; backend/gateway/api/interview.py
+sequenceDiagram
+  participant U as Candidate EXTERNAL
+  participant FE as Frontend IMPLEMENTED
+  participant API as Answer API IMPLEMENTED
+  participant S as Answer Service IMPLEMENTED
+  participant DB as Repository STORAGE
+  participant EV as Evaluator IMPLEMENTED
+  participant OR as Orchestrator IMPLEMENTED
+  U->>FE: Submit answer
+  FE->>API: session turn answer
+  API->>S: submit_answer
+  S->>DB: Load owned session and claim turn
+  alt replay
+    DB-->>S: completed same hash
+    S-->>FE: latest state with replay flag
+  else claimed
+    S->>EV: Evaluate answer
+    EV-->>OR: AnswerEvaluation
+    OR-->>S: Next session state
+    S->>DB: Complete claim plus state
+    S-->>FE: Updated session
+  end
+

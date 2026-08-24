@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { TextInterviewPage } from '@/pages/TextInterviewPage'
 import { SpeechInterviewPage } from '@/pages/SpeechInterviewPage'
+import { SpeechLandingPage } from '@/pages/SpeechLandingPage'
 import { InterviewHistoryPage } from '@/pages/InterviewHistoryPage'
 import { InterviewReportPage } from '@/pages/InterviewReportPage'
 import { SettingsPage } from '@/pages/SettingsPage'
@@ -27,7 +28,7 @@ export default function App() {
               <Route element={<AppLayout />}>
                 <Route path="/text-interview" element={<TextInterviewPage mode="text" />} />
                 <Route path="/text-interview/:sessionId/report" element={<InterviewReportPage />} />
-                <Route path="/speech-interview" element={<TextInterviewPage mode="voice" />} />
+                <Route path="/speech-interview" element={<SpeechLandingPage />} />
                 <Route path="/speech-interview/:sessionId" element={<SpeechInterviewPage />} />
                 <Route path="/interview-history" element={<InterviewHistoryPage />} />
                 <Route path="/settings" element={<SettingsPage />} />

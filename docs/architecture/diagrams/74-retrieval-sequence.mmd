@@ -1,0 +1,21 @@
+﻿%% Retrieval Sequence
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/interview_planner/agent.py; backend/services/interview_knowledge/local.py; backend/infrastructure/interview_knowledge/firestore_vector.py
+sequenceDiagram
+  participant P as Planner Agent
+  participant R as Configured Retriever
+  participant E as Vertex Embedding
+  participant V as Firestore Vector Store
+  participant C as Local Catalog
+  P->>R: retrieve_topics profile config
+  alt local default
+    R->>C: score domain level topics
+    C-->>R: top topic strings
+  else firestore vector
+    R->>E: embed privacy-reduced query
+    E-->>R: 768d vector
+    R->>V: cosine find_nearest top K
+    V-->>R: topic records and distances
+  end
+  R-->>P: curated knowledge strings
+

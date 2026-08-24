@@ -1,0 +1,19 @@
+﻿%% Question to Evaluation Traceability
+%% Status: IMPLEMENTED
+%% Evidence: backend/shared/schemas/interview.py; backend/services/answer_evaluator; backend/services/report_generator/prompts.py
+flowchart LR
+  Question["InterviewQuestion"] --> Turn["InterviewTurn turn_id"]
+  Answer["Candidate Answer"] --> Turn
+  Turn --> Evaluation["AnswerEvaluation"]
+  Evaluation --> Scores["Scores"]
+  Evaluation --> Feedback["Strengths Weaknesses Missing Concepts"]
+  Scores --> Completed["Completed Turns"]
+  Feedback --> Completed
+  Completed --> ReportPrompt["Report Prompt"]
+  ReportPrompt --> Report["InterviewReport"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

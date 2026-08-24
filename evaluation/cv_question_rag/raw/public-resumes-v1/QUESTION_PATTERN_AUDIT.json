@@ -1,0 +1,16 @@
+{
+  "exact_duplicate_excess_count": 1,
+  "exact_duplicate_group_count": 1,
+  "normalization": "lowercase ASCII token regex [a-z0-9+#.]+",
+  "normalized_exact_duplicate_rate": 0.006666666666666667,
+  "opening_definition": "first four normalized tokens",
+  "opening_phrase_repetition_rate": 0.8066666666666666,
+  "opening_repetition_excess_count": 121,
+  "opening_repetition_group_count": 16,
+  "rate_denominator": "all generated questions",
+  "sample_count": 150,
+  "schema_version": "cv-question-rag.question-pattern-audit.v1",
+  "unsupported_assumption_source": "boolean flags frozen in questions.jsonl by the conservative bilingual pattern audit",
+  "unsupported_experience_assumption_count": 106,
+  "unsupported_experience_assumption_rate": 0.7066666666666667
+}

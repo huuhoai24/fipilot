@@ -1,0 +1,31 @@
+{
+  "artifacts": {
+    "dataset_manifest_sha256": "f32c8290c050fb3ae19f60d124581c89b600c78e168ed50a8ffb22e6d8030e5a",
+    "exact_duplicate_groups_sha256": "405ae26510328055032b1c8902bde212c1a0b646ceaa09a00f08089313c4d2cd",
+    "judgments_log_sha256": "9bcb67a564902288772119ed078765995163d22c5b2defc08956ce8aecef613c",
+    "opening_repetition_groups_sha256": "756f566d5cccc4189f7d7c6dbc51e0a47654d0982cab8fbe24d4b42beff565b5",
+    "question_metrics_sha256": "a7a154b6c7efdf45e6f7452d55ce2a7b05ac1b9359228b9ad2d7683a4b7d4a10",
+    "question_pattern_audit_sha256": "b8321f889cc2a0289c979256059a16548b87644fee1760b9d009094fd928abb9",
+    "questions_log_sha256": "a390ef8179dff2f2313782a0276e97bece228b5e97947abb9e66dd4910c1bbcb",
+    "retrieval_log_sha256": "d1da96ab73decb050611ddfe6a44f0ba3d6fbb0e6ff1c5572c2c59e9db003f85",
+    "retrieval_metrics_sha256": "f19e6172db63a6f08ed8fd6ae42b53e426c036cde58f2223e4cd8bf19c34ddf9",
+    "unsupported_experience_assumptions_sha256": "f88856cb903ef3ab513f46e87255bb2af51f122adfff69110f408ad01540e483"
+  },
+  "commands": {
+    "prepare": "python -m evaluation.cv_question_rag.run_benchmark --prepare --corpus-dir resumes --corpus-limit 500 --sample-size 300 --development-ratio 0.5 --seed 20260820",
+    "questions": "python -m evaluation.cv_question_rag.run_benchmark --execute-paid-questions --max-question-cases 150",
+    "retrieval": "python -m evaluation.cv_question_rag.run_benchmark --run-retrieval --seed 20260820"
+  },
+  "dataset_hash": "18eb10d78f99408ce0071b259bd1ce57c9456641b660901ca8499506a8946d19",
+  "human_review": {
+    "completed": 0,
+    "selected": 60
+  },
+  "provider_calls": {
+    "llm_judge": 150,
+    "question_generation": 150
+  },
+  "schema_version": "cv-question-rag.run.v1",
+  "seed": 20260820,
+  "status": "PARTIAL_PENDING_HUMAN_REVIEW"
+}

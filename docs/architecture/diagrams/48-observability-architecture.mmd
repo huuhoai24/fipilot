@@ -1,0 +1,19 @@
+﻿%% Observability Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/core/logging.py; backend/core/middleware.py; backend/core/performance.py; backend/services/voice_session/metrics.py
+flowchart LR
+  HTTP["HTTP Requests"] --> Correlation["X Request ID Middleware"]
+  Correlation --> Logs["Structured JSON stdout [IMPLEMENTED]"]
+  Stages["Timed Pipeline Stages"] --> Logs
+  LLM["LLM Attempt and Usage Records"] --> Logs
+  Voice["Voice Latency Registry"] --> Logs
+  Logs --> Redact["Email and Bearer Redaction"]
+  Redact --> Runtime["Container Log Collector [EXTERNAL]"]
+  Trace["Distributed Tracing [SPEC-PENDING]"] -.-> Runtime
+  Metrics["Metrics Scrape and Alerts [SPEC-PENDING]"] -.-> Runtime
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

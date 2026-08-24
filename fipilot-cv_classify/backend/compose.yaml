@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.2-pg17
+    environment:
+      POSTGRES_DB: fipilot
+      POSTGRES_PASSWORD: fipilot
+      POSTGRES_USER: fipilot
+    ports:
+      - "5432:5432"
+    volumes:
+      - fipilot-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fipilot -d fipilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  fipilot-postgres:

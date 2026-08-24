@@ -1,0 +1,23 @@
+﻿%% Interview Plan Data Model
+%% Status: IMPLEMENTED
+%% Evidence: backend/shared/schemas/interview.py
+classDiagram
+  class InterviewPlan {
+    duration_minutes integer
+    coverage_goals string array
+    risk_areas string array
+    planner_summary string
+  }
+  class InterviewRound {
+    round_id string
+    topic string
+    objective string
+    difficulty enum
+    reasoning string
+    recommended_question_areas string array
+    weight float
+    target_skills string array
+    question_budget integer
+  }
+  InterviewPlan "1" *-- "many" InterviewRound
+

@@ -1,0 +1,20 @@
+﻿%% Data Flow Diagram Level 0
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: frontend/src; backend/gateway; backend/infrastructure; docs/local-architecture.md
+flowchart LR
+  Candidate["Candidate [EXTERNAL]"] --> System["Fipilot CV Interview System [IMPLEMENTED]"]
+  System --> Candidate
+  System <--> Auth["Firebase Auth [EXTERNAL]"]
+  System <--> AI["Vertex AI [EXTERNAL]"]
+  System <--> Speech["Speech Inference [IMPLEMENTED]"]
+  System <--> RuntimeStore["Candidate and Interview Repository [STORAGE]"]
+  System <--> Knowledge["Knowledge Stores [STORAGE]"]
+  Developer["Developer [EXTERNAL]"] <--> Evaluation["Offline Evaluation [IMPLEMENTED]"]
+  Evaluation <--> AI
+  Evaluation <--> EvalArtifacts["Evaluation Artifacts [STORAGE]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

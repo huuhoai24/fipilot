@@ -1,0 +1,19 @@
+﻿%% Schema Transformation Map
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/shared/schemas; backend/infrastructure/repositories/base.py; frontend/src/types/index.ts; backend/app/schemas/__init__.py
+flowchart LR
+  Document["DocumentExtractionResult Pydantic"] --> Extraction["ResumeExtractionResult Pydantic"]
+  Extraction --> Candidate["CandidateProfile Pydantic"]
+  Candidate --> Persisted["PersistedCandidateProfile Pydantic"]
+  Persisted --> Repo["CandidateRecord and JSON Persistence"]
+  Repo --> Read["CandidateProfileReadResponse"]
+  Read --> TS["CandidateProfileResponse TypeScript"]
+  Candidate --> Upload["Upload JSON with extraction metadata"]
+  Upload --> UploadTS["ResumeUploadResponse TypeScript [PARTIAL]"]
+  State["InterviewSessionState Pydantic"] --> StateTS["V2InterviewSessionState TypeScript"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

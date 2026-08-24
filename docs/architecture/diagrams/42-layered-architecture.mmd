@@ -1,0 +1,21 @@
+﻿%% Layered Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: docs/SYSTEM_DESIGN_VI.md; backend/core/dependencies.py; backend/infrastructure/repositories/base.py
+flowchart TB
+  Presentation["Presentation React [IMPLEMENTED]"] --> Transport["Gateway REST and WebSocket [IMPLEMENTED]"]
+  Transport --> Application["Application Services [IMPLEMENTED]"]
+  Application --> Orchestration["Interview Orchestrator [IMPLEMENTED]"]
+  Orchestration --> AI["AI Agents and Prompt Builders [IMPLEMENTED]"]
+  Application --> Persistence["Repository Interfaces [IMPLEMENTED]"]
+  AI --> Providers["Vertex and Speech Adapters [IMPLEMENTED]"]
+  Persistence --> Stores["SQLite or Firestore [STORAGE]"]
+  Shared["Shared Pydantic Schemas [IMPLEMENTED]"] --> Transport
+  Shared --> Application
+  Shared --> Orchestration
+  Shared --> Persistence
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,22 @@
+﻿%% Voice WebSocket Event Contract
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/voice_session/events.py; backend/gateway/api/voice.py; frontend/src/pages/SpeechInterviewPage.tsx
+flowchart LR
+  ClientJSON["Client JSON Controls"] --> Gateway["Voice WebSocket"]
+  ClientPCM["Client Binary PCM"] --> Gateway
+  ClientJSON --> Listen["start or stop listening"]
+  ClientJSON --> Confirm["confirm_answer"]
+  ClientJSON --> Barge["start_barge_in"]
+  ClientJSON --> Playback["speak or stop playback"]
+  Gateway --> ServerJSON["Server JSON Events"]
+  Gateway --> ServerPCM["Server Binary TTS PCM"]
+  ServerJSON --> State["connected state processing error"]
+  ServerJSON --> Question["question_start delta complete"]
+  ServerJSON --> TTS["tts_start format complete cancelled"]
+  ServerJSON --> Complete["completed"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

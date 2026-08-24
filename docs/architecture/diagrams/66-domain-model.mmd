@@ -1,0 +1,26 @@
+﻿%% Core Domain Model
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/shared/schemas; backend/services/report_generator/schemas.py; backend/services/interview_knowledge/chunks.py
+classDiagram
+  class Resume
+  class CandidateProfile
+  class InterviewConfig
+  class InterviewPlan
+  class InterviewRound
+  class InterviewSessionState
+  class InterviewTurn
+  class InterviewQuestion
+  class AnswerEvaluation
+  class InterviewReport
+  class KnowledgeChunk
+  Resume --> CandidateProfile : extracted into
+  CandidateProfile --> InterviewSessionState : copied into
+  InterviewSessionState *-- InterviewConfig
+  InterviewSessionState *-- InterviewPlan
+  InterviewPlan *-- InterviewRound
+  InterviewSessionState *-- InterviewTurn
+  InterviewTurn *-- InterviewQuestion
+  InterviewTurn *-- AnswerEvaluation
+  InterviewSessionState --> InterviewReport : summarized by
+  KnowledgeChunk --> InterviewPlan : curated context
+

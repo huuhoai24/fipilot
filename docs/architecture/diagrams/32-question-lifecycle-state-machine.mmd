@@ -1,0 +1,14 @@
+﻿%% Question Lifecycle State Machine
+%% Status: IMPLEMENTED
+%% Evidence: backend/shared/schemas/interview.py; backend/orchestrator/conversation_flow.py; backend/orchestrator/interview_orchestrator.py
+stateDiagram-v2
+  [*] --> Generated
+  Generated --> Created: create InterviewTurn
+  Created --> Shown: assign current_turn
+  Shown --> Answered: candidate answer accepted
+  Answered --> Evaluated: AnswerEvaluation attached
+  Evaluated --> Completed: append completed_turns
+  Created --> OpeningAnswered: opening turn special case
+  OpeningAnswered --> Shown: reveal pending first question
+  Completed --> [*]
+

@@ -1,0 +1,24 @@
+﻿%% API Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/main.py; backend/gateway/api
+flowchart TB
+  API["FastAPI Gateway"] --> Health["GET health and ready [IMPLEMENTED]"]
+  API --> Auth["GET api v2 auth me [IMPLEMENTED]"]
+  API --> Resume["POST api v2 resume upload [IMPLEMENTED]"]
+  API --> Profile["GET api v2 candidates id profile [IMPLEMENTED]"]
+  API --> Prepare["POST api v2 interview prepare [IMPLEMENTED]"]
+  API --> Start["POST api v2 interview start [PARTIAL]"]
+  API --> Answer["POST api v2 interview id answer [IMPLEMENTED]"]
+  API --> Session["GET api v2 interview id [IMPLEMENTED]"]
+  API --> Report["POST and GET interview id report [PARTIAL]"]
+  API --> History["GET api v2 interviews [IMPLEMENTED]"]
+  API --> Voice["WS api v2 voice interview id [IMPLEMENTED]"]
+  API -.-> Patch["PATCH Candidate Profile [SPEC-PENDING]"]
+  API -.-> Replacement["POST Replacement Resume [SPEC-PENDING]"]
+  API -.-> UploadStatus["GET Upload Status [SPEC-PENDING]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

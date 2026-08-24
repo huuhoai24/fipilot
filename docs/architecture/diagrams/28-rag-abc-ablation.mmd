@@ -1,0 +1,23 @@
+﻿%% A B C RAG Ablation
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/defense_extension/e3_ablation_analysis.py; docs/evaluation/defense_extension/e3_ablation/DATASET_MANIFEST.json
+flowchart TB
+  Frozen["20 Frozen Vietnamese Scenarios"] --> A["A PROFILE ONLY"]
+  Frozen --> B["B PROFILE plus LEXICAL"]
+  Frozen --> C["C PROFILE plus VECTOR"]
+  Controls["Same Candidate Role Difficulty Prompt Model Temperature"] --> A
+  Controls --> B
+  Controls --> C
+  A --> Common["Technical Validity Role Relevance CV Alignment Difficulty Clarity Specificity Latency"]
+  B --> Common
+  C --> Common
+  B --> RAG["Grounding Utilization Retrieval Relevance and Latency"]
+  C --> RAG
+  Common --> Pair["Paired A versus B versus C"]
+  RAG --> Pair
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

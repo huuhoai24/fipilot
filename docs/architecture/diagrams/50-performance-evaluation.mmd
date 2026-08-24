@@ -1,0 +1,20 @@
+﻿%% Performance Evaluation Pipeline
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: backend/services/system_evaluation/metrics.py; evaluation/m5/latency.py; evaluation/m6/reporting.py; evaluation/m8/tracing.py
+flowchart LR
+  Samples["Evaluation Samples"] --> Timers["Stage Timers"]
+  Timers --> Retrieval["Retrieval Latency"]
+  Timers --> Generation["LLM Generation Latency"]
+  Timers --> Voice["STT TTS Turn Latency"]
+  Timers --> Total["Total Pipeline Latency"]
+  Retrieval --> Aggregate["Average P50 P95 Failure Rate"]
+  Generation --> Aggregate
+  Voice --> Aggregate
+  Total --> Aggregate
+  Aggregate --> Reports["Frozen JSON and Markdown Reports"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

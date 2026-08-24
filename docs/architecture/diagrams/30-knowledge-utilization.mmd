@@ -1,0 +1,19 @@
+﻿%% Knowledge Utilization Evaluation
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/m6/retrieval.py; evaluation/m6/metrics.py; evaluation/defense_extension/e3_ablation_analysis.py
+flowchart TB
+  Retrieved["Retrieved Contexts"] --> Relevant{"Expected Topic in Top 5"}
+  Retrieved --> Overlap{"Question Context Token Overlap above 0"}
+  Judge["Judge RAG Grounding"] --> Grounded{"Score at least 1"}
+  Relevant --> RetrievalMetric["Retrieval Succeeded"]
+  Overlap --> Utilized{"Overlap and Grounding"}
+  Grounded --> Utilized
+  Utilized -->|Yes| UseMetric["Knowledge Utilized"]
+  Relevant -->|Yes| But["Context Available"]
+  But -->|Utilized No| Failure["Utilization Failure"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

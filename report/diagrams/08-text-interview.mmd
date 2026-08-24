@@ -1,0 +1,18 @@
+%% Text interview sequence
+sequenceDiagram
+  participant U as Candidate
+  participant F as React Frontend
+  participant G as FastAPI Gateway
+  participant O as Interview Orchestrator
+  participant R as Repository
+  U->>F: Start text interview
+  F->>G: Authenticated start request
+  G->>O: Load profile and prepare session
+  O->>R: Persist plan session and first turn
+  R-->>O: Stored session
+  O-->>F: First question
+  U->>F: Submit answer
+  F->>G: Answer request
+  G->>O: Evaluate and choose next action
+  O->>R: Persist evaluation and state
+  O-->>F: Updated session or completion

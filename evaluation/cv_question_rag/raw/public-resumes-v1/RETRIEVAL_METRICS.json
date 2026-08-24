@@ -1,0 +1,223 @@
+{
+  "by_category": {
+    "architecture-management": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 1.0,
+      "recall_at_1": 0.125,
+      "recall_at_3": 0.3416666666666667,
+      "recall_at_5": 0.5583333333333333,
+      "recall_at_8": 0.8833333333333333,
+      "sample_count": 15,
+      "zero_result_rate": 0.0
+    },
+    "data-ai": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9666666666666667,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9814814814814814,
+      "recall_at_1": 0.13417989417989418,
+      "recall_at_3": 0.37207671957671956,
+      "recall_at_5": 0.5988624338624339,
+      "recall_at_8": 0.875,
+      "sample_count": 90,
+      "zero_result_rate": 0.0
+    },
+    "devops-cloud-security": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.8813559322033898,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9378531073446328,
+      "recall_at_1": 0.11813962873284907,
+      "recall_at_3": 0.3343422114608555,
+      "recall_at_5": 0.5388418079096046,
+      "recall_at_8": 0.8432203389830508,
+      "sample_count": 59,
+      "zero_result_rate": 0.0
+    },
+    "product-qa": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9193548387096774,
+      "hit_rate_at_3": 0.9838709677419355,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9556451612903226,
+      "recall_at_1": 0.15848694316436251,
+      "recall_at_3": 0.43513824884792623,
+      "recall_at_5": 0.6694508448540707,
+      "recall_at_8": 0.905241935483871,
+      "sample_count": 62,
+      "zero_result_rate": 0.0
+    },
+    "software-development": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.8648648648648649,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9324324324324325,
+      "recall_at_1": 0.12055984555984556,
+      "recall_at_3": 0.3575933075933076,
+      "recall_at_5": 0.5713320463320464,
+      "recall_at_8": 0.8614864864864865,
+      "sample_count": 74,
+      "zero_result_rate": 0.0
+    }
+  },
+  "by_domain": {
+    "AI_Engineer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9555555555555556,
+      "hit_rate_at_3": 0.9777777777777777,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9722222222222222,
+      "recall_at_1": 0.14838624338624337,
+      "recall_at_3": 0.40071428571428575,
+      "recall_at_5": 0.6243386243386243,
+      "recall_at_8": 0.8694444444444445,
+      "sample_count": 45,
+      "zero_result_rate": 0.0
+    },
+    "Backend_Developer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9230769230769231,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9615384615384616,
+      "recall_at_1": 0.12255799755799757,
+      "recall_at_3": 0.34951159951159955,
+      "recall_at_5": 0.5588369963369964,
+      "recall_at_8": 0.8461538461538461,
+      "sample_count": 78,
+      "zero_result_rate": 0.0
+    },
+    "Business_Analyst": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9354838709677419,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.967741935483871,
+      "recall_at_1": 0.1846774193548387,
+      "recall_at_3": 0.4774193548387097,
+      "recall_at_5": 0.7244623655913978,
+      "recall_at_8": 0.9314516129032258,
+      "sample_count": 31,
+      "zero_result_rate": 0.0
+    },
+    "Data_Engineer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 1.0,
+      "recall_at_1": 0.16071428571428573,
+      "recall_at_3": 0.48214285714285715,
+      "recall_at_5": 0.7083333333333333,
+      "recall_at_8": 0.9285714285714286,
+      "sample_count": 7,
+      "zero_result_rate": 0.0
+    },
+    "Data_Scientist": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 1.0,
+      "recall_at_1": 0.1875,
+      "recall_at_3": 0.5125,
+      "recall_at_5": 0.7083333333333333,
+      "recall_at_8": 0.9375,
+      "sample_count": 10,
+      "zero_result_rate": 0.0
+    },
+    "DevOps_Engineer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.8589743589743589,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9252136752136753,
+      "recall_at_1": 0.10882173382173381,
+      "recall_at_3": 0.32303113553113555,
+      "recall_at_5": 0.534035409035409,
+      "recall_at_8": 0.8413461538461539,
+      "sample_count": 78,
+      "zero_result_rate": 0.0
+    },
+    "Full_Stack_Developer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.875,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9375,
+      "recall_at_1": 0.11884920634920636,
+      "recall_at_3": 0.33387896825396823,
+      "recall_at_5": 0.5781746031746032,
+      "recall_at_8": 0.8854166666666666,
+      "sample_count": 24,
+      "zero_result_rate": 0.0
+    },
+    "Software_Engineer": {
+      "domain_selection_accuracy": 1.0,
+      "hit_rate_at_1": 0.9629629629629629,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "hit_rate_at_8": 1.0,
+      "mrr_at_8": 0.9814814814814815,
+      "recall_at_1": 0.12469135802469136,
+      "recall_at_3": 0.3694444444444444,
+      "recall_at_5": 0.5975308641975309,
+      "recall_at_8": 0.9212962962962963,
+      "sample_count": 27,
+      "zero_result_rate": 0.0
+    }
+  },
+  "claim_boundary": "Measures current lexical retrieval against Resume-derived exact catalog-title labels; it is not a human-labelled relevance benchmark.",
+  "confidence_intervals": {
+    "hit_rate_at_5": {
+      "lower_95": 1.0,
+      "upper_95": 1.0
+    },
+    "hit_rate_at_8": {
+      "lower_95": 1.0,
+      "upper_95": 1.0
+    },
+    "mrr_at_8": {
+      "lower_95": 0.9391666666666667,
+      "upper_95": 0.9727777777777777
+    }
+  },
+  "domain_selection_accuracy": 1.0,
+  "hit_rate_at_1": 0.9166666666666666,
+  "hit_rate_at_3": 0.9966666666666667,
+  "hit_rate_at_5": 1.0,
+  "hit_rate_at_8": 1.0,
+  "human_relevance_labels": false,
+  "label_source": "resume_exact_catalog_title",
+  "latency_ms": {
+    "mean": 8.596888666822148,
+    "median": 8.567649998440174,
+    "p95": 13.26320000225678
+  },
+  "mrr_at_8": 0.956388888888889,
+  "recall_at_1": 0.13223015873015873,
+  "recall_at_3": 0.3725952380952381,
+  "recall_at_5": 0.5928293650793651,
+  "recall_at_8": 0.8720833333333333,
+  "sample_count": 300,
+  "schema_version": "cv-question-rag.retrieval.v1",
+  "zero_result_rate": 0.0
+}

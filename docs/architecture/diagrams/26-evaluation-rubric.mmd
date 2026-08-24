@@ -1,0 +1,21 @@
+﻿%% Production Evaluation Rubric
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/answer_evaluator/prompts.py; backend/shared/schemas/evaluation.py; backend/orchestrator/decision_service.py
+flowchart TB
+  Input["Question plus Answer"] --> Judge["Gemini Answer Judge"]
+  Judge --> Technical["Technical Score 0 to 10"]
+  Judge --> Depth["Depth Score 0 to 10"]
+  Judge --> Communication["Communication Score 0 to 10"]
+  Judge --> Mindset["Engineering Mindset 0 to 10"]
+  Judge --> Correctness["Correctness Score 0 to 10"]
+  Judge --> Overall["Overall Score 0 to 10"]
+  Judge --> Narrative["Feedback and Missing Concepts"]
+  Judge --> Follow["Follow-up Needed"]
+  Overall --> Rule["Score at least 8 increases difficulty"]
+  Follow --> Rule
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,32 @@
+{
+  "candidate_a": {
+    "skills": ["Java", "Spring Boot", "Kafka"],
+    "workExperience": [
+      {
+        "type": "Work",
+        "name": "Payments API",
+        "position": "Backend Developer",
+        "jobDescription": "Built Spring Boot services and Kafka consumers."
+      }
+    ]
+  },
+  "candidate_b": {
+    "skills": ["React", "TypeScript", "CSS"],
+    "workExperience": [
+      {
+        "type": "Project",
+        "name": "Student portfolio",
+        "position": "",
+        "jobDescription": "Built an accessible React interface with TypeScript and CSS."
+      }
+    ]
+  },
+  "evaluation_answers": {
+    "empty": "",
+    "short_correct": "404",
+    "confidently_wrong": "Redis is a relational SQL database and uses tables exactly like PostgreSQL.",
+    "keyword_stuffing": "Docker Kubernetes Redis PostgreSQL FastAPI microservices scalability cloud architecture.",
+    "mixed_language": "Redis giup giam database load vi frequently accessed data duoc giu trong memory.",
+    "challenge_bad_assumption": "I have not used Kubernetes directly, but I have worked with Docker."
+  }
+}

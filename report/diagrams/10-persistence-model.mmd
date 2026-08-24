@@ -1,0 +1,16 @@
+%% Application persistence model
+erDiagram
+  USERS ||--o{ RESUMES : owns
+  USERS ||--o{ SESSIONS : owns
+  USERS ||--o{ REPORTS : owns
+  RESUMES ||--|| CANDIDATE_PROFILES : produces
+  CANDIDATE_PROFILES ||--o{ SESSIONS : starts
+  SESSIONS ||--o{ TURNS : contains
+  TURNS ||--o| EVALUATIONS : receives
+  SESSIONS ||--o| REPORTS : produces
+  USERS { string uid PK }
+  CANDIDATE_PROFILES { string candidate_id PK string profile_json }
+  SESSIONS { string session_id PK string state string owner_uid }
+  TURNS { string turn_id PK string question string answer }
+  EVALUATIONS { string turn_id PK string evaluation_json }
+  REPORTS { string session_id PK string report_json }

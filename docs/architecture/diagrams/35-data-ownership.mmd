@@ -1,0 +1,21 @@
+﻿%% Data Ownership
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/core/dependencies.py; backend/infrastructure/repositories; backend/gateway/api
+flowchart TB
+  User["Firebase UID [EXTERNAL]"] --> Candidate["Candidate Profile [STORAGE]"]
+  User --> Session["Interview Session [STORAGE]"]
+  Candidate --> Resume["Raw Resume Text"]
+  Candidate --> Blueprint["Interview Blueprint"]
+  Session --> Turns["Turns and Evaluations"]
+  Session --> Claims["Answer Submission Claims"]
+  Session --> Report["Interview Report"]
+  ResumeSvc["Resume Route and Agent"] --> Candidate
+  InterviewSvc["Interview Services"] --> Session
+  ReportSvc["Report Service"] --> Report
+  KnowledgeSvc["Knowledge Retriever"] --> Knowledge["Shared Knowledge Catalog"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

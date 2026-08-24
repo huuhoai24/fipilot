@@ -1,0 +1,29 @@
+﻿%% Backend Components
+%% Status: IMPLEMENTED
+%% Evidence: backend/core/dependencies.py; backend/gateway/api; backend/services; backend/orchestrator; backend/infrastructure
+flowchart LR
+  Routes["Gateway Routes [IMPLEMENTED]"] --> DI["Dependency Composition [IMPLEMENTED]"]
+  Routes --> ResumeSvc["Resume Agent [IMPLEMENTED]"]
+  Routes --> PrepSvc["Interview Preparation [IMPLEMENTED]"]
+  Routes --> AnswerSvc["Answer Submission Service [IMPLEMENTED]"]
+  Routes --> ReportSvc["Report Service [PARTIAL]"]
+  PrepSvc --> Orch["Interview Orchestrator [IMPLEMENTED]"]
+  AnswerSvc --> Orch
+  Orch --> Planner["Planner Agent [IMPLEMENTED]"]
+  Orch --> Question["Question Agent [IMPLEMENTED]"]
+  Orch --> Evaluator["Evaluator Agent [IMPLEMENTED]"]
+  Planner --> Retriever["Knowledge Retriever [IMPLEMENTED]"]
+  ResumeSvc --> LLM["Vertex Gemini Adapter [IMPLEMENTED]"]
+  Planner --> LLM
+  Question --> LLM
+  Evaluator --> LLM
+  ReportSvc --> LLM
+  Routes --> Repo["Repository Contract [IMPLEMENTED]"]
+  AnswerSvc --> Repo
+  ReportSvc --> Repo
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

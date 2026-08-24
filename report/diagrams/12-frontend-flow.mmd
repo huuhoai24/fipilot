@@ -1,0 +1,11 @@
+%% Implemented frontend route flow
+flowchart TB
+  Landing[Landing and Sign In] --> Protected[Protected Application Layout]
+  Protected --> Upload[Resume Upload and Candidate Profile]
+  Upload --> Text[Text Interview]
+  Upload --> Voice[Voice Interview]
+  Text --> Report[Interview Report]
+  Voice --> Report
+  Protected --> History[Interview History]
+  History --> Report
+  Protected --> Settings[Settings]

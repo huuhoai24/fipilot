@@ -1,0 +1,24 @@
+﻿%% Profile Readiness Pipeline
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/candidate_profile/readiness.py; backend/services/candidate_profile/normalization.py; backend/gateway/api/candidate_profile.py; backend/gateway/api/interview.py
+flowchart TB
+  Profile["Persisted Candidate Profile"] --> Normalize["NFKC and Comparison Keys"]
+  Normalize --> Name{"Nonblank nonfallback name"}
+  Normalize --> Skills{"At least one normalized skill"}
+  Normalize --> Evidence{"Interviewable evidence exists"}
+  Normalize --> Validity{"No legacy validity issue"}
+  Name --> Issues["Collect All Readiness Issues"]
+  Skills --> Issues
+  Evidence --> Issues
+  Validity --> Issues
+  Issues --> Ready{"Issue list empty"}
+  Ready -->|Yes| True["is_ready true"]
+  Ready -->|No| False["is_ready false plus issues"]
+  True -.->|not enforced| Start["Interview Start [PARTIAL]"]
+  False -.->|currently bypassable| Start
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

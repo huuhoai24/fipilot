@@ -1,0 +1,20 @@
+﻿%% Evaluation Execution Sequence
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/m6/engine.py; evaluation/m6/cache.py; evaluation/defense_extension/e3_ablation_analysis.py
+sequenceDiagram
+  participant R as Evaluation Runner
+  participant D as Frozen Dataset
+  participant X as Retrieval Adapters
+  participant L as Question Model
+  participant J as Blinded Judge
+  participant A as Artifact Store
+  R->>D: Load scenarios and frozen config
+  R->>X: Execute NO_RAG LEXICAL VECTOR conditions
+  X-->>R: Contexts and retrieval latency
+  R->>L: Generate controlled questions
+  L-->>R: Typed questions and usage
+  R->>J: Judge blinded conditions and pairs
+  J-->>R: Quality grounding and preferences
+  R->>R: Aggregate paired metrics and failure taxonomy
+  R->>A: Write raw and report evidence
+

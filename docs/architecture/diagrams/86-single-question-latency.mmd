@@ -1,0 +1,21 @@
+﻿%% Single Question Latency Trace
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/orchestrator/interview_orchestrator.py; backend/services/answer_evaluator/agent.py; backend/services/question_generator/agent.py; backend/core/performance.py
+flowchart LR
+  API["Answer API"] --> Load["Load Session and Claim"]
+  Load --> Fork{"Text Prefetch Eligible"}
+  Fork --> Eval["Evaluate Answer"]
+  Fork --> Prefetch["Speculative Next Question"]
+  Eval --> Decision["Adaptive Decision"]
+  Decision -->|next round| Use["Use Prefetched Question"]
+  Decision -->|follow up or harder| Cancel["Cancel Prefetch"]
+  Cancel --> Generate["Generate Selected Question"]
+  Use --> Persist["Commit State"]
+  Generate --> Persist
+  Persist --> Response["Return Updated Session"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,20 @@
+﻿%% Report Generation Pipeline
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/report_generator/service.py; backend/services/report_generator/agent.py; backend/services/report_generator/prompts.py; backend/services/report_generator/schemas.py; backend/infrastructure/repositories
+flowchart LR
+  Session["Completed Session State"] --> Eligible{"Completed and no current turn"}
+  Existing["Stored Report"] --> Reuse{"Exists"}
+  Eligible --> Reuse
+  Reuse -->|Yes| Return["Return Existing Report"]
+  Reuse -->|No| Latest["Reload Latest Candidate Profile [PARTIAL]"]
+  Latest --> Prompt["Report Prompt with Config Plan Completed Turns"]
+  Session --> Prompt
+  Prompt --> Gemini["Gemini Complex Route"]
+  Gemini --> Schema["InterviewReport Validation"]
+  Schema --> Save["Save Report and report_generated Status"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,46 @@
+{
+  "claim_boundary": "Resume-derived exact catalog-title labels are source-derived, not human relevance labels; the dataset does not measure Resume extraction accuracy.",
+  "dataset": {
+    "categories": {
+      "architecture-management": 15,
+      "data-ai": 90,
+      "devops-cloud-security": 59,
+      "product-qa": 62,
+      "software-development": 74
+    },
+    "dataset_hash": "18eb10d78f99408ce0071b259bd1ce57c9456641b660901ca8499506a8946d19",
+    "development": 150,
+    "domains": {
+      "AI_Engineer": 45,
+      "Backend_Developer": 78,
+      "Business_Analyst": 31,
+      "Data_Engineer": 7,
+      "Data_Scientist": 10,
+      "DevOps_Engineer": 78,
+      "Full_Stack_Developer": 24,
+      "Software_Engineer": 27
+    },
+    "holdout": 150,
+    "requested": 300,
+    "selected": 300
+  },
+  "inventory": {
+    "corpus_limit": 500,
+    "duplicate_files": 2,
+    "eligible_files": 485,
+    "pdf_files": 500,
+    "source_pdf_files": 2372,
+    "unique_files": 498,
+    "unique_unmatched_files": 13,
+    "unreadable_files": 0
+  },
+  "privacy": {
+    "filenames_recorded": false,
+    "identifier": "CV- plus first 12 uppercase characters of SHA-256",
+    "personal_fields_recorded": false,
+    "resume_text_recorded": false,
+    "source_is_public": true
+  },
+  "schema_version": "cv-question-rag.dataset.v1",
+  "seed": 20260820
+}

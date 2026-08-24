@@ -1,0 +1,20 @@
+﻿%% Storage Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/models.py; backend/infrastructure/repositories; backend/gateway/api/resume.py; backend/services/interview_knowledge; evaluation
+flowchart TB
+  Runtime["Application Runtime"] --> Choice{"Repository Backend"}
+  Choice --> SQLite["SQLite interview_app.db [STORAGE]"]
+  Choice --> Firestore["Firestore User-scoped Documents [STORAGE]"]
+  Runtime --> Memory["In-process LRU and TTL Caches [TRANSIENT]"]
+  Runtime --> Temp["OS Resume Temp File [TRANSIENT]"]
+  Runtime --> Catalog["Packaged catalog.json [STORAGE]"]
+  Runtime --> Vector["Firestore Vector Collection [STORAGE PARTIAL]"]
+  Eval["Offline Evaluation"] --> Artifacts["JSON JSONL Markdown CSV SQLite Cache [STORAGE]"]
+  Object["Object Storage [SPEC-PENDING]"] -.-> Runtime
+  Redis["Redis [SPEC-PENDING]"] -.-> Runtime
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

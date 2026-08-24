@@ -1,0 +1,119 @@
+\chapter{DELIVERABLES AND USER GUIDE}\label{ch:user-guide}
+
+\section{Project deliverables}
+
+\begin{table}[htbp]\centering
+\caption{Repository deliverables.}\label{tab:deliverables}
+\begin{tabularx}{\textwidth}{p{0.30\textwidth}Y}\toprule
+Deliverable & Location and content\\ \midrule
+Frontend application & \codepath{frontend/}: React pages, components, client contracts, API client, styles, and tests.\\
+Backend application & \codepath{backend/gateway}, \codepath{backend/services}, \codepath{backend/orchestrator}, \codepath{backend/infrastructure}, and \codepath{backend/shared}.\\
+Backend tests & \codepath{backend/app/tests}: application boundary and regression coverage.\\
+Knowledge catalog & \codepath{backend/services/interview\_knowledge}: local catalog, level guide, loader, and retriever.\\
+Speech service & \codepath{backend/speech\_service}: optional speech runtime used by the voice integration.\\
+Architecture and development documents & \codepath{docs/}, \codepath{CONTEXT.md}, and repository instructions.\\
+Project report & \codepath{report/Final\_report.pdf} with LaTeX sources, diagrams, and build scripts.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Local prerequisites}
+
+The supported local workflow uses Python 3.12, Node.js with npm, and PowerShell. Firebase and Vertex AI settings are required for connected provider behavior. Voice mode may require the optional speech-service environment described in \codepath{docs/local-development.md}.
+
+\section{Installation}
+
+From the repository root, create the backend environment and install dependencies:
+
+\begin{lstlisting}[language={},caption={Backend dependency installation.}]
+cd backend
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements-dev.txt
+\end{lstlisting}
+
+Install the frontend dependencies:
+
+\begin{lstlisting}[language={},caption={Frontend dependency installation.}]
+cd ..\frontend
+npm ci
+\end{lstlisting}
+
+\section{Environment configuration}
+
+Create local backend settings in \codepath{backend/.env.local}, or point \codepath{BACKEND\_ENV\_FILE} to an explicit settings file before using the repository helper. Configure authentication, Firebase project details, repository selection, Vertex AI location and model settings, allowed frontend origins, and speech settings required by the chosen mode. Secrets must not be committed.
+
+The legacy path \codepath{backend/app/.env} is not loaded automatically by \codepath{scripts/run\_backend.ps1}. Editing that file alone does not change the active gateway configuration.
+
+The frontend Firebase values are supplied through its Vite environment settings. The browser and backend projects must refer to compatible Firebase authentication configuration.
+
+\section{Starting the application}
+
+Run the backend from \codepath{backend/}:
+
+\begin{lstlisting}[language={},caption={Start the active FastAPI gateway.}]
+python -m uvicorn gateway.main:app --reload `
+  --host 127.0.0.1 --port 8000
+\end{lstlisting}
+
+Alternatively, from the repository root:
+
+\begin{lstlisting}[language={},caption={Start the backend with the repository helper.}]
+powershell -ExecutionPolicy Bypass `
+  -File .\scripts\run_backend.ps1
+\end{lstlisting}
+
+Run the frontend from \codepath{frontend/}:
+
+\begin{lstlisting}[language={},caption={Start the Vite frontend.}]
+npm run dev -- --host localhost
+\end{lstlisting}
+
+For voice mode, start the optional speech service from the repository root as documented in \codepath{docs/local-development.md}:
+
+\begin{lstlisting}[language={},caption={Start the optional speech service.}]
+powershell -ExecutionPolicy Bypass `
+  -File .\scripts\run_speech_service.ps1
+\end{lstlisting}
+
+\section{Candidate workflow}
+
+\subsection{Sign in and upload}
+
+Open the frontend and sign in with the configured Firebase provider. Choose a single Resume in PDF or DOCX format. The maximum accepted size is 10 MB. Wait for validation, extraction, and profile creation to complete. If the application rejects the file, correct the indicated file type, file structure, size, or provider configuration before retrying.
+
+\subsection{Review the Candidate Profile}
+
+Open Candidate Profile review and inspect the name, recent role, specialization, skills, evidence, projects, experiences, and education displayed from the server response. Readiness issues identify missing information required by the profile-readiness rules. The displayed strong version belongs to the server resource.
+
+\subsection{Configure and start a text interview}
+
+Choose the interview settings available in the interface. Preparation selects Knowledge records and creates the Interview Plan. Start creates a new session. Read the current question, submit one answer, and wait for the returned feedback and next question. Avoid sending the same turn from multiple tabs; if a network retry occurs, the server's answer claim protects the stored turn.
+
+\subsection{Use voice mode}
+
+Grant browser microphone permission and open the voice interview route for the session. The status display indicates connection and speech state. Speak after the current question. The application sends audio, shows transcripts and feedback, and advances through the shared session workflow. If the connection closes, use the displayed error and server state to recover rather than starting unrelated submissions.
+
+\subsection{Read history and reports}
+
+The History page lists owned interview sessions. Open a completed session and request its report. Review the summary, strengths, improvement areas, and recommendations as practice guidance. Model-generated evaluation is not an employment decision or a verified measure of professional competence.
+
+\section{Developer verification}
+
+Before handing off a change, run the backend tests and compilation from \codepath{backend/}:
+
+\begin{lstlisting}[language={},caption={Backend verification.}]
+python -m pytest
+python -m compileall -q core gateway infrastructure `
+  orchestrator services shared speech_service
+\end{lstlisting}
+
+Run the frontend checks from \codepath{frontend/}:
+
+\begin{lstlisting}[language={},caption={Frontend verification.}]
+npm exec tsc -- -b
+npm run lint
+npm test
+npm run build
+\end{lstlisting}
+
+The repository does not include a checked-in continuous-integration workflow, so these local checks are required for the current project baseline.

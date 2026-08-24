@@ -1,0 +1,23 @@
+﻿%% Authentication and Ownership Flow
+%% Status: IMPLEMENTED
+%% Evidence: frontend/src/contexts/AuthContext.tsx; frontend/src/lib/api.ts; backend/core/dependencies.py; backend/infrastructure/auth/firebase.py
+sequenceDiagram
+  participant U as User
+  participant FE as Firebase Client
+  participant API as FastAPI
+  participant FA as Firebase Admin
+  participant DB as Owned Repository
+  U->>FE: Sign in
+  FE->>FE: Obtain ID token
+  FE->>API: Authorization Bearer token
+  API->>FA: verify_id_token
+  FA-->>API: CurrentUser uid
+  API->>DB: Read or mutate with user_id uid
+  alt owned resource
+    DB-->>API: Domain record
+    API-->>FE: Success
+  else missing or foreign
+    DB-->>API: None
+    API-->>FE: 404
+  end
+

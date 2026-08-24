@@ -1,0 +1,104 @@
+\chapter{AI METHODOLOGY AND SOLUTION}\label{ch:ai-method}
+
+\section{Method overview}
+
+FiPilot uses language services inside a controlled application pipeline. The model is responsible for interpreting Resume text and producing schema-constrained content. Application code remains responsible for file validation, identity, ownership, retrieval, workflow state, retries, persistence, and report access. This division is central to the solution: probabilistic output is used where language interpretation is useful, while deterministic rules protect the product contract.
+
+The connected AI-assisted operations are Resume profiling, interview planning, question generation, answer evaluation, and report generation. Each operation has its own prompt and response schema. The backend converts validation failures and provider failures into application errors instead of passing incomplete model output directly to the client.
+
+\section{Resume understanding}
+
+\subsection{Document admission and extraction}
+
+The upload boundary accepts one PDF or DOCX document. The service checks the declared media type, file extension, size, and document signature before extraction. PDF extraction first uses the document's text layer. If the extracted text is too sparse, the service renders pages for OCR. DOCX extraction reads document paragraphs and tables. This sequence avoids unnecessary OCR while retaining a recovery path for scanned documents.
+
+\reportfigure{03-resume-processing.png}{Resume validation, extraction, OCR fallback, and profile creation.}{resume-processing}
+
+The extracted text remains untrusted. It can contain malformed characters, instructions addressed to a model, or incomplete information. The profile scanner receives a system-defined task, the Resume text as data, and a strict response schema. Pydantic validation then converts accepted output to the canonical profile type.
+
+\subsection{Canonical Candidate Profile}
+
+The profile is the application representation of candidate information. It prevents later services from inventing their own field names or repeatedly parsing the original document. Its editable top-level fields are listed in \cref{tab:profile-fields}.
+
+\begin{table}[htbp]\centering
+\caption{Canonical Candidate Profile fields.}\label{tab:profile-fields}
+\begin{tabularx}{\textwidth}{p{0.25\textwidth}Y}\toprule
+Field & Purpose\\ \midrule
+\codepath{name} & Candidate display name.\\
+\codepath{years\_experience} & Normalized experience duration when supported by the document.\\
+\codepath{recent\_role} & Most recent professional role.\\
+\codepath{specialization} & Technical direction used by planning and retrieval.\\
+\codepath{skills} & Normalized skill list.\\
+\codepath{skill\_evidence} & Skill-to-evidence items derived from Resume statements.\\
+\codepath{projects} & Structured project descriptions, technologies, and role.\\
+\codepath{experiences} & Structured employment history.\\
+\codepath{education} & Legacy text or explicitly structured education entries.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\reportfigure[0.80\textwidth]{04-candidate-profile.png}{Candidate Profile as the shared contract between Resume review and interview preparation.}{candidate-profile}
+
+The profile response also carries server-generated metadata such as its identifier, version, and readiness information. These values are not model-authored editable fields. Keeping them outside the editable allowlist protects ownership, concurrency, and application decisions.
+
+\section{Knowledge selection}
+
+\subsection{Knowledge catalog}
+
+The repository includes a local catalog of technical topics. Entries are grouped by role and contain a topic title, hierarchical path, and anchor concepts. A separate level guide describes the expected depth for candidate levels. At runtime, the catalog loader turns these source records into compact planner context; it does not expose the complete catalog to every model request.
+
+\subsection{Deterministic lexical retrieval}
+
+The default retriever compares normalized query terms with catalog titles, paths, and anchors. Query terms originate from the Candidate Profile and Interview Configuration. Weighted exact and partial lexical matches produce a deterministic score, and the highest ranked eight records are supplied to the planner. Stable tie handling makes the same catalog and query repeatable.
+
+\reportfigure{05-lexical-retrieval.png}{Local lexical retrieval used to curate planner context.}{lexical-retrieval}
+
+This design has three useful properties. First, the knowledge source can be reviewed in the repository. Second, retrieval can be tested without a network call. Third, technical context remains distinct from Candidate Profile evidence. The retrieved records guide coverage; they do not become claims about the candidate.
+
+\section{Interview planning and question generation}
+
+The planner receives the committed Candidate Profile, the Interview Configuration, and curated knowledge context. It returns a structured plan containing ordered rounds and their goals. The question service then generates a question for the active round. It receives only the state needed for that turn, including prior turns and follow-up context.
+
+\reportfigure{06-agent-flow.png}{Model-assisted services and deterministic orchestration boundaries.}{agent-flow}
+
+The plan separates session-level intent from individual wording. This means the application can persist progress, identify the current round, and request another question without asking a model to reconstruct the entire interview from free-form chat history. Question generation uses a slightly higher response variation than the profile, planner, evaluator, and report operations, while still requiring a structured response.
+
+\begin{table}[htbp]\centering
+\caption{Connected language-service operations.}\label{tab:model-operations}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}p{0.24\textwidth}Y}\toprule
+Operation & Primary input & Validated output\\ \midrule
+Profile scanner & Extracted Resume text & Canonical Candidate Profile fields\\
+Interview planner & Profile, configuration, selected knowledge & Ordered Interview Plan\\
+Question generator & Active round and session history & One structured interview question\\
+Answer evaluator & Question, answer, profile context, and round goal & Scores, feedback, and follow-up signal\\
+Report generator & Completed session and associated profile data & Structured summary, strengths, gaps, and recommendations\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Answer evaluation and adaptive decisions}
+
+The evaluator assesses the submitted answer against the question and round goal. Its output contains structured dimensions and feedback rather than an unrestricted paragraph. The backend validates ranges and required fields. The evaluator can recommend a follow-up, but it does not directly mutate the session.
+
+The decision service applies deterministic rules to the current state and accepted evaluation. It considers follow-up limits, round progress, and completion conditions. It selects the next action, after which the orchestrator persists the turn and, when required, invokes the question service for the next prompt.
+
+\reportfigure{07-answer-processing.png}{Shared answer processing for text submissions and voice transcripts.}{answer-processing}
+
+Answer submission uses an idempotency key. The repository claim prevents concurrent repeats of the same logical answer from creating multiple turns. Once processing is complete, the stored result can be returned to a retrying client. This control is particularly important when an external language call completes after a client timeout.
+
+\section{Report generation}
+
+At the end of a session, the report service collects the persisted interview state and generates a structured report. The report includes an overall assessment, strengths, improvement areas, and turn-level evidence available from the session. Reports are saved and displayed through the report route. Automated scores and suggestions remain advisory because model-based evaluation can be sensitive to wording, incomplete context, and provider behavior.
+
+\section{Safety and reliability controls}
+
+The solution applies the following controls around language operations:
+\begin{itemize}
+  \item typed schemas at every model boundary;
+  \item fixed application prompts separated from user-provided document and answer data;
+  \item bounded provider timeouts and error translation;
+  \item repository-backed session state instead of model-owned state;
+  \item deterministic retrieval and continuation decisions;
+  \item authenticated, ownership-scoped access to profiles, sessions, and reports; and
+  \item explicit UI errors instead of silent substitution when a required service fails.
+\end{itemize}
+
+These controls do not make model output infallible. They narrow its authority and provide software seams that can be verified independently.

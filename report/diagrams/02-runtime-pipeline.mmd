@@ -1,0 +1,7 @@
+%% FiPilot connected runtime pipeline
+flowchart TB
+  Intake["1. Resume Intake<br/>PDF DOCX and OCR"] --> Profile["2. Candidate Profile<br/>Skills Evidence and Experience"]
+  Profile --> Prepare["3. Interview Preparation<br/>Local Knowledge and Interview Plan"]
+  Prepare --> Session["4. Interview Session<br/>Question Answer Evaluation and Decision"]
+  Session -->|Next turn| Session
+  Session -->|Complete| Report["5. Interview Report<br/>Feedback and Recommendations"]

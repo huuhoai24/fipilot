@@ -1,0 +1,20 @@
+﻿%% Interview Plan Generation
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/interview_planner/agent.py; backend/services/interview_planner/prompts.py; backend/services/interview_knowledge; backend/shared/schemas/interview.py
+flowchart LR
+  Profile["Candidate Profile"] --> Retrieve["Knowledge Retriever"]
+  Config["Interview Config"] --> Retrieve
+  Profile --> Prompt["Planner Prompt"]
+  Config --> Prompt
+  Retrieve --> Topics["Curated Knowledge Topics"]
+  Topics --> Prompt
+  Prompt --> Gemini["Gemini Simple Route"]
+  Gemini --> Validate["InterviewPlan Schema"]
+  Validate --> Rounds["Rounds Topics Difficulty Budget"]
+  Validate --> Coverage["Coverage Goals Risk Areas Summary"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

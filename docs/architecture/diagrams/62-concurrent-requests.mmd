@@ -1,0 +1,22 @@
+﻿%% Concurrent Request Flow
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/interview_preparation/service.py; backend/services/interview_answer_service.py; backend/gateway/api/voice.py; backend/services/report_generator/service.py; backend/gateway/api/resume.py
+flowchart TB
+  Concurrent["Concurrent Requests"] --> Prepare["Prepare"]
+  Prepare --> Inflight["In-process inflight task [IMPLEMENTED]"]
+  Concurrent --> Answer["Same Turn Answers"]
+  Answer --> DBClaim["Repository atomic claim [IMPLEMENTED]"]
+  Concurrent --> Voice["Voice Connections"]
+  Voice --> Single["Single live connection guard [IMPLEMENTED]"]
+  Concurrent --> Upload["Resume Upload"]
+  Upload --> NoLease["No operation lease [SPEC-PENDING]"]
+  Concurrent --> Start["Interview Start"]
+  Start --> NoSnapshot["No atomic snapshot transaction [PARTIAL]"]
+  Concurrent --> Report["First Report Requests"]
+  Report --> CheckSet["Check then generate then save [PARTIAL]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

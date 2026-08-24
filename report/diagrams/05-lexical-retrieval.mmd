@@ -1,0 +1,11 @@
+%% Local knowledge retrieval used by planning
+flowchart TB
+  Profile[Candidate Profile] --> Flatten[Collect Role Skills and Evidence Text]
+  Flatten --> Tokens[Normalize Tokens and Remove Stop Words]
+  Tokens --> Domain[Score Knowledge Domains]
+  Tokens --> Topic[Score Topic Tokens]
+  Topic --> Bonus[Apply Exact Title Bonus]
+  Domain --> Rank[Deterministic Ranking]
+  Bonus --> Rank
+  Rank --> Top[Select Up to Eight Topics]
+  Top --> Context[Planner Knowledge Context]

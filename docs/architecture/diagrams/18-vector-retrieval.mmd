@@ -1,0 +1,19 @@
+﻿%% Vector Retrieval Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/infrastructure/interview_knowledge/firestore_vector.py; backend/core/dependencies.py; docs/FIRESTORE_VECTOR_KNOWLEDGE.md
+flowchart LR
+  Profile["Role Specialization Skills"] --> Query["Vector Query Text without Name"]
+  Config["Level Language Objective"] --> Query
+  Query --> Embed["Vertex RETRIEVAL_QUERY Embedding"]
+  Embed --> Vector["768-dimensional Vector"]
+  Vector --> KNN["Firestore COSINE find_nearest"]
+  Store["interview_knowledge_chunks [STORAGE]"] --> KNN
+  KNN --> Top["Top K default 5"]
+  Top --> Format["Topic Path Anchors Similarity"]
+  Format --> Planner["Planner Context"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

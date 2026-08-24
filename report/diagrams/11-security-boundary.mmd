@@ -1,0 +1,12 @@
+%% Authentication and ownership boundary
+flowchart TB
+  Browser[Untrusted Browser] -->|Firebase ID Token| Gateway[FastAPI Gateway]
+  Gateway --> Verify[Firebase Admin Verification]
+  Verify --> User[Current User UID]
+  User --> Route[Authenticated Route]
+  Route --> Owned[Ownership-Scoped Repository Call]
+  Owned --> Found{Owned Resource Found?}
+  Found -->|Yes| Service[Application Service]
+  Found -->|No| Hidden[Indistinguishable 404]
+  Service --> Model[Gemini or Speech Integration]
+  Service --> Store[(Owned Persistence)]

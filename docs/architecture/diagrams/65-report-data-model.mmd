@@ -1,0 +1,36 @@
+﻿%% Interview Report Data Model
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/report_generator/schemas.py; backend/services/report_generator/agent.py
+classDiagram
+  class InterviewReport {
+    id string
+    session_id string
+    overall_score float
+    technical_score float
+    communication_score float
+    correctness_score float
+    summary string
+    strengths string array
+    weaknesses string array
+    demonstrated_skills string array
+    missing_skills string array
+    recommendations string array
+    hiring_recommendation enum
+    confidence_score float
+    generated_at datetime
+  }
+  class SkillAssessment {
+    skill string
+    score float
+    evidence string_array
+    feedback string
+  }
+  class LearningPlanItem {
+    topic string
+    priority string
+    reason string
+    recommended_action string
+  }
+  InterviewReport "1" *-- "many" SkillAssessment
+  InterviewReport "1" *-- "many" LearningPlanItem
+

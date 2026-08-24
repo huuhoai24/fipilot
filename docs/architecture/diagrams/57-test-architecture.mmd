@@ -1,0 +1,19 @@
+﻿%% Test Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/app/tests; frontend/src/**/*.test.*; evaluation/**/tests; AGENTS.md
+flowchart TB
+  Tests["Repository Test Suites"] --> Backend["43 Backend Test Files"]
+  Tests --> Frontend["18 Frontend Test Files"]
+  Tests --> Evaluation["65 Evaluation Test Files in Worktree"]
+  Backend --> API["API Auth Ownership Contract"]
+  Backend --> Services["Agents Orchestrator Resume Speech"]
+  Backend --> Repos["SQLite Firestore Vector"]
+  Frontend --> RTL["Pages Components API Store"]
+  Evaluation --> Offline["Dataset Metrics Isolation Reporting"]
+  E2E["Checked-in Browser E2E [SPEC-PENDING]"] -.-> Tests
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

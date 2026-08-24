@@ -1,0 +1,27 @@
+﻿%% Frontend Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: frontend/src/App.tsx; frontend/src/lib/api.ts; frontend/src/pages; frontend/src/store; frontend/src/hooks
+flowchart TB
+  App["App Router [IMPLEMENTED]"] --> Public["Landing Page [IMPLEMENTED]"]
+  App --> Protected["Protected Route [IMPLEMENTED]"]
+  Protected --> Setup["Text and Speech Setup [IMPLEMENTED]"]
+  Protected --> Profile["Candidate Profile Page [PARTIAL]"]
+  Protected --> Text["Text Interview Room [IMPLEMENTED]"]
+  Protected --> Voice["Speech Interview Page [IMPLEMENTED]"]
+  Protected --> Report["Report Page [IMPLEMENTED]"]
+  Protected --> History["History Page [IMPLEMENTED]"]
+  Setup --> API["Central API Adapter [IMPLEMENTED]"]
+  Profile --> API
+  Text --> API
+  Voice --> API
+  Report --> API
+  History --> API
+  Voice --> Hooks["Speech and Audio Hooks [IMPLEMENTED]"]
+  App --> Query["TanStack Query Provider [IMPLEMENTED]"]
+  App --> Store["Zustand UI Store [IMPLEMENTED]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

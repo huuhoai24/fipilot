@@ -1,0 +1,23 @@
+﻿%% Current UX Flow
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: frontend/src/App.tsx; frontend/src/pages/TextInterviewPage.tsx; frontend/src/pages/CandidateProfilePage.tsx; frontend/src/pages/SpeechInterviewPage.tsx
+flowchart LR
+  Landing["Landing and Sign In"] --> Setup["Text or Speech Setup"]
+  Setup --> Upload["Upload Resume"]
+  Upload --> Preview["Uploaded Profile Preview"]
+  Preview --> Profile["Read-only Profile Review [PARTIAL]"]
+  Preview --> Start["Start Interview"]
+  Start --> Text["Text Interview Room"]
+  Start --> Voice["Speech Interview Room"]
+  Text --> Complete["Interview Complete"]
+  Voice --> Complete
+  Complete --> Report["Final Report"]
+  Report --> History["Interview History"]
+  History --> Text
+  History --> Voice
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

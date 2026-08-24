@@ -1,0 +1,17 @@
+﻿%% Architecture Gap Map
+%% Status: PARTIAL/SPEC-PENDING
+%% Evidence: docs/adr; docs/RESUME_REVIEW_UI_SPEC.md; docs/RESUME_REVIEW_TESTING_SEAMS.md; backend/gateway; backend/services
+flowchart LR
+  CurrentUpload["Synchronous Initial Upload [IMPLEMENTED]"] -.-> UploadOps["Recoverable Upload Operation [SPEC-PENDING]"]
+  CurrentProfile["Profile GET Read-only [IMPLEMENTED]"] -.-> Patch["Strict PATCH If-Match Audit [SPEC-PENDING]"]
+  CurrentUpload -.-> Replacement["Atomic Replacement Upload [SPEC-PENDING]"]
+  Readiness["Readiness Evaluator [IMPLEMENTED]"] -.-> Gate["Start Enforcement [SPEC-PENDING]"]
+  Snapshot["Profile Content in State [PARTIAL]"] -.-> Atomic["Atomic Versioned Snapshot [SPEC-PENDING]"]
+  Report["Report Reloads Latest Profile [PARTIAL]"] -.-> Immutable["Snapshot-only Report [SPEC-PENDING]"]
+  Logs["Structured Logs [IMPLEMENTED]"] -.-> Tracing["Distributed Metrics and Alerts [SPEC-PENDING]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

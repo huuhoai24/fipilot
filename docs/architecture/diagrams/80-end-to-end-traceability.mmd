@@ -1,0 +1,19 @@
+﻿%% End-to-End Traceability
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/profile_scanner; backend/shared/schemas/interview.py; backend/services/report_generator
+flowchart LR
+  Resume["Resume Text Evidence"] --> Profile["Candidate Profile"]
+  Profile --> Round["Interview Round"]
+  Round --> Question["Interview Question"]
+  Question --> Answer["Candidate Answer"]
+  Answer --> Evaluation["Answer Evaluation"]
+  Evaluation --> Report["Final Report"]
+  Resume -.->|temporary provenance not persisted| Profile
+  Knowledge["Retrieved Knowledge"] --> Round
+  Knowledge -.->|chunk identity lost| Question
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

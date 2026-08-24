@@ -1,0 +1,35 @@
+﻿%% Container Architecture
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: docker-compose.local.yml; backend/Dockerfile; backend/Dockerfile.speech; frontend/firebase.json
+flowchart TB
+  subgraph Browser["Browser Boundary"]
+    SPA["React SPA [IMPLEMENTED]"]
+  end
+  subgraph Backend["FastAPI Container [IMPLEMENTED]"]
+    Gateway["HTTP and WebSocket Gateway"]
+    Resume["Resume Processor"]
+    Interview["Interview Engine"]
+    Agents["Gemini Agents"]
+    Retrieval["Knowledge Retrieval"]
+  end
+  Speech["Speech Service Container [IMPLEMENTED]"]
+  Firestore["Firestore [STORAGE]"]
+  SQLite["SQLite [STORAGE]"]
+  Vertex["Vertex AI [EXTERNAL]"]
+  SPA --> Gateway
+  Gateway --> Resume
+  Gateway --> Interview
+  Resume --> Agents
+  Interview --> Agents
+  Interview --> Retrieval
+  Gateway --> Speech
+  Gateway --> Firestore
+  Gateway --> SQLite
+  Agents --> Vertex
+  Retrieval --> Vertex
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

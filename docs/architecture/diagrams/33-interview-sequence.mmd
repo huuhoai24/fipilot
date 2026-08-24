@@ -1,0 +1,30 @@
+﻿%% Complete Interview Sequence
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/api/interview.py; backend/services/interview_answer_service.py; backend/services/report_generator/service.py; frontend/src/pages/TextInterviewPage.tsx
+sequenceDiagram
+  participant U as Candidate
+  participant FE as React Frontend
+  participant API as FastAPI Gateway
+  participant DB as Repository
+  participant R as Knowledge Retriever
+  participant L as Vertex Gemini
+  U->>FE: Upload and start
+  FE->>API: POST interview start
+  API->>DB: Load profile and blueprint
+  API->>R: Retrieve planner topics on miss
+  API->>L: Plan and first question on miss
+  API->>DB: Create and save session
+  loop Until question count or rounds exhausted
+    U->>FE: Submit answer
+    FE->>API: POST answer
+    API->>DB: Claim turn
+    API->>L: Evaluate answer
+    API->>L: Generate next question when needed
+    API->>DB: Commit state and claim
+    API-->>FE: Updated session
+  end
+  FE->>API: POST report
+  API->>L: Generate report if absent
+  API->>DB: Save report
+  API-->>FE: Final report
+

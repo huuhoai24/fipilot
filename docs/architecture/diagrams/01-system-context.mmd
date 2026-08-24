@@ -1,0 +1,22 @@
+﻿%% System Context
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: frontend/src/App.tsx; backend/gateway/main.py; backend/core/dependencies.py; backend/core/settings.py
+flowchart LR
+  User["Candidate or User [EXTERNAL]"] --> Web["React Frontend [IMPLEMENTED]"]
+  Web --> API["FastAPI Gateway [IMPLEMENTED]"]
+  API --> Auth["Firebase Authentication [EXTERNAL]"]
+  API --> DB["SQLite or Firestore [STORAGE]"]
+  API --> Gemini["Vertex Gemini [EXTERNAL]"]
+  API --> Docs["Document and OCR Subsystem [IMPLEMENTED]"]
+  API --> Speech["Speech Inference Service [IMPLEMENTED]"]
+  API --> Knowledge["Knowledge Catalog or Vector Index [STORAGE]"]
+  Dev["Developer [EXTERNAL]"] --> Eval["Offline Evaluation Harness [IMPLEMENTED]"]
+  Eval --> Gemini
+  Eval --> Knowledge
+  classDef implemented fill:#d5f5e3,stroke:#1e8449,color:#000
+  classDef external fill:#d6eaf8,stroke:#21618c,color:#000
+  classDef storage fill:#e8daef,stroke:#6c3483,color:#000
+  class Web,API,Docs,Speech,Eval implemented
+  class User,Auth,Gemini,Dev external
+  class DB,Knowledge storage
+

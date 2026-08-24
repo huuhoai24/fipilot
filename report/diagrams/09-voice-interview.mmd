@@ -1,0 +1,17 @@
+%% Voice interview sequence
+sequenceDiagram
+  participant U as Candidate Browser
+  participant W as Voice WebSocket Gateway
+  participant S as Speech Components
+  participant A as Shared Answer Service
+  participant O as Interview Orchestrator
+  U->>W: Connect with token and session
+  W->>W: Verify origin identity and ownership
+  U->>W: PCM audio frames
+  W->>S: Bounded audio stream
+  S-->>W: Partial and final transcript
+  W->>A: Submit final transcript as answer
+  A->>O: Evaluate and select next action
+  O-->>W: Next question text or completion
+  W->>S: Synthesize question text
+  S-->>U: Stream PCM response audio

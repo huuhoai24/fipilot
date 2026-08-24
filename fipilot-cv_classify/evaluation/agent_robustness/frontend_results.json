@@ -1,0 +1,344 @@
+{
+  "summary": {
+    "PASS": 10,
+    "FAIL": 0,
+    "PARTIAL": 1,
+    "BLOCKED": 0,
+    "NOT TESTED": 0,
+    "NOT EVALUATED": 0
+  },
+  "results": [
+    {
+      "test_id": "READY-001",
+      "agent": "summarizeResumeExtraction",
+      "scenario": "Complete resume evidence",
+      "expected": "Ready and complete",
+      "actual": {
+        "canContinue": true,
+        "entries": [
+          {
+            "type": "Work",
+            "name": "API team",
+            "position": "Developer",
+            "jobDescription": "Built APIs"
+          }
+        ],
+        "issues": [],
+        "isComplete": true,
+        "projectCount": 0,
+        "workCount": 1
+      },
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "READY-002",
+      "agent": "summarizeResumeExtraction",
+      "scenario": "Fresher with project only",
+      "expected": "Do not reject merely for lacking employment",
+      "actual": {
+        "canContinue": true,
+        "entries": [
+          {
+            "type": "Project",
+            "name": "University project",
+            "position": "",
+            "jobDescription": "Built a Python application"
+          }
+        ],
+        "issues": [],
+        "isComplete": true,
+        "projectCount": 1,
+        "workCount": 0
+      },
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "READY-003",
+      "agent": "summarizeResumeExtraction",
+      "scenario": "Education only",
+      "expected": "Explicit policy/reason from a shared readiness contract",
+      "actual": {
+        "canContinue": false,
+        "entries": [],
+        "issues": [
+          {
+            "entryIndex": null,
+            "message": "No work experience or projects were extracted."
+          }
+        ],
+        "isComplete": false,
+        "projectCount": 0,
+        "workCount": 0
+      },
+      "status": "PARTIAL",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "READY-004",
+      "agent": "summarizeResumeExtraction",
+      "scenario": "Wrong workExperience entry types",
+      "expected": "No crash and not ready",
+      "actual": {
+        "canContinue": false,
+        "entries": [
+          {
+            "type": "Work",
+            "name": "",
+            "position": "",
+            "jobDescription": ""
+          },
+          {
+            "type": "Work",
+            "name": "",
+            "position": "",
+            "jobDescription": ""
+          },
+          {
+            "type": "Work",
+            "name": "",
+            "position": "",
+            "jobDescription": ""
+          }
+        ],
+        "issues": [
+          {
+            "entryIndex": 0,
+            "message": "The company or project name is missing."
+          },
+          {
+            "entryIndex": 0,
+            "message": "The job title is missing."
+          },
+          {
+            "entryIndex": 0,
+            "message": "No responsibilities, achievements, or technologies were found."
+          },
+          {
+            "entryIndex": 1,
+            "message": "The company or project name is missing."
+          },
+          {
+            "entryIndex": 1,
+            "message": "The job title is missing."
+          },
+          {
+            "entryIndex": 1,
+            "message": "No responsibilities, achievements, or technologies were found."
+          },
+          {
+            "entryIndex": 2,
+            "message": "The company or project name is missing."
+          },
+          {
+            "entryIndex": 2,
+            "message": "The job title is missing."
+          },
+          {
+            "entryIndex": 2,
+            "message": "No responsibilities, achievements, or technologies were found."
+          }
+        ],
+        "isComplete": false,
+        "projectCount": 0,
+        "workCount": 3
+      },
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "UX-001",
+      "agent": "prepareInterviewQuestions",
+      "scenario": "Rapid double-click/start",
+      "expected": "One in-flight request per setup",
+      "actual": {
+        "fetch_calls": 1
+      },
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "STATE-03",
+      "agent": "requestNextInterviewQuestion",
+      "scenario": "Two interviews open rapidly",
+      "expected": "Session A request uses only A setup",
+      "actual": {
+        "client_id": "client-a",
+        "session_id": "session-a",
+        "resume_id": null,
+        "role": "Web Developer",
+        "level": "Junior",
+        "custom_description": "",
+        "work_experience": [
+          {
+            "type": "Project",
+            "name": "Portfolio",
+            "position": "",
+            "jobDescription": "React CSS"
+          }
+        ],
+        "current_question": {
+          "company": "Portfolio",
+          "project": "Portfolio",
+          "project_context": {
+            "name": "Portfolio",
+            "jobDescription": "Built React screens"
+          },
+          "question": "How did you structure this React project?",
+          "topic": "React",
+          "rubric": {
+            "evaluation_goal": "Assess React structure",
+            "critical_points": [
+              "Boundaries"
+            ],
+            "met": "Explains boundaries",
+            "partially_met": "Names boundaries",
+            "not_met": "No mechanism"
+          }
+        },
+        "current_project": {
+          "name": "Portfolio",
+          "jobDescription": "Built React screens"
+        },
+        "answer": "answer",
+        "follow_up_count": 0,
+        "used_project_names": [],
+        "used_question_texts": []
+      },
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "STATE-04",
+      "agent": "createInterviewReport",
+      "scenario": "Generate report for A after starting B",
+      "expected": "Session A report uses only A setup and turns",
+      "actual": {
+        "client_id": "client-a",
+        "session_id": "session-a",
+        "role": "Web Developer",
+        "level": "Junior",
+        "turns": [
+          {
+            "question": {
+              "company": "Portfolio",
+              "project": "Portfolio",
+              "project_context": {
+                "name": "Portfolio",
+                "jobDescription": "Built React screens"
+              },
+              "question": "How did you structure this React project?",
+              "topic": "React",
+              "rubric": {
+                "evaluation_goal": "Assess React structure",
+                "critical_points": [
+                  "Boundaries"
+                ],
+                "met": "Explains boundaries",
+                "partially_met": "Names boundaries",
+                "not_met": "No mechanism"
+              }
+            },
+            "answer": "answer a",
+            "timestamp": "2026-08-24T06:20:00.550Z"
+          }
+        ]
+      },
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "STATE-02",
+      "agent": "interview storage",
+      "scenario": "Two sessions active independently",
+      "expected": "No setup or turn leakage",
+      "actual": {
+        "a": [
+          {
+            "question": {
+              "company": "Portfolio",
+              "project": "Portfolio",
+              "project_context": {
+                "name": "Portfolio",
+                "jobDescription": "Built React screens"
+              },
+              "question": "How did you structure this React project?",
+              "topic": "React",
+              "rubric": {
+                "evaluation_goal": "Assess React structure",
+                "critical_points": [
+                  "Boundaries"
+                ],
+                "met": "Explains boundaries",
+                "partially_met": "Names boundaries",
+                "not_met": "No mechanism"
+              }
+            },
+            "answer": "answer a",
+            "timestamp": "2026-08-24T06:20:00.551Z"
+          }
+        ],
+        "b": [
+          {
+            "question": {
+              "company": "Portfolio",
+              "project": "Portfolio",
+              "project_context": {
+                "name": "Portfolio",
+                "jobDescription": "Built React screens"
+              },
+              "question": "How did you structure this React project?",
+              "topic": "React",
+              "rubric": {
+                "evaluation_goal": "Assess React structure",
+                "critical_points": [
+                  "Boundaries"
+                ],
+                "met": "Explains boundaries",
+                "partially_met": "Names boundaries",
+                "not_met": "No mechanism"
+              }
+            },
+            "answer": "answer b",
+            "timestamp": "2026-08-24T06:20:00.551Z"
+          }
+        ]
+      },
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "UX-002",
+      "agent": "fetchLatestResume",
+      "scenario": "Backend 503",
+      "expected": "Distinguish service failure from no saved resume",
+      "actual": "Database unavailable",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "UX-003",
+      "agent": "loadResumeAnalysis",
+      "scenario": "Malformed local cache",
+      "expected": "Clear corrupt cache without crash",
+      "actual": null,
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "STATE-01",
+      "agent": "loginUser",
+      "scenario": "Candidate A then Candidate B",
+      "expected": "Candidate B receives its own client identity and no A resume/interview state",
+      "actual": {
+        "clientId": "00000000-0000-4000-8000-000000000002",
+        "resume": null,
+        "setupA": null,
+        "turnsA": []
+      },
+      "status": "PASS",
+      "severity": "CRITICAL"
+    }
+  ]
+}

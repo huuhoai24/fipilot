@@ -1,0 +1,20 @@
+﻿%% Candidate Profile Generation
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/services/profile_scanner/context.py; backend/services/profile_scanner/agent.py; backend/services/profile_scanner/schemas.py; backend/services/profile_scanner/verification.py; backend/services/profile_scanner/prompts.py
+flowchart LR
+  Text["Normalized Resume Text"] --> Context["Section-aware Context max 16000 chars"]
+  Context --> LLM["Gemini Resume Extraction"]
+  LLM --> Classify{"Resume and confidence at least 0.7"}
+  Classify -->|No| Reject["not_a_resume"]
+  Classify -->|Yes| Raw["ResumeExtractionResult"]
+  Raw --> Bounds["Limit Skills Evidence Projects Experiences"]
+  Bounds --> Canonical["CandidateProfile"]
+  Canonical --> Verify["Rule Verification and Reconciliation"]
+  Verify --> Profile["Persistable Candidate Profile"]
+  Verify --> Prov["Provenance Records [PARTIAL]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

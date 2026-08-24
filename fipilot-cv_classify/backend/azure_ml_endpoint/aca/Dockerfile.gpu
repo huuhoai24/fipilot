@@ -1,0 +1,14 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY azure_ml_endpoint/aca/requirements.gpu.txt .
+RUN pip install --no-cache-dir -r requirements.gpu.txt
+
+COPY azure_ml_endpoint/aca/app.py .
+COPY models/Qwen3-0.6B ./model/
+
+ENV MODEL_PATH=/app/model
+EXPOSE 8000
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

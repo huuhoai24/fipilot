@@ -1,0 +1,35 @@
+{
+  "results": [
+    {
+      "test_id": "LIVE-SEM-01",
+      "status": "PASS",
+      "question": "Bạn có thể giải thích cách bạn thiết kế và huấn luyện mô hình YOLOv12s/YOLO26s để phát hiện bố cục CV tiếng Việt trong dự án không?",
+      "forbidden_found": []
+    },
+    {
+      "test_id": "LIVE-SEM-02",
+      "status": "PASS",
+      "question": "Bạn có thể giải thích cách bạn giảm 22% tỷ lệ lỗi ký tự trong hệ thống OCR hóa đơn không?",
+      "forbidden_found": []
+    },
+    {
+      "test_id": "LIVE-SEM-03",
+      "status": "PASS",
+      "question": "Bạn có thể giải thích cách bạn thiết kế và kiểm thử API HTTP trong dự án Small API không?",
+      "forbidden_found": []
+    },
+    {
+      "test_id": "LIVE-SEM-04",
+      "status": "PASS",
+      "answer_status": "NOT_ASSESSED",
+      "raw_score": 10,
+      "final_score": 0
+    },
+    {
+      "test_id": "LIVE-SEM-05",
+      "status": "PASS",
+      "question": "Bạn có thể giải thích cách bạn triển khai và quản lý các giao dịch SQL trong dịch vụ Python của mình như thế nào không?",
+      "forbidden_found": []
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+﻿%% Implementation Status Map
+%% Status: IMPLEMENTED/PARTIAL/SPEC-PENDING/UNKNOWN
+%% Evidence: docs/PIPELINE_CV_TO_INTERVIEW_DEEP_DIVE_VI.md; docs/architecture/RESEARCH_EVIDENCE.md; backend/gateway/main.py; frontend/src/App.tsx
+flowchart TB
+  subgraph Impl["IMPLEMENTED"]
+    I1["PDF DOCX OCR Extraction"]
+    I2["Profile Extraction and Readiness Read"]
+    I3["Planning Questions Answers Voice"]
+    I4["SQLite Firestore and Offline Evaluation"]
+  end
+  subgraph Partial["PARTIAL"]
+    P1["Provenance Persistence"]
+    P2["Start Readiness and Snapshot"]
+    P3["Report Immutability and Observability"]
+    P4["Vector Operational Proof"]
+  end
+  subgraph Spec["SPEC-PENDING"]
+    S1["Profile PATCH and If-Match"]
+    S2["Replacement Upload and Operation Status"]
+    S3["Upload Idempotency Lease Fencing"]
+    S4["Production Hybrid and CI"]
+  end
+  subgraph Unknown["UNKNOWN"]
+    U1["Current Live Revision and Flags"]
+    U2["Current Vector Index Freshness"]
+    U3["Production Speech Deployment"]
+  end
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

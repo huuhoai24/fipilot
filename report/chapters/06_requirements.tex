@@ -1,0 +1,94 @@
+\chapter{SOFTWARE REQUIREMENTS SPECIFICATION}\label{ch:requirements}
+
+\section{Product perspective}
+
+FiPilot is a browser-based application whose primary workflow begins with an authenticated user and a Resume. The frontend depends on the FastAPI gateway for all authoritative candidate and interview data. The backend depends on Firebase for production identity, a configured Vertex AI project for language operations, a repository adapter for persistence, and speech components for voice mode.
+
+The specification in this chapter documents behavior observable in the connected application. It does not introduce proposed upload replacement, profile-edit mutation, or deployment behavior.
+
+\section{Actors and external systems}
+
+\begin{table}[htbp]\centering
+\caption{Actors and connected systems.}\label{tab:actors}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}Y}\toprule
+Actor or system & Responsibility\\ \midrule
+Candidate & Signs in, uploads a Resume, reviews the profile, configures an interview, answers questions, and reads the report.\\
+Firebase Authentication & Issues the client identity token; Firebase Admin verifies it at the backend.\\
+Vertex AI Gemini & Produces schema-constrained profile, plan, question, evaluation, and report content.\\
+SQLite or Firestore & Stores user-scoped application resources through the repository contract.\\
+Speech components & Convert voice audio to transcripts and generated text to audio in voice mode.\\
+Local Knowledge catalog & Supplies reviewable technical topic context to the interview planner.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Functional requirements}
+
+\begin{longtable}{p{0.12\textwidth}p{0.78\textwidth}}
+\caption{Implemented functional requirements.}\label{tab:functional-requirements}\\
+\toprule ID & Requirement\\ \midrule\endfirsthead
+\toprule ID & Requirement\\ \midrule\endhead
+FR-01 & The system shall authenticate protected REST and voice operations and resolve the user identity on the server.\\
+FR-02 & The system shall accept one PDF or DOCX Resume whose size is at most 10 MB and reject unsupported or structurally invalid files.\\
+FR-03 & The system shall extract native document text and use OCR for a PDF when native text is insufficient.\\
+FR-04 & The system shall convert accepted Resume text into the canonical Candidate Profile and persist it for the authenticated user.\\
+FR-05 & The system shall return the owned Candidate Profile with a strong version tag and structured readiness information.\\
+FR-06 & The system shall select relevant local Knowledge records using the candidate and interview configuration.\\
+FR-07 & The system shall prepare a structured Interview Plan before an interview begins.\\
+FR-08 & The system shall create a persisted text or voice Interview Session and return its current state.\\
+FR-09 & The system shall generate a question for the active plan round.\\
+FR-10 & The system shall accept a nonblank text answer or a finalized voice transcript and evaluate it through the shared answer service.\\
+FR-11 & The system shall prevent the same logical answer submission from producing duplicate turns.\\
+FR-12 & The system shall use deterministic workflow rules to continue, follow up, change round, or complete the session.\\
+FR-13 & The system shall allow an authenticated owner to reload a session and list interview history.\\
+FR-14 & The system shall generate, persist, and return a final report for an owned completed session.\\
+FR-15 & The voice interface shall validate origin, authentication, session ownership, message type, and message size before processing audio.\\
+FR-16 & Foreign and missing owned resources shall use an indistinguishable not-found response.\\
+\bottomrule
+\end{longtable}
+
+\section{Primary use cases}
+
+\subsection{Upload and review a Resume}
+
+\textbf{Precondition:} the candidate is authenticated. The candidate selects one PDF or DOCX file. The client sends it to the Resume endpoint. The backend validates and extracts the document, creates a Candidate Profile, persists the candidate resources, and returns the result. The profile page displays the structured fields and readiness issues. If validation, extraction, or provider processing fails, the system returns a structured error and does not present a successful profile.
+
+\subsection{Complete a text interview}
+
+\textbf{Precondition:} an owned Candidate Profile exists. The candidate selects interview settings and asks the server to prepare the interview. The server selects knowledge and produces a plan. Start creates the session and first question. For each turn, the candidate submits an answer; the service evaluates it, stores the turn, and returns the next state. When the session is complete, the candidate requests and reads the report.
+
+\subsection{Complete a voice interview}
+
+\textbf{Precondition:} an owned voice-mode session exists and the browser can access a microphone. The client opens the authenticated WebSocket and sends supported control and PCM audio messages. The server produces speech events and transcripts. Final transcripts use the shared answer flow. The candidate receives the question, feedback, and next session state through socket events.
+
+\subsection{Review interview history}
+
+The authenticated candidate opens the history page. The client requests a paginated list of owned sessions. Selecting a session reloads its stored state or report. The server never uses a client-supplied owner identifier to broaden the query.
+
+\section{Data requirements}
+
+All persisted candidate, session, and report resources have server-assigned identifiers and an owner. Candidate Profile fields use one canonical naming scheme. Session state contains its mode, plan, current round, turns, status, and timestamps required by the application. Answer claims bind a logical turn to its processing result. Reports are associated with a session and can be retrieved only through ownership-scoped access.
+
+Strong profile versions are returned through the ETag response header. Model-generated data must pass the corresponding Pydantic schema before persistence. Transport schemas reject missing required fields and invalid enum values.
+
+\section{Quality requirements}
+
+\begin{table}[htbp]\centering
+\caption{Quality requirements and implementation mechanisms.}\label{tab:quality-requirements}
+\begin{tabularx}{\textwidth}{p{0.20\textwidth}YY}\toprule
+Attribute & Requirement & Mechanism\\ \midrule
+Security & Protected data is available only to its authenticated owner. & Token verification, current-user dependency, origin check, and ownership-scoped repositories.\\
+Reliability & Retries must not duplicate an answer turn. & Repository-backed idempotency claim and replayed result.\\
+Integrity & AI responses must match application contracts. & Structured generation plus Pydantic validation.\\
+Maintainability & Transport, application logic, and infrastructure remain separable. & Gateway, services, shared schemas, and adapter boundaries.\\
+Portability & Local and Firebase-backed persistence share behavior. & Common repository interface with SQLite and Firestore implementations.\\
+Usability & Users can see progress, errors, current questions, and report output. & Route-specific UI state and structured backend responses.\\
+Accessibility & Core interactions support semantic controls and keyboard operation. & Reusable UI controls, labels, focus treatment, and responsive layouts.\\
+Observability & Failures can be traced without exposing internals to clients. & Request identifiers, structured logs, and stable error responses.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Operational limits}
+
+The application requires network access for configured Firebase and Vertex AI operations. Voice mode additionally requires browser microphone permission and available speech services. Resume interpretation is limited by document quality and the information present in the file. Generated questions and assessments can contain model errors, so users must treat the report as interview-practice feedback rather than an employment decision.
+
+The repository does not contain a checked-in continuous-integration workflow. Local commands therefore provide the verified software baseline. Environment-specific deployment, live provider quotas, latency at scale, and production availability are outside this report's verified claims.

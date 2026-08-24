@@ -1,0 +1,21 @@
+﻿%% Answer Evaluation Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/answer_evaluator/agent.py; backend/services/answer_evaluator/prompts.py; backend/shared/schemas/evaluation.py
+flowchart LR
+  Profile["Session Profile Snapshot"] --> Prompt["Evaluator Prompt"]
+  Question["Question and Expected Points"] --> Prompt
+  Answer["Candidate Answer"] --> Prompt
+  Config["Language Mode Level"] --> Prompt
+  Prompt --> Model["Gemini Simple or Complex"]
+  Model --> Validate["AnswerEvaluation Schema"]
+  Validate --> Scores["Technical Depth Communication Mindset Overall"]
+  Validate --> Feedback["Strengths Weaknesses Missing Concepts Feedback"]
+  Validate --> Follow["Follow-up Decision Signal"]
+  Scores --> Policy["Deterministic Interview Decision"]
+  Follow --> Policy
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

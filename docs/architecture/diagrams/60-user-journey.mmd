@@ -1,0 +1,21 @@
+﻿%% Candidate User Journey
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: frontend/src/pages; frontend/src/lib/userFacingError.ts; backend/gateway/api
+flowchart TB
+  Action1["User selects Resume"] --> System1["System validates and extracts"]
+  System1 -->|Accepted| Action2["User reviews profile and config"]
+  System1 -->|Rejected| Recover1["Select a supported readable Resume"]
+  Action2 --> AI1["AI plans and generates first question"]
+  AI1 --> Action3["User answers questions"]
+  Action3 --> AI2["AI evaluates and adapts"]
+  AI2 -->|More| Action3
+  AI2 -->|Complete| Action4["User opens report"]
+  Action4 --> AI3["AI generates report once"]
+  AI3 --> System2["Persist report and history"]
+  AI3 -->|Transient failure| Recover2["Retry report generation"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,16 @@
+﻿%% Voice Session State Machine
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/voice_session/schemas.py; backend/services/voice_session/manager.py; backend/gateway/api/voice.py
+stateDiagram-v2
+  [*] --> IDLE
+  IDLE --> WAITING_FOR_USER
+  WAITING_FOR_USER --> USER_SPEAKING
+  USER_SPEAKING --> TRANSCRIBING
+  TRANSCRIBING --> EVALUATING
+  EVALUATING --> AI_THINKING
+  AI_THINKING --> AI_SPEAKING
+  AI_SPEAKING --> WAITING_FOR_USER
+  AI_SPEAKING --> INTERRUPTED: barge in
+  INTERRUPTED --> USER_SPEAKING
+  WAITING_FOR_USER --> [*]: completed or disconnected
+

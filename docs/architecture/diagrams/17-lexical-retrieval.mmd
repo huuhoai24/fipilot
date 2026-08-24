@@ -1,0 +1,19 @@
+﻿%% Lexical Retrieval Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/interview_knowledge/local.py; backend/services/interview_knowledge/catalog.json
+flowchart LR
+  Profile["Candidate Profile"] --> Flatten["Flatten All String Values"]
+  Flatten --> Tokens["Regex Token Set and Stop Words"]
+  Tokens --> Domain["Weighted Domain Overlap"]
+  Domain --> Level["Level Guidance Lookup"]
+  Tokens --> Score["Topic Token Overlap plus Title Bonus"]
+  Score --> Sort["Deterministic Score Sort"]
+  Sort --> Top["Top 8 Topics"]
+  Level --> Format["Planner Context Strings"]
+  Top --> Format
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

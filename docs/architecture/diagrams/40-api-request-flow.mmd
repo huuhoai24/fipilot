@@ -1,0 +1,22 @@
+﻿%% API Request Flow
+%% Status: IMPLEMENTED
+%% Evidence: frontend/src/lib/api.ts; backend/core/middleware.py; backend/core/dependencies.py; backend/gateway/main.py
+sequenceDiagram
+  participant FE as Frontend
+  participant MW as Request Middleware
+  participant AU as Firebase Auth
+  participant RT as Route and Pydantic
+  participant SV as Service
+  participant RP as Repository or AI
+  FE->>MW: HTTP request with Bearer token
+  MW->>MW: Validate or generate X Request ID
+  MW->>AU: Verify ID token
+  AU-->>RT: CurrentUser
+  RT->>RT: Validate path body and query
+  RT->>SV: Invoke domain operation
+  SV->>RP: Persist or call provider
+  RP-->>SV: Typed result
+  SV-->>RT: Response model
+  RT-->>MW: HTTP response
+  MW-->>FE: JSON plus X Request ID
+

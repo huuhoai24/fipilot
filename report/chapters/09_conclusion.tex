@@ -1,0 +1,35 @@
+\chapter{CONCLUSION}\label{ch:conclusion}
+
+\section{Achieved result}
+
+FiPilot implements an authenticated CV-to-interview workflow across a React frontend and a FastAPI backend. It validates and extracts PDF or DOCX Resumes, uses OCR when a PDF lacks sufficient text, creates a canonical Candidate Profile, selects technical context from a local Knowledge catalog, prepares an Interview Plan, generates questions, evaluates text or transcribed voice answers, applies deterministic session decisions, persists interview history, and produces a final report.
+
+The main architectural result is not a single prompt. It is the separation of responsibilities around probabilistic language operations. Schemas define accepted output. Repository state defines the interview. Firebase identity defines the user. Lexical retrieval defines the selected technical context. The decision service defines progression. REST and WebSocket channels converge before answer evaluation. These boundaries make the application understandable and testable as software.
+
+\section{Technical contributions}
+
+The project contributes a cohesive implementation in the following areas:
+\begin{itemize}
+  \item a guarded document-ingestion path for PDF and DOCX with OCR fallback;
+  \item one Candidate Profile contract shared by Resume review and interview services;
+  \item a reviewable, deterministic local knowledge-selection mechanism;
+  \item schema-constrained language operations for profile, plan, question, evaluation, and report data;
+  \item persisted multi-turn orchestration with idempotent answer submission;
+  \item a shared answer boundary for text and voice interaction;
+  \item ownership-scoped access implemented at gateway and repository seams; and
+  \item interchangeable SQLite and Firestore persistence behind one application contract.
+\end{itemize}
+
+\section{Verified software status}
+
+The current repository verification passed 286 backend tests, backend Python compilation, frontend TypeScript compilation, configured lint, 119 frontend tests, and the production frontend build. These results support the implemented software contracts documented in this report. They do not establish broad Resume interpretation accuracy, speech accuracy, model-comparison quality, production scale, or service availability.
+
+\section{Known limitations}
+
+Resume extraction remains sensitive to unusual layout and scan quality. Automated evaluation can be wrong or incomplete and must remain advisory. Profile readiness is returned by the backend, but the current start route does not yet use it as an authoritative rejection. Session creation and report-profile consistency do not yet provide the complete immutable profile snapshot behavior required for strong historical reproducibility. The active Resume route also does not provide the full replacement and persisted upload-idempotency lifecycle described in broader design documents.
+
+Voice operation depends on microphone quality, connection stability, and configured speech services. Live provider status and deployment behavior vary by environment and were not used as evidence for this report. The repository has no checked-in browser end-to-end, visual-regression, load, or production-availability suite.
+
+\section{Overall assessment}
+
+Within these limits, FiPilot is a complete application-level demonstration of governed language-service integration. It connects Resume evidence, curated technical knowledge, a persisted interview workflow, two interaction channels, and user-owned reports without assigning authentication or workflow authority to model output. The result is a credible foundation for interview practice and a concrete software-engineering case study in applying AI services through explicit contracts.

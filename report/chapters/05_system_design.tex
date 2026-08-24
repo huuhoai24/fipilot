@@ -1,0 +1,88 @@
+\chapter{SYSTEM DESIGN AND IMPLEMENTATION}\label{ch:system-design}
+
+\section{Architectural style}
+
+FiPilot is a web application with a React client and a FastAPI backend. The active HTTP boundary is \codepath{backend/gateway/main.py}. The gateway composes authentication dependencies, application services, infrastructure adapters, and routers. Route handlers remain thin: they validate transport input, resolve the current user, call an application service, and return a canonical response.
+
+The backend follows four main layers:
+\begin{enumerate}
+  \item \textbf{gateway}: REST and WebSocket transport, dependency resolution, and exception mapping;
+  \item \textbf{services and orchestrator}: use cases for Resume handling, planning, questions, answers, reports, and interview progression;
+  \item \textbf{shared schemas}: canonical request, response, and domain data contracts; and
+  \item \textbf{infrastructure}: Firebase, document extraction, language, speech, SQLite, and Firestore adapters.
+\end{enumerate}
+
+This direction keeps external APIs and storage details outside domain-facing service contracts. It also prevents the compatibility modules under \codepath{backend/app} from becoming a second active HTTP application.
+
+\section{Frontend design}
+
+Production routes are declared in \codepath{frontend/src/App.tsx}. React Router selects pages; TanStack Query manages server state; Zustand stores client session state where appropriate; and \codepath{frontend/src/lib/api.ts} centralizes authenticated API calls. Canonical TypeScript contracts live under \codepath{frontend/src/types}.
+
+\reportfigure[0.78\textwidth]{12-frontend-flow.png}{Production frontend routes and their backend interactions.}{frontend-flow}
+
+The main user-facing areas are Candidate Profile review, text interview, voice interview, report, interview history, and settings. Authentication gates protected routes. The frontend retrieves a Firebase ID token from the current user and sends it as a bearer token. The server, rather than the browser, determines the authenticated user identifier.
+
+\section{Backend request composition}
+
+FastAPI dependencies construct repositories and services from environment settings. The storage implementation can be SQLite or Firestore while exposing the same public repository behavior. Language and speech integrations are also injected through application-facing interfaces. This composition supports local testing with deterministic substitutes without changing route contracts.
+
+Health and readiness routes are separate. The health route indicates that the process is available. The readiness route performs configured dependency checks and can show whether the application is prepared to serve its connected integrations.
+
+\section{Text interview sequence}
+
+The text flow uses REST for preparation, session creation, answers, session reload, and report access. Preparation selects knowledge and creates a plan preview. Session start persists the interview and returns its first question. Each answer request includes the session identifier and an idempotency key.
+
+\reportfigure{08-text-interview.png}{Text interview request sequence.}{text-sequence}
+
+On answer submission, the service resolves an owned session, claims the idempotency key, evaluates the answer, decides the next action, persists the updated state, and returns the session. A duplicate request does not create an additional turn. The browser can reload the persisted session after navigation or an interrupted response.
+
+\section{Voice interview sequence}
+
+Voice mode uses an authenticated WebSocket at \codepath{/api/v2/voice/interview/:session_id}. Authentication is provided through the negotiated subprotocol; the gateway also checks the request origin and session ownership before accepting an active connection. Binary PCM frames and bounded JSON control messages use the same socket.
+
+\reportfigure{09-voice-interview.png}{Voice channel and convergence with the shared answer service.}{voice-sequence}
+
+The voice runtime detects speech, sends audio to the configured speech-to-text component, and receives transcript events. A final transcript becomes the answer input to the same application service used by the REST flow. The gateway streams question and feedback events to the client and can obtain synthesized speech for playback. Connection limits, message limits, and close codes protect the WebSocket boundary.
+
+\section{Persistence design}
+
+The repository contract stores candidates, Resumes, sessions, turns, reports, answer claims, and related status records. SQLite supports local operation and automated tests. Firestore supports document-oriented persistence in a Firebase environment. Both adapters are expected to preserve ownership filters and application invariants.
+
+\reportfigure{10-persistence-model.png}{Principal persisted resources and ownership relationships.}{persistence-model}
+
+Candidate identifiers and session identifiers are resource locators, not proof of authorization. Repository calls receive the current user's identifier and return the same not-found behavior for missing and foreign resources. This avoids revealing whether another user's resource exists.
+
+\section{HTTP and WebSocket interfaces}
+
+\begin{longtable}{p{0.10\textwidth}p{0.42\textwidth}p{0.38\textwidth}}
+\caption{Active application interfaces.}\label{tab:api-inventory}\\
+\toprule Method & Path & Purpose\\ \midrule\endfirsthead
+\toprule Method & Path & Purpose\\ \midrule\endhead
+GET & \codepath{/api/v2/auth/me} & Return the authenticated user contract.\\
+POST & \codepath{/api/v2/resume/upload} & Validate, extract, and create candidate resources.\\
+GET & \codepath{/api/v2/candidates/:candidate_id/profile} & Return the owned Candidate Profile and readiness data.\\
+POST & \codepath{/api/v2/interview/prepare} & Retrieve knowledge and create an Interview Plan.\\
+POST & \codepath{/api/v2/interview/start} & Create an interview session and first question.\\
+POST & \codepath{/api/v2/interview/:session_id/answer} & Process one idempotent text answer.\\
+GET & \codepath{/api/v2/interview/:session_id} & Reload an owned interview session.\\
+POST & \codepath{/api/v2/interview/:session_id/report} & Generate and persist a report.\\
+GET & \codepath{/api/v2/interview/:session_id/report} & Return the owned report.\\
+GET & \codepath{/api/v2/interviews} & Return owned interview history.\\
+WS & \codepath{/api/v2/voice/interview/:session_id} & Run the authenticated voice channel.\\
+GET & \codepath{/health}, \codepath{/ready} & Process health and dependency readiness.\\
+\bottomrule
+\end{longtable}
+
+\section{Authentication and ownership}
+
+Firebase Authentication establishes identity. For REST, the frontend sends \codepath{Authorization: Bearer <token>}; Firebase Admin verifies the token, and the gateway constructs the current-user dependency. Development authentication can be disabled through local settings, but this mode is not a production authorization mechanism.
+
+\reportfigure{11-security-boundary.png}{Identity verification and ownership-scoped resource access.}{security-boundary}
+
+The backend never accepts an owner identifier as authority from a request body. Profile, upload, interview, status, and report operations are scoped to the verified user. Voice connections apply the same ownership rule before session use.
+
+\section{Configuration and observability}
+
+Runtime settings cover authentication, Firebase, repository selection, Vertex AI, CORS origins, file limits, timeouts, and speech behavior. The repository helper loads \codepath{backend/.env.local} by default, or the path supplied through \codepath{BACKEND\_ENV\_FILE}. The open editor file \codepath{backend/app/.env} is not automatically loaded by the active helper.
+
+The gateway uses structured logging and application-level exception handlers. Provider errors are translated into stable HTTP responses, while detailed internal messages remain in server logs. Request identifiers and explicit state values support diagnosis without placing application state inside prompt text.

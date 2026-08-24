@@ -1,0 +1,11 @@
+%% FiPilot as-built system context
+flowchart TB
+  User[Candidate] --> Browser[React Web Application]
+  Browser -->|HTTPS REST| API[FastAPI Gateway]
+  Browser -->|Authenticated WebSocket| Voice[Voice Interview Gateway]
+  API --> Services[Profile and Interview Services]
+  Voice --> Services
+  Services --> Gemini[Vertex AI Gemini]
+  Services --> Data[(SQLite or Firestore Repository)]
+  Services --> Knowledge[(Local Knowledge Catalog)]
+  Voice --> Speech[STT VAD and TTS Components]

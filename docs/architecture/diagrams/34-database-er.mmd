@@ -1,0 +1,52 @@
+﻿%% Database ER Model
+%% Status: IMPLEMENTED
+%% Evidence: backend/models.py; backend/infrastructure/repositories/sqlite.py; backend/infrastructure/repositories/firestore.py
+erDiagram
+  USERS ||--o{ SESSIONS : candidate
+  USERS ||--o{ INTERVIEW_BLUEPRINT_ARTIFACTS : owns
+  SESSIONS ||--o{ MESSAGES : contains
+  SESSIONS ||--o{ EVALUATIONS : contains
+  SESSIONS ||--o{ ANSWER_SUBMISSIONS : claims
+  USERS {
+    int id PK
+    string user_id
+    text profile_json
+    int profile_version
+    text raw_resume_text
+  }
+  SESSIONS {
+    int id PK
+    int candidate_id FK
+    string user_id
+    string status
+    text state
+    text report_data
+  }
+  MESSAGES {
+    int id PK
+    int session_id FK
+    text content
+  }
+  EVALUATIONS {
+    int id PK
+    int session_id FK
+    text rubric_json
+  }
+  ANSWER_SUBMISSIONS {
+    int id PK
+    int session_id FK
+    string turn_id
+    string answer_hash
+    string status
+  }
+  INTERVIEW_BLUEPRINT_ARTIFACTS {
+    string artifact_key PK
+    int candidate_id FK
+    text plan_json
+  }
+  RESUME_EXTRACTION_ARTIFACTS {
+    string artifact_key PK
+    string user_id
+    text profile_json
+  }
+

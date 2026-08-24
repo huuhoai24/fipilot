@@ -1,0 +1,23 @@
+﻿%% Security and Trust Boundaries
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/core/dependencies.py; backend/infrastructure/auth/firebase.py; backend/gateway/api/voice.py; backend/services/profile_scanner/prompts.py
+flowchart LR
+  subgraph Untrusted["Untrusted Client Boundary"]
+    Browser["Browser and Uploaded Resume [EXTERNAL]"]
+  end
+  subgraph TrustedApp["Application Trust Boundary"]
+    Gateway["FastAPI Gateway [IMPLEMENTED]"]
+    Services["Services and Orchestrator [IMPLEMENTED]"]
+  end
+  Browser -->|Bearer or WS subprotocol token| Gateway
+  Gateway -->|verify| Firebase["Firebase Auth [EXTERNAL]"]
+  Gateway --> Services
+  Services --> Store["Owned SQLite or Firestore [STORAGE]"]
+  Services -->|Resume Profile Answer Prompt Data| Vertex["Vertex AI [EXTERNAL]"]
+  Gateway -->|Transient PCM and Text| Speech["Speech Service Boundary"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,24 @@
+﻿%% Core Implementation Classes
+%% Status: IMPLEMENTED
+%% Evidence: backend/core/dependencies.py; backend/orchestrator/interview_orchestrator.py; backend/infrastructure/repositories/base.py; backend/infrastructure/llm/base.py
+classDiagram
+  class InterviewOrchestrator { +start_interview +create_plan +submit_answer }
+  class InterviewPlannerAgent { +create_plan }
+  class QuestionGeneratorAgent { +generate_question }
+  class EvaluatorAgent { +evaluate_answer }
+  class ReportService { +generate_for_session +get_for_session }
+  class VertexGeminiService { +generate_json +stream_text +route_model }
+  class InterviewRepository
+  class SQLiteInterviewRepository
+  class FirestoreRepository
+  InterviewOrchestrator --> InterviewPlannerAgent
+  InterviewOrchestrator --> QuestionGeneratorAgent
+  InterviewOrchestrator --> EvaluatorAgent
+  InterviewPlannerAgent --> VertexGeminiService
+  QuestionGeneratorAgent --> VertexGeminiService
+  EvaluatorAgent --> VertexGeminiService
+  ReportService --> VertexGeminiService
+  ReportService --> InterviewRepository
+  SQLiteInterviewRepository --|> InterviewRepository
+  FirestoreRepository --|> InterviewRepository
+

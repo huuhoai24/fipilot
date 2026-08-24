@@ -1,0 +1,24 @@
+﻿%% Resume Ingestion Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/gateway/api/resume.py; backend/infrastructure/documents/pdf_service.py
+flowchart LR
+  File["PDF or DOCX [EXTERNAL]"] --> Temp["Named Temporary File [IMPLEMENTED]"]
+  Temp --> Size{"At most 10 MiB"}
+  Size -->|No| RejectSize["413 File Too Large"]
+  Size -->|Yes| Signature["Extension MIME Signature Check"]
+  Signature -->|PDF| PDF["PDF Native Text"]
+  Signature -->|DOCX| DOCX["Paragraph and Table Text"]
+  Signature -->|Mismatch| RejectType["415 or 422 Rejection"]
+  PDF --> OCR["Conditional OCR Fallback"]
+  OCR --> Normalize["NFKC Text Cleanup"]
+  DOCX --> Normalize
+  Normalize --> Minimum{"At least 50 characters"}
+  Minimum -->|No| RejectText["422 No Extractable Text"]
+  Minimum -->|Yes| Profile["Profile Extraction"]
+  Profile --> Cleanup["Delete Temporary File"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

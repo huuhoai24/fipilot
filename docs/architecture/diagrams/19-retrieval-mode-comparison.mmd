@@ -1,0 +1,23 @@
+﻿%% Retrieval Mode Comparison
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/defense_extension/e3_ablation_analysis.py; evaluation/m6/engine.py; docs/evaluation/defense_extension/e3_ablation
+flowchart TB
+  Control["Same Frozen Candidate Role Level Prompt Model"] --> A["A Profile Only NO_RAG"]
+  Control --> B["B Profile plus Lexical"]
+  Control --> C["C Profile plus Vector"]
+  A --> GenA["Question Generation without Retrieved Context"]
+  B --> Lex["Lexical Context"]
+  Lex --> GenB["Same Generation Logic"]
+  C --> Vec["Vector Context"]
+  Vec --> GenC["Same Generation Logic"]
+  GenA --> Metrics["Common Quality Metrics"]
+  GenB --> Metrics
+  GenC --> Metrics
+  GenB --> Rag["RAG Grounding and Utilization"]
+  GenC --> Rag
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

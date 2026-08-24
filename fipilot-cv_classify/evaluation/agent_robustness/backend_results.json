@@ -1,0 +1,354 @@
+{
+  "summary": {
+    "FAIL": 0,
+    "BLOCKED": 0,
+    "NOT TESTED": 0,
+    "NOT EVALUATED": 0,
+    "PARTIAL": 2,
+    "PASS": 36
+  },
+  "results": [
+    {
+      "test_id": "RESUME-001",
+      "agent": "ResumeExtract",
+      "scenario": "Normal text PDF",
+      "expected": "Preserve evidence, schema, and deduplicate skills",
+      "actual": "{'skills': ['Python', 'FastAPI'], 'skillEvidence': [{'skill': 'Python', 'scope': 'unknown', 'source': 'resume'}, {'skill': 'FastAPI', 'scope': 'unknown', 'source': 'resume'}], 'education': [], 'workExperience': [{'type': 'Project', 'name': 'Platform API', 'position': '', 'jobDescription': 'Platform API Built FastAPI with PostgreSQL'}], 'roleMatches': [{'id': 'backend-developer', 'title': 'Backend Developer', 'matchedSkills': ['FastAPI'], 'relevantExperienceIndexes': [0], 'score': 100, 'summary': '1 matched skills and 1 relevant experience items'}]}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RESUME-002",
+      "agent": "PDF extractor",
+      "scenario": "Blank/scanned PDF",
+      "expected": "Clear OCR-required rejection",
+      "actual": "No text layer found in the PDF. The file may require OCR before extraction.",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "RESUME-003",
+      "agent": "PDF extractor",
+      "scenario": "Vietnamese and emoji text layer",
+      "expected": "Preserve extractable Vietnamese text without crashing",
+      "actual": "{'prompt': '[0]: Nguyễn Văn Trí\\n[1]: Kỹ sư Trí tuệ Nhân tạo\\n[2]: Python và FastAPI', 'profile': {'skills': ['Python'], 'skillEvidence': [{'skill': 'Python', 'scope': 'unknown', 'source': 'resume'}], 'education': [], 'workExperience': [{'type': 'Project', 'name': 'Đồ án AI', 'position': '', 'jobDescription': 'Nguyễn Văn Trí Kỹ sư Trí tuệ Nhân tạo Python và FastAPI'}], 'roleMatches': [{'id': 'backend-developer', 'title': 'Backend Developer', 'matchedSkills': [], 'relevantExperienceIndexes': [0], 'score': 100, 'summary': '0 matched skills and 1 relevant experience items'}]}}",
+      "status": "PASS",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "RESUME-004",
+      "agent": "PDF extractor",
+      "scenario": "12-page text PDF",
+      "expected": "Keep all pages in order",
+      "actual": "[0]: PAGE-0\n[1]: PAGE-1\n[2]: PAGE-2\n[3]: PAGE-3\n[4]: PAGE-4\n[5]: PAGE-5\n[6]: PAGE-6\n[7]: PAGE-7\n[8]: PAGE-8\n[9]: PAGE-9\n[10]: PAGE-10\n[11]: PAGE-11",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RESUME-005",
+      "agent": "PDF extractor",
+      "scenario": "Two-column text PDF",
+      "expected": "Preserve all four text blocks with deterministic order",
+      "actual": "[0]: LEFT-1 RIGHT-1\n[1]: LEFT-2 RIGHT-2",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "BOUNDARY-001",
+      "agent": "ResumeExtract",
+      "scenario": "Very long extracted resume context",
+      "expected": "Bound or reject context before the LLM call",
+      "actual": "LLM received 47998 characters",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RESUME-006",
+      "agent": "Resume API",
+      "scenario": "DOCX upload",
+      "expected": "Reject unsupported type clearly",
+      "actual": "400",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "BOUNDARY-002",
+      "agent": "Resume API",
+      "scenario": "File size limit +1",
+      "expected": "HTTP 413",
+      "actual": "413",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "BOUNDARY-003",
+      "agent": "Resume API",
+      "scenario": "File size exact limit",
+      "expected": "Accepted",
+      "actual": "200",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RESUME-007",
+      "agent": "Resume API",
+      "scenario": "Corrupted PDF",
+      "expected": "Clear client-data rejection (4xx)",
+      "actual": "{'status': 422, 'body': '{\"detail\":\"The uploaded PDF is malformed or corrupted\"}'}",
+      "status": "PASS",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "PROFILE-001",
+      "agent": "ResumeExtract",
+      "scenario": "Skills only, no experience",
+      "expected": "Preserve skill evidence without inventing company or experience",
+      "actual": "{'workExperience': [], 'skillEvidence': [{'skill': 'Python', 'scope': 'unknown', 'source': 'resume'}, {'skill': 'FastAPI', 'scope': 'unknown', 'source': 'resume'}]}",
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "PROFILE-002",
+      "agent": "ResumeExtract",
+      "scenario": "Canonically equivalent duplicate skills",
+      "expected": "Normalize to one skill",
+      "actual": "['Café']",
+      "status": "PASS",
+      "severity": "LOW"
+    },
+    {
+      "test_id": "PLAN-001",
+      "agent": "create_interview_plan",
+      "scenario": "Frontend fresher selected as Senior Data Engineer",
+      "expected": "Detect mismatch or avoid asserting senior data-engineering fit",
+      "actual": "{'role': 'Data Engineer', 'level': 'Senior', 'target_role': 'Data Engineer', 'target_level': 'Senior', 'candidate_role': 'Web Developer', 'candidate_level': 'Entry', 'level_conflict': True, 'role_inference': {'title_role': 'Web Developer', 'task_role': 'Web Developer', 'effective_role': 'Web Developer', 'confidence': 'high', 'conflict': False}, 'skills': [], 'skill_evidence': [], 'education': [], 'rounds': [{'round_id': 'round-1', 'evidence_index': 0, 'role': 'Web Developer', 'level': 'Junior', 'candidate_role': 'Web Developer', 'candidate_level': 'Entry', 'target_role': 'Data Engineer', 'target_level': 'Senior', 'level_conflict': True, 'role_confidence': 'high', 'role_conflict': False, 'candidate_scope': 'Project', 'evidence': {'type': 'Project', 'name': 'React portfolio', 'position': 'Frontend Developer', 'jobDescription': 'Built React and CSS screens.'}, 'topic': 'React portfolio', 'difficulty': 'medium', 'objective': 'Validate transferable React portfolio evidence for the target Data Engineer role without assuming Data Engineer experience.', 'reasoning': 'Role mismatch: candidate evidence aligns with Web Developer, while the target role is Data Engineer. Grounded in Project evidence from React portfolio.', 'knowledge': []}], 'coverage_goals': ['Validate role-relevant implementation decisions for Data Engineer.', 'Verify concrete resume claims with mechanisms, trade-offs, and failure cases.']}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "PLAN-002",
+      "agent": "create_interview_plan",
+      "scenario": "Empty project description",
+      "expected": "No crash and explicit weak-evidence handling",
+      "actual": "{'role': 'Backend Developer', 'level': 'Junior', 'target_role': 'Backend Developer', 'target_level': 'Junior', 'candidate_role': 'Unknown', 'candidate_level': 'Entry', 'level_conflict': True, 'role_inference': {'title_role': None, 'task_role': None, 'effective_role': 'Unknown', 'confidence': 'none', 'conflict': False}, 'skills': [], 'skill_evidence': [], 'education': [], 'rounds': [{'round_id': 'round-1', 'evidence_index': 0, 'role': 'Unknown', 'level': 'Junior', 'candidate_role': 'Unknown', 'candidate_level': 'Entry', 'target_role': 'Backend Developer', 'target_level': 'Junior', 'level_conflict': True, 'role_confidence': 'none', 'role_conflict': False, 'candidate_scope': 'Academic', 'evidence': {'type': 'Project', 'name': 'Student project', 'position': '', 'jobDescription': ''}, 'topic': 'Student project', 'difficulty': 'medium', 'objective': 'Validate transferable Student project evidence for the target Backend Developer role without assuming Backend Developer experience.', 'reasoning': 'Role mismatch: candidate evidence aligns with Unknown, while the target role is Backend Developer. Grounded in Academic evidence from Student project.', 'knowledge': []}], 'coverage_goals': ['Validate role-relevant implementation decisions for Backend Developer.', 'Verify concrete resume claims with mechanisms, trade-offs, and failure cases.']}",
+      "status": "PARTIAL",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "BOUNDARY-004",
+      "agent": "create_interview_plan",
+      "scenario": "max_rounds default +1",
+      "expected": "Return at most 5 rounds",
+      "actual": "5",
+      "status": "PASS",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "FLOW-001",
+      "agent": "Profile -> Plan",
+      "scenario": "Missing all experience fields",
+      "expected": "Reject unusable evidence before planning",
+      "actual": "{'role': 'Backend Developer', 'level': 'Junior', 'target_role': 'Backend Developer', 'target_level': 'Junior', 'candidate_role': 'Unknown', 'candidate_level': 'Unknown', 'level_conflict': True, 'role_inference': {'title_role': None, 'task_role': None, 'effective_role': 'Unknown', 'confidence': 'none', 'conflict': False}, 'skills': [], 'skill_evidence': [], 'education': [], 'rounds': [], 'coverage_goals': ['Validate role-relevant implementation decisions for Backend Developer.', 'Verify concrete resume claims with mechanisms, trade-offs, and failure cases.']}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RAG-001",
+      "agent": "search_domain",
+      "scenario": "Exact match with irrelevant noise",
+      "expected": "Relevant transaction chunk ranks first",
+      "actual": "[{'source': 'Domains/Backend Developer/Transactions.md', 'path': 'Domains/Backend Developer/Transactions.md', 'content': '# Transactions\\nPostgreSQL transaction rollback and isolation.', 'score': 1.7372, 'method': 'lexical'}]",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RAG-002",
+      "agent": "search_domain",
+      "scenario": "Semantic match without shared key terms",
+      "expected": "Retrieve caching/horizontal scaling chunk",
+      "actual": "[{'source': 'Domains/Backend Developer/Scale.md', 'path': 'Domains/Backend Developer/Scale.md', 'content': 'Reduced API response time with Redis caching and horizontal scaling.', 'score': 0.7062, 'method': 'lexical'}]",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "RAG-003",
+      "agent": "search_domain",
+      "scenario": "Duplicate chunks",
+      "expected": "Deduplicate near-identical content",
+      "actual": "[{'source': 'Domains/Backend Developer/Duplicate-A.md', 'path': 'Domains/Backend Developer/Duplicate-A.md', 'content': '# Cache\\nRedis cache invalidation ownership.', 'score': 1.1614, 'method': 'lexical'}, {'source': 'Domains/Backend Developer/Scale.md', 'path': 'Domains/Backend Developer/Scale.md', 'content': 'Reduced API response time with Redis caching and horizontal scaling.', 'score': 0.5343, 'method': 'lexical'}]",
+      "status": "PASS",
+      "severity": "MEDIUM"
+    },
+    {
+      "test_id": "RAG-004",
+      "agent": "search_domain",
+      "scenario": "No matching knowledge",
+      "expected": "Return [] without invented evidence",
+      "actual": "[]",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "QGEN-001",
+      "agent": "generate_question",
+      "scenario": "Empty RAG result",
+      "expected": "Generate schema-valid grounded question",
+      "actual": "{'company': 'Portfolio', 'topic': 'React rendering', 'question': 'Ban giam re-render trong project React nay nhu the nao?', 'rubric': {'evaluation_goal': 'Danh gia quyet dinh toi uu rendering', 'critical_points': ['Do luong', 'Memoization'], 'met': 'Co do luong va giai thich trade-off.', 'partially_met': 'Co mot co che nhung thieu trade-off.', 'not_met': 'Khong neu duoc co che.'}}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "LLM-001",
+      "agent": "Question parser",
+      "scenario": "Markdown-wrapped JSON",
+      "expected": "Recover valid JSON",
+      "actual": "{'company': 'Portfolio', 'topic': 'React rendering', 'question': 'Ban giam re-render trong project React nay nhu the nao?', 'rubric': {'evaluation_goal': 'Danh gia quyet dinh toi uu rendering', 'critical_points': ['Do luong', 'Memoization'], 'met': 'Co do luong va giai thich trade-off.', 'partially_met': 'Co mot co che nhung thieu trade-off.', 'not_met': 'Khong neu duoc co che.'}}",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "LLM-002",
+      "agent": "Question parser",
+      "scenario": "Text before JSON",
+      "expected": "Recover valid JSON",
+      "actual": "{'company': 'Portfolio', 'topic': 'React rendering', 'question': 'Ban giam re-render trong project React nay nhu the nao?', 'rubric': {'evaluation_goal': 'Danh gia quyet dinh toi uu rendering', 'critical_points': ['Do luong', 'Memoization'], 'met': 'Co do luong va giai thich trade-off.', 'partially_met': 'Co mot co che nhung thieu trade-off.', 'not_met': 'Khong neu duoc co che.'}}",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "LLM-003",
+      "agent": "Question parser",
+      "scenario": "Empty provider response",
+      "expected": "Reject malformed output",
+      "actual": "ValidationError",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "QGEN-002",
+      "agent": "generate_question",
+      "scenario": "Duplicate across interview history",
+      "expected": "Detect or prevent semantic duplicate",
+      "actual": "['Ban giam re-render trong project React nay nhu the nao?', 'Ban kiem tra keyboard accessibility trong project nay nhu the nao?']",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "EVAL-001",
+      "agent": "evaluate_answer",
+      "scenario": "Hallucinated evidence quote",
+      "expected": "Clamp to NOT_ASSESSED",
+      "actual": "{'score': 0, 'evidence_quote': '', 'justification': 'Không tìm thấy bằng chứng nguyên văn hợp lệ trong câu trả lời.', 'should_follow_up': False, 'next_direction': '', 'matched_points': [], 'missing_points': [], 'technical_errors': [], 'raw_llm_score': 3, 'validated_score': 0, 'final_score': 0, 'score_scale': 10, 'score_correction_reason': 'Corrected score because the model did not return valid verbatim answer evidence.', 'status': 'NOT_ASSESSED'}",
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "EVAL-002",
+      "agent": "evaluate_answer",
+      "scenario": "Empty answer",
+      "expected": "Never award a positive score",
+      "actual": "{'score': 0, 'evidence_quote': '', 'justification': 'Không tìm thấy bằng chứng nguyên văn hợp lệ trong câu trả lời.', 'should_follow_up': False, 'next_direction': '', 'matched_points': [], 'missing_points': [], 'technical_errors': [], 'raw_llm_score': 3, 'validated_score': 0, 'final_score': 0, 'score_scale': 10, 'score_correction_reason': 'Corrected score because the model did not return valid verbatim answer evidence.', 'status': 'NOT_ASSESSED'}",
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "EVAL-REG-01",
+      "agent": "evaluate_answer",
+      "scenario": "Candidate denies an experience absent from supplied evidence",
+      "expected": "Treat the unsupported premise as NOT_ASSESSED without follow-up",
+      "actual": "{'score': 0, 'evidence_quote': '', 'justification': \"The question premise is not supported by the supplied candidate evidence; the candidate's denial is not a technical failure.\", 'should_follow_up': False, 'next_direction': '', 'matched_points': [], 'missing_points': [], 'technical_errors': [], 'raw_llm_score': 1, 'validated_score': 0, 'final_score': 0, 'score_scale': 10, 'score_correction_reason': 'Corrected score because the unsupported question premise was denied; the denial is not a technical failure.', 'status': 'NOT_ASSESSED'}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "FLOW-002",
+      "agent": "Evaluation parser",
+      "scenario": "Score outside 0-10",
+      "expected": "Reject invalid score",
+      "actual": "less_than_equal",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "FLOW-003",
+      "agent": "Evaluation parser",
+      "scenario": "Missing evaluation fields",
+      "expected": "Reject invalid schema",
+      "actual": "3",
+      "status": "PASS",
+      "severity": ""
+    },
+    {
+      "test_id": "REPORT-001",
+      "agent": "generate_report",
+      "scenario": "No interview turns",
+      "expected": "Return an explicit unassessed report without LLM call",
+      "actual": "{'assessments': [], 'solutions_summary': 'Chưa có câu trả lời để tổng hợp.', 'overall_assessment': 'Buổi phỏng vấn chưa có đủ dữ liệu để đánh giá.', 'recommendations': 'Hãy hoàn thành ít nhất một câu hỏi phỏng vấn.', 'normalized_score': 0.0, 'coverage_ratio': 0.0, 'score_scale': 10}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "REPORT-002",
+      "agent": "generate_report",
+      "scenario": "One strong answer and two unassessed turns",
+      "expected": "Preserve the assessed score and expose incomplete coverage",
+      "actual": "{'assessments': [{'turn_index': 0, 'evaluation_goal': 'Xac dinh HTTP Not Found', 'raw_score': 10, 'status': 'MET', 'rationale': 'The validated answer evidence supports the recorded rubric score without additional candidate-experience claims.', 'evidence': [{'timestamp': '2026-08-23T12:00:00+07:00', 'quote': '404'}]}, {'turn_index': 1, 'evaluation_goal': 'Xac dinh HTTP Not Found', 'raw_score': None, 'status': 'NOT_ASSESSED', 'rationale': 'Reporter không trả về đánh giá cho lượt phỏng vấn này.', 'evidence': []}, {'turn_index': 2, 'evaluation_goal': 'Xac dinh HTTP Not Found', 'raw_score': None, 'status': 'NOT_ASSESSED', 'rationale': 'Reporter không trả về đánh giá cho lượt phỏng vấn này.', 'evidence': []}], 'solutions_summary': 'Validated 3 rubric goals: 1 met, 0 partially met, 0 not met, and 2 not assessed.', 'overall_assessment': 'The candidate evidence met all assessed rubric goals. 2 rubric goal(s) remained not assessed.', 'recommendations': 'No competency recommendation is made from not-assessed interactions.', 'normalized_score': 10.0, 'coverage_ratio': 0.33, 'score_scale': 10}",
+      "status": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "test_id": "REPORT-003",
+      "agent": "generate_report",
+      "scenario": "Score-summary contradiction",
+      "expected": "Detect or reconcile contradictory narrative",
+      "actual": "{'assessments': [{'turn_index': 0, 'evaluation_goal': 'Xac dinh HTTP Not Found', 'raw_score': 10, 'status': 'MET', 'rationale': 'The validated answer evidence supports the recorded rubric score without additional candidate-experience claims.', 'evidence': [{'timestamp': '2026-08-23T12:00:00+07:00', 'quote': '404'}]}], 'solutions_summary': 'Validated 1 rubric goals: 1 met, 0 partially met, 0 not met, and 0 not assessed.', 'overall_assessment': 'The candidate evidence met all assessed rubric goals.', 'recommendations': 'Maintain the demonstrated evidence across future interview rounds.', 'normalized_score': 10.0, 'coverage_ratio': 1.0, 'score_scale': 10}",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "BOUNDARY-ANSWER-minus-one",
+      "agent": "InterviewNextRequest",
+      "scenario": "Answer length 19999",
+      "expected": "Accepted through 20,000; reject 20,001",
+      "actual": "True",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "BOUNDARY-ANSWER-limit",
+      "agent": "InterviewNextRequest",
+      "scenario": "Answer length 20000",
+      "expected": "Accepted through 20,000; reject 20,001",
+      "actual": "True",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "BOUNDARY-ANSWER-plus-one",
+      "agent": "InterviewNextRequest",
+      "scenario": "Answer length 20001",
+      "expected": "Accepted through 20,000; reject 20,001",
+      "actual": "False",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "FLOW-004",
+      "agent": "Interview API",
+      "scenario": "Empty work_experience",
+      "expected": "HTTP 422 before downstream agents",
+      "actual": "422",
+      "status": "PASS",
+      "severity": "HIGH"
+    },
+    {
+      "test_id": "FLOW-005",
+      "agent": "Question API",
+      "scenario": "Provider timeout",
+      "expected": "Bounded timeout with distinguishable/retryable failure",
+      "actual": "502 generic response",
+      "status": "PARTIAL",
+      "severity": "MEDIUM"
+    }
+  ]
+}

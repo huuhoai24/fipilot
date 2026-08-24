@@ -1,0 +1,80 @@
+\chapter{EXISTING SYSTEMS AND THEORETICAL BACKGROUND}\label{ch:background}
+
+\section{Domain overview}
+
+An interview-practice system must perform more than question generation. It needs a representation of the candidate, an interview objective, technical knowledge, controlled progression, answer interpretation, feedback, and a durable history. FiPilot treats these elements as application objects so that each operation has explicit input and output.
+
+Traditional question banks offer predictable content but little personalization. General AI chat provides flexible language but weak resource ownership and workflow control. FiPilot combines deterministic application state with language operations. The language service interprets and generates text; the application controls files, identity, schemas, state, persistence, and error handling.
+
+\section{Natural language processing and Transformers}
+
+Natural language processing covers computational methods for analysing and producing human language. Resume interpretation, question wording, answer feedback, and report synthesis are NLP tasks because their meaning cannot be captured reliably by fixed field positions alone.
+
+Modern language models commonly use the Transformer architecture. Its attention mechanism lets a token representation incorporate information from other positions in the sequence \cite{vaswani2017attention}. For queries $Q$, keys $K$, values $V$, and key dimension $d_k$, scaled dot-product attention is
+\begin{equation}
+\operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V.
+\end{equation}
+FiPilot accesses managed Gemini models through an application adapter. Transformer internals explain the language capability supplied by that external service, while FiPilot's repository is responsible for the surrounding application controls.
+
+\section{Structured language output}
+
+Free-form text is inconvenient for a typed application. FiPilot therefore requests JSON that follows a response schema and validates it with Pydantic. The primary structured objects are Candidate Profile, Interview Plan, Interview Question, Answer Evaluation, and Interview Report. If the output cannot be validated, the application does not treat it as a domain object.
+
+This separation improves controllability in three ways. First, routes and services receive known fields instead of parsing prose. Second, bounds such as score types and required nested objects can be checked. Third, malformed output becomes an explicit integration failure rather than silently changing interview state. Structural validity still does not guarantee factual correctness, so Resume normalization and source reconciliation remain necessary.
+
+\begin{table}[htbp]\centering
+\caption{Structured language operations used by FiPilot.}\label{tab:structured-operations}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}p{0.27\textwidth}YY}\toprule
+Operation & Main input & Validated output & Application consumer\\ \midrule
+Resume interpretation & Extracted Resume text & Candidate Profile fields & Profile service and repository\\
+Interview planning & Profile, configuration, retrieved topics & Interview Plan and rounds & Interview orchestrator\\
+Question generation & Profile, current round, history & Interview Question & Current turn\\
+Answer evaluation & Question, expected points, answer & Scores and feedback & Decision service and session\\
+Report generation & Profile and completed turns & Interview Report & Report route and frontend\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Retrieval-Augmented Generation}
+
+RAG combines a generative operation with external knowledge selected at request time \cite{lewis2020rag}. In FiPilot, the local Knowledge catalog is the external source and retrieval occurs before interview planning. The planner receives a bounded list of technical topics together with the Candidate Profile and interview configuration. The Question Generator subsequently receives the planned round; it does not independently search the full catalog for each turn.
+
+The implemented retriever is lexical. It normalizes profile strings into tokens, removes stop words, scores domain overlap, scores topic overlap, applies an exact-title bonus, sorts deterministically, and selects up to eight topics. This approach is suitable for a curated hierarchy because it is local, explainable, fast, and stable. It can miss paraphrases that share few tokens, which is recorded as a system limitation rather than replaced in this report by an unused mechanism.
+
+\section{Adaptive interview state}
+
+Adaptive behavior is implemented as state plus deterministic policy. The model produces an Answer Evaluation, including a follow-up signal and score. The decision service prioritizes clarification when required. If no clarification is needed and the score reaches the configured threshold, difficulty can increase within the plan. Otherwise the session continues at the current level or completes when its question budget is reached.
+
+This mechanism is not an unrestricted model decision. The application owns the state transition and persists it. The distinction matters because the same evaluation must lead to the same application rule in text and voice modes.
+
+\section{Document extraction technologies}
+
+PDF stores positioned page content and does not guarantee reading order. DOCX is a zipped document format containing paragraphs, tables, relationships, and styling. FiPilot uses dedicated parsers for these formats. A PDF with too little native text enters an OCR path in which pages are rendered and processed by RapidOCR. A DOCX path reads paragraphs and top-level tables. Both paths produce normalized text for the same profile service.
+
+OCR is a fallback because image recognition is slower and less reliable than reading embedded text. The document layer limits size, validates file signatures, bounds processing time, and returns structured warnings/errors. These controls protect the language service from receiving an arbitrary malformed container.
+
+\section{Speech recognition and synthesis}
+
+Voice mode introduces three functions. Silero VAD detects voice activity and endpoints. Faster-whisper converts audio into partial and final transcripts. VieNeu-TTS synthesizes the next question into streamed audio. The gateway uses bounded queues and separates binary PCM frames from JSON control events.
+
+The final transcript becomes a normal candidate answer. This architectural choice keeps the interview evaluator and decision service independent of the input medium. Raw audio is transient application data and is not intentionally written to the interview repository.
+
+\section{LLM-as-a-Judge limitations}
+
+FiPilot uses a language model to produce structured answer evaluation. LLM judges can apply a rubric consistently at application scale, but published research identifies sensitivity to prompt framing, verbosity, position, and model-family effects \cite{zheng2023judge}. Accordingly, FiPilot feedback is advisory. The system stores evidence and scores for review; it does not establish an autonomous employment decision.
+
+\section{Technology selection summary}
+
+\begin{table}[htbp]\centering
+\caption{Technology choices and their system responsibilities.}\label{tab:technology-summary}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}YY}\toprule
+Technology & Responsibility & Selection rationale\\ \midrule
+React/TypeScript & Browser routes and interaction & Typed component ecosystem and testable state\\
+FastAPI/Pydantic & HTTP/WebSocket boundary and schemas & Explicit validation and dependency composition\\
+Gemini via Vertex AI & Language interpretation and generation & Managed task-specific JSON generation\\
+Local lexical retrieval & Planner knowledge context & Deterministic local ranking over curated topics\\
+SQLite/Firestore adapters & Durable user/session/report data & Local development and configurable cloud persistence\\
+Firebase Authentication & User identity & Server-verifiable browser identity token\\
+RapidOCR & Image-PDF fallback & Extract text when native PDF text is insufficient\\
+Faster-whisper, Silero, and VieNeu & Voice input/output & Streaming transcript, endpoint detection, and speech response\\
+\bottomrule\end{tabularx}
+\end{table}

@@ -1,0 +1,23 @@
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {I.1}{\ignorespaces FiPilot system context and connected external boundaries.}}{3}{figure.caption.7}%
+\contentsline {figure}{\numberline {I.2}{\ignorespaces Connected runtime pipeline from Resume upload to interview report.}}{6}{figure.caption.8}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {IV.1}{\ignorespaces Resume validation, extraction, OCR fallback, and profile creation.}}{17}{figure.caption.14}%
+\contentsline {figure}{\numberline {IV.2}{\ignorespaces Candidate Profile as the shared contract between Resume review and interview preparation.}}{19}{figure.caption.16}%
+\contentsline {figure}{\numberline {IV.3}{\ignorespaces Local lexical retrieval used to curate planner context.}}{21}{figure.caption.17}%
+\contentsline {figure}{\numberline {IV.4}{\ignorespaces Model-assisted services and deterministic orchestration boundaries.}}{23}{figure.caption.18}%
+\contentsline {figure}{\numberline {IV.5}{\ignorespaces Shared answer processing for text submissions and voice transcripts.}}{25}{figure.caption.20}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {V.1}{\ignorespaces Production frontend routes and their backend interactions.}}{28}{figure.caption.21}%
+\contentsline {figure}{\numberline {V.2}{\ignorespaces Text interview request sequence.}}{30}{figure.caption.22}%
+\contentsline {figure}{\numberline {V.3}{\ignorespaces Voice channel and convergence with the shared answer service.}}{32}{figure.caption.23}%
+\contentsline {figure}{\numberline {V.4}{\ignorespaces Principal persisted resources and ownership relationships.}}{34}{figure.caption.24}%
+\contentsline {figure}{\numberline {V.5}{\ignorespaces Identity verification and ownership-scoped resource access.}}{36}{figure.caption.25}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {VII.1}{\ignorespaces Software verification layers used by the project.}}{43}{figure.caption.28}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

@@ -1,0 +1,30 @@
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {I.1}{\ignorespaces Project overview information.}}{1}{table.caption.6}%
+\contentsline {table}{\numberline {I.2}{\ignorespaces Implemented scope and present limitations.}}{7}{table.caption.9}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {II.1}{\ignorespaces Repository work areas and deliverables.}}{9}{table.caption.10}%
+\contentsline {table}{\numberline {II.2}{\ignorespaces Project risk matrix.}}{10}{table.2.2}%
+\contentsline {table}{\numberline {II.3}{\ignorespaces Quality gates used by the project.}}{11}{table.caption.11}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {III.1}{\ignorespaces Structured language operations used by FiPilot.}}{13}{table.caption.12}%
+\contentsline {table}{\numberline {III.2}{\ignorespaces Technology choices and their system responsibilities.}}{15}{table.caption.13}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {IV.1}{\ignorespaces Canonical Candidate Profile fields.}}{18}{table.caption.15}%
+\contentsline {table}{\numberline {IV.2}{\ignorespaces Connected language-service operations.}}{24}{table.caption.19}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {V.1}{\ignorespaces Active application interfaces.}}{35}{table.5.1}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {VI.1}{\ignorespaces Actors and connected systems.}}{38}{table.caption.26}%
+\contentsline {table}{\numberline {VI.2}{\ignorespaces Implemented functional requirements.}}{39}{table.6.2}%
+\contentsline {table}{\numberline {VI.3}{\ignorespaces Quality requirements and implementation mechanisms.}}{41}{table.caption.27}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {VII.1}{\ignorespaces Representative backend test areas.}}{44}{table.caption.29}%
+\contentsline {table}{\numberline {VII.2}{\ignorespaces Frontend verification commands.}}{45}{table.caption.30}%
+\contentsline {table}{\numberline {VII.3}{\ignorespaces Current software verification result.}}{45}{table.caption.31}%
+\contentsline {table}{\numberline {VII.4}{\ignorespaces Selected acceptance scenarios.}}{45}{table.7.4}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {VIII.1}{\ignorespaces Repository deliverables.}}{47}{table.caption.32}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {A.1}{\ignorespaces Candidate Profile nested structure.}}{54}{table.A.1}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Principal source locations supporting the report.}}{54}{table.A.2}%

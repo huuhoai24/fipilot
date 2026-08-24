@@ -1,0 +1,22 @@
+﻿%% Speech Processing Pipeline
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/voice_session/audio_pipeline.py; backend/infrastructure/speech/stt/faster_whisper.py; backend/infrastructure/speech/tts/vieneu.py; backend/infrastructure/speech/remote.py
+flowchart LR
+  Mic["Browser PCM16 16 kHz"] --> Queue["Bounded Audio Queue"]
+  Queue --> VAD["Silero VAD"]
+  VAD --> STT["faster-whisper Partial and Final STT"]
+  STT --> Transcript["Transcript Events"]
+  Transcript --> Answer["Shared Answer Service"]
+  Answer --> Question["Streamed Question Text"]
+  Question --> Chunk["Semantic TTS Chunker"]
+  Chunk --> TTS["VieNeu TTS"]
+  TTS --> PCM["PCM 24 kHz Playback"]
+  Remote["Remote Speech Service"] -.->|selected by config| VAD
+  Remote -.-> STT
+  Remote -.-> TTS
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,21 @@
+﻿%% Test Coverage Map
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/app/tests; frontend/src; evaluation/*/tests; docs/RESUME_REVIEW_TESTING_SEAMS.md
+flowchart LR
+  Resume["Resume Extraction"] --> Unit["Unit Tests"]
+  Resume --> API["API Tests"]
+  Profile["Profile Readiness"] --> Unit
+  Profile --> API
+  Interview["Interview Loop"] --> Unit
+  Interview --> API
+  Repository["SQLite and Firestore"] --> Integration["Repository Tests"]
+  Voice["Voice Runtime"] --> Integration
+  UI["Frontend Routes"] --> RTL["React Testing Library"]
+  Eval["Evaluation Harness"] --> EvalTests["Evaluation Tests"]
+  Target["PATCH Replacement Upload Snapshot Version"] -.-> Missing["Missing Contract Tests"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

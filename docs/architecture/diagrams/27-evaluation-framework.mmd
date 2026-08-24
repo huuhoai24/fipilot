@@ -1,0 +1,24 @@
+﻿%% Evaluation Framework Architecture
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: backend/services/system_evaluation; evaluation/m1 through m8; evaluation/ragas_pilot; docs/evaluation
+flowchart LR
+  Dataset["Private or Frozen Datasets [STORAGE]"] --> Runner["Evaluation Runners [IMPLEMENTED]"]
+  Runner --> CV["CV Extraction Benchmarks"]
+  Runner --> Retrieval["Lexical Vector Hybrid Benchmarks"]
+  Runner --> Question["Question Quality Benchmarks"]
+  Runner --> Answer["Answer Evaluation Benchmarks"]
+  Runner --> Speech["STT TTS Voice Benchmarks"]
+  CV --> Metrics["Rule and Aggregate Metrics"]
+  Retrieval --> Metrics
+  Question --> Judge["Blinded Gemini Judges"]
+  Answer --> Judge
+  Speech --> Metrics
+  Judge --> Aggregate["Paired and Aggregate Reports"]
+  Metrics --> Aggregate
+  Aggregate --> Artifacts["JSON Markdown CSV Evidence [STORAGE]"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

@@ -1,0 +1,23 @@
+﻿%% Error Handling Flow
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/api/resume.py; backend/gateway/main.py; backend/core/exceptions.py; backend/services/interview_answer_service.py
+flowchart TB
+  Request["Incoming Request"] --> Auth{"Authenticated"}
+  Auth -->|No| E401["401 detail response"]
+  Auth -->|Yes| Validate{"Transport and File Valid"}
+  Validate -->|No| E4xx["400 413 415 or 422"]
+  Validate -->|Yes| Domain{"Owned Resource and State Valid"}
+  Domain -->|No| EDomain["404 or 409"]
+  Domain -->|Yes| Provider{"AI or Speech Success"}
+  Provider -->|Retry exhausted| E503["503 transient_service_failure"]
+  Provider -->|Yes| Persist{"Persistence Success"}
+  Persist -->|No| E500["Unhandled or Repository Error"]
+  Persist -->|Yes| Success["Typed Success Response"]
+  E4xx --> Cleanup["Cleanup Temporary Resume"]
+  Success --> Cleanup
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

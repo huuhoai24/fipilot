@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="119" failures="0" errors="0" time="28.7008554">
+    <testsuite name="src/App.test.tsx" timestamp="2026-08-23T07:46:42.840Z" hostname="TRIEU" tests="2" failures="0" errors="0" skipped="0" time="0.0589611">
+        <testcase classname="src/App.test.tsx" name="application route shells &gt; opens an active text interview outside the dashboard shell" time="0.0508296">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/App.test.tsx" name="application route shells &gt; keeps text interview setup inside the dashboard shell" time="0.0063791">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/api.test.ts" timestamp="2026-08-23T07:46:42.847Z" hostname="TRIEU" tests="8" failures="0" errors="0" skipped="0" time="0.0432634">
+        <testcase classname="src/lib/api.test.ts" name="Candidate Profile API adapter &gt; loads the owned profile with Firebase authentication and an encoded resource path" time="0.010419">
+            <system-out>
+[API] authenticated: true
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Candidate Profile API adapter &gt; preserves a structured API error code, message, and issues" time="0.0042355">
+            <system-out>
+[API] authenticated: true
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Candidate Profile API adapter &gt; refreshes Firebase authentication once and retains the response ETag" time="0.0026015">
+            <system-out>
+[API] authenticated: true
+
+[API] authenticated: true
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Connectivity and resume upload API adapter &gt; checks backend health without requesting a Firebase token" time="0.0088434">
+            <system-out>
+[API] health: OK
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Connectivity and resume upload API adapter &gt; classifies an unreachable backend health endpoint" time="0.0022639">
+            <system-out>
+[API] health: BACKEND_UNREACHABLE
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Connectivity and resume upload API adapter &gt; classifies Firebase token acquisition failure without exposing a token" time="0.0050214">
+            <system-out>
+[Resume] upload request started
+
+[Resume] upload failed: AUTH_FAILURE
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Connectivity and resume upload API adapter &gt; classifies upload validation, browser network, and server failures" time="0.0045851">
+            <system-out>
+[Resume] upload request started
+
+[API] authenticated: true
+
+[Resume] upload failed: UPLOAD_VALIDATION_ERROR
+
+[Resume] upload request started
+
+[API] authenticated: true
+
+[Resume] upload failed: CORS_OR_NETWORK
+
+[Resume] upload request started
+
+[API] authenticated: true
+
+[Resume] upload failed: SERVER_ERROR
+
+            </system-out>
+        </testcase>
+        <testcase classname="src/lib/api.test.ts" name="Interview report API adapter &gt; deduplicates concurrent report generation requests for one session" time="0.0013819">
+            <system-out>
+[API] authenticated: true
+
+            </system-out>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/interviewerPersonas.test.ts" timestamp="2026-08-23T07:46:42.853Z" hostname="TRIEU" tests="5" failures="0" errors="0" skipped="0" time="0.0059983">
+        <testcase classname="src/lib/interviewerPersonas.test.ts" name="resolveInterviewerPersona &gt; selects the technical AI persona for a technical interview" time="0.0026615">
+        </testcase>
+        <testcase classname="src/lib/interviewerPersonas.test.ts" name="resolveInterviewerPersona &gt; selects the behavioral AI persona for a behavioral interview" time="0.0003369">
+        </testcase>
+        <testcase classname="src/lib/interviewerPersonas.test.ts" name="resolveInterviewerPersona &gt; selects the HR AI persona when a structured HR style is available" time="0.0003535">
+        </testcase>
+        <testcase classname="src/lib/interviewerPersonas.test.ts" name="resolveInterviewerPersona &gt; selects the English-practice AI persona when that structured style is available" time="0.0003558">
+        </testcase>
+        <testcase classname="src/lib/interviewerPersonas.test.ts" name="resolveInterviewerPersona &gt; falls back safely when the interview style has no persona mapping" time="0.000543">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/pcmAudioPlayer.test.ts" timestamp="2026-08-23T07:46:42.854Z" hostname="TRIEU" tests="2" failures="0" errors="0" skipped="0" time="0.0113075">
+        <testcase classname="src/lib/pcmAudioPlayer.test.ts" name="PcmAudioPlayer &gt; queues PCM chunks continuously and resolves after playback drains" time="0.0082879">
+        </testcase>
+        <testcase classname="src/lib/pcmAudioPlayer.test.ts" name="PcmAudioPlayer &gt; stops queued sources during cleanup" time="0.0005341">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/lib/userFacingError.test.ts" timestamp="2026-08-23T07:46:42.855Z" hostname="TRIEU" tests="5" failures="0" errors="0" skipped="0" time="0.0075968">
+        <testcase classname="src/lib/userFacingError.test.ts" name="user-facing error messages &gt; replaces browser network details with an actionable message" time="0.0024143">
+        </testcase>
+        <testcase classname="src/lib/userFacingError.test.ts" name="user-facing error messages &gt; preserves a structured API message intended for the candidate" time="0.0005519">
+        </testcase>
+        <testcase classname="src/lib/userFacingError.test.ts" name="user-facing error messages &gt; does not expose implementation failures" time="0.0003751">
+        </testcase>
+        <testcase classname="src/lib/userFacingError.test.ts" name="user-facing error messages &gt; maps classified connectivity, authentication, validation, and server failures" time="0.0005933">
+        </testcase>
+        <testcase classname="src/lib/userFacingError.test.ts" name="user-facing error messages &gt; treats closing the Google popup as cancellation" time="0.0011994">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/store/useAppStore.test.ts" timestamp="2026-08-23T07:46:42.857Z" hostname="TRIEU" tests="3" failures="0" errors="0" skipped="0" time="0.0593361">
+        <testcase classname="src/store/useAppStore.test.ts" name="useUIStore theme &gt; uses light theme when the candidate has no saved preference" time="0.0482159">
+        </testcase>
+        <testcase classname="src/store/useAppStore.test.ts" name="useUIStore theme &gt; keeps an explicitly saved dark preference" time="0.0034191">
+        </testcase>
+        <testcase classname="src/store/useAppStore.test.ts" name="useUIStore theme &gt; keeps the selected website theme independent from browser preference" time="0.0047835">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/CandidateProfilePage.test.tsx" timestamp="2026-08-23T07:46:42.858Z" hostname="TRIEU" tests="9" failures="0" errors="0" skipped="0" time="1.7204156">
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; returns to the Candidate Profile setup route that opened the full profile" time="0.6448112">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; opens the existing resume upload screen without mutating the saved profile" time="0.1639833">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; loads and displays the owned saved profile in the approved section order" time="0.219384">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; keeps legacy education readable without inventing structured fields" time="0.0766029">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; offers the resume task when the owned profile cannot be found" time="0.0900308">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; shows backend readiness issues and focuses the related saved field" time="0.2350533">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; focuses the exact saved nested entry for a validity issue" time="0.1507662">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; announces loading and gives an expired session a sign-in recovery action" time="0.0442328">
+        </testcase>
+        <testcase classname="src/pages/CandidateProfilePage.test.tsx" name="CandidateProfilePage &gt; keeps a service failure actionable with an explicit retry" time="0.0795577">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/InterviewHistoryPage.test.tsx" timestamp="2026-08-23T07:46:42.861Z" hostname="TRIEU" tests="3" failures="0" errors="0" skipped="0" time="0.6758967">
+        <testcase classname="src/pages/InterviewHistoryPage.test.tsx" name="InterviewHistoryPage session continuation &gt; shows a retryable connection message without exposing fetch internals" time="0.3653981">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/InterviewHistoryPage.test.tsx" name="InterviewHistoryPage session continuation &gt; opens an in-progress voice session in Speech Interview" time="0.2058431">
+        </testcase>
+        <testcase classname="src/pages/InterviewHistoryPage.test.tsx" name="InterviewHistoryPage session continuation &gt; keeps an in-progress text session in Text Interview" time="0.1014838">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/InterviewReportPage.test.tsx" timestamp="2026-08-23T07:46:42.863Z" hostname="TRIEU" tests="7" failures="0" errors="0" skipped="0" time="2.2158166">
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; renders saved aggregate scores and completed-answer coaching" time="1.363303">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; reframes harsh legacy wording as specific practice coaching without changing scores" time="0.2375476">
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; keeps long summaries and detailed learning data available through disclosure" time="0.0978073">
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; keeps the report unavailable while an interview is active" time="0.0764796">
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; opens the report for a completed speech session whose question index remains zero-based" time="0.2157371">
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; handles missing optional coaching detail without breaking the report" time="0.0800453">
+        </testcase>
+        <testcase classname="src/pages/InterviewReportPage.test.tsx" name="InterviewReportPage coaching report &gt; generates a report only after the completed session is confirmed" time="0.1409748">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/LandingPage.test.tsx" timestamp="2026-08-23T07:46:42.866Z" hostname="TRIEU" tests="6" failures="0" errors="0" skipped="0" time="1.7788805">
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; stops the spinner shortly after a visitor returns from the sign-in popup" time="0.7699539">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; signs a visitor in from the landing page and opens the workspace" time="0.1964378">
+        </testcase>
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; returns to a retryable fallback when the Google popup is closed" time="0.2977527">
+        </testcase>
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; does not expose Firebase internals when Google sign-in fails" time="0.3297494">
+        </testcase>
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; opens the workspace directly for an authenticated candidate" time="0.1350589">
+        </testcase>
+        <testcase classname="src/pages/LandingPage.test.tsx" name="LandingPage &gt; provides the how-it-works video with Vietnamese captions" time="0.0411298">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/SettingsPage.test.tsx" timestamp="2026-08-23T07:46:42.868Z" hostname="TRIEU" tests="1" failures="0" errors="0" skipped="0" time="0.4398283">
+        <testcase classname="src/pages/SettingsPage.test.tsx" name="SettingsPage &gt; keeps first-deploy controls while persisting current interview preferences" time="0.4369126">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/SpeechInterviewPage.test.tsx" timestamp="2026-08-23T07:46:42.869Z" hostname="TRIEU" tests="17" failures="0" errors="0" skipped="0" time="5.3833386">
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; records only after Start and submits only after Stop" time="1.583487">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; starts only one recording while microphone access is pending" time="0.2752643">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; submits one logical stop when Stop is activated twice in the same task" time="0.2965966">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; keeps a delayed second Stop activation idempotent for the same recording" time="0.2554394">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; cleans the old recording before a rapid Stop and new Record lifecycle" time="0.5058661">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; does not submit Stop again when navigation cleanup follows Stop" time="0.2317736">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; fails Stop safely when the socket is no longer open" time="0.1858657">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; does not let a stale recording failure release the latest recording" time="0.1514846">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; renders interview completion after the server completes evaluation" time="0.1863132">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; loads final scores when reopening a completed speech interview" time="0.085487">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; cancels buffered AI audio and keeps microphone capture on barge-in" time="0.1688543">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; releases the pending lock so microphone access can be retried after denial" time="0.1234577">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; stops a microphone stream that resolves after the page unmounts" time="0.0689224">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; reconnects without opening the microphone automatically" time="1.1313318">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; resets the retry budget after each successful reconnect" time="0.0458192">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; stops reconnecting after three failed attempts in one outage" time="0.0348755">
+        </testcase>
+        <testcase classname="src/pages/SpeechInterviewPage.test.tsx" name="SpeechInterviewPage realtime transport &gt; closes transport resources when the page unmounts" time="0.0430872">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/TextInterviewInteraction.test.tsx" timestamp="2026-08-23T07:46:42.873Z" hostname="TRIEU" tests="2" failures="0" errors="0" skipped="0" time="1.2790704">
+        <testcase classname="src/pages/TextInterviewInteraction.test.tsx" name="TextInterviewPage answer interaction &gt; posts an answer once when duplicate submit events occur in the same tick" time="0.7682645">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+Warning: The current testing environment is not configured to support act(...)
+Warning: The current testing environment is not configured to support act(...)
+Warning: The current testing environment is not configured to support act(...)
+Warning: The current testing environment is not configured to support act(...)
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/TextInterviewInteraction.test.tsx" name="TextInterviewPage answer interaction &gt; restores a failed answer for a safe retry without exposing internal errors" time="0.5028005">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/pages/TextInterviewPage.test.tsx" timestamp="2026-08-23T07:46:42.875Z" hostname="TRIEU" tests="21" failures="0" errors="0" skipped="0" time="8.4930074">
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; guides a fresh resume through clear analysis stages without internal terminology" time="0.6831908">
+            <system-err>
+⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; shows a concise cached profile result and the four primary interview settings" time="0.7011945">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; keeps the analyzed Candidate Profile when returning from the full profile" time="2.1211644">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; restores the speech setup after Upload new CV and browser Back" time="2.1259204">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; presents an active session as a focused conversation without evaluation data" time="0.0826585">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; allows Number of questions to be cleared and replaced while editing" time="0.0447787">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; allows Duration to be cleared and replaced while editing" time="0.0480428">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; blocks an empty numeric setting and submits a valid replacement value" time="0.0678952">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; starts only one session when duplicate form submissions occur in the same tick" time="0.0399017">
+            <system-err>
+Warning: The current testing environment is not configured to support act(...)
+Warning: The current testing environment is not configured to support act(...)
+Warning: The current testing environment is not configured to support act(...)
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; persists valid interview settings across a page remount" time="0.1114861">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; ignores malformed persisted interview settings" time="0.0432518">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; clears selected resume state when the file input is cleared" time="0.0188817">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; removes an analyzed resume and its stale candidate profile together" time="0.0478789">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; checks backend health and reports an unavailable service specifically" time="0.0093634">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; classifies a resume upload authentication failure" time="0.0310608">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; keeps the guided setup copy in sync when the route mode changes" time="0.0131712">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; prepares the reusable interview blueprint after resume analysis for both modes" time="1.8107266">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; shows a non-resume rejection without rendering an extracted profile" time="0.0354937">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; transitions directly into the Interview Room when preparation succeeds" time="0.056303">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; keeps preparation failures concise and allows the user to retry" time="0.0727336">
+        </testcase>
+        <testcase classname="src/pages/TextInterviewPage.test.tsx" name="TextInterviewPage interview mode &gt; shows an informative preparation workspace while start is pending" time="0.3230132">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/candidate-profile/InterviewReadinessSummary.test.tsx" timestamp="2026-08-23T07:46:42.880Z" hostname="TRIEU" tests="3" failures="0" errors="0" skipped="0" time="0.4184373">
+        <testcase classname="src/components/candidate-profile/InterviewReadinessSummary.test.tsx" name="InterviewReadinessSummary &gt; lists every backend issue and focuses its visible profile target" time="0.3593445">
+        </testcase>
+        <testcase classname="src/components/candidate-profile/InterviewReadinessSummary.test.tsx" name="InterviewReadinessSummary &gt; keeps routine ready confirmation restrained and non-actionable" time="0.0302747">
+        </testcase>
+        <testcase classname="src/components/candidate-profile/InterviewReadinessSummary.test.tsx" name="InterviewReadinessSummary &gt; focuses the exact nested entry named by a validity issue" time="0.0255884">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/interview/TextInterviewAudio.test.tsx" timestamp="2026-08-23T07:46:42.881Z" hostname="TRIEU" tests="10" failures="0" errors="0" skipped="0" time="2.7246905">
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; renders interviewer text before an autoplay request can finish" time="0.3174619">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; lets the candidate stop playback while audio is still preparing" time="0.3989414">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; plays and replays only the current interviewer dialogue" time="0.4632263">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; keeps playback available under the application StrictMode root" time="0.2374063">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; stops interviewer playback before microphone recording starts" time="0.2864771">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; keeps text answering available when interviewer audio fails" time="0.298354">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; cleans obsolete playback on a new interviewer message and on unmount" time="0.2936032">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; uses the same playback control for opening dialogue" time="0.1316558">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; uses the same playback control for follow-up dialogue" time="0.1533596">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewAudio.test.tsx" name="Text Interview interviewer audio &gt; uses the same playback control for closing dialogue" time="0.1384373">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/interview/TextInterviewRoom.test.tsx" timestamp="2026-08-23T07:46:42.885Z" hostname="TRIEU" tests="11" failures="0" errors="0" skipped="0" time="1.6553357">
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; offers microphone input without replacing the text composer" time="0.6181914">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; keeps the composer compact, grows with its content, and scrolls after the height cap" time="0.1583629">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; derives elapsed time from the persisted session start without resetting on rerender" time="0.0826005">
+            <system-err>
+Warning: The current testing environment is not configured to support act(...)
+
+            </system-err>
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; keeps Enter multiline and submits only with Ctrl or Command plus Enter" time="0.0967789">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; does not submit an empty answer" time="0.1274225">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; does not force-scroll to a new question while the candidate is reading older messages" time="0.0566498">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; renders the selected fictional AI persona throughout the active room" time="0.1938487">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; keeps visual form labels quiet while preserving accessible conversation and composer names" time="0.0822668">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; starts with the persisted opening and keeps the planned question hidden" time="0.0530242">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; presents an existing follow-up as normal interviewer dialogue" time="0.0868385">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewRoom.test.tsx" name="TextInterviewRoom conversation phases &gt; closes naturally before offering the existing report action" time="0.0958867">
+        </testcase>
+    </testsuite>
+    <testsuite name="src/components/interview/TextInterviewSpeechInput.test.tsx" timestamp="2026-08-23T07:46:42.888Z" hostname="TRIEU" tests="4" failures="0" errors="0" skipped="0" time="1.7296746">
+        <testcase classname="src/components/interview/TextInterviewSpeechInput.test.tsx" name="TextInterviewRoom speech input &gt; records, transcribes, preserves typed text, and leaves submission to the candidate" time="0.7581779">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewSpeechInput.test.tsx" name="TextInterviewRoom speech input &gt; keeps text input available when microphone permission is blocked" time="0.2145036">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewSpeechInput.test.tsx" name="TextInterviewRoom speech input &gt; keeps the draft recoverable after a safe transcription failure" time="0.2795932">
+        </testcase>
+        <testcase classname="src/components/interview/TextInterviewSpeechInput.test.tsx" name="TextInterviewRoom speech input &gt; stops at the documented two-minute limit and tells the candidate" time="0.4739508">
+        </testcase>
+    </testsuite>
+</testsuites>

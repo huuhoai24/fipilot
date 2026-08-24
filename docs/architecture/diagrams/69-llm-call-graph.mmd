@@ -1,0 +1,22 @@
+﻿%% LLM Call Graph
+%% Status: IMPLEMENTED
+%% Evidence: backend/services/*/agent.py; backend/services/question_generator/streaming_service.py; backend/services/system_evaluation/judges.py
+flowchart LR
+  Resume["ResumeAgent"] --> Vertex["VertexGeminiService"]
+  Planner["InterviewPlannerAgent"] --> Vertex
+  Question["QuestionGeneratorAgent"] --> Vertex
+  Stream["QuestionStreamingService"] --> Vertex
+  Evaluator["EvaluatorAgent"] --> Vertex
+  Report["ReportGeneratorAgent"] --> Vertex
+  Offline["Offline Quality Judges"] --> Vertex
+  Vertex --> ResumeOut["ResumeExtractionResult"]
+  Vertex --> PlanOut["InterviewPlan"]
+  Vertex --> QuestionOut["InterviewQuestion"]
+  Vertex --> EvalOut["AnswerEvaluation"]
+  Vertex --> ReportOut["InterviewReport"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

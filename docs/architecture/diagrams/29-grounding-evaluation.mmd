@@ -1,0 +1,21 @@
+﻿%% Grounding Evaluation Flow
+%% Status: IMPLEMENTED OFFLINE
+%% Evidence: evaluation/m6/engine.py; evaluation/m6/metrics.py; evaluation/defense_extension/e3_grounding_analysis.py
+flowchart LR
+  Context["Retrieved Contexts"] --> Judge["Blinded Quality Judge"]
+  Question["Generated Question"] --> Judge
+  Scenario["Frozen Expected Topics"] --> Relevance["Relevant Topic in Top 5"]
+  Context --> Relevance
+  Context --> Overlap["Deterministic Token Overlap"]
+  Question --> Overlap
+  Judge --> Score["RAG Grounding 0 to 2"]
+  Judge --> ChunkIds["Grounding Chunk IDs"]
+  Score --> Taxonomy["Failure Taxonomy"]
+  Relevance --> Taxonomy
+  Overlap --> Taxonomy
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

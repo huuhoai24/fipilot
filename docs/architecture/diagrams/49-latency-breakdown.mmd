@@ -1,0 +1,22 @@
+﻿%% Runtime Latency Breakdown
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/core/performance.py; backend/gateway/api/resume.py; backend/gateway/api/interview.py; backend/services/question_generator/agent.py; backend/services/answer_evaluator/agent.py
+flowchart LR
+  Request["API Request"] --> Load["Profile or File Load"]
+  Load --> Retrieval["Knowledge Retrieval when planning"]
+  Retrieval --> Prompt["Prompt Construction"]
+  Prompt --> Model["Gemini or Speech Provider"]
+  Model --> Validate["Structured Validation"]
+  Validate --> Persist["Repository Persistence"]
+  Persist --> Response["HTTP or WebSocket Response"]
+  Load --> Log["duration_ms Logs"]
+  Retrieval --> Log
+  Prompt --> Log
+  Model --> Log
+  Persist --> Log
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

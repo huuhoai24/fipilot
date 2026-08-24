@@ -27,6 +27,7 @@ import {
   getResumeUploadError,
   getUserFacingError,
 } from '@/lib/userFacingError'
+import { calculateRoleMatches } from '@/lib/roleMatching'
 import {
   type InterviewSetupRoute,
   type InterviewSetupSnapshot,
@@ -238,6 +239,8 @@ export function TextInterviewPage({
   >(restoredSetup?.preparationStatus ?? 'idle')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedRoleTitle, setSelectedRoleTitle] = useState<string>('')
+  const roleMatches = useMemo(() => calculateRoleMatches(uploadedCandidateProfile), [uploadedCandidateProfile])
   const restoredPreparationIsReady = restoredSetup?.preparationStatus === 'ready'
   const uploading = resumeUploadStatus === 'uploading'
   const durationMinutes = useMemo(() => parseIntegerSetting(durationInput, 5, 180), [durationInput])
@@ -452,8 +455,8 @@ export function TextInterviewPage({
     }
   }
 
-  const startInterview = async (event: FormEvent) => {
-    event.preventDefault()
+  const startInterview = async (event?: FormEvent) => {
+    event?.preventDefault()
     if (
       !candidateId.trim()
       || !interviewStartData
@@ -736,6 +739,49 @@ export function TextInterviewPage({
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                {roleMatches.length > 0 && (
+                  <div className="space-y-3 pb-4 border-b border-border">
+                    <div>
+                      <h3 className="text-sm font-bold text-text-primary">Step 2: Choose Interview Focus</h3>
+                      <p className="text-xs text-text-muted mt-0.5">Calculated match based on your CV evidence.</p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {roleMatches.map((match) => {
+                        const isSelected = (selectedRoleTitle || roleMatches[0]?.title) === match.title
+                        return (
+                          <div
+                            key={match.id}
+                            onClick={() => {
+                              setSelectedRoleTitle(match.title)
+                              if (!objective) setObjective(`Focus on ${match.title} core competencies and problem-solving.`)
+                            }}
+                            className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
+                              isSelected
+                                ? 'border-accent bg-accent/10 shadow-sm ring-1 ring-accent'
+                                : 'border-border bg-surface-raised hover:border-border/80'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-1 mb-1">
+                              <span className="text-xs font-bold text-text-primary leading-tight">{match.title}</span>
+                              <span className="text-xs font-extrabold text-emerald-600 dark:text-emerald-400">{match.score}%</span>
+                            </div>
+                            <p className="text-[11px] text-text-muted line-clamp-2 leading-relaxed">{match.summary}</p>
+                            {match.matchedSkills.length > 0 && (
+                              <div className="mt-2 pt-1.5 border-t border-border/50 text-[11px] text-text-muted leading-relaxed">
+                                <span className="font-semibold text-text-primary">Skills: </span>
+                                <span>
+                                  {match.matchedSkills.slice(0, 4).join(' • ')}
+                                  {match.matchedSkills.length > 4 ? ' • ...' : ''}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid gap-4 lg:grid-cols-2">
                   <div>
                     <Label htmlFor="interview-style">Interview type</Label>

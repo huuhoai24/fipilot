@@ -1,0 +1,37 @@
+{
+  "base_scenarios": 150,
+  "budget_status": "PASS",
+  "budget_usd": 3.0,
+  "cached_calls": 0,
+  "cost_by_model": {
+    "gemini-2.5-flash": {
+      "calls": 150,
+      "estimated_cost_usd": 0.07596945,
+      "input_tokens": 326463,
+      "output_tokens": 45000
+    },
+    "gemini-2.5-pro": {
+      "calls": 150,
+      "estimated_cost_usd": 1.6125,
+      "input_tokens": 450000,
+      "output_tokens": 105000
+    },
+    "gemini-embedding-001": {
+      "calls": 0,
+      "estimated_cost_usd": 0.0,
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  },
+  "estimated_input_tokens": 776463,
+  "estimated_output_tokens": 150000,
+  "hard_ceiling_usd": 5.0,
+  "judge_calls": 150,
+  "privacy": "Only redacted Candidate Profiles and public knowledge contexts are sent.",
+  "query_embedding_calls": 0,
+  "question_condition": "CURRENT_PRODUCTION_LEXICAL",
+  "question_generator_calls": 150,
+  "repeatability_calls": 0,
+  "status": "QUESTION BUDGET GATE PASS",
+  "total_estimated_cost_usd": 1.68846945
+}

@@ -1,0 +1,19 @@
+﻿%% Deployment Architecture
+%% Status: IMPLEMENTED CONFIG/UNKNOWN LIVE
+%% Evidence: frontend/firebase.json; backend/Dockerfile; backend/Dockerfile.speech; backend/scripts/deploy-cloud-run.ps1; DEPLOYMENT_REPORT.md
+flowchart TB
+  Browser["Browser [EXTERNAL]"] --> Hosting["Firebase Hosting [IMPLEMENTED CONFIG]"]
+  Hosting --> Backend["Cloud Run Backend [IMPLEMENTED CONFIG]"]
+  Backend --> Auth["Firebase Authentication [EXTERNAL]"]
+  Backend --> Firestore["Firestore [STORAGE]"]
+  Backend --> Vertex["Vertex AI [EXTERNAL]"]
+  Build["Cloud Build and Artifact Registry [EXTERNAL]"] --> Backend
+  SpeechImage["Speech Service Image [IMPLEMENTED CONFIG]"] -.->|production wiring unknown| SpeechRun["Separate Speech Deployment [UNKNOWN]"]
+  Backend -.-> SpeechRun
+  Report["Point-in-time Deployment Report"] -.-> Backend
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

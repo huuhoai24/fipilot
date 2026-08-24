@@ -1,0 +1,22 @@
+﻿%% Voice Interview Sequence
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/gateway/api/voice.py; backend/services/voice_session; frontend/src/pages/SpeechInterviewPage.tsx
+sequenceDiagram
+  participant B as Browser
+  participant W as Voice WebSocket Gateway
+  participant S as VAD and STT
+  participant A as Shared Answer Service
+  participant L as Gemini
+  participant T as Streaming TTS
+  B->>W: Connect with firebase-auth and token
+  W->>W: Validate origin owner mode connection
+  B->>W: PCM audio frames
+  W->>S: Bounded audio queue
+  S-->>W: Partial and final transcript
+  W->>A: Confirm final answer and turn
+  A->>L: Evaluate and select next question
+  L-->>W: Streamed question JSON deltas
+  W->>T: Semantic text chunks
+  T-->>B: PCM audio frames
+  W-->>B: State question and completion events
+

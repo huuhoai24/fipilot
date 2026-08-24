@@ -1,0 +1,86 @@
+\chapter{SOFTWARE TESTING}\label{ch:testing}
+
+\section{Test strategy}
+
+Testing follows the public boundaries of the application. Schema tests protect data contracts. Service and orchestrator tests exercise use cases with controlled dependencies. Repository contract tests verify both ownership and persistence behavior. API tests send requests through FastAPI. Frontend tests use React Testing Library to exercise rendered user behavior. Build and compilation checks identify integration errors not covered by individual cases.
+
+\reportfigure[0.80\textwidth]{13-test-layers.png}{Software verification layers used by the project.}{test-layers}
+
+The project uses deterministic substitutes for language, authentication, and storage dependencies where a test is intended to verify application behavior. This keeps assertions focused on request contracts, orchestration, error handling, and persistence rather than external provider variability.
+
+\section{Backend verification}
+
+Backend tests are located in \codepath{backend/app/tests}. They cover authentication, ownership, Resume upload, document extraction, repository behavior, Candidate Profile responses, interview preparation and start, answer idempotency, report access, history, voice protocol behavior, and error translation.
+
+\begin{table}[htbp]\centering
+\caption{Representative backend test areas.}\label{tab:backend-tests}
+\begin{tabularx}{\textwidth}{p{0.26\textwidth}Y}\toprule
+Area & Verified behavior\\ \midrule
+Authentication & Missing, malformed, invalid, and accepted identity tokens; local authentication configuration.\\
+Ownership & Owned, foreign, and missing candidates, sessions, reports, and voice connections.\\
+Resume boundary & File type, file signature, maximum size, PDF/DOCX extraction, OCR fallback, and structured errors.\\
+Candidate Profile & Canonical schema, strong ETag, and structured readiness response.\\
+Interview workflow & Preparation, start, state transitions, follow-up decisions, completion, and reload.\\
+Answer submission & Turn claim, concurrent duplicate handling, replay, evaluation failure, and stored result.\\
+Persistence & SQLite and Firestore contract behavior at the application interface.\\
+Voice & Authentication, origin, control messages, binary audio limits, transcript flow, and disconnect behavior.\\
+Reports and history & Generation, retrieval, pagination, not-found behavior, and ownership.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+Python compilation is also run over the active backend packages: \codepath{core}, \codepath{gateway}, \codepath{infrastructure}, \codepath{orchestrator}, \codepath{services}, \codepath{shared}, and \codepath{speech\_service}. The repository does not configure a separate Python static type checker or linter, so this report does not claim such a result.
+
+\section{Frontend verification}
+
+Frontend tests cover route access, Firebase token handling, API error presentation, upload interaction, Candidate Profile rendering, text interview state, voice state, history, reports, and shared UI behavior. TypeScript project compilation checks client contracts. ESLint checks configured source rules. The production Vite build checks bundling and asset generation.
+
+\begin{table}[htbp]\centering
+\caption{Frontend verification commands.}\label{tab:frontend-commands}
+\begin{tabularx}{\textwidth}{p{0.35\textwidth}Y}\toprule
+Command & Purpose\\ \midrule
+\codepath{npm exec tsc -- -b} & Compile the TypeScript project graph.\\
+\codepath{npm run lint} & Apply the configured ESLint rules.\\
+\codepath{npm test} & Run the complete Vitest and React Testing Library suite.\\
+\codepath{npm run build} & Produce the Vite production bundle.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Current verification result}
+
+The verification run used for this report produced the results in \cref{tab:verification-result}. Counts describe the repository at the time of the run and may change when tests are added.
+
+\begin{table}[htbp]\centering
+\caption{Current software verification result.}\label{tab:verification-result}
+\begin{tabularx}{\textwidth}{p{0.34\textwidth}p{0.17\textwidth}Y}\toprule
+Check & Result & Evidence\\ \midrule
+Backend pytest collection & Pass & 286 tests passed.\\
+Backend Python compilation & Pass & Active backend packages compiled without syntax errors.\\
+Frontend TypeScript compilation & Pass & Project build completed without type errors.\\
+Frontend lint & Pass & Configured lint command completed successfully.\\
+Frontend test suite & Pass & 119 tests passed.\\
+Frontend production build & Pass & Vite created the production bundle.\\
+\bottomrule\end{tabularx}
+\end{table}
+
+\section{Acceptance-oriented scenarios}
+
+\begin{longtable}{p{0.12\textwidth}p{0.34\textwidth}p{0.43\textwidth}}
+\caption{Selected acceptance scenarios.}\label{tab:acceptance-scenarios}\\
+\toprule ID & Scenario & Expected result\\ \midrule\endfirsthead
+\toprule ID & Scenario & Expected result\\ \midrule\endhead
+AT-01 & Authenticated user uploads a valid PDF. & Text is extracted, the profile is validated and persisted, and candidate identifiers are returned.\\
+AT-02 & User uploads a DOCX with an invalid binary signature. & The request is rejected without invoking profile generation.\\
+AT-03 & PDF contains insufficient native text. & The OCR path is invoked and its extraction status is represented in the result.\\
+AT-04 & User requests another user's candidate profile. & The response is the same not-found shape used for a missing profile.\\
+AT-05 & Candidate prepares and starts an interview. & Knowledge is selected, a plan is available, and a persisted session returns its first question.\\
+AT-06 & Client repeats the same answer turn. & The stored result is replayed and no duplicate turn is created.\\
+AT-07 & Voice connection has an invalid token or disallowed origin. & The gateway closes the connection with the documented protocol response.\\
+AT-08 & Final transcript is accepted in voice mode. & It is evaluated through the shared answer service and advances the same session state.\\
+AT-09 & Owner requests a completed report. & The service returns the report associated with the owned session.\\
+AT-10 & History request uses pagination. & Only owned sessions within the requested page are returned with the total count.\\
+\bottomrule
+\end{longtable}
+
+\section{Testing limitations}
+
+The passing software suite establishes behavior for the checked-in test cases; it does not establish human-level assessment accuracy. The project has no checked-in browser end-to-end or visual-regression suite covering every production route and viewport. This report also makes no claim about load capacity, long-duration WebSocket stability, provider availability, broad Resume populations, or comparative model quality. Those areas require operational or user-study evidence beyond the current application suite.

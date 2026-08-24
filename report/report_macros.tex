@@ -1,0 +1,20 @@
+\definecolor{fipilotblue}{HTML}{244C66}
+\definecolor{fipilotgreen}{HTML}{2F6B4F}
+\definecolor{fipilotlight}{HTML}{F2F5F7}
+\newcommand{\codepath}[1]{\nolinkurl{#1}}
+\newcommand{\evidence}[1]{\footnote{Implementation source: \codepath{#1}.}}
+\newcommand{\reportfigure}[4][0.94\textwidth]{%
+  \begin{figure}[p]
+  \centering
+  \includegraphics[width=#1,height=0.70\textheight,keepaspectratio]{#2}
+  \caption{#3}
+  \label{fig:#4}
+  \end{figure}
+  \FloatBarrier}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single,backgroundcolor=\color{fipilotlight},columns=fullflexible,keepspaces=true}
+\captionsetup{font=small,labelfont=bf,justification=centering,singlelinecheck=false}
+\setlength{\emergencystretch}{2em}
+\setlist[itemize]{topsep=4pt,itemsep=2pt}
+\setlist[enumerate]{topsep=4pt,itemsep=2pt}

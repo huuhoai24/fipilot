@@ -1,0 +1,21 @@
+﻿%% Data Flow Diagram Level 2
+%% Status: IMPLEMENTED/PARTIAL
+%% Evidence: backend/infrastructure/documents; backend/services/profile_scanner; backend/services/interview_knowledge; backend/services/question_generator; backend/services/answer_evaluator
+flowchart TB
+  R1["Resume Bytes"] --> R2["DocumentExtractionResult"] --> R3["ResumeContext"] --> R4["ResumeExtractionResult"] --> R5["CandidateProfile"]
+  K1["Profile plus Config"] --> K2["Lexical Tokens or Vector Query"] --> K3["Curated Topic Strings"] --> K4["Planner Prompt"]
+  Q1["CandidateProfile"] --> Q4["Question Prompt"]
+  Q2["InterviewRound"] --> Q4
+  Q3["InterviewConfig"] --> Q4
+  K4 --> Q2
+  Q4 --> Q5["InterviewQuestion"]
+  A1["InterviewQuestion"] --> A4["Evaluator Prompt"]
+  A2["Candidate Answer"] --> A4
+  A3["Session Profile Snapshot"] --> A4
+  A4 --> A5["AnswerEvaluation"] --> A6["Decision and Next State"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

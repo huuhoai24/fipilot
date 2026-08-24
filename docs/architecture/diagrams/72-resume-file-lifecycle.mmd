@@ -1,0 +1,19 @@
+﻿%% Resume File Lifecycle
+%% Status: IMPLEMENTED
+%% Evidence: frontend/src/lib/api.ts; backend/gateway/api/resume.py; backend/infrastructure/documents/pdf_service.py
+flowchart LR
+  Browser["Browser File Object"] --> Multipart["Multipart field file"]
+  Multipart --> Temp["NamedTemporaryFile"]
+  Temp --> Hash["SHA-256 Content Hash"]
+  Temp --> Extract["PDF or DOCX Extraction"]
+  Extract --> Raw["Normalized Raw Resume Text [PERSISTED]"]
+  Raw --> Profile["Candidate Profile [PERSISTED]"]
+  Profile --> Artifact["Extraction Reuse Artifact [PERSISTED]"]
+  Temp --> Finally["finally cleanup"]
+  Finally --> Deleted["Original Bytes Deleted"]
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+

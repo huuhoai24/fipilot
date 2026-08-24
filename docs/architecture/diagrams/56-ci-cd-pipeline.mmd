@@ -1,0 +1,18 @@
+﻿%% CI and CD Availability
+%% Status: SPEC-PENDING/PARTIAL
+%% Evidence: AGENTS.md; frontend/package.json; backend/scripts/deploy-cloud-run.ps1; DEPLOYMENT_REPORT.md
+flowchart LR
+  Change["Source Change"] --> Local["Local Required Validation [IMPLEMENTED]"]
+  Local --> Backend["Pytest and compileall"]
+  Local --> Frontend["TypeScript Lint Vitest Build"]
+  Backend --> Docker["Docker Build and Smoke"]
+  Frontend --> Hosting["Firebase Hosting Deploy Script or CLI"]
+  Docker --> Deploy["Cloud Run Deploy Script [IMPLEMENTED]"]
+  Deploy --> Smoke["Post-deploy Smoke Test"]
+  CI["Checked-in CI Workflow [SPEC-PENDING]"] -.-> Local
+  classDef implemented fill:#dcfce7,stroke:#166534,color:#14532d
+  classDef partial fill:#fef3c7,stroke:#92400e,color:#78350f
+  classDef pending fill:#fee2e2,stroke:#991b1b,color:#7f1d1d
+  classDef external fill:#e0e7ff,stroke:#3730a3,color:#312e81
+  classDef storage fill:#e0f2fe,stroke:#075985,color:#0c4a6e
+
