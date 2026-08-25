@@ -1,0 +1,56 @@
+{
+  "milestone": "M7",
+  "actual_usage_status": "production provider metadata available; exact RAGAS provider usage and invoice cost unavailable",
+  "budget_usd": 6.0,
+  "hard_ceiling_usd": 10.0,
+  "dry_run_estimated_cost_usd": 3.1738,
+  "production": {
+    "text_gemini_2_5_pro": {
+      "primary_calls": 80,
+      "repeatability_calls": 40,
+      "input_tokens": 83273,
+      "candidate_output_tokens": 43741,
+      "provider_total_tokens": 294116,
+      "non_input_tokens_used_for_cost_estimate": 210843,
+      "estimated_cost_usd": 2.212521
+    },
+    "voice_gemini_2_5_flash": {
+      "primary_calls": 80,
+      "repeatability_calls": 40,
+      "input_tokens": 90953,
+      "output_tokens": 32169,
+      "provider_total_tokens": 123122,
+      "estimated_cost_usd": 0.032944
+    }
+  },
+  "ragas": {
+    "judge_model": "gemini-2.5-pro",
+    "completed_reference_bundles": 80,
+    "completed_feedback_bundles": 94,
+    "repeatability_logical_metric_calls": 40,
+    "provider_request_count": null,
+    "input_tokens": null,
+    "output_tokens": null,
+    "exact_cost_usd": null,
+    "conservative_planning_envelope_usd": 2.335,
+    "note": "RAGAS metrics may issue multiple provider requests. Failed 429 attempts and provider-side token usage are not exposed by the adapter."
+  },
+  "embedding": {
+    "model": "gemini-embedding-001",
+    "location": "global",
+    "logical_unique_answer_inputs": 80,
+    "provider_request_count": null,
+    "input_tokens": null,
+    "exact_cost_usd": null,
+    "conservative_planning_envelope_usd": 0.0144
+  },
+  "cache_hits_in_final_valid_runs": {
+    "ragas_reference_bundles": 51,
+    "ragas_feedback_bundles": 8,
+    "production_primary_outputs": 64
+  },
+  "combined_conservative_estimate_usd": 4.594866,
+  "budget_status": "within_budget_by_conservative_estimate",
+  "invoice_cost_status": "UNAVAILABLE; this is not a billing claim",
+  "pricing_version": "m7-planning-2026-08-19"
+}

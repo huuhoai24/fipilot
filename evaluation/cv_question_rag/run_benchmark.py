@@ -6,6 +6,7 @@ from pathlib import Path
 
 from evaluation.cv_question_rag.dataset import prepare_dataset
 from evaluation.cv_question_rag.questions import (
+    create_azure_provider,
     create_vertex_provider,
     plan_question_run,
     run_questions,
@@ -16,7 +17,7 @@ from evaluation.cv_question_rag.reporting import build_reports
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATASET_DIR = ROOT / "evaluation/cv_question_rag/datasets/public-resumes-v1"
-DEFAULT_RUN_DIR = ROOT / "evaluation/cv_question_rag/raw/public-resumes-v1"
+DEFAULT_RUN_DIR = ROOT / "evaluation/cv_question_rag/raw/azure-openai-v1"
 DEFAULT_DOCS_DIR = ROOT / "docs/evaluation/cv_question_rag"
 
 
@@ -30,6 +31,9 @@ def build_parser() -> argparse.ArgumentParser:
     action.add_argument("--dry-run-questions", action="store_true")
     action.add_argument("--execute-paid-questions", action="store_true")
     action.add_argument("--build-report", action="store_true")
+    parser.add_argument("--provider", choices=["azure", "vertex"], default="azure")
+    parser.add_argument("--question-model", type=str, default="gpt41mini")
+    parser.add_argument("--judge-model", type=str, default="gpt41mini")
     parser.add_argument("--corpus-dir", type=Path, default=ROOT / "resumes")
     parser.add_argument("--dataset-dir", type=Path, default=DEFAULT_DATASET_DIR)
     parser.add_argument("--run-dir", type=Path, default=DEFAULT_RUN_DIR)
@@ -84,13 +88,10 @@ def main() -> int:
             seed=args.seed,
         )
     else:
-        result = plan_question_run(
-            repo_root=ROOT,
-            dataset_path=dataset_dir / "holdout.jsonl",
-            retrieval_path=run_dir / "retrieval.jsonl",
-            max_cases=args.max_question_cases,
-        )
-        provider = create_vertex_provider(ROOT)
+        if args.provider == "azure":
+            provider = create_azure_provider(ROOT)
+        else:
+            provider = create_vertex_provider(ROOT)
         result = run_questions(
             repo_root=ROOT,
             dataset_path=dataset_dir / "holdout.jsonl",
@@ -98,6 +99,8 @@ def main() -> int:
             output_dir=run_dir,
             provider=provider,
             max_cases=args.max_question_cases,
+            question_model=args.question_model,
+            judge_model=args.judge_model,
         )
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
     return 0

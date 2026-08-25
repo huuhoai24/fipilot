@@ -7,6 +7,9 @@ PRICES_PER_MILLION = {
     "gemini-2.5-flash": {"input": 0.15, "output": 0.60},
     "gemini-2.5-pro": {"input": 1.25, "output": 10.0},
     "gemini-embedding-001": {"input": 0.15, "output": 0.0},
+    "gpt41mini": {"input": 0.15, "output": 0.60},
+    "gpt-4.1-mini": {"input": 0.15, "output": 0.60},
+    "gpt-4o-mini": {"input": 0.15, "output": 0.60},
 }
 
 

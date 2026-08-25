@@ -1,0 +1,23 @@
+{
+  "budget_usd": 0.25,
+  "cache_hits": 19028,
+  "dimension": 768,
+  "document_embedding_calls": 82,
+  "document_inputs_embedded": 8124,
+  "embedding_model": "gemini-embedding-001",
+  "estimated_vertex_cost_usd": 0.06228614999999999,
+  "firestore_deletes": 0,
+  "firestore_reads": 38400,
+  "firestore_storage_estimate_bytes": 108166581,
+  "firestore_writes": 4492,
+  "hard_ceiling_usd": 0.5,
+  "known_firestore_cost_usd": null,
+  "known_vertex_cost_usd": null,
+  "milestone": "M4",
+  "price_per_1000_input_count_usd": 0.00015,
+  "pricing_source": "https://cloud.google.com/vertex-ai/generative-ai/pricing#embedding-models",
+  "provider_reported_or_allocated_billable_character_count": 1926978,
+  "provider_reported_token_count": 415241,
+  "query_embedding_calls": 4,
+  "query_inputs_embedded": 103
+}

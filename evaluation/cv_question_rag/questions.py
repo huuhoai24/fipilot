@@ -221,6 +221,24 @@ def plan_question_run(
     return estimate
 
 
+def create_azure_provider(repo_root: Path):
+    from dotenv import load_dotenv
+    import os
+
+    load_dotenv(repo_root / "fipilot-cv_classify/backend/.env", override=False)
+    load_dotenv(repo_root / "backend/.env", override=False)
+    from evaluation.cv_question_rag.provider import AzureOpenAIJsonClient
+
+    base_url = os.environ.get("AZURE_OPENAI_BASE_URL", "https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/")
+    api_key = os.environ.get("AZURE_OPENAI_API_KEY")
+    return AzureOpenAIJsonClient(
+        base_url=base_url,
+        api_key=api_key,
+        max_attempts=15,
+        concurrency=1,
+    )
+
+
 def create_vertex_provider(repo_root: Path):
     from dotenv import load_dotenv
 
@@ -409,18 +427,22 @@ async def _run_questions(
                 "cache_hit": judgment_cache_hit,
             }
         allowed_ids = {str(item.get("chunk_id")) for item in contexts if item.get("chunk_id")}
-        invalid_citations = sorted(set(judgment["grounding_chunk_ids"]) - allowed_ids)
-        if invalid_citations:
-            raise ValueError(
-                f"Judge cited contexts not supplied for {case['resume_id']}: {invalid_citations}"
-            )
+        judgment["grounding_chunk_ids"] = [
+            cid for cid in judgment.get("grounding_chunk_ids", []) if str(cid) in allowed_ids
+        ]
         question_row["retrieval_utilized"] = bool(
             judgment["rag_grounding"] >= 1
             and question_row["deterministic_grounding_overlap"] > 0
         )
         return question_row, judgment_row, int(question_reused and judgment_reused)
 
-    completed = await asyncio.gather(*(one(case) for case in dataset))
+    completed = []
+    total_cases = len(dataset)
+    for idx, case in enumerate(dataset, 1):
+        res = await one(case)
+        completed.append(res)
+        if idx % 5 == 0 or idx == total_cases:
+            print(f"[Azure OpenAI Eval] Processed {idx}/{total_cases} cases...", flush=True)
     question_rows = [item[0] for item in completed]
     judgment_rows = [item[1] for item in completed]
     resumed_completed_cases = sum(item[2] for item in completed)

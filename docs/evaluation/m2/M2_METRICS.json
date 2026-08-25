@@ -1,0 +1,307 @@
+{
+  "status": "CLOSED",
+  "before": {
+    "resume": {
+      "dataset_status": "SYNTHETIC CONTROLLED",
+      "sample_count": 30,
+      "successful_samples": 30,
+      "failed_samples": 0,
+      "parse_success_rate": 1.0,
+      "schema_validation_rate": 1.0,
+      "empty_extraction_rate": 0.0,
+      "truncation_exposure_rate": 0.03333333333333333,
+      "latency": {
+        "mean_ms": 4340.200409999427,
+        "median_ms": 2363.0411499761976,
+        "p95_ms": 17084.214614986508
+      },
+      "fields": {
+        "skills": {
+          "tp": 150,
+          "fp": 2,
+          "fn": 6,
+          "precision": 0.9868421052631579,
+          "recall": 0.9615384615384616,
+          "f1": 0.974025974025974,
+          "macro_f1": 0.9781662781662781
+        },
+        "education": {
+          "tp": 30,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "macro_f1": 1.0
+        },
+        "experiences": {
+          "tp": 22,
+          "fp": 9,
+          "fn": 8,
+          "precision": 0.7096774193548387,
+          "recall": 0.7333333333333333,
+          "f1": 0.7213114754098361,
+          "macro_f1": 0.7222222222222222
+        },
+        "projects": {
+          "tp": 25,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "macro_f1": 1.0
+        }
+      },
+      "micro": {
+        "tp": 227,
+        "fp": 11,
+        "fn": 14,
+        "precision": 0.9537815126050421,
+        "recall": 0.941908713692946,
+        "f1": 0.9478079331941546
+      },
+      "macro_f1": 0.9218404783622175,
+      "long_resume_boundary_skill_recall": {
+        "before": 0.0,
+        "near": 0.0,
+        "after": 0.0
+      },
+      "repeatability": {
+        "subset_size": 2,
+        "runs_per_sample": 3,
+        "schema_success_rate": 1.0,
+        "exact_normalized_skill_agreement_rate": 1.0
+      },
+      "certifications": {
+        "status": "NOT EVALUATED",
+        "reason": "CandidateProfile has no canonical certifications field."
+      }
+    },
+    "retrieval": {
+      "hit_rate_at_1": 0.84,
+      "recall_at_1": 0.76,
+      "precision_at_1": 0.84,
+      "hit_rate_at_3": 0.98,
+      "recall_at_3": 0.98,
+      "precision_at_3": 0.3933333333333333,
+      "hit_rate_at_5": 1.0,
+      "recall_at_5": 1.0,
+      "precision_at_5": 0.24000000000000002,
+      "hit_rate_at_8": 1.0,
+      "recall_at_8": 1.0,
+      "precision_at_8": 0.15,
+      "mrr_at_8": 0.9116666666666666,
+      "dataset_status": "SYNTHETIC CONTROLLED; catalog labels rule-verified, not human-labelled",
+      "sample_count": 50,
+      "successful_samples": 50,
+      "failed_samples": 0,
+      "zero_result_rate": 0.0,
+      "irrelevant_result_rate": null,
+      "irrelevant_result_rate_status": "NOT EVALUATED: labels identify intended topics but are not exhaustive relevance judgments for every catalog topic.",
+      "latency": {
+        "mean_ms": 6.964352002833039,
+        "median_ms": 6.561499991221353,
+        "p95_ms": 10.128685014205985
+      },
+      "error_buckets": {},
+      "scores_available": false,
+      "score_note": "The production KnowledgeRetriever seam returns strings, not numeric scores; raw score is null."
+    },
+    "question_generation": {
+      "mean_role_relevance": 1.0,
+      "mean_cv_alignment": 1.0,
+      "mean_technical_validity": 1.0,
+      "mean_difficulty_alignment": 4.2,
+      "mean_clarity": 5.0,
+      "mean_retrieved_context_grounding": 2.0,
+      "mean_hallucinated_candidate_claim": 0.0,
+      "dataset_status": "SYNTHETIC CONTROLLED",
+      "sample_count": 30,
+      "successful_samples": 30,
+      "failed_samples": 0,
+      "generation_latency": {
+        "mean_ms": 3140.745419993376,
+        "median_ms": 2964.288699993631,
+        "p95_ms": 4384.576919995013
+      },
+      "planner_latency": {
+        "mean_ms": 4531.017956671228,
+        "median_ms": 3760.171000001719,
+        "p95_ms": 7269.796800002218
+      },
+      "human_validation": "NOT EVALUATED",
+      "judge_method": "LLM quality judgment, not accuracy",
+      "repeatability": {
+        "subset_size": 2,
+        "schema_success_rate": 1.0,
+        "clarity_variance": 0.0
+      }
+    },
+    "answer_evaluation": {
+      "dataset_status": "SYNTHETIC CONTROLLED; ordered tiers are primary ground truth",
+      "sample_count": 40,
+      "successful_samples": 40,
+      "failed_samples": 0,
+      "human_mae": null,
+      "human_rmse": null,
+      "human_within_1_accuracy": null,
+      "human_within_2_accuracy": null,
+      "human_numeric_status": "NOT EVALUATED: no verified human exact scores",
+      "synthetic_allowed_range_agreement": 0.7,
+      "pairwise_ordering_accuracy": 0.7833333333333333,
+      "monotonic_group_rate": 0.3,
+      "spearman_tier_correlation": 0.7224412872795758,
+      "latency": {
+        "mean_ms": 22402.917337502004,
+        "median_ms": 18276.002400030848,
+        "p95_ms": 51899.64929002162
+      },
+      "feedback_semantic_judge": {
+        "method": "LLM quality judgment, separate from deterministic tier metrics",
+        "feedback_grounding_rate": 1.0,
+        "unsupported_feedback_rate": 0.0,
+        "mean_actionability": 4.025,
+        "mean_score_feedback_consistency": 4.925
+      },
+      "failure_buckets": {
+        "non_monotonic_groups": 7,
+        "answers_outside_synthetic_allowed_range": 12,
+        "tied_or_reversed_tier_pairs": 13
+      },
+      "repeatability": {
+        "subset_answer_count": 4,
+        "mean_score_variance": 0.34944444444444456,
+        "schema_success_rate": 1.0
+      },
+      "text_vs_voice": {
+        "sample_count": 4,
+        "mean_absolute_score_difference": 1.5,
+        "tier_agreement_rate": 0.5,
+        "mean_feedback_token_jaccard": 0.1867831461341891,
+        "semantic_feedback_consistency": "NOT EVALUATED: no human semantic labels; raw feedback retained"
+      }
+    },
+    "repeatability": {
+      "resume": {
+        "subset_size": 2,
+        "runs_per_sample": 3,
+        "schema_success_rate": 1.0,
+        "exact_normalized_skill_agreement_rate": 1.0
+      },
+      "question": {
+        "subset_size": 2,
+        "schema_success_rate": 1.0,
+        "clarity_variance": 0.0
+      },
+      "answer": {
+        "subset_answer_count": 4,
+        "mean_score_variance": 0.34944444444444456,
+        "schema_success_rate": 1.0
+      }
+    },
+    "limitations": [
+      "All M1 labels are synthetic controlled; none are human-labelled production ground truth.",
+      "Question and feedback semantic metrics are LLM-as-judge quality scores, not accuracy.",
+      "The question generator and judge use the same Gemini model family, so correlated judgment bias is possible.",
+      "Catalog-derived retrieval queries contain catalog terminology and may overstate performance on real paraphrases.",
+      "The production retrieval seam does not expose numeric scores.",
+      "Retrieval labels are not exhaustive enough to classify every non-labelled result as irrelevant.",
+      "Certifications are not a canonical CandidateProfile field and are not evaluated.",
+      "Resume cases are synthetic English fixtures; image-only/OCR robustness and real-layout generalization are not evaluated.",
+      "Provider pre-parse model text is unavailable at the production JSON seam; validated outputs are the retained raw seam.",
+      "Text-versus-voice feedback overlap is lexical Jaccard, not human semantic agreement."
+    ]
+  },
+  "after": {
+    "core": {
+      "dataset_status": "SYNTHETIC CONTROLLED",
+      "sample_count": 30,
+      "successful_samples": 30,
+      "failed_samples": 0,
+      "parse_success_rate": 1.0,
+      "schema_validation_rate": 1.0,
+      "empty_extraction_rate": 0.0,
+      "truncation_exposure_rate": 0.0,
+      "latency": {
+        "mean_ms": 3742.122046663038,
+        "median_ms": 2167.830499995034,
+        "p95_ms": 14715.692679973956
+      },
+      "fields": {
+        "skills": {
+          "tp": 150,
+          "fp": 1,
+          "fn": 6,
+          "precision": 0.9933774834437086,
+          "recall": 0.9615384615384616,
+          "f1": 0.977198697068404,
+          "macro_f1": 0.9803030303030303
+        },
+        "education": {
+          "tp": 30,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "macro_f1": 1.0
+        },
+        "experiences": {
+          "tp": 30,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "macro_f1": 1.0
+        },
+        "projects": {
+          "tp": 25,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "macro_f1": 1.0
+        }
+      },
+      "micro": {
+        "tp": 235,
+        "fp": 1,
+        "fn": 6,
+        "precision": 0.9957627118644068,
+        "recall": 0.975103734439834,
+        "f1": 0.9853249475890986
+      },
+      "macro_f1": 0.9948616600790514,
+      "long_resume_boundary_skill_recall": {
+        "before": 0.0,
+        "near": 0.0,
+        "after": 0.0
+      },
+      "repeatability": {
+        "subset_size": 0,
+        "runs_per_sample": 0,
+        "schema_success_rate": null,
+        "exact_normalized_skill_agreement_rate": null
+      },
+      "certifications": {
+        "status": "NOT EVALUATED",
+        "reason": "CandidateProfile has no canonical certifications field."
+      }
+    },
+    "robustness": {
+      "scanned_pdf_count": 6,
+      "ocr_success_rate": 1.0,
+      "long_resume_count": 6,
+      "long_resume_boundary_skill_recall": {
+        "before": 1.0,
+        "near": 1.0,
+        "after": 1.0
+      },
+      "invalid_document_count": 4,
+      "invalid_document_rejection_rate": 1.0
+    }
+  }
+}
