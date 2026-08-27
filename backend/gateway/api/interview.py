@@ -25,7 +25,6 @@ from services.interview_preparation import InterviewPreparationCache
 from shared.schemas import (
     CurrentUser,
     InterviewConfig,
-    InterviewMode,
     InterviewPlan,
     InterviewSessionState,
     InterviewStatus,
@@ -196,7 +195,7 @@ async def submit_answer(
             current_user.uid,
             request.turn_id,
             request.answer,
-            expected_mode=InterviewMode.TEXT,
+            expected_mode=None,
         )
     except InterviewAnswerSubmissionError as error:
         status_code = 404 if error.code == "session_not_found" else 409

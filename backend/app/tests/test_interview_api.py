@@ -248,6 +248,33 @@ class InterviewApiTests(unittest.TestCase):
         session = repository.get_session(body["session_id"], user_id="user-1")
         self.assertEqual(session.state_payload["interview_config"]["mode"], "voice")
 
+    def test_voice_session_answer_submission_is_accepted_by_rest_endpoint(self):
+        start_response = self.client.post(
+            "/api/v2/interview/start",
+            json={
+                "candidate_id": self.candidate.candidate_id,
+                "interview_config": {
+                    "mode": "voice",
+                    "language": "en",
+                    "experience_level": "middle",
+                },
+            },
+        )
+        self.assertEqual(start_response.status_code, 200)
+        start_body = start_response.json()
+        self.assertEqual(start_body["state"]["interview_config"]["mode"], "voice")
+        self.assertIsNotNone(start_body["state"]["current_turn"])
+
+        turn_id = start_body["state"]["current_turn"]["turn_id"]
+        answer_response = self.client.post(
+            f"/api/v2/interview/{start_body['session_id']}/answer",
+            json={"turn_id": turn_id, "answer": "I lead computer vision platform work."},
+        )
+
+        self.assertEqual(answer_response.status_code, 200)
+        answer_body = answer_response.json()
+        self.assertIn("state", answer_body)
+
     def test_prepared_interview_is_reused_by_start(self):
         payload = {
             "candidate_id": self.candidate.candidate_id,

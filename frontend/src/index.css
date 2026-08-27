@@ -168,3 +168,35 @@ input:-webkit-autofill:focus {
   background: var(--color-text-primary);
   cursor: pointer;
 }
+
+@keyframes voiceWaveRays {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scaleY(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.04);
+  }
+}
+
+@keyframes voiceWaveCrest {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes voiceBar {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}

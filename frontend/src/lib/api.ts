@@ -76,34 +76,40 @@ async function requestJsonResponse<T>(
   init?: RequestInit,
   refreshedToken = false
 ): Promise<{ data: T; response: Response }> {
-  const user = firebaseAuth.currentUser
+  const user = firebaseAuth?.currentUser
   if (!user) {
-    throw new ApiError(
-      'Authentication is required. Please sign in again.',
-      401,
-      'authentication_required',
-      [],
-      false,
-      'AUTH_FAILURE',
-    )
+    // When Firebase is not configured (local dev with backend AUTH_ENABLED=false),
+    // the backend treats requests as the dev user, so proceed without a token.
+    if (firebaseAuth) {
+      throw new ApiError(
+        'Authentication is required. Please sign in again.',
+        401,
+        'authentication_required',
+        [],
+        false,
+        'AUTH_FAILURE',
+      )
+    }
   }
 
-  let token: string
-  try {
-    token = await user.getIdToken(refreshedToken)
-    developmentLog('[API] authenticated: true')
-  } catch {
-    throw new ApiError(
-      'Authentication could not be verified.',
-      401,
-      'authentication_failed',
-      [],
-      false,
-      'AUTH_FAILURE',
-    )
-  }
   const headers = new Headers(init?.headers)
-  headers.set('Authorization', `Bearer ${token}`)
+  if (user) {
+    let token: string
+    try {
+      token = await user.getIdToken(refreshedToken)
+      developmentLog('[API] authenticated: true')
+    } catch {
+      throw new ApiError(
+        'Authentication could not be verified.',
+        401,
+        'authentication_failed',
+        [],
+        false,
+        'AUTH_FAILURE',
+      )
+    }
+    headers.set('Authorization', `Bearer ${token}`)
+  }
   let response: Response
   try {
     response = await fetch(url, { ...init, headers })
@@ -203,21 +209,6 @@ async function uploadResume(file: File): Promise<ResumeUploadResponse> {
       body: formData,
     })
   } catch (error) {
-    if (error instanceof ApiError && error.status === 404) {
-      try {
-        const v1Res = await requestJson<{ id?: string; filename: string; profile: Record<string, unknown> }>(
-          `${API_ROOT_URL}/api/v1/resume/upload`,
-          {
-            method: 'POST',
-            body: formData,
-          }
-        )
-        return {
-          candidate_id: v1Res.id || 'v1-candidate',
-          ...v1Res,
-        } as unknown as ResumeUploadResponse
-      } catch {}
-    }
     const category = error instanceof ApiError ? error.category : 'CORS_OR_NETWORK'
     developmentLog(`[Resume] upload failed: ${category}`)
     throw error
@@ -454,9 +445,6 @@ export const api = {
 
   getV2InterviewSession: async (sessionId: string | number): Promise<V2InterviewSessionResponse> => {
     const key = String(sessionId)
-    if (activeSessions.has(key)) {
-      return activeSessions.get(key)!
-    }
     try {
       const res = await requestJson<V2InterviewSessionResponse>(`${API_ROOT_URL}/api/v2/interview/${sessionId}`)
       activeSessions.set(key, res)

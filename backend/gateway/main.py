@@ -14,6 +14,7 @@ from gateway.api.candidate_profile import router as candidate_profile_v2_router
 from gateway.api.interview import router as interview_v2_router
 from gateway.api.report import router as report_v2_router
 from gateway.api.resume import router as resume_v2_router
+from gateway.api.legacy_speech import router as legacy_speech_router
 from gateway.api.voice import router as voice_v2_router
 from core.logging import get_logger, get_request_id, setup_logging
 from core.middleware import request_correlation_middleware
@@ -110,9 +111,19 @@ async def handle_llm_service_error(
         },
     )
 
+if settings.app_env in {"local", "test"}:
+    # Reflect any localhost/127.0.0.1 origin so local frontend dev works
+    # regardless of the Vite dev port.
+    cors_allow_origins: list[str] = []
+    cors_allow_origin_regex = r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"
+else:
+    cors_allow_origins = settings.cors_allowed_origins
+    cors_allow_origin_regex = None
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_allowed_origins,
+    allow_origins=cors_allow_origins,
+    allow_origin_regex=cors_allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -125,4 +136,5 @@ app.include_router(report_v2_router)
 app.include_router(auth_v2_router)
 app.include_router(candidate_profile_v2_router)
 app.include_router(voice_v2_router)
+app.include_router(legacy_speech_router)
 app.include_router(health_router)

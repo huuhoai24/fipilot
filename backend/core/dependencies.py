@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
+from typing import Any
 
 from fastapi import Depends
 from fastapi import HTTPException
@@ -91,32 +93,50 @@ def get_interview_repository(
     return build_interview_repository(settings, db=db)
 
 
+def _uses_azure_llm() -> bool:
+    provider = os.environ.get("LLM_PROVIDER", "").lower()
+    if provider == "azure":
+        return True
+    if provider in {"", "vertex"} and os.environ.get("AZURE_OPENAI_BASE_URL"):
+        return True
+    return False
+
+
+def _build_llm_service(*, resume: bool = False):
+    settings = get_app_settings()
+    if _uses_azure_llm():
+        from infrastructure.llm.azure_openai import AzureOpenAIService
+
+        return AzureOpenAIService(settings=settings)
+
+    from infrastructure.llm.vertex_gemini import RetryConfig, VertexGeminiService
+
+    if resume:
+        resume_settings = settings.model_copy(
+            update={
+                "google_cloud": settings.google_cloud.model_copy(
+                    update={"location": settings.gemini_resume_location}
+                ),
+                "llm_routing": settings.llm_routing.model_copy(
+                    update={"simple_model": settings.gemini_resume_model}
+                ),
+            }
+        )
+        return VertexGeminiService(
+            settings=resume_settings,
+            retry_config=RetryConfig(max_attempts=1),
+        )
+    return VertexGeminiService(settings=settings)
+
+
 @lru_cache
 def get_llm_service():
-    from infrastructure.llm.vertex_gemini import VertexGeminiService
-
-    return VertexGeminiService(settings=get_app_settings())
+    return _build_llm_service(resume=False)
 
 
 @lru_cache
 def get_resume_llm_service():
-    from infrastructure.llm.vertex_gemini import RetryConfig, VertexGeminiService
-
-    settings = get_app_settings()
-    resume_settings = settings.model_copy(
-        update={
-            "google_cloud": settings.google_cloud.model_copy(
-                update={"location": settings.gemini_resume_location}
-            ),
-            "llm_routing": settings.llm_routing.model_copy(
-                update={"simple_model": settings.gemini_resume_model}
-            ),
-        }
-    )
-    return VertexGeminiService(
-        settings=resume_settings,
-        retry_config=RetryConfig(max_attempts=1),
-    )
+    return _build_llm_service(resume=True)
 
 
 @lru_cache
@@ -141,6 +161,18 @@ def get_streaming_tts_service():
 
     from infrastructure.speech.tts.vieneu import VieneuStreamingTTS
 
+    if settings.tts_provider == "azure":
+        from infrastructure.speech.tts.azure import AzureStreamingTTS
+
+        return AzureStreamingTTS(
+            speech_key=settings.azure_speech_key,
+            speech_region=settings.azure_speech_region,
+            speech_endpoint=settings.azure_speech_endpoint,
+            voice=settings.azure_speech_voice,
+            sample_rate=settings.tts_sample_rate,
+            frame_duration_ms=settings.tts_frame_duration_ms,
+        )
+
     return VieneuStreamingTTS(
         mode=settings.tts_mode,
         device=settings.tts_device,
@@ -148,6 +180,29 @@ def get_streaming_tts_service():
         sample_rate=settings.tts_sample_rate,
         frame_duration_ms=settings.tts_frame_duration_ms,
     )
+
+
+def get_uploaded_audio_transcriber():
+    settings = get_app_settings()
+    if settings.stt_provider != "azure":
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=503,
+            detail="Legacy audio transcription requires STT_PROVIDER=azure."
+        )
+
+    from infrastructure.speech.stt.azure import AzureUploadedAudioTranscriber
+
+    try:
+        return AzureUploadedAudioTranscriber(
+            speech_key=settings.azure_speech_key,
+            speech_region=settings.azure_speech_region,
+            speech_endpoint=settings.azure_speech_endpoint,
+            recognition_locale=settings.azure_stt_language,
+        )
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=503, detail="Failed to initialize Azure STT.") from e
 
 
 @lru_cache
@@ -229,8 +284,17 @@ def get_audio_pipeline_factory():
         SileroVADFactory,
     )
 
-    return AudioPipelineFactory(
-        stt_factory=FasterWhisperSTTFactory(
+    if settings.stt_provider == "azure":
+        from infrastructure.speech.stt.azure import AzureSTTFactory
+
+        stt_factory: Any = AzureSTTFactory(
+            speech_key=settings.azure_speech_key,
+            speech_region=settings.azure_speech_region,
+            speech_endpoint=settings.azure_speech_endpoint,
+            default_locale=settings.azure_stt_language,
+        )
+    else:
+        stt_factory = FasterWhisperSTTFactory(
             model_name=settings.stt_model,
             device=settings.stt_device,
             compute_type=settings.stt_compute_type,
@@ -240,7 +304,10 @@ def get_audio_pipeline_factory():
             custom_hotwords=settings.stt_hotwords,
             partial_max_audio_ms=settings.stt_partial_max_audio_ms,
             final_beam_size=settings.stt_final_beam_size,
-        ),
+        )
+
+    return AudioPipelineFactory(
+        stt_factory=stt_factory,
         vad_factory=SileroVADFactory(
             threshold=settings.vad_threshold,
             min_silence_ms=settings.vad_min_silence_ms,

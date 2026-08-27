@@ -98,6 +98,7 @@ export function LandingPage() {
       await signInWithGoogle()
       navigate('/text-interview', { replace: true })
     } catch (error) {
+      if (import.meta.env.DEV) console.error('[Auth] sign-in failed:', error)
       setSignInFeedback(getAuthFailureMessage(error))
     } finally {
       setSigningIn(false)

@@ -21,10 +21,10 @@ frontend/vite.config.d.ts
 *.local
 .DS_Store
 # Local environment and credential material
-.env
-.env.*
-**/.env
-**/.env.*
+# .env
+# .env.*
+# **/.env
+# **/.env.*
 !**/.env.example
 !**/.env.*.example
 # Credential material only. Do not ignore *.json wholesale: that silently hides

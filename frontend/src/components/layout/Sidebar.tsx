@@ -26,9 +26,9 @@ const navItems = [
 
 export function Sidebar() {
   const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu, theme, toggleTheme, setTheme } = useUIStore()
-  const { user } = useAuth()
+  const { user, isLocalDev } = useAuth()
   const displayName = user?.displayName || user?.email || 'Member'
-  const displayRole = 'Member'
+  const displayRole = isLocalDev ? 'Local dev' : 'Member'
   const initial = displayName.charAt(0).toUpperCase()
 
   return (
@@ -164,6 +164,11 @@ export function Sidebar() {
                 <div className="truncate text-xs font-medium text-text-primary">{displayName}</div>
                 <div className="truncate text-[11px] text-text-faint">{displayRole}</div>
               </div>
+              {isLocalDev && (
+                <span className="ml-1 hidden shrink-0 rounded-full border border-accent/40 bg-accent-soft px-1.5 py-0.5 text-[10px] font-medium text-accent lg:inline">
+                  Local dev
+                </span>
+              )}
               <ChevronDown
                 className={cn(
                   'h-3.5 w-3.5 shrink-0 text-text-faint transition-transform duration-150',

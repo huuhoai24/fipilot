@@ -15,3 +15,5 @@ google-genai
 firebase-admin
 google-cloud-firestore
 websockets>=15,<16
+# Optional Azure Speech provider; mirrored from requirements-speech.txt.
+azure-cognitiveservices-speech>=1.40,<2

@@ -5,11 +5,22 @@ import {
   signOut,
   type User,
 } from 'firebase/auth'
-import { firebaseAuth, googleAuthProvider } from '@/lib/firebase'
+import { firebaseAuth, googleAuthProvider, isFirebaseConfigured } from '@/lib/firebase'
+
+interface LocalDevUser {
+  uid: string
+  email: string | null
+  displayName: string | null
+  photoURL: string | null
+  isLocalDev: true
+}
+
+type AppUser = User | LocalDevUser
 
 interface AuthContextValue {
-  user: User | null
+  user: AppUser | null
   loading: boolean
+  isLocalDev: boolean
   signInWithGoogle: () => Promise<void>
   logout: () => Promise<void>
 }
@@ -17,10 +28,23 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AppUser | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!firebaseAuth) {
+      // Local development without Firebase: behave as the backend dev user so
+      // the app is usable when AUTH_ENABLED=false.
+      setUser({
+        uid: 'local-development-user',
+        email: null,
+        displayName: 'Local Dev',
+        photoURL: null,
+        isLocalDev: true,
+      })
+      setLoading(false)
+      return
+    }
     return onAuthStateChanged(firebaseAuth, (nextUser) => {
       setUser(nextUser)
       setLoading(false)
@@ -31,11 +55,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       loading,
+      isLocalDev: !isFirebaseConfigured,
       signInWithGoogle: async () => {
+        if (!firebaseAuth || !googleAuthProvider) {
+          throw new Error('Firebase authentication is not configured.')
+        }
         await signInWithPopup(firebaseAuth, googleAuthProvider)
       },
       logout: async () => {
-        await signOut(firebaseAuth)
+        if (firebaseAuth) await signOut(firebaseAuth)
+        else setUser(null)
       },
     }),
     [loading, user]

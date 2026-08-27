@@ -129,6 +129,18 @@ class SpeechSettings(BaseModel):
     tts_queue_size: int = 8
     tts_chunk_min_words: int = 3
     tts_chunk_max_chars: int = 80
+
+    # Optional Azure Speech provider switch. When stt_provider="azure" the live
+    # voice interview uses Azure Speech-to-Text instead of local faster-whisper;
+    # when tts_provider="azure" it uses Azure Text-to-Speech instead of VieNeu.
+    stt_provider: Literal["faster_whisper", "azure"] = "faster_whisper"
+    tts_provider: Literal["vieneu", "azure"] = "vieneu"
+    azure_speech_key: str = ""
+    azure_speech_region: str = ""
+    azure_speech_endpoint: str | None = None
+    azure_speech_voice: str = "vi-VN-HoaiMyNeural"
+    azure_stt_language: str = "vi-VN"
+
     service_token: str | None = None
     service_url: str | None = None
     benchmark_mode: bool = False
@@ -354,6 +366,27 @@ class Settings(BaseSettings):
             "tts_chunk_max_chars", _env_int("TTS_CHUNK_MAX_CHARS", 80)
         )
         speech_data.setdefault(
+            "stt_provider", os.getenv("STT_PROVIDER", "faster_whisper")
+        )
+        speech_data.setdefault(
+            "tts_provider", os.getenv("TTS_PROVIDER", "vieneu")
+        )
+        speech_data.setdefault(
+            "azure_speech_key", os.getenv("AZURE_SPEECH_KEY", "")
+        )
+        speech_data.setdefault(
+            "azure_speech_region", os.getenv("AZURE_SPEECH_REGION", "")
+        )
+        speech_data.setdefault(
+            "azure_speech_endpoint", os.getenv("AZURE_SPEECH_ENDPOINT") or None
+        )
+        speech_data.setdefault(
+            "azure_speech_voice", os.getenv("AZURE_SPEECH_VOICE", "vi-VN-HoaiMyNeural")
+        )
+        speech_data.setdefault(
+            "azure_stt_language", os.getenv("AZURE_STT_LANGUAGE", "vi-VN")
+        )
+        speech_data.setdefault(
             "service_token", os.getenv("SPEECH_SERVICE_TOKEN") or None
         )
         speech_data.setdefault(
@@ -520,6 +553,18 @@ class Settings(BaseSettings):
             ("benchmark_mode", "SPEECH_BENCHMARK_MODE"),
             ("prewarm_models", "SPEECH_PREWARM_MODELS"),
             ("tts_prewarm", "TTS_PREWARM"),
+        ):
+            value = _take(data, field_name, env_name)
+            if value is not None:
+                speech_data[field_name] = value
+        for field_name, env_name in (
+            ("stt_provider", "STT_PROVIDER"),
+            ("tts_provider", "TTS_PROVIDER"),
+            ("azure_speech_key", "AZURE_SPEECH_KEY"),
+            ("azure_speech_region", "AZURE_SPEECH_REGION"),
+            ("azure_speech_endpoint", "AZURE_SPEECH_ENDPOINT"),
+            ("azure_speech_voice", "AZURE_SPEECH_VOICE"),
+            ("azure_stt_language", "AZURE_STT_LANGUAGE"),
         ):
             value = _take(data, field_name, env_name)
             if value is not None:
@@ -803,6 +848,34 @@ class Settings(BaseSettings):
     @property
     def tts_prewarm(self) -> bool:
         return self.speech.tts_prewarm
+
+    @property
+    def stt_provider(self) -> str:
+        return self.speech.stt_provider
+
+    @property
+    def tts_provider(self) -> str:
+        return self.speech.tts_provider
+
+    @property
+    def azure_speech_key(self) -> str:
+        return self.speech.azure_speech_key
+
+    @property
+    def azure_speech_region(self) -> str:
+        return self.speech.azure_speech_region
+
+    @property
+    def azure_speech_endpoint(self) -> str | None:
+        return self.speech.azure_speech_endpoint
+
+    @property
+    def azure_speech_voice(self) -> str:
+        return self.speech.azure_speech_voice
+
+    @property
+    def azure_stt_language(self) -> str:
+        return self.speech.azure_stt_language
 
     @property
     def auth_enabled(self) -> bool:

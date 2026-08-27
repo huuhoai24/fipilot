@@ -23,6 +23,7 @@ export function LoginPage() {
       const destination = (location.state as { from?: string } | null)?.from
       navigate(destination || '/text-interview', { replace: true })
     } catch (signInError) {
+      if (import.meta.env.DEV) console.error('[Auth] sign-in failed:', signInError)
       setError(getAuthFailureMessage(signInError).message)
     } finally {
       setSubmitting(false)

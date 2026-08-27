@@ -1,12 +1,13 @@
-import React from 'react'
 import {
   Camera,
   CameraOff,
+  Captions,
+  CaptionsOff,
   MessageSquare,
   Mic,
   MicOff,
-  Subtitles,
 } from 'lucide-react'
+import styles from './FloatingMediaControls.module.css'
 
 interface FloatingMediaControlsProps {
   microphoneActive: boolean
@@ -32,69 +33,55 @@ export function FloatingMediaControls({
   onToggleChat,
 }: FloatingMediaControlsProps) {
   return (
-    <div
-      className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-[#16181e]/90 p-2 shadow-2xl backdrop-blur-md"
-      role="toolbar"
-      aria-label="Media controls"
-    >
-      {/* Microphone toggle */}
+    <div className={styles.mediaTray} role="toolbar" aria-label="Điều khiển phỏng vấn">
+      {/* Microphone toggle - v1: active = base, inactive = mediaButtonDisabled (red) */}
       <button
         type="button"
         disabled={disabled}
         onClick={onToggleMicrophone}
-        aria-label={microphoneActive ? 'Mute microphone' : 'Unmute microphone'}
-        className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
-          microphoneActive
-            ? 'bg-accent text-slate-950 shadow-md shadow-accent/20 hover:bg-accent-hover'
-            : 'border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20'
-        } disabled:cursor-not-allowed disabled:opacity-50`}
+        aria-label={microphoneActive ? 'Tắt microphone' : 'Bật microphone'}
+        aria-pressed={!microphoneActive}
+        className={`${styles.mediaButton} ${!microphoneActive ? styles.mediaButtonDisabled : ''}`}
       >
-        {microphoneActive ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+        {microphoneActive ? <Mic aria-hidden="true" /> : <MicOff aria-hidden="true" />}
       </button>
 
-      {/* Camera toggle */}
+      {/* Camera toggle - v1: same as microphone */}
       <button
         type="button"
         disabled={disabled}
         onClick={onToggleCamera}
-        aria-label={cameraActive ? 'Turn off camera' : 'Turn on camera'}
-        className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
-          cameraActive
-            ? 'bg-white/15 text-white hover:bg-white/25'
-            : 'border border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20'
-        } disabled:cursor-not-allowed disabled:opacity-50`}
+        aria-label={cameraActive ? 'Tắt camera' : 'Bật camera'}
+        aria-pressed={!cameraActive}
+        className={`${styles.mediaButton} ${!cameraActive ? styles.mediaButtonDisabled : ''}`}
       >
-        {cameraActive ? <Camera className="h-5 w-5" /> : <CameraOff className="h-5 w-5" />}
+        {cameraActive ? <Camera aria-hidden="true" /> : <CameraOff aria-hidden="true" />}
       </button>
 
-      <div className="mx-1 h-6 w-px bg-white/10" aria-hidden="true" />
+      <div className={styles.separator} aria-hidden="true" />
 
-      {/* Subtitles toggle */}
+      {/* Captions toggle - v1: transcriptButton + Disabled when off, base when on */}
       <button
         type="button"
+        disabled={disabled}
         onClick={onToggleCaptions}
-        aria-label={captionsActive ? 'Hide captions' : 'Show captions'}
-        className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
-          captionsActive
-            ? 'bg-white/20 text-white shadow-sm'
-            : 'text-white/60 hover:bg-white/10 hover:text-white'
-        }`}
+        aria-label={captionsActive ? 'Ẩn phụ đề' : 'Hiện phụ đề'}
+        aria-pressed={!captionsActive}
+        className={`${styles.mediaButton} ${styles.transcriptButton} ${!captionsActive ? styles.mediaButtonDisabled : ''}`}
       >
-        <Subtitles className="h-5 w-5" />
+        {captionsActive ? <Captions aria-hidden="true" /> : <CaptionsOff aria-hidden="true" />}
       </button>
 
-      {/* Chat toggle */}
+      {/* Chat toggle - v1: chatButton + Active when on (blue #5154d9) */}
       <button
         type="button"
+        disabled={disabled}
         onClick={onToggleChat}
-        aria-label={chatActive ? 'Close chat' : 'Open chat'}
-        className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-200 ${
-          chatActive
-            ? 'bg-accent/20 text-accent shadow-sm'
-            : 'text-white/60 hover:bg-white/10 hover:text-white'
-        }`}
+        aria-label={chatActive ? 'Đóng trả lời văn bản' : 'Trả lời bằng văn bản'}
+        aria-pressed={chatActive}
+        className={`${styles.mediaButton} ${styles.chatButton} ${chatActive ? styles.mediaButtonActive : ''}`}
       >
-        <MessageSquare className="h-5 w-5" />
+        <MessageSquare aria-hidden="true" />
       </button>
     </div>
   )

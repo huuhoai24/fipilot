@@ -49,7 +49,7 @@ class InterviewAnswerSubmissionService:
         turn_id: str,
         answer: str,
         *,
-        expected_mode: InterviewMode,
+        expected_mode: InterviewMode | None = None,
         question_provider: QuestionProvider | None = None,
         voice_analytics: VoiceAnalytics | None = None,
     ) -> InterviewAnswerSubmissionResult:
@@ -70,6 +70,8 @@ class InterviewAnswerSubmissionService:
             raise InterviewAnswerSubmissionError(
                 "Interview session is unavailable.", code="invalid_session_state"
             ) from error
+        if expected_mode is None:
+            expected_mode = state.interview_config.mode
         if state.interview_config.mode != expected_mode:
             raise InterviewAnswerSubmissionError(
                 f"Interview session is not configured for {expected_mode.value}.",

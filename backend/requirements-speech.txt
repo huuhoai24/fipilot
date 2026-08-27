@@ -12,3 +12,7 @@ soxr>=1,<2
 torch>=2.5,<2.12
 torchaudio>=2.5,<2.12
 vieneu>=3,<4
+# Optional Azure Speech provider (STT_PROVIDER=azure / TTS_PROVIDER=azure).
+# Decoding Azure TTS MP3 to PCM16 reuses the ffmpeg dependency already required
+# by VieNeu. Keep faster-whisper and vieneu for the default local path.
+azure-cognitiveservices-speech>=1.40,<2

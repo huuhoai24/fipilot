@@ -87,7 +87,7 @@ export function useInterviewerAudio({
     if (!mountedRef.current || generation !== generationRef.current) return
 
     try {
-      const user = firebaseAuth.currentUser
+      const user = firebaseAuth?.currentUser
       const token = user ? await user.getIdToken() : null
       if (!mountedRef.current || generation !== generationRef.current) return
       const socket = token

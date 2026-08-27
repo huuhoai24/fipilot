@@ -228,7 +228,7 @@ export function useSpeechInput({
     finalReceivedRef.current = false
 
     try {
-      const user = firebaseAuth.currentUser
+      const user = firebaseAuth?.currentUser
       const [stream, token] = await Promise.all([
         navigator.mediaDevices.getUserMedia({
           audio: {

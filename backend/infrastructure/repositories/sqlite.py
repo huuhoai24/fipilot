@@ -169,7 +169,7 @@ class SQLiteInterviewRepository(InterviewRepository):
 
         session = crud.create_session(
             self.db,
-            self._int_id(candidate_id),
+            self._safe_int_id(candidate_id),
             user_id=owner_id,
         )
         session.role = role
@@ -194,7 +194,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             .filter(
                 models.InterviewBlueprintArtifact.artifact_key == artifact_key,
                 models.InterviewBlueprintArtifact.candidate_id
-                == self._int_id(candidate_id),
+                == self._safe_int_id(candidate_id),
                 models.InterviewBlueprintArtifact.user_id == owner_id,
             )
             .first()
@@ -222,7 +222,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             .values(
                 artifact_key=artifact_key,
                 user_id=owner_id,
-                candidate_id=self._int_id(candidate_id),
+                candidate_id=self._safe_int_id(candidate_id),
                 plan_json=plan.model_dump_json(),
             )
             .on_conflict_do_nothing(index_elements=["artifact_key"])
@@ -232,7 +232,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         if (
             artifact is None
             or artifact.user_id != owner_id
-            or artifact.candidate_id != self._int_id(candidate_id)
+            or artifact.candidate_id != self._safe_int_id(candidate_id)
         ):
             raise ValueError("Interview blueprint key is not owned by this candidate")
         return InterviewPlan.model_validate_json(artifact.plan_json)
@@ -284,7 +284,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         submission = (
             self.db.query(models.AnswerSubmission)
             .filter(
-                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.session_id == self._safe_int_id(session_id),
                 models.AnswerSubmission.turn_id == turn_id,
             )
             .first()
@@ -304,7 +304,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         result = self.db.execute(
             sqlite_insert(models.AnswerSubmission)
             .values(
-                session_id=self._int_id(session_id),
+                session_id=self._safe_int_id(session_id),
                 turn_id=turn_id,
                 answer_hash=answer_hash,
                 status="processing",
@@ -315,7 +315,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         submission = (
             self.db.query(models.AnswerSubmission)
             .filter(
-                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.session_id == self._safe_int_id(session_id),
                 models.AnswerSubmission.turn_id == turn_id,
             )
             .one()
@@ -348,7 +348,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         submission = (
             self.db.query(models.AnswerSubmission)
             .filter(
-                models.AnswerSubmission.session_id == self._int_id(session_id),
+                models.AnswerSubmission.session_id == self._safe_int_id(session_id),
                 models.AnswerSubmission.turn_id == turn_id,
                 models.AnswerSubmission.answer_hash == answer_hash,
                 models.AnswerSubmission.status == "processing",
@@ -381,7 +381,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         if self._get_session_model(session_id, user_id) is None:
             return
         self.db.query(models.AnswerSubmission).filter(
-            models.AnswerSubmission.session_id == self._int_id(session_id),
+            models.AnswerSubmission.session_id == self._safe_int_id(session_id),
             models.AnswerSubmission.turn_id == turn_id,
             models.AnswerSubmission.answer_hash == answer_hash,
             models.AnswerSubmission.status == "processing",
@@ -422,7 +422,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             self._ownership_clause(models.Session.user_id, owner_id)
         )
         if candidate_id is not None:
-            query = query.filter(models.Session.candidate_id == self._int_id(candidate_id))
+            query = query.filter(models.Session.candidate_id == self._safe_int_id(candidate_id))
         sessions = (
             query.order_by(models.Session.created_at.desc(), models.Session.id.desc())
             .offset(offset)
@@ -439,7 +439,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             self._ownership_clause(models.Session.user_id, owner_id)
         )
         if candidate_id is not None:
-            query = query.filter(models.Session.candidate_id == self._int_id(candidate_id))
+            query = query.filter(models.Session.candidate_id == self._safe_int_id(candidate_id))
         return query.count()
 
     def save_turn(
@@ -449,7 +449,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             raise ValueError(f"Session {session_id} does not exist for this user")
         crud.create_message(
             self.db,
-            session_id=self._int_id(session_id),
+            session_id=self._safe_int_id(session_id),
             role="turn",
             content=turn.model_dump_json(),
         )
@@ -463,7 +463,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             self.db.query(models.Message)
             .join(models.Session, models.Message.session_id == models.Session.id)
             .filter(
-                models.Message.session_id == self._int_id(session_id),
+                models.Message.session_id == self._safe_int_id(session_id),
                 models.Message.role == "turn",
                 self._ownership_clause(models.Session.user_id, owner_id),
             )
@@ -493,7 +493,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         score = int(round(evaluation.scores.overall_score))
         crud.create_evaluation(
             self.db,
-            session_id=self._int_id(session_id),
+            session_id=self._safe_int_id(session_id),
             question_id=question_id or fallback_message_id or 0,
             answer_id=answer_id or fallback_message_id or 0,
             correctness=self._correctness_from_score(score),
@@ -559,7 +559,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         return (
             self.db.query(models.User)
             .filter(
-                models.User.id == self._int_id(candidate_id),
+                models.User.id == self._safe_int_id(candidate_id),
                 self._ownership_clause(models.User.user_id, owner_id),
             )
             .first()
@@ -572,7 +572,7 @@ class SQLiteInterviewRepository(InterviewRepository):
         return (
             self.db.query(models.Session)
             .filter(
-                models.Session.id == self._int_id(session_id),
+                models.Session.id == self._safe_int_id(session_id),
                 self._ownership_clause(models.Session.user_id, owner_id),
             )
             .first()
@@ -724,7 +724,7 @@ class SQLiteInterviewRepository(InterviewRepository):
             self.db.query(models.Message)
             .join(models.Session, models.Message.session_id == models.Session.id)
             .filter(
-                models.Message.session_id == self._int_id(session_id),
+                models.Message.session_id == self._safe_int_id(session_id),
                 models.Message.role == "turn",
                 self._ownership_clause(models.Session.user_id, owner_id),
             )
@@ -796,5 +796,8 @@ class SQLiteInterviewRepository(InterviewRepository):
         return normalized if normalized in {"intern", "junior", "middle", "senior"} else "junior"
 
     @staticmethod
-    def _int_id(value: str | int) -> int:
-        return int(value)
+    def _safe_int_id(value: str | int) -> int | None:
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return None
