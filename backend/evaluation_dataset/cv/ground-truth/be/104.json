@@ -1,0 +1,191 @@
+{
+  "cv_id": "cv_057",
+  "full_name": "NGUYỄN HUỲNH ANH",
+  "email": "",
+  "phone": "",
+  "location": "5/6 DHT03 Tan Hung Thuan ward, District 12, HCMC",
+  "summary": "Junior/Middle Developer specializing in web development and working with database. I want more challenges to improve myself for a better world. I am an easy to work with, dynamic, high discipline, high sense of responsibility, better in teamwork, friendly guys. Know and versed in numerous programming languages including HTML5, PHP, JavaScript, CSS, MySQL,….",
+  "education": [
+    {
+      "school": "TON DUC THANG UNIVERSITY",
+      "major": "Information Systems",
+      "degree": "Bachelor's degree in Information Systems",
+      "start_date": "2016",
+      "end_date": "2022"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SBT - TTC GROUP",
+      "position": "Oracle Cloud ERP Development",
+      "start_date": "2020",
+      "end_date": "2021",
+      "description": [
+        "Develop invoice, data",
+        "Data integration"
+      ]
+    },
+    {
+      "company": "S-PLUS SOFTWARE",
+      "position": "Fresher/Junior Developer",
+      "start_date": "2019",
+      "end_date": "2022",
+      "description": [
+        "Web/Application development"
+      ]
+    },
+    {
+      "company": "AB HORIZON",
+      "position": "Full Stack Developer",
+      "start_date": "2022",
+      "end_date": "Present",
+      "description": [
+        "Web/Application development"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "ABE APPLICATION",
+      "role": "Front End, Back End, Team Lead",
+      "technologies": [
+        "PHP",
+        "ReactJS",
+        "NextJS",
+        "AntD",
+        "TypeScript",
+        "Yii"
+      ],
+      "description": "A web app with many modules and functions for a business (CRM, inventory, finance, sales, purchasing…)"
+    },
+    {
+      "name": "COLLIERS HOME VN (NOW IS AVISION YOUNG VN)",
+      "role": "Front End, Back End, Database Management",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP",
+        "Bootstrap",
+        "Yii"
+      ],
+      "description": "Real estate business website"
+    },
+    {
+      "name": "HKBAV – HONG KONG BUSINESS ASSOCIATION VN",
+      "role": "Front End, Back End, Database Management",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP",
+        "Bootstrap",
+        "Yii"
+      ],
+      "description": "A nice international organization with corporate members all over the world"
+    },
+    {
+      "name": "COURSE REGISTER",
+      "role": "Back End",
+      "technologies": [
+        "PHP",
+        "Laravel"
+      ],
+      "description": "A website for subject registration"
+    },
+    {
+      "name": "JSPS INSTRUCTIONAL",
+      "role": "Back End",
+      "technologies": [
+        "PHP",
+        "Laravel"
+      ],
+      "description": "Education system, School System"
+    },
+    {
+      "name": "KYUTECH SELF EVALUATION",
+      "role": "Back End",
+      "technologies": [
+        "PHP",
+        "Laravel"
+      ],
+      "description": "Education system, collect documents from over the world"
+    },
+    {
+      "name": "PAYMENT PLUGIN FOR CONVENIENCE NON-STAFF STORE IN LINEAPP",
+      "role": "Front End, Back End",
+      "technologies": [
+        "PHP",
+        "React Native",
+        "JavaScript"
+      ],
+      "description": "A plugin for paying when buying something from a store without staff"
+    },
+    {
+      "name": "BOSS – ROLAND DEVICE APPS",
+      "role": "Front End",
+      "technologies": [
+        "CSS",
+        "JavaScript"
+      ],
+      "description": "Software connected to the device"
+    },
+    {
+      "name": "SPCE (2D-3D)",
+      "role": "Front End, Back End",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP",
+        "Bootstrap"
+      ],
+      "description": "Free web-based design software"
+    }
+  ],
+  "skills": [
+    "Team management",
+    "Strong decision maker",
+    "Problem-solving",
+    "Innovative",
+    "Strong support ability",
+    "Connecting people",
+    "Good teamwork skills",
+    "Listening and analysis",
+    "Proactive and responsible",
+    "Quick learner with high adaptability",
+    "Leadership",
+    "Organization",
+    "Planning",
+    "Management",
+    "Delegation",
+    "Customer Service",
+    "Time Management",
+    "Conflict Resolution",
+    "HTML",
+    "PHP",
+    "JavaScript",
+    "CSS",
+    "MySQL",
+    "Bootstrap",
+    "TypeScript",
+    "Ant Design",
+    "ReactJS",
+    "React Native",
+    "NextJS",
+    "Laravel",
+    "Yii Framework",
+    "XAMPP",
+    "PostgreSQL",
+    "Postman",
+    "Docker",
+    "Oracle ERP",
+    "MVC",
+    "RESTful API",
+    "OOP",
+    "Git",
+    "SWR"
+  ],
+  "certifications": [],
+  "languages": []
+}

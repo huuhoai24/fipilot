@@ -35,6 +35,15 @@ class SkillEvidence(BaseModel):
     source_section: str | None = None
 
 
+class RoleMatch(BaseModel):
+    role_id: str = ""
+    title: str = ""
+    score: int = Field(default=0, ge=0, le=100)
+    matched_skills: list[str] = Field(default_factory=list)
+    relevant_experience_count: int = 0
+    summary: str = ""
+
+
 class CandidateProfile(BaseModel):
     candidate_id: str | None = None
     name: str = "Candidate"
@@ -50,6 +59,7 @@ class CandidateProfile(BaseModel):
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     confidence_score: float = Field(default=0.0, ge=0.0, le=1.0)
     extraction_method: str | None = None
+    role_matches: list[RoleMatch] = Field(default_factory=list)
 
     @model_validator(mode="before")
     @classmethod

@@ -1,0 +1,152 @@
+{
+  "cv_id": "cv_051",
+  "full_name": "Jian Qin",
+  "email": "jqin@syr.edu",
+  "phone": "315-443-5642",
+  "location": "Syracuse, NY 13244",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of Illinois at Urbana-Champaign",
+      "major": "Library and Information Science",
+      "degree": "Ph.D.",
+      "start_date": "",
+      "end_date": "1996"
+    },
+    {
+      "school": "University of Western Ontario",
+      "major": "",
+      "degree": "M.L.I.S.",
+      "start_date": "",
+      "end_date": "1986"
+    },
+    {
+      "school": "Wuhan University",
+      "major": "Library Science",
+      "degree": "B.A.",
+      "start_date": "",
+      "end_date": "1982"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Syracuse University",
+      "position": "Associate Professor",
+      "start_date": "2005",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "Syracuse University",
+      "position": "Assistant Professor",
+      "start_date": "1999",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "Online Computer Library Center (OCLC)",
+      "position": "Visiting scholar",
+      "start_date": "2002-09",
+      "end_date": "2002-11",
+      "description": []
+    },
+    {
+      "company": "Institute for Work and the Economy",
+      "position": "Consultant, Workforce Development Ontology",
+      "start_date": "2001",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "University of Southern Mississippi",
+      "position": "Assistant Professor",
+      "start_date": "1996",
+      "end_date": "1999",
+      "description": []
+    },
+    {
+      "company": "Library Research Center, University of Illinois at Urbana-Champaign",
+      "position": "Research Assistant",
+      "start_date": "1995",
+      "end_date": "1996",
+      "description": []
+    },
+    {
+      "company": "Graduate School of Library and Information Science, University of Illinois at Urbana-Champaign",
+      "position": "Teaching Assistant",
+      "start_date": "1994",
+      "end_date": "1995",
+      "description": []
+    },
+    {
+      "company": "East Asian Library & Veterinary Medicine Library, University of Illinois at Urbana-Champaign",
+      "position": "Graduate Assistant",
+      "start_date": "1992",
+      "end_date": "1994",
+      "description": []
+    },
+    {
+      "company": "Graduate School of Library and Information Science, University of Illinois at Urbana-Champaign",
+      "position": "Research Assistant",
+      "start_date": "1991",
+      "end_date": "1992",
+      "description": []
+    },
+    {
+      "company": "Wuhan University",
+      "position": "Lecturer",
+      "start_date": "1986",
+      "end_date": "1991",
+      "description": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Building an Interactive Digital Lab for Distance and Campus Students",
+      "role": "",
+      "technologies": [],
+      "description": "Funded by Syracuse University Vision Fund"
+    },
+    {
+      "name": "Cognitive Relevance in Citation Index and Citation-Semantic Searching: Antibiotic Resistance",
+      "role": "",
+      "technologies": [],
+      "description": "Funded by Institute for Scientific Information (ISI) Citation Research Grant"
+    },
+    {
+      "name": "Computational Representation of Web Objects in an Interdisciplinary Digital Library: A Survey and an Experiment in Polymer Science",
+      "role": "",
+      "technologies": [],
+      "description": "Funded by OCLC Library and Information Science Research Grant"
+    }
+  ],
+  "skills": [
+    "Knowledge organization systems",
+    "Schema representation of information",
+    "Metadata",
+    "Semantic patterns in indexing databases",
+    "Scientific communication",
+    "Database Management Systems",
+    "Web Content Management",
+    "Information Resources Organization",
+    "Information Resources Access",
+    "Data Administration Concepts",
+    "Knowledge Organization Structures",
+    "Cataloging",
+    "Classification",
+    "Technical Services",
+    "Indexing",
+    "Abstracting",
+    "Internet Resources",
+    "Semantic Network for Information Retrieval",
+    "Semantic Web",
+    "Ontologies",
+    "Scientific data management",
+    "Digital learning resources",
+    "XML",
+    "Knowledge Management",
+    "Information Resource Sharing Standards"
+  ],
+  "certifications": [],
+  "languages": []
+}

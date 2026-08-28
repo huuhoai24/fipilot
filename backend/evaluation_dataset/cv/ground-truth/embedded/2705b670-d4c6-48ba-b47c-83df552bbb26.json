@@ -1,0 +1,94 @@
+{
+  "cv_id": "cv_078",
+  "full_name": "Tran Thi Yen Duyen",
+  "email": "",
+  "phone": "",
+  "location": "43/49 Da Nam, Ward 2, District 8, HCM City",
+  "summary": "More than 10 years in ERP application support with deep knowledge a bout ERP Oracle EBS: SCM, FIN, OPM, CST...; In addition, have strong knowledge about Account ing and IT. Be able to adapt to new system with ease.",
+  "education": [
+    {
+      "school": "Ho Chi Minh City Open Universty",
+      "major": "finance and banking",
+      "degree": "Master",
+      "start_date": "2011",
+      "end_date": "2013"
+    },
+    {
+      "school": "Can Tho University",
+      "major": "Information technology",
+      "degree": "engineer",
+      "start_date": "2004",
+      "end_date": "2008"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Hoa Sen Group (HSG)",
+      "position": "Oracle ERP Consultant",
+      "start_date": "2022-02",
+      "end_date": "Present",
+      "description": [
+        "Support departments and branchs for Oracle SCM, OPM, FIN, CST",
+        "Setup Oracle system and write users’ guide when company has new process",
+        "Fixed error system in ERP of company.",
+        "Update or Write new reports when user required"
+      ]
+    },
+    {
+      "company": "Saigon Pharmaceutical Company Limited (Sapharco)",
+      "position": "Accountant Employee",
+      "start_date": "2018-06",
+      "end_date": "2021-06",
+      "description": [
+        "Manage of inventory and cost analysis (ODM)",
+        "Manage inspection of warehouse management, inventory management.",
+        "Control accounting records in Oracle software: revenue, turnover, expe nses, capital expenditure, depreciation, amortization, debts and other operations",
+        "Creating account and closed AR, AP, GL monthly period",
+        "Check between the end balance account and GL",
+        "All analysis reports when being requested by the Board of Directors.",
+        "Prepare Receivable reports and Payable reports. Reported to: Chief accountant and General Director",
+        "Analysis profit and lost of company, management expense"
+      ]
+    },
+    {
+      "company": "Saigon Pharmaceutical Company Limited (Sapharco)",
+      "position": "Software administrator ERP Oracle",
+      "start_date": "2013-04",
+      "end_date": "2018-05",
+      "description": [
+        "Support departments and branchs for Oracle purchasing, order manageme nt, inventory, financials.",
+        "Manage code: customer, supplier, items, tax apply",
+        "Manage of COA: create, edit, decentralized on the account system , output in financing reports.",
+        "Creating account and closed AR, AP monthly period, fixed error system",
+        "Setup Oracle system and write users’ guide when company has new process.",
+        "Training and support users for of purchase Order, sale order, warehous e, receivable account, Payable account for user in Oracle softwar e in all locations, troubleshoot by tracking data flow through company systems."
+      ]
+    },
+    {
+      "company": "Saigon Pharmaceutical Company Limited (Sapharco)",
+      "position": "Support User Employee",
+      "start_date": "2008-12",
+      "end_date": "2013-04",
+      "description": [
+        "Manage, setup, backup/restore, troubleshoot issue for network, hardware, software",
+        "Manage organization accounts, user priviledges, email system"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Oracle EBS R12",
+    "SCM",
+    "FIN",
+    "OPM",
+    "ledger report",
+    "handle workload properly under high presure",
+    "planning",
+    "suggest solution and strategy to solve challenge problems",
+    "manage to finish assignment together with team as well as alone with ease"
+  ],
+  "certifications": [
+    "Chief Accountant Certificate"
+  ],
+  "languages": []
+}

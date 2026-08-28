@@ -1,0 +1,84 @@
+{
+  "cv_id": "cv_023",
+  "full_name": "LE HOANG ANH",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "",
+  "education": [
+    {
+      "school": "Ha Noi University of Science and Technology",
+      "major": "Engineering Physics",
+      "degree": "Ph.D.",
+      "start_date": "",
+      "end_date": "2014"
+    },
+    {
+      "school": "Ha Noi University of Science and Technology",
+      "major": "Engineering Physics",
+      "degree": "M.Sc.",
+      "start_date": "",
+      "end_date": "2009"
+    },
+    {
+      "school": "Ha Noi University of Science and Technology",
+      "major": "Physics Information",
+      "degree": "B.Sc.",
+      "start_date": "",
+      "end_date": "2004"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Phenikaa University",
+      "position": "Lecturer, Researcher",
+      "start_date": "2018",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "Ha Noi University of Science and Technology",
+      "position": "Lecturer",
+      "start_date": "2015",
+      "end_date": "2018",
+      "description": []
+    },
+    {
+      "company": "Ha Noi University of Science and Technology",
+      "position": "PhD Student",
+      "start_date": "2010",
+      "end_date": "2014",
+      "description": []
+    },
+    {
+      "company": "Ha Noi University of Science and Technology",
+      "position": "Engineer",
+      "start_date": "2004",
+      "end_date": "2015",
+      "description": []
+    },
+    {
+      "company": "Phenikaa University",
+      "position": "IT Manager (Director of IT Center)",
+      "start_date": "2019",
+      "end_date": "Present",
+      "description": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Engineering Physics",
+    "Physics Information",
+    "Research",
+    "Lecturing",
+    "IT Management",
+    "Graphene",
+    "Electronic Structure Calculations",
+    "Optical Properties",
+    "Graphene Field-Effect Transistors"
+  ],
+  "certifications": [
+    "Certificate of completion the instructor training program for MekongSkills2Work Training of Trainers by USAID COMET Project and Ha Noi University of Science and Technology."
+  ],
+  "languages": []
+}

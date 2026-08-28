@@ -1,0 +1,74 @@
+{
+  "cv_id": "cv_020",
+  "full_name": "NGUYEN HOANG LONG",
+  "email": "",
+  "phone": "",
+  "location": "Street 11, Tam Binh ward, Thu Duc city, HCM city",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of Economics and Law",
+      "major": "Accounting",
+      "degree": "Bachelor’s degree",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "EY Vietnam Ltd.",
+      "position": "Senior Data Analyst and Governance",
+      "start_date": "2020-07",
+      "end_date": "Present",
+      "description": [
+        "Cooperate with vendor AWS Singapore to design Data Governance Strategy and Data Governance Operating Model.",
+        "Understand data pipeline on AWS Cloud and apply to segmentation model.",
+        "Cooperate with vendor TechX Vietnam (+AWS Singapore) to implement Metadata Tool .",
+        "Manage Business Metadata for the bank: standardize data and make sure it is implemented in the bank.",
+        "Understand database with DBA team for analysis report and case studies.",
+        "Involve in many E2E projects (credit granting, collateral management, deposit) as a Data Governance to monitor data standardization, data quality."
+      ]
+    },
+    {
+      "company": "",
+      "position": "Senior Financial Analyst",
+      "start_date": "2018-04",
+      "end_date": "2020-06",
+      "description": [
+        "Manage data mart for Business Finance.",
+        "Build data mart supporting for forecasting and budgeting project.",
+        "Build and/or mine database for further analyzing on case studies.",
+        "Perform forecasting and make monthly performance report for Retail Banking Division."
+      ]
+    },
+    {
+      "company": "",
+      "position": "",
+      "start_date": "2016-09",
+      "end_date": "2017-11",
+      "description": [
+        "Involve in many engagements: life insurance, general insurance, branch in Viet Nam of foreign banks, Viet Nam commercial banks."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Be quickly familiar with new IT system",
+    "Involve in E2E business projects",
+    "VBA",
+    "MySQL",
+    "Oracle",
+    "Python",
+    "PySpark",
+    "AWS",
+    "Teamwork",
+    "Be flexible in communicating with clients in different contexts",
+    "Treat internal clients as external clients"
+  ],
+  "certifications": [
+    "Advanced Diploma in Accounting and Business",
+    "Advanced Entrepreneurship by University of Economics and Law in association with North Carolina Central University",
+    "Excel for Auditing by SmartTrain"
+  ],
+  "languages": []
+}

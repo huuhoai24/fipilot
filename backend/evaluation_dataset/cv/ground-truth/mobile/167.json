@@ -1,0 +1,164 @@
+{
+  "cv_id": "cv_128",
+  "full_name": "TRẦN QUỐC VƯƠNG",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "I’ve taken 3 years of experience in mobile application development. Including 1 year working as a FullStack Developer. I have a strong passion for creating mobile applications. Currently, I am also a TeamLeader for the company whose job is to orient team development, build resources, optimize code and manage people.",
+  "education": [
+    {
+      "school": "Open University",
+      "major": "",
+      "degree": "",
+      "start_date": "2017",
+      "end_date": "2021"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SunShine Software",
+      "position": "Mobile Developer",
+      "start_date": "2021-01",
+      "end_date": "",
+      "description": []
+    },
+    {
+      "company": "Enrich&Co",
+      "position": "Mobile Developer",
+      "start_date": "2021-08",
+      "end_date": "",
+      "description": []
+    },
+    {
+      "company": "Blackwind Software",
+      "position": "Mobile Developer",
+      "start_date": "",
+      "end_date": "Present",
+      "description": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Hesman",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks",
+        "Animations",
+        "I18n"
+      ],
+      "description": "Hesman's internal use application. Saving and optimizing features help employees save time on work. Implement UI/UX for designer by giving solutions. Implement features ( Calendar, Dashboard, etc ... ) Integrate and improve the efficiency of APIs Build Testflight and demo application for clients"
+    },
+    {
+      "name": "Prostylee",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks",
+        "Animations",
+        "I18n"
+      ],
+      "description": "This application is an e-commerce platform for the sale of clothes. Implement UI/UX for designer by giving solutions. Implement features ( Calendar, Dashboard, etc ... ) Integrate and improve the efficiency of APIs Build Testflight and demo application for clients"
+    },
+    {
+      "name": "Mango Pay",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks"
+      ],
+      "description": "Order making application for beauty stores. Implement new feature for app. Develop calendar book screen and accompanying features. Work with react-native-webview to interact deeply with the system's website. Use websocket to communicate between system and app."
+    },
+    {
+      "name": "Mango POS",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks",
+        "ConnectyCube"
+      ],
+      "description": "Appointment booking application for beauty stores. Implement new feature for app. Optimize and maintain existing features Develop calling and texting features with connectycube"
+    },
+    {
+      "name": "FFL",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks"
+      ],
+      "description": "Application to make friends, call and text like a social network. Implement new feature for app. Optimize and maintain existing features"
+    },
+    {
+      "name": "HoangHaMobile",
+      "role": "",
+      "technologies": [
+        "React-native",
+        "Restful API",
+        "Redux",
+        "Hooks"
+      ],
+      "description": "Timekeeping and internal management application, order creation and management for Hoang Ha Mobile. Implement new feature for app. Optimize and maintain existing features"
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "Java",
+    "Kotlin",
+    "Swift",
+    "React Native",
+    "Redux",
+    "Redux Toolkit",
+    "Redux Saga",
+    "React Native Element",
+    "Firebase",
+    "Visual Studio Code",
+    "Postman",
+    "Swagger",
+    "SourceTree",
+    "Android Studio",
+    "Xcode",
+    "Google Develop",
+    "Map",
+    "Mlkit",
+    "Git",
+    "merge",
+    "rebase",
+    "cherry-pick",
+    "Payment Service",
+    "Zalo Pay",
+    "ShopeePay",
+    "POS",
+    "VNPay",
+    "VCB",
+    "Payoo",
+    "Restful API",
+    "Hooks",
+    "Onepay",
+    "VTB",
+    "Animations",
+    "I18n",
+    "PAX",
+    "Clover",
+    "websocket",
+    "react-native-webview",
+    "ConnectyCube"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Standard communications"
+    }
+  ]
+}

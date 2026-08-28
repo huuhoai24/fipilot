@@ -1,0 +1,206 @@
+{
+  "cv_id": "cv_037",
+  "full_name": "Carrie Burgener",
+  "email": "carrie@sims.berkeley.edu | carrie@parsons.edu",
+  "phone": "715.252.3727",
+  "location": "",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of California Berkeley",
+      "major": "",
+      "degree": "",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "Parsons School of Design",
+      "major": "Design and Technology",
+      "degree": "Master of Fine Arts",
+      "start_date": "2001",
+      "end_date": "2003"
+    },
+    {
+      "school": "University of Wisconsin Stevens Point",
+      "major": "Computer Information Systems",
+      "degree": "Bachelors of Science",
+      "start_date": "1997",
+      "end_date": "2001"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "University of Wisconsin Stevens Point",
+      "position": "Assistant Professor",
+      "start_date": "2004-01",
+      "end_date": "2004-08",
+      "description": [
+        "Taught courses including, Digital Media Creation, 3-D Computer Graphics, and A Survey of Internet, Technology and New Media Arts.",
+        "Served on the WDMD curriculum committee.",
+        "Taught the first senior seminar/project course.",
+        "Students worked in a team of five to develop a real world project from start to finish."
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Adjunct Professor",
+      "start_date": "2003-09",
+      "end_date": "2003-12",
+      "description": [
+        "taught two required BFA in Design and Technology Multimedia Programming courses.",
+        "The classes focused on programming fundamentals for new media artists projects were developed using Flash ActionScript."
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Instructor",
+      "start_date": "2002-09",
+      "end_date": "2002-12",
+      "description": [
+        "undergraduate elective course, Multimedia with Director."
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Instructor",
+      "start_date": "2002-06",
+      "end_date": "2002-08",
+      "description": [
+        "Code Instructor for MFADT Digital Boot Camp.",
+        "Boot camp is a summer intensive to prepare new MFADT students for the fall.",
+        "Taught using Design by Numbers and Flash Action Script"
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Teachers Assistant",
+      "start_date": "2002-01",
+      "end_date": "2002-12",
+      "description": [
+        "Responsible for teaching a lab section of the graduate Programming and Computation class.",
+        "Topics included: basic C programming, construction of gates using bread boards, computer hardware, as well as others."
+      ]
+    },
+    {
+      "company": "Yahoo Research Lab Berkeley",
+      "position": "Internship",
+      "start_date": "2005-06",
+      "end_date": "2005-08",
+      "description": [
+        "Interaction Design, working with time-based tagging systems, and mobile applications.",
+        "Team Lead for User Experience Design group"
+      ]
+    },
+    {
+      "company": "University of California Berkeley",
+      "position": "Graduate Research Assistant",
+      "start_date": "2004-06",
+      "end_date": "2005-08",
+      "description": [
+        "Started as a Mobile Media Metadata 2 (MMM2) Interaction Design Team member.",
+        "Team lead for the continued research of MMM2 during the 2004-2005 school year and the summer of 2005."
+      ]
+    },
+    {
+      "company": "Atlantic Records",
+      "position": "Contract Developer",
+      "start_date": "2003-10",
+      "end_date": "2003-11",
+      "description": [
+        "Developed web-based projects including photo galleries for bands, php back-end scripts for Flash Movies, and a suite of production scheduling tools.",
+        "Worked with technologies including, MySQL, Flash, Action Script, ASP, PHP and XML."
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Student Council Member",
+      "start_date": "2003-01",
+      "end_date": "2003-05",
+      "description": [
+        "Chair of Thesis Show Website Committee.",
+        "Worked with a team of five to develop a website to showcase the work that was being displayed at the thesis show.",
+        "Also acted as the lead programmer, developing the database, data entry pages, and the thesis website itself."
+      ]
+    },
+    {
+      "company": "Parsons School of Design",
+      "position": "Student Council Member",
+      "start_date": "2003-01",
+      "end_date": "2003-05",
+      "description": [
+        "Member of the Thesis Show Catalog Committee.",
+        "Collaborated with team members to produce a printed catalog of thesis work.",
+        "Developed a database system that allowed MFADT students to input the information required in the catalog."
+      ]
+    },
+    {
+      "company": "New York Immigration Coalition",
+      "position": "Internship",
+      "start_date": "2002-06",
+      "end_date": "2002-08",
+      "description": [
+        "Worked collaboratively with three MFADT students on a data-driven website using PHP and MySQL."
+      ]
+    },
+    {
+      "company": "Marshfield Clinic",
+      "position": "Programmer Analyst Internship",
+      "start_date": "1999-06",
+      "end_date": "2000-08",
+      "description": [
+        "Worked collaboratively with a mentor to create Graphic User Interface (GUIs) programs in Visual C++."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Busy Signals: Telephonic Art in Motion",
+      "role": "",
+      "technologies": [],
+      "description": "Designed and developed an art installation enabling the audience to share pictures taken during the show or taken previously with other audience members. The photos were then displayed on the 12-foot screen provided at the archive."
+    },
+    {
+      "name": "Jot",
+      "role": "",
+      "technologies": [],
+      "description": "a tool for collaborative information capture. Exhibited my thesis project “Jot” in the MFADT Show, at the Parsons School of Design gallery."
+    },
+    {
+      "name": "Sniffer",
+      "role": "",
+      "technologies": [],
+      "description": "Video of a full-body, physical, two player game called “Sniffer” was displayed during the exhibition."
+    }
+  ],
+  "skills": [
+    "Flash",
+    "Flash Action Script",
+    "MySQL",
+    "PHP",
+    "Director",
+    "Lingo Programming",
+    "Designing Education",
+    "Designed Play",
+    "Collaboration Studio",
+    "Spectacular Experiences in Media",
+    "C++",
+    "Visual Basic",
+    "ASP",
+    "Access",
+    "Excel",
+    "Word",
+    "Systems Analysis and Design",
+    "Computer Hardware and Networking",
+    "Database Design",
+    "Oracle",
+    "Web Design",
+    "3DStudio Max",
+    "XML",
+    "C programming",
+    "Design by Numbers",
+    "Interaction Design",
+    "User Experience Design"
+  ],
+  "certifications": [],
+  "languages": []
+}

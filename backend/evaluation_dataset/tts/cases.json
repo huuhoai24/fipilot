@@ -1,0 +1,18 @@
+{
+  "synthetic": true,
+  "description": "Non-sensitive technical interview prompts for TTS timing only.",
+  "cases": [
+    {"case_id": "tts_001", "text": "Please explain how dependency injection improves testability in a FastAPI service."},
+    {"case_id": "tts_002", "text": "Describe a production incident where monitoring helped you identify the root cause."},
+    {"case_id": "tts_003", "text": "How would you design a safe database migration for a high traffic application?"},
+    {"case_id": "tts_004", "text": "Compare optimistic and pessimistic concurrency control using a practical example."},
+    {"case_id": "tts_005", "text": "Bạn sẽ tối ưu độ trễ của một dịch vụ xử lý ảnh thời gian thực như thế nào?"},
+    {"case_id": "tts_006", "text": "Hãy giải thích cách bạn kiểm thử một API bất đồng bộ trước khi triển khai production."},
+    {"case_id": "tts_007", "text": "What tradeoffs would you consider when deploying PyTorch inference with TensorRT?"},
+    {"case_id": "tts_008", "text": "Explain how Kubernetes readiness and liveness probes serve different purposes."},
+    {"case_id": "tts_009", "text": "Walk through your approach to diagnosing a memory leak in a Docker container."},
+    {"case_id": "tts_010", "text": "How do you preserve ordering and idempotency in an event driven workflow?"},
+    {"case_id": "tts_011", "text": "Hãy mô tả cách bạn xử lý lỗi nhận dạng giọng nói trong một phiên phỏng vấn trực tuyến."},
+    {"case_id": "tts_012", "text": "Explain the security boundaries you would apply to a multi tenant web application."}
+  ]
+}

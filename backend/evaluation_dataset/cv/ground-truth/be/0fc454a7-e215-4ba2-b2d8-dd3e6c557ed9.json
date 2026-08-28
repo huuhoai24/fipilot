@@ -1,0 +1,102 @@
+{
+  "cv_id": "cv_033",
+  "full_name": "NGHIEM DANG MINH NHAT",
+  "email": "",
+  "phone": "",
+  "location": "Tan Binh District, HCMC",
+  "summary": "Mr. Nhat is hard-work, flexible, open-minded, professional, and keen on with more than 04 YEARS’ of experience working in the development application MS Dynamics AX 2012 R2 with internal customers and external vendors to develop functional business system design, solutions in which 2+ years’ working with ODOO V14 (Python).",
+  "education": [
+    {
+      "school": "INDUSTRIAL UNIVERSITY OF HO CHI MINH CITY",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2008",
+      "end_date": "2012"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "ILA VIET NAM",
+      "position": "Business Application Executive",
+      "start_date": "2018",
+      "end_date": "2022",
+      "description": [
+        "Successfully built and developed “School Management” - new version - This is the student management module, from finding customers in CRM to registering for courses, paying tuition, publishing e-invoices, scheduling lessons for teachers, calculating revenue...",
+        "Successfully built and developed “ILO Module” for the Kindergarten management module.",
+        "Meeting with the departments to analyze and design workflow for a new sale process and enhancement.",
+        "Building and developing a new register and payment process for the sales department.",
+        "Build reports for accountants and sales teams to control their work.",
+        "Design and create a new database that matches management requirement",
+        "Customize and develop new modules in Microsoft Dynamics AX 2012 R2, based on customer requirements for changing business",
+        "Using Excel and Word macros to create Microsoft Dynamic AX 2012 R2 process automation.",
+        "Query data from SQL to do business reports",
+        "Build integration of e-invoices for payment through API with operations such as issuing, canceling, and adjusting invoices.",
+        "Demonstrated experience with performance tuning of customized code and monitoring practices to ensure ongoing performance.",
+        "Manage the research of technical solutions to meet strategic business objectives.",
+        "Hands-on designing, implementing, modifying, troubleshooting, testing, and debugging Microsoft Dynamics AX 2012 ERP software product using X++ programming language",
+        "Demonstrate the ability to work systematically and logically to analyze situations, resolve problems, identify causes, and anticipate implications.",
+        "Break down functional requirements into technical designs and development tasks and execute to completion.",
+        "Ability to prioritize work and spend time on the most important, business-identified concerns",
+        "Maintain regular contact with internal customers to anticipate, identify and respond to their needs and expectations.",
+        "Support to training end users."
+      ]
+    },
+    {
+      "company": "SEARCHING WOLRD LTC. CO.",
+      "position": "Business Application Supervisor",
+      "start_date": "2010",
+      "end_date": "2018",
+      "description": [
+        "Meeting the customer to build the SEO chains by requirement.",
+        "Analyze data and look for ways to keep a website's search rating among the top three on Google's search results pages",
+        "Managing SEO team to write and build trendy content on website, and Facebook for partners.",
+        "Using Photoshop, and Illustrator to design logo and WordPress website themes",
+        "Developing plugins, add on WordPress framework",
+        "Fixing and solve issues on WordPress framework."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Communication skills (English)",
+    "Research and new technology application",
+    "System analysis and review",
+    "X++",
+    ".NET C#",
+    "Python",
+    "SQL",
+    "XML",
+    "SSRS",
+    "Odoo V14 Framework",
+    "T-SQL",
+    "relational database",
+    "SQL Server",
+    "Microsoft SQL Reporting Services",
+    "Dynamics AX 2012 MorphX IDE",
+    "Visual Studio 2010",
+    "Visual Studio 2013",
+    "SQL Server 2008 R2",
+    "SQL Server 2012",
+    "Git",
+    "Pycharm IDE",
+    "Microsoft Dynamics AX 2012 R2",
+    "ODOO V14",
+    "Excel",
+    "Word macros",
+    "API",
+    "Photoshop",
+    "Illustrator",
+    "WordPress"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Native"
+    },
+    {
+      "language": "English",
+      "level": "Fluent"
+    }
+  ]
+}

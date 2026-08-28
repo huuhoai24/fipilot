@@ -1,0 +1,264 @@
+{
+  "cv_id": "cv_014",
+  "full_name": "Chris Mahoney",
+  "email": "chrismahoney@hotmail.com",
+  "phone": "+61 438 617 516",
+  "location": "Sydney, Australia",
+  "summary": "I am an astute and engaged individual. Whilst working full-time, I have completed a double degree part-time, and a Master’s degree. I continue to Volunteer with Rotary International; focusing on leadership development programs. I can maintain high levels of success in all areas of my professional life. As proven by my achievements: Dean's Medal, Golden Key, Citizens Scholar, Academic Engagement Award. I am keenly interested in Data Science, Innovation, Continuous Improvement, Lean Six Sigma, Big Data Analytics. I am competent in multiple programming languages (Python, R, SQL, M), and am experienced in many analytical platforms (SSRS, PowerBI, MiniTab, RStudio, Azure, Jupyter). Moreover, I have a very pragmatic approach to work, always asking questions like \"How can this improve business outcomes?\". I strike a perfect balance between business acumen and technical expertise.",
+  "education": [
+    {
+      "school": "University of Technology Sydney",
+      "major": "Data Science & Innovation",
+      "degree": "Master Data Science & Innovation",
+      "start_date": "2019",
+      "end_date": "2022"
+    },
+    {
+      "school": "Western Sydney University",
+      "major": "Applied Leadership and Critical Thinking",
+      "degree": "Bachelor of Applied Leadership and Critical Thinking",
+      "start_date": "2014",
+      "end_date": "2018"
+    },
+    {
+      "school": "Western Sydney University",
+      "major": "Business and Commerce - Advanced Business Leadership (Management)",
+      "degree": "Bachelor of Business and Commerce - Advanced Business Leadership (Management)",
+      "start_date": "2012",
+      "end_date": "2017"
+    },
+    {
+      "school": "Benchmark College",
+      "major": "",
+      "degree": "Diploma of Management",
+      "start_date": "2011",
+      "end_date": "2011"
+    },
+    {
+      "school": "Benchmark College",
+      "major": "",
+      "degree": "Cert IV in Training and Assessment",
+      "start_date": "2011",
+      "end_date": "2011"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "DB Schenker",
+      "position": "Data Scientist: Contract Logistics Specialist",
+      "start_date": "2022-01",
+      "end_date": "Present",
+      "description": [
+        "Lead Data Scientist: For all Warehousing Analytics projects and innovations across Australia & New Zealand.",
+        "Agile Champion: Leading 6 different projects in both Scrum & Kanban style, with both domestic and international teams.",
+        "Lead Developer: For PowerBI dashboards, Azure big-data pipelines, and applied machine-learning algorithms.",
+        "Researcher: For advanced mathematical models (machine learning & operations research), and productionisation of advanced analytical concepts.",
+        "Educator: Enthusiastic knowledge sharing of processes, concepts, & successes, through regular tech-talks, blogs, newsletters & 1-on-1 mentoring."
+      ]
+    },
+    {
+      "company": "University of Technology Sydney",
+      "position": "Academic & Support Lecturer",
+      "start_date": "2020-02",
+      "end_date": "Present",
+      "description": [
+        "Casual Academic: Lecturer for Deep Learning",
+        "Casual Academic: Masters of Data Science and Innovation",
+        "Board Member (Student Rep): School of Transdisciplinary Education",
+        "Support Lecturer: Machine Learning Algorithms and Applications",
+        "Teachers Assistant: Data Algorithms and Meaning"
+      ]
+    },
+    {
+      "company": "DB Schenker",
+      "position": "Senior IT BA: Technical Lead & AU Innovation Champion",
+      "start_date": "2019-10",
+      "end_date": "2021-12",
+      "description": [
+        "Lead Business Analyst: IT Solutions Development and Implementation for Contract Logistics.",
+        "Demand Management: Prioritisation and Delegation of Software Development tasks.",
+        "Innovation Management: Business Advocate for new products/services/processes for Innovation & Digitisation in Australia.",
+        "Change Management: Key Coordinator between Business Operations and IT Development teams for Application Enhancements.",
+        "Analytical Solutions Leader: Business Architect for Machine Learning, Data Modelling, Predictive Analytics, Artificial Intelligence, and Big Data Solutions.",
+        "Team Leader: NextGen IT Team for System Development and Customer Migration.",
+        "Iteration Manager: Daily Agile Meetings and Kanban-style IT Project management."
+      ]
+    },
+    {
+      "company": "DB Schenker",
+      "position": "IT Business Analyst: NextGen System and Business Innovation",
+      "start_date": "2018-06",
+      "end_date": "2019-10",
+      "description": [
+        "Lead Developer: Live and interactive BI Dashboards using SSRS and PowerBI.",
+        "Lead Analyst: IT Solutions Development and Implementation.",
+        "Systems Analyst: Providing intimate systems support for key customer during large-scale product launch.",
+        "IT Specialist: IT Security Auditing and migration to Secure-Shell connections.",
+        "Implementations Specialist: Customer migrations from Legacy to NextGen Warehouse Management System.",
+        "Subject Matter Expert: Data visualisation, real-time operational reporting, and user-friendly dashboard design."
+      ]
+    },
+    {
+      "company": "Toll Global Express",
+      "position": "Business Systems Analyst",
+      "start_date": "2016-05",
+      "end_date": "2017-11",
+      "description": [
+        "Lead Analyst: Customer forecasting and operational performance.",
+        "Developer: Depot-level and customer-specific forecasting models.",
+        "Forecaster: t-SQL-based data model to forecast received volume per customer, per freight-profile, per day; achieving an accuracy of within 2.5%.",
+        "Data Visualiser: Dynamic analytics dashboards and interactive reports."
+      ]
+    },
+    {
+      "company": "TNT/FedEx",
+      "position": "National Service Quality Analyst",
+      "start_date": "2017-11",
+      "end_date": "2018-05",
+      "description": []
+    },
+    {
+      "company": "Toll IPEC",
+      "position": "Business Analyst - Operations Support",
+      "start_date": "2015-08",
+      "end_date": "2016-05",
+      "description": []
+    },
+    {
+      "company": "Toll Specialised Solutions",
+      "position": "NSW Operations Manager",
+      "start_date": "2015-05",
+      "end_date": "2018-06",
+      "description": []
+    },
+    {
+      "company": "Toll IPEC",
+      "position": "NSW Risk Coordinator",
+      "start_date": "2014-06",
+      "end_date": "2015-07",
+      "description": []
+    },
+    {
+      "company": "Toll IPEC",
+      "position": "Internal Sales Consultant",
+      "start_date": "2013-05",
+      "end_date": "2014-06",
+      "description": []
+    },
+    {
+      "company": "Toll Express",
+      "position": "PM Shift Operations Supervisor",
+      "start_date": "2011-11",
+      "end_date": "2013-05",
+      "description": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Onboarding of Critical Business Applications to Azure Big-Data Ecosystem",
+      "role": "",
+      "technologies": [
+        "Azure Data Factory",
+        "DataBricks",
+        "Azure-ML",
+        "Synapse",
+        "Spark",
+        "Blob-storage"
+      ],
+      "description": "The solution is built in Azure ecosystem, with Data Factory, DataBricks, Azure-ML, Synapse, Spark and scalable Blob-storage. I designed, architected, planned, managed, implemented, and delivered the entire project end-to-end. Some Technical & Business support provided from consultants and developers within DB Schenker."
+    },
+    {
+      "name": "Development of Warehouse Digital Twin",
+      "role": "",
+      "technologies": [
+        "Python",
+        "graph-based machine learning algorithms"
+      ],
+      "description": "With inspiration from other industries which utilise Digital Twin Technologies, built and deployed a Warehouse Digital Twin tool. Develop pure-Python application, with complete documentation and seamless API integration. Utilise graph-based machine learning algorithms to deliver distance-based optimisation and real-time re-slotting capabilities."
+    },
+    {
+      "name": "Workforce Capacity Planning",
+      "role": "",
+      "technologies": [
+        "time-series forecasting models"
+      ],
+      "description": "Utilise historic data to formulate time-series forecasting models to predict future volume quantity. Implement real-time data set and high-quality dashboard. Impart data-driven analytical advice for the Operations team to improve their daily performance results."
+    },
+    {
+      "name": "Exploring Undernourishment",
+      "role": "",
+      "technologies": [
+        "tree-based predictive model"
+      ],
+      "description": "Explore the open-source Global data from the Food and Agricultural Organisation of the United Nations. Implement tree-based predictive model for predicting the Prevalence of Undernourishment. Wrote an open-source App and published an 8-part Blog piece."
+    },
+    {
+      "name": "Reduction of Outstanding POD's",
+      "role": "Project manager",
+      "technologies": [
+        "Lean Six Sigma"
+      ],
+      "description": "Reduction of Outstanding Proof of Delivery (POD) consignments from 1.4% (aprox. 800 cons. per week) to a stable 0.3% (aprox. 150 cons. per week). Project manager for a cross-functional team of 10 people, utilising Lean Six Sigma technologies and methodologies. Achieved a sustainable result whilst managing competing priorities and various operational challenges (eg. politics, resources, and procedure documentation)."
+    },
+    {
+      "name": "TGX Sales Operations Planning Rollout",
+      "role": "",
+      "technologies": [],
+      "description": "Establish in-depot forecasting, using historic data and customer intelligence. Facilitate Operations flexibility to gear up or down the labour requirements. Deliver flexible database back-end, and interactive dashboard tools."
+    },
+    {
+      "name": "IPEC KPI Development",
+      "role": "",
+      "technologies": [],
+      "description": "Developed a suite of 88 Key Performance Indicators (KPI’s) for use by IPEC Operations teams, Managers, Frontline Supervisors, & C-Suite Executives. Directly responsible for the development, documentation and implementation of dashboards to the KPI's to key stakeholders."
+    },
+    {
+      "name": "Bungarribee Operational Turnaround",
+      "role": "",
+      "technologies": [],
+      "description": "As part of the Bungarribee Operations team, directly contributed to a reduction in Operational costs of $3.2Mil. Focusing on three primary areas: 1. Conversion of labour from casual to permanent; 2. 80% reduction in Overtime 2.0; and 3. Purchasing of fleet vehicles to replace rentals. The end result yielded upwards of $7.2Mil in annualised savings ($4Mil above original estimates), due to a further reduction in Overtime 1.5."
+    }
+  ],
+  "skills": [
+    "Excel",
+    "PowerBI",
+    "SSRS",
+    "MiniTab",
+    "DataBricks",
+    "RStudio",
+    "Jupyter",
+    "SQL",
+    "Python",
+    "R",
+    "M",
+    "Azure",
+    "GitHub",
+    "AWS",
+    "AzureML",
+    "caret",
+    "Sk-Learn",
+    "tidyverse",
+    "TensorFlow",
+    "PyTorch",
+    "Leadership",
+    "Artificial Intelligence & Machine Learning",
+    "Data Analysis",
+    "Change Management",
+    "Logistics",
+    "Data Science",
+    "Innovation",
+    "Continuous Improvement",
+    "Lean Six Sigma",
+    "Big Data Analytics"
+  ],
+  "certifications": [
+    "Lean Six Sigma Green Belt",
+    "Lean Six Sigma Yellow Belt",
+    "Paul Harris Fellow",
+    "Paul Harris Fellow 1st Sapphire",
+    "Duke of Edinburgh's Award Gold",
+    "Duke of Edinburgh's Award Silver",
+    "Duke of Edinburgh's Award Bronze"
+  ],
+  "languages": []
+}

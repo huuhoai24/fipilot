@@ -1,0 +1,122 @@
+{
+  "cv_id": "cv_097",
+  "full_name": "Pham Hai Ninh",
+  "email": "",
+  "phone": "",
+  "location": "141/B2, 10 Quater, Tan Phong Ward, Bien Hoa City, Dong Nai Province.",
+  "summary": "+ Managing an application portfolio and associated projects. + Building a strong technical culture around business system s + Working with high technology, digital transform ation environm ent. + Im plem ent ERP system s for businesses in all career. + Becom e a m anagem ent, have the ability to analyze, plan, m anage projects, solve problem s, and contribute to the im provem ent of the com pany. + Working with partners and colleagues in professionalism .",
+  "education": [
+    {
+      "school": "LAC HONG UNIVERSITY",
+      "major": "IT MAJOR Developm ent Software & Network conı\u0000guration.",
+      "degree": "",
+      "start_date": "2008",
+      "end_date": "2012"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "ON SEMICONDUCTOR",
+      "position": "ENGINEER",
+      "start_date": "2022-10",
+      "end_date": "Present",
+      "description": [
+        "Analyzing business operations and the business's com puter system s and determ ining which software applications could im prove efı\u0000ciency.",
+        "Monitoring the roll-out of new software applications to ensure there are no problem s, m ake sure related to project on schedule.",
+        "Troubleshooting and resolving any problem s with business application software, level 3 support global.",
+        "Creating and overseeing protocols and procedures for the use of any new software applications.",
+        "Analyze and develop m ore features and reports to m atch with business requirem ents.",
+        "Make sure the data integrity, data traceability when needed from Tesla custom er.",
+        "Working with production departm ents, ensuring the m achine in production lines operating 24/7.",
+        "Work with vendor about new m achine, m achine software and deploy to production line term inals.",
+        "Project im plem entation, acceptance and applications evaluation before release to all factory.",
+        "Evaluate the perform ance of applications, provide solutions and strategies for IT group global.",
+        "Maintaining up-to-knowledge of the latest software developm ents.",
+        "Making recom m endations on whether to upgrade the existing system s or install new ones.",
+        "Training em ployees on the use of any new software applications and m aintaining a good work atm osphere.",
+        "Support departm ents when operating the system Managing ERP system (user m anagem ent, decentralization, installation of additional developm ent parts required by partners, ...)"
+      ]
+    },
+    {
+      "company": "BOWKER GARMENT CO., BINH DUONG (WIN HANVERKY GROUP)",
+      "position": "ANALYST",
+      "start_date": "2019-01",
+      "end_date": "2022-09",
+      "description": [
+        "Im plem ent and roll-out applications for all site com pany.",
+        "Managem ent with Production departm ent setup digital transform based on tracking garm ent, efı\u0000ciency, and incentives, apply for Kanban dashboard show all operation processing workı\u0000ow.",
+        "Planning, give solution to IT group on D365 system , provide to Merchandise and Finance departm ent based on m anagem ent and control Fix Assets, cash ı\u0000ow tracking, cost m anagem ent.",
+        "Build with Planning Departm ent on schedules, raw m aterials, and cost estim ates to plan production, closely with the FastReact system .",
+        "Cooperat with the HR Departm ent to collect em ployee data, tim ekeeping, and policies for em ployees on the HRIS system .",
+        "Managem ent for the Warehouse system including fabrics and accessories, Stock-In, Stock-Out, Inventory, m onthly reports, Cycle Count report, and Warehouse dashboard.",
+        "Control together with the Quality Departm ent to regularly evaluate products, apply m anagem ent system s, m onitor progress, signal problem s, and com ply with international quality rules.",
+        "Follow with Shipping and Packing departm ent, m ake sure Invoice inform ation, Electronic Delivery Notes (eDN), Packing List (PKL) are on tim e.",
+        "Do other jobs on AD, DHCP related to Infrastructure, closely with applications such as Zabbix, vSphere, Access Point. Besides, backup database, and server for daily tasks, apply GPO script to Active Directory.",
+        "Work together with 3rd parties about adjustm ents to im prove the system for the factory.",
+        "Training courses on using the system for users, and m aterial docum ents archives.",
+        "Planning processes, policies, and regulations related to IT group.",
+        "Work with applications of custom er partners (Adidas, Nike, Under Am our, REI, Lacoste ).",
+        "Other reports from the General Manager."
+      ]
+    },
+    {
+      "company": "ASIA GARMENT CO., DONG NAI (ESQUEL GROUP)",
+      "position": "IT SUPERVISOR",
+      "start_date": "2017-12",
+      "end_date": "2018-12",
+      "description": [
+        "Maintenance and troubleshooting issues related to Production MES system , m aking sure all line operations in the factory work 24/7, and sm oothly.",
+        "Im plem ent all application projects related to other departm ents (Planning, Shipping, Warehouse, Finance, Purchasing) such as FastReact, Invoice Managem ent, Inventory Managem ent, Fix Asset, )",
+        "Working together with HR departm ent for tim ekeeping, Attendance Managem ent, and HRIS application.",
+        "Deploym ent projects for all factory like as Kanban, SCADA, Efı\u0000ciency Dashboard, and Output Dashboard.",
+        "Upgrade, m aintain, and deploy servers locally, work with the Infrastructure team to ensure the system , and servers running stably, with the highest y , g y, g perform ance, backup database, and server for daily tasks.",
+        "Working with external third-party suppliers to m ain tain and custom ize system related to Custom ers (Hazzy, Pum a, Tom y, Nike).",
+        "Kaizen, Lean reports for the factory, and other reports from group."
+      ]
+    },
+    {
+      "company": "C.P VIET NAM CO., DONG NAI (CP GROUP)",
+      "position": "HUMAN RESOURCE INFORMATION SYSTEM",
+      "start_date": "2013-01",
+      "end_date": "2017-11",
+      "description": [
+        "Handling issues related to HR system , attendance, payroll and em ployee data.",
+        "Developm ent and build som e function, m odules related to HR such as Recruitm ent m anagem ent, Foreigner m anagem ent, Contract m anagem ent, Contract appendices, and Survey m anagem ent.",
+        "Installing and conı\u0000guring tim ekeepers, autom atically synchronizing working tim e for all branches of the com pany.",
+        "Coordinate with other departm ent about salary and tax operations on the Sm artHR/Workday system .",
+        "Paym ent business for HR support in the SAP system .",
+        "Collaborate with IT departm ent to im plem ent server, m aintainance, and backup HR's database.",
+        "Making reports from Managem ent and group."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Ofı\u0000ce 365",
+    "MS Team",
+    "Sharepoint",
+    "Oracle",
+    "SQL Server",
+    "MySQL",
+    "HTML",
+    "CSS",
+    "VB",
+    "C#",
+    "Java",
+    "AD",
+    "DHCP",
+    "GPO",
+    "VMware ESXi 7.0",
+    "Zabbix",
+    "Secs/gem",
+    "Process Autom ation Controller"
+  ],
+  "certifications": [
+    "ISO 27001:2013 (ICCA)",
+    "ISO 14001:2015 (BUREAU VERITAS VIET NAM)",
+    "TOEIC (IIG VIET NAM, HCM)",
+    "MCSA 2008 (NHAT NGHE NETWORK ACADEMY, HCM)",
+    "Certiı\u0000cate Microsoft Transcript ID (1042705) - Access Code (headshot1)"
+  ],
+  "languages": []
+}

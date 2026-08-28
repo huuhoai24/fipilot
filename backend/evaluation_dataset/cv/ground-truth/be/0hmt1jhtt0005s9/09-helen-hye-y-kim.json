@@ -1,0 +1,220 @@
+{
+  "cv_id": "cv_043",
+  "full_name": "HELEN (HYE Y.) KIM",
+  "email": "helki@sims.berkeley.edu",
+  "phone": "415-595-6178",
+  "location": "662 Capp Street, #1, San Francisco, CA 94110-2691",
+  "summary": "Information architecture professional with over 9 years of experience working with Internet technologies. Strong background and skills in usability, needs assessment, prototyping, user interface design, and development. Master’s candidate in Information Management with a concentration in Human-Computer Interaction. Seeking positions in Information Architecture, User Experience and/or Interaction Design.",
+  "education": [
+    {
+      "school": "University of California at Berkeley",
+      "major": "Human-Computer Interaction",
+      "degree": "Master of Information Management & Systems",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "Barnard College, Columbia University",
+      "major": "Anthropology (minor in Biology)",
+      "degree": "Bachelor of Arts",
+      "start_date": "",
+      "end_date": "1995-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Institute of International Studies, UC Berkeley",
+      "position": "Database Usability Consultant",
+      "start_date": "2006-01",
+      "end_date": "Present",
+      "description": [
+        "Design and conduct user interviews and testing to pinpoint user problems with database interface.",
+        "Analyze findings, make design recommendations, and implement redesign.",
+        "Find and fix bugs in the PHP and mySQL code for final deployment of application."
+      ]
+    },
+    {
+      "company": "",
+      "position": "Mobile Shopper Mobile Prototype Workshop",
+      "start_date": "2006-01",
+      "end_date": "",
+      "description": [
+        "Worked with a small team of developers to design and implement a shopping application for the mobile phone using Python for Symbian OS and PHP for a week-long workshop.",
+        "Presented prototype to peers and Yahoo! Research team."
+      ]
+    },
+    {
+      "company": "School of Information Management, UC Berkeley",
+      "position": "Graduate Student Instructor",
+      "start_date": "2005-09",
+      "end_date": "2005-12",
+      "description": [
+        "Prepared and led discussion sessions on various technical, social and economic topics dealing with search engine technologies.",
+        "Gave advice and graded assignments and projects for a class of around 100 students."
+      ]
+    },
+    {
+      "company": "SAP Research",
+      "position": "HCI Researcher",
+      "start_date": "2005-06",
+      "end_date": "2005-08",
+      "description": [
+        "Conducted and produced a literature survey that investigated methods of mapping content to user and device-specific interfaces for the proactive user interface project.",
+        "Built a prototype to illustrate content mapping based on user profiles, pipelines and XSLT.",
+        "Identified a model-based mapping framework and presented findings to peers and other departments."
+      ]
+    },
+    {
+      "company": "Center for Social Services Research, UC Berkeley",
+      "position": "Webmaster",
+      "start_date": "2001-07",
+      "end_date": "2005-05",
+      "description": [
+        "Restructured the CSSR website to improve consistency, logic, and usability based on information architecture principles.",
+        "Completely rebuilt a small static HTML website into a large, complex, dynamic website with ASP server-side programming.",
+        "Originated a file-naming convention to organize and access data logically and consistently.",
+        "Established an extensive QA tracking system working with QA team to catch errors.",
+        "Added a searchable publications database with computer/PDA-accessible PDF downloads.",
+        "Using SAS-generated XML, generated printer-friendly/web-friendly pages using XSL.",
+        "Optimized search engine rankings with registration, meta-tags, and link-trades with related websites. Analyzed server logs.",
+        "Hired, trained, managed assistants to help update the website. Created training documentation."
+      ]
+    },
+    {
+      "company": "Terra Lycos, Inc.",
+      "position": "Web Developer",
+      "start_date": "2000-04",
+      "end_date": "2001-05",
+      "description": [
+        "Successfully delivered multiple \"Artist Special Feature\" pages for Lycos Music's largest client, (1M+ page views per feature). These top priority projects were highly time-sensitive and promoted throughout the network.",
+        "Hand-coded web pages using DHTML and ASP (in VBScript) according to design specifications.",
+        "Worked with Product Managers, Designers, and QA to ensure timeliness and quality of projects."
+      ]
+    },
+    {
+      "company": "International Center in NY",
+      "position": "Webmaster/ Communications Associate",
+      "start_date": "1997-01",
+      "end_date": "2000-02",
+      "description": [
+        "Supervised development, redesigned layout, edited, formatted, promoted new website and newsletter to recruit potential volunteers and international students.",
+        "Conducted monthly internet and e-mail workshops for members and volunteers.",
+        "Devised complex SQL queries, reports using dbase IV, Access databases for targeted mailings."
+      ]
+    },
+    {
+      "company": "Jumbo.com",
+      "position": "Marketing Assistant / Tracking Coordinator",
+      "start_date": "1996-09",
+      "end_date": "1996-12",
+      "description": [
+        "Tracked cost-per-1000-impressions (CPM) for online ads to ensure contractual compliance.",
+        "Developed documentation & trained co-workers on ad-serving NetGravity software."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Social Responsibility Barcode Project",
+      "role": "",
+      "technologies": [
+        "Flash lite plug-in",
+        "Symbian OS"
+      ],
+      "description": "Consumer application that scans product ID to return social and environmental manufacturing data. Proof-of-concept prototype developed for Flash lite plug-in and Symbian OS on the mobile phone."
+    },
+    {
+      "name": "UFOVis",
+      "role": "",
+      "technologies": [
+        "Yahoo! Maps API"
+      ],
+      "description": "Visualization of UFO sighting data incorporating the Yahoo! Maps API."
+    },
+    {
+      "name": "Collaborative Bargains Database Application",
+      "role": "",
+      "technologies": [
+        "PHP",
+        "mySQL"
+      ],
+      "description": "Shopping deals aggregator and search application developed using PHP and mySQL database."
+    },
+    {
+      "name": "SIMster Peer-to-Peer Network Application",
+      "role": "",
+      "technologies": [],
+      "description": "Distributed computing application that searches for, connects, and exchanges data with peer nodes on the network."
+    },
+    {
+      "name": "FilterFeeder prototype application",
+      "role": "",
+      "technologies": [
+        "smallx pipeline technology",
+        "XSL"
+      ],
+      "description": "RSS feeds application that filters out/for subject keywords developed with smallx pipeline technology and XSL."
+    },
+    {
+      "name": "Mobile Phone Art Tour Application",
+      "role": "",
+      "technologies": [
+        "Protégé ontology editor"
+      ],
+      "description": "Faceted metadata classification framework for a mobile public art tour application using Protégé ontology editor."
+    }
+  ],
+  "skills": [
+    "Dreamweaver",
+    "FrontPage",
+    "EditPlus",
+    "Visual InterDev",
+    "Eclipse",
+    "Perforce",
+    "NetBeans",
+    "Smallx Pipeline Technology",
+    "Ant",
+    "ImageReady",
+    "Photoshop",
+    "Media Cleaner Pro",
+    "Real Video plug-in technology",
+    "Macromedia Flash 8",
+    "Flash Lite",
+    "Aldus PageMaker (Mac and PC)",
+    "Visio",
+    "SPSS",
+    "Access",
+    "Dbase IV",
+    "ACT",
+    "MySQL",
+    "Oracle databases",
+    "WS-FTP",
+    "Cross-browser compatibilities",
+    "ASP (in VBScript)",
+    "PHP",
+    "Python (Symbian OS)",
+    "Java (working knowledge)",
+    "JavaScript",
+    "CSS",
+    "DHTML",
+    "AJAX",
+    "HTML (hand-coder)",
+    "XML",
+    "XSL",
+    "SQL",
+    "Excellent written and verbal communication skills",
+    "Demonstrated team player",
+    "Thrives in collaborative environments"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Korean",
+      "level": ""
+    },
+    {
+      "language": "French",
+      "level": ""
+    }
+  ]
+}

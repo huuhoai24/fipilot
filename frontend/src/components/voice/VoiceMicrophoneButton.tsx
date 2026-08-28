@@ -10,14 +10,14 @@ interface VoiceMicrophoneButtonProps {
 }
 
 const buttonLabels: Record<VoiceInterviewState, string> = {
-  [VoiceInterviewState.IDLE]: 'Ready',
-  [VoiceInterviewState.AI_THINKING]: 'AI interviewer is thinking',
-  [VoiceInterviewState.AI_SPEAKING]: 'AI interviewer speaking',
-  [VoiceInterviewState.WAITING_FOR_USER]: 'Start answer',
-  [VoiceInterviewState.USER_SPEAKING]: 'Stop and send answer',
-  [VoiceInterviewState.TRANSCRIBING]: 'Understanding your answer...',
-  [VoiceInterviewState.EVALUATING]: 'Evaluating your response...',
-  [VoiceInterviewState.INTERRUPTED]: 'AI speech interrupted',
+  [VoiceInterviewState.IDLE]: 'Sẵn sàng',
+  [VoiceInterviewState.AI_THINKING]: 'AI đang suy nghĩ câu hỏi...',
+  [VoiceInterviewState.AI_SPEAKING]: 'AI đang đọc câu hỏi (vui lòng nghe)',
+  [VoiceInterviewState.WAITING_FOR_USER]: 'Bắt đầu trả lời',
+  [VoiceInterviewState.USER_SPEAKING]: 'Dừng & nộp câu trả lời',
+  [VoiceInterviewState.TRANSCRIBING]: 'Đang nhận dạng câu trả lời...',
+  [VoiceInterviewState.EVALUATING]: 'Đang chấm điểm & đánh giá...',
+  [VoiceInterviewState.INTERRUPTED]: 'Đã dừng nói',
 }
 
 export function VoiceMicrophoneButton({
@@ -31,6 +31,8 @@ export function VoiceMicrophoneButton({
     || state === VoiceInterviewState.TRANSCRIBING
   const isReady = state === VoiceInterviewState.WAITING_FOR_USER
   const isSpeaking = state === VoiceInterviewState.AI_SPEAKING
+  const isButtonDisabled = disabled || !onClick || isSpeaking || isProcessing
+
   const Icon = isListening
     ? Mic
     : state === VoiceInterviewState.AI_THINKING
@@ -57,24 +59,29 @@ export function VoiceMicrophoneButton({
         <button
           type="button"
           onClick={onClick}
-          disabled={disabled || !onClick}
+          disabled={isButtonDisabled}
           aria-label={buttonLabels[state]}
           aria-pressed={isListening}
           className={cn(
-            'relative flex h-28 w-28 items-center justify-center rounded-full border shadow-lg transition-transform sm:h-32 sm:w-32',
+            'relative flex h-28 w-28 items-center justify-center rounded-full border shadow-lg transition-all sm:h-32 sm:w-32',
             'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus',
-            isListening && 'border-danger bg-danger text-white hover:scale-[1.03]',
-            state === VoiceInterviewState.IDLE && 'border-accent bg-accent text-accent-contrast hover:scale-[1.03] hover:bg-accent-hover',
-            isReady && 'border-accent bg-accent-soft text-accent',
-            isProcessing && 'cursor-not-allowed border-border bg-surface-raised text-text-muted',
-            isSpeaking && 'cursor-not-allowed border-accent/40 bg-accent-soft text-accent',
+            isListening && 'border-danger bg-danger text-white hover:scale-[1.03] cursor-pointer',
+            state === VoiceInterviewState.IDLE && 'border-accent bg-accent text-accent-contrast hover:scale-[1.03] hover:bg-accent-hover cursor-pointer',
+            isReady && 'border-accent bg-[#78b3a4] text-white hover:bg-[#669f91] hover:scale-[1.03] cursor-pointer',
+            isProcessing && 'cursor-not-allowed border-border bg-surface-raised text-text-muted opacity-80',
+            isSpeaking && 'cursor-not-allowed border-accent/40 bg-accent-soft/50 text-accent opacity-80',
             disabled && 'cursor-not-allowed opacity-50'
           )}
         >
           <Icon className={cn('h-10 w-10 sm:h-12 sm:w-12', isProcessing && 'animate-spin')} />
         </button>
       </div>
-      <span className="text-sm font-semibold text-text-primary">{buttonLabels[state]}</span>
+      <span className={cn(
+        'text-sm font-semibold',
+        isListening ? 'text-danger animate-pulse' : isSpeaking ? 'text-accent' : 'text-text-primary'
+      )}>
+        {buttonLabels[state]}
+      </span>
     </div>
   )
 }

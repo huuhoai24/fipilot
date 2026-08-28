@@ -1,0 +1,108 @@
+{
+  "cv_id": "cv_049",
+  "full_name": "Melissa A. Chan",
+  "email": "melissa@sims.berkeley.edu",
+  "phone": "",
+  "location": "",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of California, Berkeley",
+      "major": "Information Management and Systems",
+      "degree": "Master of Information Management and Systems",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "University of California, Santa Cruz",
+      "major": "Information Systems Management",
+      "degree": "B.S.",
+      "start_date": "",
+      "end_date": "2004-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SAP Labs",
+      "position": "Corporate Research Intern",
+      "start_date": "2004-05",
+      "end_date": "Present",
+      "description": [
+        "Project coordinator for a laptop asset tracking pilot using SAP AutoID Infrastructure and RFID technology. Responsibilities included: user requirements gathering, user interface specification, schedule and resource management, and site implementation.",
+        "Presented the pilot project to SAP customers and partners at SAP TechEd ’04.",
+        "Developed a mobile application using SAP Mobile Infrastructure to transform captured RFID data into XML messages then transferred the files to SAP AutoID Infrastructure for further processing.",
+        "Composed business scenarios for new business opportunities using SAP AutoID Infrastructure based on industry research and customer interviews. Gained an understanding of related technology such as RFID, sensor networks, and wireless tracking across the aerospace & defense, consumer products, and service industries."
+      ]
+    },
+    {
+      "company": "SAP Labs",
+      "position": "Supplier Relationship Management Intern",
+      "start_date": "2003-04",
+      "end_date": "2003-09",
+      "description": [
+        "Developed SAP Supplier Relationship Management (SRM) training materials for consultants, including demonstration exercises in the Eclipse development environment using Webdynpro and ABAP.",
+        "Researched and presented SAP Netweaver technologies related to Supplier Relationship Management to SAP consultants. Obtained a better understanding of web service technologies and its application to the SAP Netweaver platform."
+      ]
+    },
+    {
+      "company": "Stanford Linear Accelerator Center",
+      "position": "System Development Intern",
+      "start_date": "2002-06",
+      "end_date": "2002-12",
+      "description": [
+        "Created the front and back end of an online inventory system by designing database schemas for an Oracle database and integrated web pages in PHP.",
+        "Completed entire project development cycle from documentation, prototyping, user interface design, and user training for the online inventory system."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "",
+      "role": "",
+      "technologies": [
+        "RFID technology"
+      ],
+      "description": "Performed a detailed case study using analytical tools to address the development, management, and commercialization of RFID technology in the health care sector."
+    },
+    {
+      "name": "",
+      "role": "",
+      "technologies": [],
+      "description": "Analyzed Cisco System’s strategic use of information systems to reduce costs, improve productivity, and increase competitive advantage."
+    },
+    {
+      "name": "",
+      "role": "",
+      "technologies": [],
+      "description": "Redesigned an alumni network user interface based on user needs assessment, usability studies, and iterative prototyping. Redesign goals are to increase number of active users and support networking opportunities across graduating years. Project currently in progress."
+    }
+  ],
+  "skills": [
+    "Java",
+    "JSP",
+    "PHP",
+    "SQL",
+    "HTML",
+    "XML",
+    "MS Office",
+    "Access",
+    "Adobe Photoshop",
+    "Paint Shop Pro",
+    "Dreamweaver",
+    "Fireworks",
+    "Windows 9X/XP",
+    "Unix",
+    "Oracle",
+    "mySQL",
+    "SAP AutoID Infrastructure",
+    "RFID",
+    "SAP Mobile Infrastructure",
+    "Eclipse",
+    "Webdynpro",
+    "ABAP",
+    "SAP Netweaver",
+    "web service technologies"
+  ],
+  "certifications": [],
+  "languages": []
+}

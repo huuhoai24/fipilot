@@ -1,0 +1,131 @@
+{
+  "cv_id": "cv_044",
+  "full_name": "Liang Huang",
+  "email": "lhuang3@cis.upenn.edu",
+  "phone": "(215) 898-8543",
+  "location": "Philadelphia, PA 19104",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "Ph.D. Student",
+      "start_date": "",
+      "end_date": ""
+    },
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "M.S.E.",
+      "start_date": "",
+      "end_date": "2005-05"
+    },
+    {
+      "school": "Shanghai Jiao Tong University",
+      "major": "Computer Science",
+      "degree": "B.S.",
+      "start_date": "",
+      "end_date": "2003-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "University of Pennsylvania",
+      "position": "Instructor, CSE 399-004 Python Programming",
+      "start_date": "2006",
+      "end_date": "2006",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Teaching Assistant, CSE 320 Algorithms",
+      "start_date": "2005",
+      "end_date": "2005",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Teaching Assistant, CSE 262 Automata, Complexity & Computability",
+      "start_date": "2004",
+      "end_date": "2004",
+      "description": []
+    },
+    {
+      "company": "Information Sciences Institute, University of Southern California (USC/ISI)",
+      "position": "Visiting Research Assistant",
+      "start_date": "2005",
+      "end_date": "2005",
+      "description": [
+        "Research on Statistical Syntax-based Machine Translation",
+        "Synchronous Binarization for Decoding and Synchronous Parsing",
+        "Machine Translation as Lexicalized Parsing with Hooks",
+        "Stochastic Syntax-Directed Translation",
+        "Research on Tree-Transducer Algorithms",
+        "k-best extension of the Knuth 1977 Algorithm"
+      ]
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Graduate Research Fellow",
+      "start_date": "2003-09",
+      "end_date": "Present",
+      "description": [
+        "Research on both NLP (statistical parsing and Tree-Adjoining Grammars) and its application to the strutural modeling of biological sequences (in collaboration with Prof. Ken Dill's group at UCSF)."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Independent Study (Fall 2004)",
+      "role": "",
+      "technologies": [],
+      "description": "Research on algorithms for phylogeny reconstruction."
+    },
+    {
+      "name": "Independent Study (Spring 2004)",
+      "role": "",
+      "technologies": [
+        "Java"
+      ],
+      "description": "Research on Type-Directed Java, an extension to Generic Java."
+    }
+  ],
+  "skills": [
+    "Computational Linguistics",
+    "Efficient Algorithms for Parsing and Translation",
+    "Syntax-based Machine Translation",
+    "Grammar Formalisms and Tree Transducers",
+    "Theoretical Computer Science",
+    "Generic Dynamic Programming",
+    "Hypergraph and Semiring Frameworks",
+    "Algorithms for k-best Problems",
+    "Python",
+    "Java",
+    "C/C++",
+    "Pascal",
+    "O'Caml",
+    "Prolog",
+    "Perl",
+    "NLP",
+    "Statistical parsing",
+    "Tree-Adjoining Grammars",
+    "Structural modeling of biological sequences",
+    "Phylogeny reconstruction",
+    "Type-Directed Java"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Chinese (Wu/Mandarin)",
+      "level": "native"
+    },
+    {
+      "language": "English",
+      "level": "fluent"
+    },
+    {
+      "language": "French",
+      "level": "basic"
+    }
+  ]
+}

@@ -22,7 +22,9 @@ Create an interview plan from this CandidateProfile.
 The system is CV-driven. No job description is provided or required.
 
 Planner requirements:
-- Generate interview topics from the candidate's skills, projects, experiences, education, and specialization.
+- Generate interview topics from across ALL the candidate's skills, projects, experiences, and specialization matching the target role and objective '{interview_config.objective or "technical competencies"}'.
+- DIVERSIFY & RANDOMIZE TOPICS: Do not deterministically pick the first listed project or same topic for Round 1. Randomly sample from different relevant areas of the candidate's background (e.g., LLMs/RAG, Generative AI, PyTorch/Deep Learning, Computer Vision, Model Optimization, System Architecture, MLOps).
+- Ensure each round covers a distinctly different project, technology stack, or competency area from the CV.
 - Assign a difficulty level for each topic: easy, medium, or hard.
 - Include reasoning based on candidate evidence, especially skill_evidence, projects, and experiences.
 - Keep each objective and reasoning field to one concise sentence.

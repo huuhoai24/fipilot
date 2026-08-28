@@ -1,0 +1,89 @@
+{
+  "cv_id": "cv_096",
+  "full_name": "LONG DIEN TRAN BAO",
+  "email": "",
+  "phone": "",
+  "location": "Dist.6, HoChiMinh City",
+  "summary": "With 8 years of experience in full-stack marketing for tech products, including 4 years at the senior management level; I excel at leveraging multiple channels to maximize users engagement and product adoption. As a collaborative leader, I empower my team to engage and drive business success.",
+  "education": [
+    {
+      "school": "Hoa Sen University",
+      "major": "Business Administration",
+      "degree": "Bachelor Degree in Business Administration",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "FINAN (SOBANHANG)",
+      "position": "Senior Partnership Manager",
+      "start_date": "2022-01",
+      "end_date": "2023-09",
+      "description": [
+        "Collaborated with partners to integrate their products and services into the SoBanHang SaaS platform.",
+        "Developed and implemented marketing campaigns to drive revenue growth through partnerships.",
+        "Created and managed roll-out plans to ensure successful adoption of partnership features.",
+        "Coordinated with stakeholders to ensure smooth integration and operational efﬁciency.",
+        "Utilized data-driven insights from CRM tools to optimize growths.",
+        "Partners: HDBank, MBBank, BIDV, VietinBank, MaritimeBank, VNPT, NeoX, Droppi, Selly, Huuk, AccessTrade, Best Express, MoEngage"
+      ]
+    },
+    {
+      "company": "PPCLINK",
+      "position": "Senior Marketing Manager",
+      "start_date": "2020-03",
+      "end_date": "2021-05",
+      "description": [
+        "Led a lean team to drive user acquisition, retention, and revenue growth across apps within Vkids & PPCLink publishers.",
+        "Developed strategies to maximize user engagement and increase revenue through in-app purchases and partnerships.",
+        "Collaborated with internal stakeholders to optimize marketing campaigns and enhance UI/UX.",
+        "Enhanced brand familiarity and generate revenue by lead generation.",
+        "Achievements: 20% YoY increase in revenue; 10% YoY increase in DAUs"
+      ]
+    },
+    {
+      "company": "TOPICA EDTECH GROUP",
+      "position": "Senior Marketing Expert",
+      "start_date": "2019-02",
+      "end_date": "2019-12",
+      "description": [
+        "Carried out new initiative marketing projects to create growth in revenue streams across Topica's products.",
+        "Developed and implemented content optimization strategies for two projects.",
+        "Managed media materials created by well-known YouTubers and tailored them to target speciﬁc audiences.",
+        "Led teams in generating leads from paid ads and monitored sales performance.",
+        "Collaborated with cross-functional teams to ensure effective marketing execution.",
+        "Achievements: Edumall Thailand project: achieved revenue of 2 million THB with a 30% ROAS and generated 2,300 leads in pilot.",
+        "Topica Native Vietnam project: achieved revenue of 500 millions VND with a 33% ROAS and generated 2,800 leads in pilot."
+      ]
+    },
+    {
+      "company": "POPS WORLDWIDE",
+      "position": "Senior Marketing Executive",
+      "start_date": "2014-10",
+      "end_date": "2017-10",
+      "description": [
+        "Collaborated with partners to excel at managing their YouTube channels to achieve target viewership & revenue by providing insightful content recommendations and channel performance optimization.",
+        "New entertained contents roll-out marketing planning and collaborated with other stakeholders for excellent execution.",
+        "Directly managed POPS-owned music content projects from scratches.",
+        "Achievements: 50% YoY increase in viewership and 5% YoY increase in monetization for every managed channels."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Leadership & Mentoring",
+    "Marketing strategic planning & execution",
+    "Stakeholders management",
+    "Business English communication"
+  ],
+  "certifications": [
+    "Google Ads",
+    "Analytics",
+    "SEO",
+    "LinkedIn Skills Assessments",
+    "Content ownership & Asset monetization courses",
+    "YouTube Certiﬁed Program"
+  ],
+  "languages": []
+}

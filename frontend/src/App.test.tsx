@@ -37,13 +37,13 @@ afterEach(() => {
 })
 
 describe('application route shells', () => {
-  it('opens an active text interview outside the dashboard shell', () => {
+  it('opens an active text interview inside the dashboard shell', () => {
     window.history.replaceState({}, '', '/text-interview/session-42')
 
     render(<App />)
 
     expect(screen.getByTestId('text-interview-page')).toBeInTheDocument()
-    expect(screen.queryByTestId('dashboard-shell')).not.toBeInTheDocument()
+    expect(screen.getByTestId('dashboard-shell')).toBeInTheDocument()
   })
 
   it('keeps text interview setup inside the dashboard shell', () => {

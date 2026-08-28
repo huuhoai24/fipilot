@@ -1,0 +1,104 @@
+{
+  "cv_id": "cv_039",
+  "full_name": "ChristoSims",
+  "email": "christo@sims.berkeley.edu",
+  "phone": "415.260.8269",
+  "location": "1319 josephine | berkeley, ca 94703",
+  "summary": "",
+  "education": [
+    {
+      "school": "UC Berkeley | School of Information (formerly SIMS)",
+      "major": "",
+      "degree": "Masters expected",
+      "start_date": "",
+      "end_date": "2007-05"
+    },
+    {
+      "school": "Bowdoin College",
+      "major": "Economics",
+      "degree": "Bachelor of Arts",
+      "start_date": "",
+      "end_date": "2000-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Digital Youth Research Project | UC Berkeley",
+      "position": "Graduate Student Researcher",
+      "start_date": "2005-09",
+      "end_date": "Present",
+      "description": [
+        "Working under Peter Lyman (UC Berkeley) and Mimi Ito (USC Annenberg Center) on a $3.3 Million MacArthur grant to study how youths’ informal use of digital media affects communication, learning, knowledge, and play.",
+        "Conducted 12 week ethnographic ﬁeld study of 11-15 year old kids enrolled in an arts and technology program for children from the Bayview and Hunters Point neighborhoods of San Francisco.",
+        "Design and perform interview and diary protocols to asses youth’s everyday uses of digital media.",
+        "Draft analysis memos leading to a report to MacArthur this spring."
+      ]
+    },
+    {
+      "company": "Yahoo! Research Berkeley",
+      "position": "Research Intern",
+      "start_date": "2005-09",
+      "end_date": "2006-03",
+      "description": [
+        "Assess user needs, develop information architecture, and design user interface prototypes."
+      ]
+    },
+    {
+      "company": "Garage Cinema Research | UC Berkeley",
+      "position": "Designer, User Experience Group",
+      "start_date": "2005-05",
+      "end_date": "2005-08",
+      "description": [
+        "Member of Marc Davis’ research group focused on “enabling media consumers to become media producers.”",
+        "Design information visualizations and user interface prototypes for desktop and mobile applications that leverage temporal, spatial and social metadata for multimedia capture, use, and reuse."
+      ]
+    },
+    {
+      "company": "Jan Krukowski & Company",
+      "position": "Interactive Media Producer",
+      "start_date": "2002-01",
+      "end_date": "2005-05",
+      "description": [
+        "Oversee information architecture, user interface design, multimedia content development, and programming of Web sites, CD-ROMs, DVDs, and interactive environments for marketing agency focused on the not-for proﬁt sector.",
+        "Conduct qualitative needs assessment through individual interviews with stakeholders and focused group and usability testing with users; help develop survey instruments for quantitative market research.",
+        "Draft information architecture and user interface wireframes.",
+        "Prototype user interfaces and story-board scenarios for interactive experiences.",
+        "Contribute to, and manage, team of writers, animators, 3-D modelers, programmers, photographers, videographers, and editors for multimedia content creation.",
+        "Act as primary interface with client.",
+        "Work received numerous awards including: Macromedia Site of the Day; UCDA Gold, Silver and Judge’s Choice awards; CASE Gold."
+      ]
+    },
+    {
+      "company": "Jan Krukowski & Company",
+      "position": "Information Architect & Interaction Designer",
+      "start_date": "2000-06",
+      "end_date": "2002-01",
+      "description": [
+        "Oversee information architecture, user interface design, multimedia content development, and programming of Web sites, CD-ROMs, DVDs, and interactive environments for marketing agency focused on the not-for proﬁt sector.",
+        "Conduct qualitative needs assessment through individual interviews with stakeholders and focused group and usability testing with users; help develop survey instruments for quantitative market research.",
+        "Draft information architecture and user interface wireframes.",
+        "Prototype user interfaces and story-board scenarios for interactive experiences.",
+        "Contribute to, and manage, team of writers, animators, 3-D modelers, programmers, photographers, videographers, and editors for multimedia content creation.",
+        "Act as primary interface with client.",
+        "Work received numerous awards including: Macromedia Site of the Day; UCDA Gold, Silver and Judge’s Choice awards; CASE Gold."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Adobe Illustrator",
+    "Photoshop",
+    "InDesign",
+    "QuarkXPress",
+    "Macromedia Flash",
+    "Java",
+    "XML",
+    "XSLT",
+    "XPATH",
+    "HTML",
+    "CSS",
+    "ActionScript"
+  ],
+  "certifications": [],
+  "languages": []
+}

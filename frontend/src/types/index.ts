@@ -57,6 +57,18 @@ export interface CandidateEducation {
   end_date?: string | null
 }
 
+export interface RoleMatch {
+  role_id?: string
+  id?: string
+  title: string
+  score: number
+  matched_skills?: string[]
+  matchedSkills?: string[]
+  relevant_experience_count?: number
+  relevantExperienceCount?: number
+  summary?: string
+}
+
 export interface CandidateProfile {
   candidate_id?: string | null
   name: string
@@ -72,6 +84,7 @@ export interface CandidateProfile {
   confidence: number
   confidence_score: number
   extraction_method?: string | null
+  role_matches?: RoleMatch[]
 }
 
 export type V2SkillEvidence = SkillEvidence

@@ -1,0 +1,171 @@
+{
+  "cv_id": "cv_105",
+  "full_name": "HUYNH NGOC HOANG MINH",
+  "email": "",
+  "phone": "",
+  "location": "16/28 Thanh Loc 19, Thanh Loc Ward, District 12, Ho Chi Minh City.",
+  "summary": "Experienced as: 7+ years in programming. Mobile Android App: 3 years. Full-Stack Developer (.NET, .NET Core): 2 years. Full-Stack Developer (ReactJS, NodeJS): 2 years. Specialties: Can adapt quickly to new project. Design and implement UI layout, apply knowledge about UI/UX. Develop RESTful API. Deploy product (IIS, ubuntu server). Teamwork and communicate. Clean code and debug. Industry Experience: Experience in domains: IOT, HRM, Education, Medical, Government Organizations.",
+  "education": [
+    {
+      "school": "Sai Gon University",
+      "major": "Information Technology",
+      "degree": "Diploma: Good Type",
+      "start_date": "2011",
+      "end_date": "2016"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Saigon Hi-Tech Park Training Center",
+      "position": "Android Developer",
+      "start_date": "2016",
+      "end_date": "2019",
+      "description": [
+        "SHTPPROJOB – An application provide jobs inside and outside the SHTP.",
+        "Applications controlled via Bluetooth using HC-05 circuit, via Wi-Fi using ESP-8266 circuit to support IOT training, execute integrated programs inside the Robot arms."
+      ]
+    },
+    {
+      "company": "Saigon Hi-Tech Park Training Center",
+      "position": "Full Stack Developer .NET",
+      "start_date": "2016",
+      "end_date": "2019",
+      "description": [
+        "Application to access and open CorelDraw design files quickly via QR Code using camera/webcam.",
+        "Applications for communication and control of the Robot arm via Serial/COM port to support training."
+      ]
+    },
+    {
+      "company": "Saigon Hi-Tech Park Training Center",
+      "position": "Web Service - Full Stack",
+      "start_date": "2016",
+      "end_date": "2019",
+      "description": [
+        "Communicate with ESP-8266 circuit via Wi-Fi (using MQTT) to support IOT training."
+      ]
+    },
+    {
+      "company": "UBERYTE Corporation",
+      "position": "Cross-platform Mobile Developer",
+      "start_date": "2019",
+      "end_date": "2020",
+      "description": [
+        "PHR – An application storage electronic medical records, medical appointments, call SOS."
+      ]
+    },
+    {
+      "company": "UBERYTE Corporation",
+      "position": "Full Stack Developer",
+      "start_date": "2019",
+      "end_date": "2020",
+      "description": []
+    },
+    {
+      "company": "Ocean Net Software Limited Company",
+      "position": "Full Stack Developer - Plaza Home Mortgage Project",
+      "start_date": "2020",
+      "end_date": "Present",
+      "description": [
+        "A project about renting/buying houses, using MVC, VueJS, SQL Server and synchronizing data with PowerShell scripts.",
+        "VueJS: Funding Utility - a tool that helps process funding requests for loans from customers.",
+        "MVC – Full Stack: Application for managing rental/purchase loans using MVC.",
+        "PowerShell: Implement & schedule automatic execution of data synchronization tasks and related processes."
+      ]
+    },
+    {
+      "company": "Ocean Net Software Limited Company",
+      "position": "Full Stack Developer - Raptor Vision Camera Project",
+      "start_date": "2020",
+      "end_date": "Present",
+      "description": [
+        "A project about anti-theft camera, using ReactJS, NodeJS, MongoDB. In this project includes small modules connected.",
+        "Proxy: Using http-proxy-middleware to build a proxy server that forwards through internal ports. Forward request to log user access information (access time, IP...).",
+        "Admin Portal – Full Stack (work with Tech Lead): Front-end: Implement UI according to mockup/design or create UI by myself if there is no mockup, interact with API, Web Socker. Back-end: Write API, implement mail & SMS sending function using Twilio SendGrid.",
+        "VMS -Full Stack (work with another member): Front-end: Implement UI according to mockup/design or create UI by myself if there is no mockup, interact with API, Web Socker. Back-end: Write API, process data via Web Socket.",
+        "AiT – Front-end: Implement UI according to mockup/design or create UI by myself if there is no mockup, interact with API, Web Socker. Get stream from a video file. Get stream from camera.",
+        "Webhook – Back-end: Write API. Process data via Web Socket, RabbitMQ.",
+        "Play Media HDMI – Back-end: Upload and play default video/image when there is no alarm. Live stream from camera when there is an alarm using ffplay/ffmpeg.",
+        "Stick – Front-end: Implement UI according to mockup/design or create UI by myself if there is no mockup.",
+        "ASC – Full Stack: Implement feature activate license: Front-end: Implement UI according to mockup/design, interact with API. Back-end: Process tasks RabbitMQ."
+      ]
+    },
+    {
+      "company": "Bach Khoa Computer Solutions Co., Ltd (BAKCO)",
+      "position": "Android Developer",
+      "start_date": "2017",
+      "end_date": "2019",
+      "description": [
+        "VKHealth - An application that allows users to: make a call SOS, Learn health knowledge through video, video call with doctors, medical appointments, family doctors."
+      ]
+    },
+    {
+      "company": "Titkul Co., Ltd",
+      "position": "Full Stack Developer",
+      "start_date": "2020",
+      "end_date": "2021",
+      "description": [
+        "TK Smart Vision Edu.",
+        "Digital Card."
+      ]
+    },
+    {
+      "company": "Titkul Co., Ltd",
+      "position": "Back-end Developer",
+      "start_date": "2020",
+      "end_date": "2021",
+      "description": [
+        "Human Resources Management (TK HRS)"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Javascript",
+    "Java",
+    "C#",
+    "Web API",
+    "Restful API",
+    "ReactJS",
+    "npm",
+    "Yarn",
+    "NuGet",
+    "Maven",
+    "Gradle",
+    "SQL Server",
+    "MySQL",
+    "MongoDB",
+    "SQL",
+    "GraphQL",
+    "LINQ",
+    "Entity Framework",
+    "Jira",
+    "Azure DevOps",
+    "Postman",
+    "Browser DevTools",
+    "Redux DevTools",
+    "VS code plugins (REST Client)",
+    "Android Studio",
+    "Visual Studio",
+    "Visual Studio Code",
+    "NetBeans",
+    "best practices",
+    "design pattern",
+    "clean code",
+    "SOLID",
+    "MVC",
+    "MVVM",
+    "Agile",
+    "Scrum",
+    "Git",
+    "Ubuntu Server",
+    "Ubuntu Desktop",
+    "PowerShell ISE",
+    "Task Scheduler"
+  ],
+  "certifications": [
+    "English Certificate B",
+    "Xamarin Cross-Platform Programming (DVLUP)",
+    "Core 3.1 (NhatNghe Education SJC)"
+  ],
+  "languages": []
+}

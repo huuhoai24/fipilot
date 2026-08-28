@@ -13,6 +13,15 @@ class ExtractedSkillEvidence(BaseModel):
     source_section: str | None = None
 
 
+class ExtractedRoleMatch(BaseModel):
+    role_id: str = ""
+    title: str = ""
+    score: int = 0
+    matched_skills: list[str] = Field(default_factory=list)
+    relevant_experience_count: int = 0
+    summary: str = ""
+
+
 class ResumeExtractionResult(BaseModel):
     document_type: Literal[
         "resume",
@@ -35,6 +44,7 @@ class ResumeExtractionResult(BaseModel):
     education: list[CandidateEducation] = Field(default_factory=list)
     specialization: str | None = None
     confidence_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    role_matches: list[ExtractedRoleMatch] = Field(default_factory=list)
 
     def to_candidate_profile(self) -> CandidateProfile:
         skill_by_key = {
@@ -57,6 +67,18 @@ class ResumeExtractionResult(BaseModel):
         )[:30]
         selected_skill_keys = set(selected_keys)
 
+        converted_role_matches = [
+            RoleMatch(
+                role_id=rm.role_id,
+                title=rm.title,
+                score=rm.score,
+                matched_skills=rm.matched_skills,
+                relevant_experience_count=rm.relevant_experience_count,
+                summary=rm.summary,
+            )
+            for rm in self.role_matches
+        ]
+
         return CandidateProfile(
             name=self.name,
             years_experience=self.years_experience,
@@ -76,4 +98,5 @@ class ResumeExtractionResult(BaseModel):
             education=self.education,
             specialization=self.specialization,
             confidence_score=self.confidence_score,
+            role_matches=converted_role_matches,
         )

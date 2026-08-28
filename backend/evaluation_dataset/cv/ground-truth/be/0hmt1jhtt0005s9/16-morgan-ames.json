@@ -1,0 +1,198 @@
+{
+  "cv_id": "cv_050",
+  "full_name": "Morgan Ames",
+  "email": "morganya@sims.berkeley.edu",
+  "phone": "",
+  "location": "Berkeley, California 94720",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of California, Berkeley",
+      "major": "Computer Science",
+      "degree": "B.A.",
+      "start_date": "",
+      "end_date": "2004-05"
+    },
+    {
+      "school": "University of California, Berkeley",
+      "major": "science, technology and society studies, new media, and human-computer interaction",
+      "degree": "Masters in Information Management and Systems",
+      "start_date": "2004-09",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "University of California, Berkeley",
+      "major": "science, technology and society studies, new media, and human-computer interaction",
+      "degree": "Ph.D.",
+      "start_date": "2004-09",
+      "end_date": "2009-2010"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "University of California, Berkeley",
+      "position": "Graduate Student Researcher",
+      "start_date": "2004-06",
+      "end_date": "Present",
+      "description": [
+        "Investigated the social uses of personal photographs with Professor Nancy Van House",
+        "Conducted interviews, focus groups, field observations, surveys, and content analysis"
+      ]
+    },
+    {
+      "company": "Yahoo! Research Berkeley",
+      "position": "Research Intern",
+      "start_date": "2005-09",
+      "end_date": "Present",
+      "description": [
+        "Conducted quantitative and qualitative research on Flickr and other Yahoo! services"
+      ]
+    },
+    {
+      "company": "Google",
+      "position": "Usability Experience Research Intern",
+      "start_date": "2005-06",
+      "end_date": "2005-08",
+      "description": [
+        "Conducted design inquiry and user studies for a variety of Google services"
+      ]
+    },
+    {
+      "company": "Bridging the Divide conference",
+      "position": "ICT Panel Coordinator",
+      "start_date": "2005-03",
+      "end_date": "2005-05",
+      "description": [
+        "Developed topics and recruited panelists for the ICT track of the Berkeley/UNIDO Bridging the Divide conference"
+      ]
+    },
+    {
+      "company": "University of California, Berkeley",
+      "position": "Researcher",
+      "start_date": "2004-06",
+      "end_date": "2004-11",
+      "description": [
+        "Worked with a cross-disciplinary, inter-university team of researchers on a study of underserved communities",
+        "Conducted interviews and field observations at a low-income job training center",
+        "Designed a system for data control and community building for underserved communities",
+        "Mentored a minority undergraduate summer research intern through the SUPERB program"
+      ]
+    },
+    {
+      "company": "Intel Research",
+      "position": "Research Intern",
+      "start_date": "2003-09",
+      "end_date": "2003-11",
+      "description": [
+        "Conducted user studies of an ambient display for the elderly and their families"
+      ]
+    },
+    {
+      "company": "UrbanSim Research Group, University of Washington",
+      "position": "Research Intern",
+      "start_date": "2003-06",
+      "end_date": "2003-11",
+      "description": [
+        "Researched the efficacy of remote usability studies with A.J. Brush through the Distributed Mentor Project",
+        "Conducted and led the quantitative analysis of dozens of co-located and remote user studies with urban planners"
+      ]
+    },
+    {
+      "company": "University of California, Berkeley",
+      "position": "Researcher",
+      "start_date": "2001-09",
+      "end_date": "2003",
+      "description": [
+        "Researched evaluation techniques for ambient displays with Professors Jennifer Mankoff and Anind Dey",
+        "Conducted and analyzed interviews and surveys on public perception of city health",
+        "Prototyped and evaluated several ambient displays, and led the prototyping of displays of city health indicators"
+      ]
+    },
+    {
+      "company": "",
+      "position": "Web designer and web-based software developer",
+      "start_date": "2001-06",
+      "end_date": "Present",
+      "description": [
+        "Designed and maintained interactive websites for utahquicksilver.com, ucbd.org, many classes, myself",
+        "Implemented authentication, data encryption, postgreSQL database integration",
+        "Designed logos and other graphics for numerous student groups and classes"
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Grader for computer science courses in algorithms and graphics",
+      "start_date": "2003-09",
+      "end_date": "2003-11",
+      "description": []
+    },
+    {
+      "company": "Culture Cache gallery",
+      "position": "Technical designer for \"I vs I\" multimedia art exhibit",
+      "start_date": "2002-09",
+      "end_date": "2002-11",
+      "description": []
+    },
+    {
+      "company": "Holt Planetarium, Lawrence Hall of Science",
+      "position": "Presenter",
+      "start_date": "1999-09",
+      "end_date": "2002-08",
+      "description": []
+    },
+    {
+      "company": "Lockheed Martin Missiles and Space",
+      "position": "Intern, space sciences division",
+      "start_date": "2001-06",
+      "end_date": "2001-08",
+      "description": []
+    },
+    {
+      "company": "Willard Middle School",
+      "position": "Tutor for math and science classes",
+      "start_date": "1999-09",
+      "end_date": "2000-05",
+      "description": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "HTML",
+    "CSS",
+    "CGI",
+    "Python",
+    "Javascript",
+    "PHP",
+    "Perl",
+    "Java",
+    "C",
+    "C++",
+    "PostgreSQL",
+    "Quantitative Research",
+    "Qualitative Research",
+    "Design Inquiry",
+    "User Studies",
+    "Interviews",
+    "Focus Groups",
+    "Field Observations",
+    "Surveys",
+    "Content Analysis",
+    "Data Control",
+    "Community Building",
+    "Ambient Display Evaluation",
+    "Prototyping",
+    "Web Design",
+    "Web-based Software Development",
+    "Authentication",
+    "Data Encryption",
+    "Logo Design",
+    "Graphics Design",
+    "Algorithms",
+    "Graphics",
+    "Multimedia Art Exhibit Design",
+    "Math",
+    "Science"
+  ],
+  "certifications": [],
+  "languages": []
+}

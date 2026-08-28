@@ -1,0 +1,165 @@
+{
+  "cv_id": "cv_093",
+  "full_name": "NGUYEN HOANG NAM",
+  "email": "",
+  "phone": "",
+  "location": "District 1 , Ho Chi Minh City",
+  "summary": "In my 6 years of programming experience, I have worked in various roles such as mobile, front-end, and back-end developer, new domains and contribute to the long-term growth of the company. I want to learn, accumulate, share more experiences. I will do my best and become a key employee of the company for many years to come.",
+  "education": [
+    {
+      "school": "Ho Chi Minh City Vocational College",
+      "major": "Software applications",
+      "degree": "",
+      "start_date": "2014",
+      "end_date": "2017"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SEN DO TECHNOLOGY JOINT STOCK COMPANY",
+      "position": "Software Engineer",
+      "start_date": "2022-05",
+      "end_date": "Present",
+      "description": [
+        "Building warehouse management software for Sendo Farm",
+        "Receiving and executing tasks under the direct guidance of the team leader",
+        "Ensuring that the requirements and expectations of the management team are met within specified deadlines and with a high level of quality",
+        "Monitoring the operational process during feature deployment to production, checking for errors, and troubleshooting issues when incidents occur"
+      ]
+    },
+    {
+      "company": "RENOVATION TECHNOLOGY",
+      "position": "Software Engineer",
+      "start_date": "2021-08",
+      "end_date": "2022-05",
+      "description": [
+        "Building app and webite for cryptocurrency software on the blockchain platform.",
+        "Receiving tasks from the leader.",
+        "Participating in planning sessions to thoroughly understand project requirements",
+        "Optimize speed and minimize errors occurring in production"
+      ]
+    },
+    {
+      "company": "DIGITAL SYSTEMS",
+      "position": "Software Engineer",
+      "start_date": "2018-03",
+      "end_date": "2021-08",
+      "description": [
+        "Building app and web app transportation management software.",
+        "Receiving and analyzing requests from customers",
+        "Plan the construction for each module",
+        "Build source code, setup CI/CD",
+        "Assign tasks to the team",
+        "Code",
+        "Coordinate with stack holder for UAT plan, software deployment"
+      ]
+    },
+    {
+      "company": "VIETINFO TECHNOLOGY CORPORATION",
+      "position": "Fresher",
+      "start_date": "2017-09",
+      "end_date": "2018-03",
+      "description": [
+        "Building apps Public Service Management Software.",
+        "Receiving tasks from the leader.",
+        "Research, build features for software."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Warehoue Management Software",
+      "role": "Back-end Developer",
+      "technologies": [
+        ".Net Core MVC",
+        "Sql Server",
+        "PostgreSQL",
+        "Elasticsearch",
+        "RabbitMQ",
+        "Jenkin",
+        "Jira",
+        "SiemDC",
+        "Rancher"
+      ],
+      "description": "Web application for managing food raw materials, including tasks such as preprocessing, inventory checking, picking, reporting incidents, and handing over to stations"
+    },
+    {
+      "name": "Buy/Sell NFTs on BlockChain network Software",
+      "role": "Full stack Developer",
+      "technologies": [
+        "React",
+        "Flutter",
+        "NodeJS",
+        "MongoDB",
+        "Redmine"
+      ],
+      "description": "Website and App for customers to buy/sell NFTs"
+    },
+    {
+      "name": "Buy/sell tokens and Participate in ICOs on the BlockChain network",
+      "role": "Full stack Developer",
+      "technologies": [
+        "React",
+        "Flutter",
+        "NodeJS",
+        "MongoDB",
+        "Redmine"
+      ],
+      "description": "Website and App for customers to buy/sell tokens, participate in ICO, deposit/withdraw tokens."
+    },
+    {
+      "name": "Car Rental Software",
+      "role": "Full stack Developer, Leader",
+      "technologies": [
+        "Angular",
+        ".NET Core",
+        "Ionic",
+        "SQL Server",
+        "GitLab",
+        "Jira",
+        "Redmine"
+      ],
+      "description": "Website and App for customers to book a car, view prices, track booking status, pay,ment, report, statistics"
+    },
+    {
+      "name": "Logistics Software",
+      "role": "Full stack Developer, Leader",
+      "technologies": [
+        "Angular",
+        ".NET Core",
+        "Ionic",
+        "SQL Server",
+        "GitLab",
+        "Jira",
+        "Redmine"
+      ],
+      "description": "Website and App for customers to create delivery requests, track orders, reports, statistics | Website for employees to receive requests from customers, assign vehicles to pick up, transit, delivery, receive money, calculate salaries, report, statistics | App for shipper to confirm pick-up points, transit, delivery, receive money from customer"
+    }
+  ],
+  "skills": [
+    "Html",
+    "Css",
+    "Js",
+    "Angular",
+    ".NET",
+    "NodeJs",
+    "Ionic",
+    "React",
+    "Flutter",
+    "SQL Server",
+    "PostgreSQL",
+    "Elasticsearch",
+    "MongoDB",
+    "Github",
+    "Gitlab",
+    "Jira",
+    "Redmine",
+    "RabbitMQ",
+    "Jenkin",
+    "SiemDC",
+    "Ranchers",
+    "ReactJs"
+  ],
+  "certifications": [],
+  "languages": []
+}

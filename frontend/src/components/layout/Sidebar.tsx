@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import {
   ChevronsLeft,
   ChevronsRight,
@@ -25,7 +25,19 @@ const navItems = [
 ]
 
 export function Sidebar() {
-  const { sidebarCollapsed, toggleSidebar, userMenuOpen, toggleUserMenu, theme, toggleTheme, setTheme } = useUIStore()
+  const location = useLocation()
+  const {
+    sidebarCollapsed,
+    toggleSidebar,
+    userMenuOpen,
+    toggleUserMenu,
+    theme,
+    toggleTheme,
+    setTheme,
+    activeInterview,
+    setPendingNavigation,
+    setConfirmExitOpen,
+  } = useUIStore()
   const { user } = useAuth()
   const displayName = user?.displayName || user?.email || 'Member'
   const displayRole = 'Member'
@@ -52,6 +64,13 @@ export function Sidebar() {
           <NavLink
             key={to}
             to={to}
+            onClick={(e) => {
+              if (activeInterview?.hasStarted && !location.pathname.startsWith(to)) {
+                e.preventDefault()
+                setPendingNavigation(to)
+                setConfirmExitOpen(true)
+              }
+            }}
             className={({ isActive }) =>
               cn(
                 'group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150',

@@ -1,0 +1,168 @@
+{
+  "cv_id": "cv_087",
+  "full_name": "NGUYEN NGOC SANG",
+  "email": "",
+  "phone": "",
+  "location": "239 Hoa Binh Street, Ward Hiep Tan, Tan Phu District, TPHCM, Viet Nam.",
+  "summary": "With my work experience, I hope to be able to continue to improve my professional level and contribute more to the development of the company. Then there is the ability to take on the responsibilities within the company. I know it's a tough road, but with the explosion and my efforts, I believe I can do it.",
+  "education": [
+    {
+      "school": "UNIVERSITY OF ECONOMICS HO CHI MINH CITY",
+      "major": "Management Information System",
+      "degree": "",
+      "start_date": "2014-08",
+      "end_date": "2016-02"
+    },
+    {
+      "school": "UNIVERSITY OF FINANCE - MARKETING",
+      "major": "Management Information System",
+      "degree": "",
+      "start_date": "2007-09",
+      "end_date": "2010-10"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "THUAN PHUONG EMBROIDERIES GARMENTS COMPANY LIMITED",
+      "position": "Business Analyst(BA)",
+      "start_date": "2019-06",
+      "end_date": "Present",
+      "description": [
+        "Analyst and description business processes.",
+        "Business Requirement Document.",
+        "Test Case Document(System Test, Unit Test, Integration Test).",
+        "Test system(System Test, Unit Test, Integration Test).",
+        "Config system.",
+        "Setup Master data.",
+        "Setup account permission.",
+        "Setup approve permission.",
+        "Fit/Gap Document.",
+        "Blueprint Document.",
+        "Functional Specification Document.",
+        "Test system.",
+        "Training Manual Document.",
+        "Training for end user.",
+        "Support end user."
+      ]
+    },
+    {
+      "company": "BYS SOFTWARE COMPANY",
+      "position": "Data HRM Developer",
+      "start_date": "2018-12",
+      "end_date": "2019-05",
+      "description": [
+        "Analyst and description business processes.",
+        "Analyst and design database.",
+        "Develop Store procedure, Function, Trigger for system HRM(Timekeeping, Payroll, Dashboard).",
+        "Develop report system HRM(Stored Procedure + Crystal Report)",
+        "Support QA-QC.",
+        "Support pre sale."
+      ]
+    },
+    {
+      "company": "LACVIET SOFTWARE COMPANY",
+      "position": "Team lead HRM module",
+      "start_date": "2016-01",
+      "end_date": "2018-11",
+      "description": [
+        "Training SQL and HRM system for team.",
+        "Training new employees.",
+        "Approve Business Requirement Document, fit/gap Document, Blueprint Document and Functional Specification Document from team member's.",
+        "Support setup and deployment system HRM for team.",
+        "Setup team meeting.",
+        "Report for manager.",
+        "Analyst and description business processes.",
+        "Analyst and design database.",
+        "Develop Store procedure, Function, Trigger for system HRM(Timekeeping, Payroll, Dashboard).",
+        "Develop report system HRM(Stored Procedure + Report viewer).",
+        "Setup and backup system.",
+        "Support QA-QC.",
+        "Software maintenance.",
+        "Support pre sale.",
+        "Business Requirement Document.",
+        "Fit/Gap Document.",
+        "Blueprint Document.",
+        "Functional Specification Document.",
+        "Training Manual Document.",
+        "Training for end user.",
+        "Consultant HRM system."
+      ]
+    },
+    {
+      "company": "BRAVO SOFTWARE COMPANY",
+      "position": "Implement consulting",
+      "start_date": "2011-01",
+      "end_date": "2014-07",
+      "description": [
+        "Support pre sale.",
+        "Business Requirement Document.",
+        "Fit/Gap Document.",
+        "Blueprint Document.",
+        "Training Manual Document.",
+        "Training for end user.",
+        "Develop report(Stored Procedure + Crystal viewer).",
+        "Function Consultant(SD,MM,HR)."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Pine Script",
+    "Axure",
+    "Human resource management",
+    "Report viewer",
+    "Crystal Report",
+    "Communication",
+    "SAP B1",
+    "MS Office",
+    "MS SQL",
+    "Team Management",
+    "Work schedule management",
+    "Visio",
+    "Teamwork",
+    "Business Process Analysis",
+    "Business Requirement Documentation",
+    "Test Case Documentation",
+    "System Testing",
+    "System Configuration",
+    "Master Data Setup",
+    "Account Permission Setup",
+    "Approval Permission Setup",
+    "Fit/Gap Analysis",
+    "Blueprint Documentation",
+    "Functional Specification Documentation",
+    "Training Manual Documentation",
+    "User Training",
+    "End User Support",
+    "Database Design",
+    "Stored Procedure Development",
+    "Function Development",
+    "Trigger Development",
+    "Report Development",
+    "QA-QC Support",
+    "Pre-sales Support",
+    "SQL Training",
+    "HRM System Training",
+    "New Employee Training",
+    "Document Approval",
+    "System Setup",
+    "System Deployment",
+    "Meeting Management",
+    "Reporting",
+    "System Backup",
+    "Software Maintenance",
+    "HRM System Consulting",
+    "SD Consulting",
+    "MM Consulting",
+    "HR Consulting"
+  ],
+  "certifications": [
+    "SQL Server Certificate with score 9/10 issued by Computer science center University of Science. 2009"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    }
+  ]
+}

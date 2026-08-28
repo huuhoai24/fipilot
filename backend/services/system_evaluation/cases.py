@@ -3,6 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from services.system_evaluation.schemas import (
+    BenchmarkDatasetSummary,
+    DatasetValidationSummary,
+)
 from shared.schemas import CandidateProfile, InterviewConfig, InterviewQuestion, InterviewRound
 
 
@@ -13,6 +17,7 @@ class CVEvaluationCase:
     expected_skills: tuple[str, ...] = ()
     expected_profile_fields: dict[str, Any] = field(default_factory=dict, repr=False)
     document_processing_ms: float = 0.0
+    document_format: Literal["pdf", "docx", "txt"] = "txt"
 
 
 @dataclass(frozen=True)
@@ -21,6 +26,8 @@ class STTEvaluationCase:
     audio_chunks: tuple[bytes, ...] = field(repr=False)
     reference_text: str = field(repr=False)
     category: Literal["vi", "en", "mixed_technical"] = "vi"
+    audio_duration_seconds: float = 0.0
+    transcript_word_count: int = 0
 
 
 @dataclass(frozen=True)
@@ -35,6 +42,7 @@ class QuestionEvaluationCase:
     candidate_profile: CandidateProfile = field(repr=False)
     interview_round: InterviewRound = field(repr=False)
     interview_config: InterviewConfig = field(repr=False)
+    generated_question: InterviewQuestion | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True)
@@ -45,6 +53,7 @@ class EvaluatorEvaluationCase:
     candidate_answer: str = field(repr=False)
     interview_config: InterviewConfig = field(repr=False)
     human_score: float
+    human_feedback_category: str = ""
 
 
 @dataclass(frozen=True)
@@ -62,3 +71,5 @@ class EvaluationDataset:
     question_cases: tuple[QuestionEvaluationCase, ...] = ()
     evaluator_cases: tuple[EvaluatorEvaluationCase, ...] = ()
     voice_turns: tuple[VoiceTurnObservation, ...] = ()
+    summary: BenchmarkDatasetSummary = field(default_factory=BenchmarkDatasetSummary)
+    validation: DatasetValidationSummary = field(default_factory=DatasetValidationSummary)

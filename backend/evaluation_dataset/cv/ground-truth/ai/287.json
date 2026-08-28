@@ -1,0 +1,130 @@
+{
+  "cv_id": "cv_017",
+  "full_name": "Lữ Tài Lân",
+  "email": "",
+  "phone": "",
+  "location": "Phan Anh, Tan Phu, Ho Chi Minh, 70000, Vietnam",
+  "summary": "A dedicated System Specialist with strong expertise in Data Analyst, I am knowledgeable and experienced in leveraging data-driven insights to optimize processes for enhanced efficiency and productivity . Proficient in building insightful reports using Power BI/ Tableu, and skilled in creating VBA macros to automate manual tasks. Seeking an opportunity to leverage my technical proficiency and problem -solving skills. I am committed to driving efficiency, productivity, and revenue growth through the effective utilization of cutting-edge technologies to extract, analyze, and visualize data .",
+  "education": [
+    {
+      "school": "Tôn Đức Thắng University",
+      "major": "IT / CS",
+      "degree": "",
+      "start_date": "2010",
+      "end_date": "2014"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "INSEE - SIAM CITY CEMENT(VIETNAM)",
+      "position": "SYSTEM SPECIALIST",
+      "start_date": "2019-02",
+      "end_date": "2023-10",
+      "description": [
+        "Offer technical assistance and troubleshooting expertise for systems such as SAP, SFDC, Ordering, Dispatching, and others.",
+        "Ensure seamless system functionality and resolve system -related issues promptly.",
+        "Manage user accounts, maintenance, reports, auto reports, and operational tasks.",
+        "Create Webs (PHP, Sharepoint) / Apps (VBA Macro, Power Apps) to automate processes, streamline repetitive tasks, and enhance productivity.",
+        "Identify opportunities for process improvement within the department and propose innovative solutions.",
+        "Collaborate with end-users to understand their application needs and implement solutions accordingly.",
+        "Translating business requirements into technical requirements.",
+        "Utilize Power BI, QlikView, and SFDC to create reports, provide data -driven insights, and present data relevant to the COMMERCIAL department.",
+        "This aspect of my responsibilities involves comprehensive data management, including data gathering, cleansing, and ETL (Extract, Transform, Load) processes.",
+        "Maintain strict data security protocols when handling customer information.",
+        "Educate customers on data protection and privacy best practices.",
+        "Maintain accurate records of customer accounts and interactions on SFDC database.",
+        "Document common questions and issues, along with their resolutions, for future reference.",
+        "Effectively communicate with customers via email, chat, or phone to address inquiries and resolve issues.",
+        "Collaborate with cross -functional teams to relay customer feedback and concerns for continuous improvement via Cases module on SFDC.",
+        "Bridge the gap between business requirements and technical implementation, ensuring that the resulting IT solution aligns with the organization's objectives.",
+        "Created a SharePoint site for SAP knowledge sharing.",
+        "Nominated for Insee Innovation Award 2022: BCP Ordering website to manage the temporary order from customers.",
+        "Developed a BCP Ordering website to support many departments (Commercial, Supply Chain, Transportation...) throughout a lengthy SAP upgrade, allowing Insee to continue serving customers."
+      ]
+    },
+    {
+      "company": "INSEE - SIAM CITY CEMENT(VIETNAM)",
+      "position": "WEB-APP ADMIN OFFICER",
+      "start_date": "2018-10",
+      "end_date": "2019-01",
+      "description": [
+        "Collaborate with various internal team to ensure that the web application meets user requirements and functions as expected.",
+        "Report any issues or bugs identified during UAT to the Vendor for resolution.",
+        "Accurately create customer accounts in the InseeConnect Website.",
+        "Ensure that all customer information is entered correctly and securely.",
+        "Provide clear and concise instructions to customers regarding the use of the web application.",
+        "Assist customers in navigating the platform and its features.",
+        "Offer guidance on order placement, account management, and troubleshooting common issues.",
+        "Offer technical expertise, provide guidance and support to Insee internal team when dealing with web development vendors.",
+        "Provided post-launch support and updates, addressing client feedback and enhancing existing projects.",
+        "- Order Management Web / App"
+      ]
+    },
+    {
+      "company": "Coastal Health Clinic",
+      "position": "System Administrator",
+      "start_date": "2018-07",
+      "end_date": "2018-09",
+      "description": [
+        "Set up clinic website and email system.",
+        "Set up the clinic’s wifi network.",
+        "Set up a security camera system.",
+        "Set up a local phone system.",
+        "Set up computers / laptops for the clinic.",
+        "Write guidelines for clinic employees to utilize the equipment.",
+        "Setup programmable led board sign."
+      ]
+    },
+    {
+      "company": "Thinkteal",
+      "position": "Web developer / designer",
+      "start_date": "2017-03",
+      "end_date": "2018-07",
+      "description": [
+        "Set up and maintain Thinkteal company website.",
+        "Develop & Design Wordpress website based on the client's requirements.",
+        "Assist other developers when needed with graphic design, export, preparing graphic assets, etc. (Sketch, Photoshop, Illustrator)",
+        "Work and communicate directly with clients to ensure everything’s working smoothly. (Porsche, Vichy etc.)",
+        "Maintain website for clients of Havas Riverorchid agency."
+      ]
+    },
+    {
+      "company": "International Trade Supplier Business",
+      "position": "IT officer / Marketing officer",
+      "start_date": "2015-03",
+      "end_date": "2015-12",
+      "description": [
+        "Set up + maintain the company’s e -commerce website.",
+        "Help register and sell their product (phone accessories) on various b2c e -commerce platforms (Lazada, VatGia, Sendo, etc.)"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "SAP",
+    "SFDC",
+    "SQL",
+    "Power BI",
+    "Tableau",
+    "Excel VBA",
+    "PHP",
+    "Sharepoint",
+    "Power Apps",
+    "QlikView",
+    "ETL",
+    "Wordpress",
+    "Sketch",
+    "Photoshop",
+    "Illustrator",
+    "E-commerce"
+  ],
+  "certifications": [
+    "Data Visualization & Storytelling",
+    "Data Cleansing & Modeling",
+    "Data Engineering with Azure Data",
+    "Planning & Organising skills",
+    "Pro Power BI for Desktop",
+    "Effective Communication skills"
+  ],
+  "languages": []
+}

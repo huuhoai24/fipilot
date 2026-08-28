@@ -175,6 +175,17 @@ async def start_interview(
     )
 
 
+import asyncio
+
+_session_locks: dict[str, asyncio.Lock] = {}
+
+
+def _get_session_lock(session_id: str) -> asyncio.Lock:
+    if session_id not in _session_locks:
+        _session_locks[session_id] = asyncio.Lock()
+    return _session_locks[session_id]
+
+
 @router.post("/{session_id}/answer", response_model=InterviewSessionResponse)
 async def submit_answer(
     session_id: str,
@@ -184,49 +195,59 @@ async def submit_answer(
     current_user: CurrentUser = Depends(get_current_user),
 ) -> InterviewSessionResponse:
     total_started_at = time.perf_counter()
-    with timed_stage(
-        logger,
-        "answer.load_session",
-        stage="session_state_load",
-        session_id=session_id,
-    ):
-        session = _load_session(repository, session_id, current_user.uid)
-        state = _state_from_session(session)
-    with timed_stage(
-        logger,
-        "answer.orchestration",
-        stage="evaluation_and_next_question",
-        session_id=session_id,
-    ):
-        updated_state = answer_opening(state, request.answer)
-        if updated_state is None:
-            updated_state = await orchestrator.submit_answer(state, request.answer)
-            updated_state = enter_closing_if_finished(updated_state)
-    with timed_stage(
-        logger,
-        "answer.persistence",
-        stage="session_state_save",
-        session_id=session_id,
-    ):
-        _save_state(repository, session_id, updated_state, current_user.uid)
+    async with _get_session_lock(session_id):
+        with timed_stage(
+            logger,
+            "answer.load_session",
+            stage="session_state_load",
+            session_id=session_id,
+        ):
+            session = _load_session(repository, session_id, current_user.uid)
+            state = _state_from_session(session)
 
-        if updated_state.current_turn is not None:
-            repository.save_turn(
-                session_id, updated_state.current_turn, user_id=current_user.uid
+        # If already answered or closed by a concurrent click, return current state
+        if state.current_turn is None or state.phase == "closing":
+            return InterviewSessionResponse(
+                session_id=session_id,
+                started_at=_utc_timestamp(session.started_at),
+                state=state,
             )
 
-    log_duration(
-        logger,
-        "answer.total",
-        total_started_at,
-        session_id=session_id,
-    )
+        with timed_stage(
+            logger,
+            "answer.orchestration",
+            stage="evaluation_and_next_question",
+            session_id=session_id,
+        ):
+            updated_state = answer_opening(state, request.answer)
+            if updated_state is None:
+                updated_state = await orchestrator.submit_answer(state, request.answer)
+                updated_state = enter_closing_if_finished(updated_state)
+        with timed_stage(
+            logger,
+            "answer.persistence",
+            stage="session_state_save",
+            session_id=session_id,
+        ):
+            _save_state(repository, session_id, updated_state, current_user.uid)
 
-    return InterviewSessionResponse(
-        session_id=session_id,
-        started_at=_utc_timestamp(session.started_at),
-        state=updated_state,
-    )
+            if updated_state.current_turn is not None:
+                repository.save_turn(
+                    session_id, updated_state.current_turn, user_id=current_user.uid
+                )
+
+        log_duration(
+            logger,
+            "answer.total",
+            total_started_at,
+            session_id=session_id,
+        )
+
+        return InterviewSessionResponse(
+            session_id=session_id,
+            started_at=_utc_timestamp(session.started_at),
+            state=updated_state,
+        )
 
 
 @router.get("/{session_id}", response_model=InterviewSessionResponse)
@@ -240,6 +261,29 @@ async def get_interview_session(
         session_id=session_id,
         started_at=_utc_timestamp(session.started_at),
         state=_state_from_session(session),
+    )
+
+
+@router.post("/{session_id}/end", response_model=InterviewSessionResponse)
+async def end_interview_session(
+    session_id: str,
+    repository: SQLiteInterviewRepository = Depends(get_interview_repository),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> InterviewSessionResponse:
+    session = _load_session(repository, session_id, current_user.uid)
+    state = _state_from_session(session)
+    ended_state = state.model_copy(
+        update={
+            "phase": "closing",
+            "current_turn": None,
+            "pending_turn": None,
+        }
+    )
+    _save_state(repository, session_id, ended_state, current_user.uid)
+    return InterviewSessionResponse(
+        session_id=session_id,
+        started_at=_utc_timestamp(session.started_at),
+        state=ended_state,
     )
 
 

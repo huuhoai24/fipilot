@@ -1,0 +1,130 @@
+{
+  "cv_id": "cv_010",
+  "full_name": "VUONG TRI THUC",
+  "email": "",
+  "phone": "",
+  "location": "404/20/4 Phu Dinh Street, Ward 16, 8 District, Ho Chi Minh City.",
+  "summary": "",
+  "education": [
+    {
+      "school": "Kien Giang Community College - NIIT Institute",
+      "major": "",
+      "degree": "Software Development Specialist",
+      "start_date": "2007",
+      "end_date": "2009"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "ICC VN INNOVATIVE SOLUTION CONSULTING SERVICE JOINT STOCK COMPANY",
+      "position": "IT operation system manager",
+      "start_date": "2020-11",
+      "end_date": "Present",
+      "description": [
+        "Manage supporters and implementers for D-ERP project (DMS + ERP).",
+        "SQL server data management and data management hana database.",
+        "I have successfully built and optimized SAP ERP system for many businesses in different fields such as: F&B, FMCG, Retail. I have achieved the best user support and quickly guide users to solve day-to-day operational problems on SAP.",
+        "Using the knowledge that I have accumulated, I have successfully integrated and connected many systems such as POS, Invoice, DMS systems to ERP and successfully built a centralized database to make analytical reports. demonstrated through Power BI and Tableau."
+      ]
+    },
+    {
+      "company": "TNI CORPORATION.",
+      "position": "Acting Application Development Team Leader",
+      "start_date": "2019-04",
+      "end_date": "2020-11",
+      "description": [
+        "Application management of IT software services provided such as: eOffice, ERP Bravo, DMS, CRM, POS, HRM Lạc Việt, and coordinating the integration of POS systems with other systems such as ERP, Delivery systems, eInvoice, Power BI, Data and divide human resources according to the software service providers for the company application development to provide solutions for information security in audit of IT system audit.",
+        "Manage software license certificates used.",
+        "Developers of tools for optimal service.",
+        "Planning system audit on 45 periodic stores.",
+        "Develop business process for analysis reports as required."
+      ]
+    },
+    {
+      "company": "DCORP R-KEEPER VIET NAM",
+      "position": "Account Manager",
+      "start_date": "2018-08",
+      "end_date": "2019-02",
+      "description": [
+        "Technical team management 6 people.",
+        "Training team development.",
+        "Plan and divide human resources according to the project.",
+        "Support sales and customer care departments in technical matters.",
+        "Solve serious problems from the customer system.",
+        "Consulting and implementing POS, Warehouse, CRM reports according to customer requirements.",
+        "Consulting and coordinating the integration of POS systems with other systems such as ERP, Delivery systems, eInvoice, Power PI, Data warehouse, ..."
+      ]
+    },
+    {
+      "company": "QSR VIET NAM",
+      "position": "Application Supervisor",
+      "start_date": "2015-01",
+      "end_date": "2018-06",
+      "description": [
+        "Manage two employees at the HCM office.",
+        "Deploying and operating the IT system managing 5 brands (Pizza Company, Swensen's, Dairy Queen, Buffalo Wild Wings, AKA ...) and more than 90 shops in Vietnam nationwide.",
+        "Be responsible for implementing, managing and monitoring IT activities on a daily basis.",
+        "Design and implement a POS system RKEEPER, Delivery, CRM, HR Tinh Hoa, , organize, control and evaluate the effectiveness of applying IT in the enterprise through quarterly and annual reviews and surveys.",
+        "Manage IT application staff by recruiting, training and training staff (skills, soft skills, analytical skills, etc.), communicating the desired work and evaluating the effectiveness. Their activities (based on the department's KPI and allocation to employees).",
+        "Formulate policies and procedures to ensure smooth operation of the IT system.",
+        "Develop SLA (Service Level Agreement) to measure and manage IT performance.",
+        "Coordinate with the Infrastructure Team, Operations Team to deploy consistent store chains based on IT standards.",
+        "Coordinate with the franchisor to develop applications, standards of information technology.",
+        "Predict potential problems (application, design of the report) in the future and take concrete action to address or mitigate risk.",
+        "Check / evaluate system performance, exit and make appropriate adjustments / improvements.",
+        "Developing, proposing and defending the budget for application software development, application development plan according to the development demands of enterprises.",
+        "Key IT project management",
+        "Building and developing application software according to the development trend of enterprises.",
+        "Optimized multi-branch management application software.",
+        "Participate in the implementation of software projects such as SAP, POS, Call Center, BI Report, CRM, HR Portal, Service Desk, ...."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "POS Solutions",
+    "Power BI",
+    "SQL Server",
+    "C#",
+    "DMS",
+    "ITMS",
+    "eOffice",
+    "Webapp",
+    "ERP",
+    "SAP",
+    "Bravo",
+    "HRM",
+    "Leadership",
+    "management skill",
+    "teamwork",
+    "Communication",
+    "deal effectively skills",
+    "IT policies and procedures",
+    "IT system",
+    "Optimize the system",
+    "Office 365",
+    "IT Infrastructure Management",
+    "ETL Tool",
+    "Hana Database",
+    "MySQL",
+    "Mongodb",
+    "SAP B1",
+    "Tableau",
+    "Devops (CICD)",
+    "Intergartion",
+    "Data management",
+    "Warehouse",
+    "CRM",
+    "Call Center",
+    "BI Report",
+    "HR Portal",
+    "Service Desk"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "average"
+    }
+  ]
+}

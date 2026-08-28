@@ -25,6 +25,7 @@ import { firebaseAuth } from '@/lib/firebase'
 import { api } from '@/lib/api'
 import { PcmAudioPlayer } from '@/lib/pcmAudioPlayer'
 import { getUserFacingError } from '@/lib/userFacingError'
+import { useUIStore } from '@/store/useAppStore'
 import type {
   InterviewReport,
   V2InterviewSessionResponse,
@@ -161,6 +162,32 @@ export function SpeechInterviewPage() {
   const [finalReportError, setFinalReportError] = useState('')
   const [finalReportRetry, setFinalReportRetry] = useState(0)
   const interviewComplete = session !== null && session.current_turn === null
+  const setActiveInterview = useUIStore((s) => s.setActiveInterview)
+
+  useEffect(() => {
+    if (sessionId && !interviewComplete) {
+      setActiveInterview({
+        sessionId,
+        mode: 'voice',
+        hasStarted: true,
+      })
+    } else {
+      setActiveInterview(null)
+    }
+    return () => {
+      setActiveInterview(null)
+    }
+  }, [sessionId, interviewComplete, setActiveInterview])
+
+  useEffect(() => {
+    if (!sessionId || interviewComplete) return
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [sessionId, interviewComplete])
 
   useEffect(() => {
     if (!interviewComplete || !sessionId) return
@@ -378,7 +405,15 @@ export function SpeechInterviewPage() {
               }
               hasConnectedRef.current = true
             } else if (event.type === 'state' && isVoiceState(event.value)) {
-              setVoiceState(event.value)
+              if (
+                ttsActiveRef.current
+                && (event.value === VoiceInterviewState.WAITING_FOR_USER
+                  || event.value === VoiceInterviewState.IDLE)
+              ) {
+                // Keep AI_SPEAKING until audio playback finishes completely
+              } else {
+                setVoiceState(event.value)
+              }
               if (
                 event.value === VoiceInterviewState.TRANSCRIBING
                 || event.value === VoiceInterviewState.EVALUATING
@@ -442,7 +477,6 @@ export function SpeechInterviewPage() {
               player.beginStream()
               queuePlayback(() => player.prepare())
               setVoiceState(VoiceInterviewState.AI_SPEAKING)
-              void startAudioCapture('start_barge_in', false)
             } else if (
               event.type === 'audio_format'
               && typeof event.sample_rate === 'number'
@@ -460,6 +494,7 @@ export function SpeechInterviewPage() {
                   ttsActiveRef.current = false
                   releaseMedia()
                   sendControl('playback_complete')
+                  setVoiceState(VoiceInterviewState.WAITING_FOR_USER)
                 }
               })
             } else if (event.type === 'tts_cancelled') {
@@ -825,6 +860,24 @@ export function SpeechInterviewPage() {
     }
   }
 
+  const lastMicClickTimeRef = useRef<number>(0)
+  const handleMicrophoneToggle = () => {
+    const now = performance.now()
+    if (now - lastMicClickTimeRef.current < 600) {
+      return
+    }
+    lastMicClickTimeRef.current = now
+
+    if (voiceState === VoiceInterviewState.USER_SPEAKING) {
+      void stopListening()
+    } else if (
+      voiceState === VoiceInterviewState.WAITING_FOR_USER
+      || voiceState === VoiceInterviewState.IDLE
+    ) {
+      startListening()
+    }
+  }
+
   const retryConnection = () => {
     setTransportError('')
     setConnectionState('connecting')
@@ -1024,11 +1077,7 @@ export function SpeechInterviewPage() {
             <VoiceMicrophoneButton
               state={voiceState}
               disabled={!microphoneActionable}
-              onClick={
-                voiceState === VoiceInterviewState.USER_SPEAKING
-                  ? () => void stopListening()
-                  : startListening
-              }
+              onClick={handleMicrophoneToggle}
             />
             <VoiceStatusIndicator state={voiceState} elapsedSeconds={elapsedSeconds} />
             <p

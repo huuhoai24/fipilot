@@ -1,0 +1,164 @@
+{
+  "cv_id": "cv_118",
+  "full_name": "Aleksey Andrushchenko",
+  "email": "aleksey.andrushchenko@gmail.com",
+  "phone": "+34681131154",
+  "location": "Barcelona, Spain",
+  "summary": "Full Stack Developer",
+  "education": [
+    {
+      "school": "Ural State University",
+      "major": "",
+      "degree": "Engineer's degree",
+      "start_date": "1997",
+      "end_date": "2002"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Moravio LLC.",
+      "position": "Senior FullStack Developer",
+      "start_date": "2021",
+      "end_date": "Present",
+      "description": [
+        "Landing client requirements to user stories and tasks for team.",
+        "Development products for external and internal customers.",
+        "Team management and project responsible."
+      ]
+    },
+    {
+      "company": "MS1 LLC.",
+      "position": "Senior Web Developer",
+      "start_date": "2020",
+      "end_date": "2022",
+      "description": [
+        "Development product for external and internal customers.",
+        "Team management and project responsible."
+      ]
+    },
+    {
+      "company": "Buhanov Group LLC.",
+      "position": "Full Stack developer",
+      "start_date": "2014",
+      "end_date": "2020",
+      "description": [
+        "Development websites.",
+        "SMM, SEO, PPC advertising.",
+        "Server administration"
+      ]
+    },
+    {
+      "company": "Wed&Berry, LLC.",
+      "position": "Full Stack developer",
+      "start_date": "2016",
+      "end_date": "2018",
+      "description": [
+        "Developed websites.",
+        "Integrate AWS.",
+        "SMM, SEO, PPC advertising."
+      ]
+    },
+    {
+      "company": "Vetratoria",
+      "position": "Full Stack developer",
+      "start_date": "2012",
+      "end_date": "2020",
+      "description": [
+        "Planning Architecture",
+        "Developed CRM",
+        "Scaling infrastructure"
+      ]
+    },
+    {
+      "company": "Ural Economic Union.",
+      "position": "Web Developer",
+      "start_date": "2008",
+      "end_date": "2010",
+      "description": [
+        "Developed modules for WordPress, Drupal, Joomla.",
+        "Apply “mobile first” methodology.",
+        "Migrate one CMS to CMS"
+      ]
+    },
+    {
+      "company": "Ural Retail Group, Open Joint-stock Company.",
+      "position": "Developer",
+      "start_date": "2000",
+      "end_date": "2008",
+      "description": [
+        "Transition to Cache server.",
+        "Merge retail cache machine to corporate information system",
+        "Develop terminal client for Cache."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "full stack web development",
+    "Backend development",
+    "Frontend development",
+    "UI \\ UX",
+    "Advanced soft skills",
+    "Typescript",
+    "ReactJS",
+    "AngularJS",
+    "VueJS",
+    "NodeJS",
+    "PHP",
+    "Laravel",
+    "Symfony",
+    "Drupal",
+    "WordPress",
+    "SQL",
+    "MySQL",
+    "MSSQL",
+    "PostgreSQL",
+    "DevOps",
+    "AWS",
+    "Azure",
+    "GC",
+    "Heroku",
+    "Docker",
+    "Terraform",
+    "CI\\CD",
+    "NoSQL",
+    "MongoDB",
+    "DynamoDB",
+    "Redis",
+    "Elasticsearch",
+    "JavaScript",
+    "CSS",
+    "SASS",
+    "gulp",
+    "webpack",
+    "Git",
+    "LAMP stack",
+    "JAM stack",
+    "Agile",
+    "SCRUM",
+    "Jira",
+    "Kubernetes",
+    "Google cloud",
+    "TYPO3",
+    "jQuery",
+    "AS3",
+    "html",
+    "Windows Server",
+    "Cache database"
+  ],
+  "certifications": [
+    "Understanding TypeScript - 2022 Edition",
+    "AWS infrastructure via Terraform and Terragrunt",
+    "NODE.JS & React.JS bootcamp",
+    "SQL for Data Science",
+    "AWS Fundamentals: Addressing Security Risk",
+    "AWS Fundamentals: Going Cloud-Native",
+    "Modern Object-Oriented PHP & MVC",
+    "Full introduction to Views in Drupal 8",
+    "Learn Drupal 8 module development",
+    "Modern JavaScript: ES6 and ES7",
+    "Managing Distributed Development Team",
+    "Graphic design and advertising"
+  ],
+  "languages": []
+}

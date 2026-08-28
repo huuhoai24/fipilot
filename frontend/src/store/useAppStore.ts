@@ -21,6 +21,12 @@ function applyTheme(theme: Theme) {
   try { localStorage.setItem('theme', theme) } catch {}
 }
 
+export interface ActiveInterviewInfo {
+  sessionId: string
+  mode: 'text' | 'voice'
+  hasStarted: boolean
+}
+
 interface UIState {
   sidebarCollapsed: boolean
   toggleSidebar: () => void
@@ -30,11 +36,16 @@ interface UIState {
   theme: Theme
   toggleTheme: () => void
   setTheme: (t: Theme) => void
+  activeInterview: ActiveInterviewInfo | null
+  setActiveInterview: (info: ActiveInterviewInfo | null) => void
+  pendingNavigation: string | null
+  setPendingNavigation: (path: string | null) => void
+  confirmExitOpen: boolean
+  setConfirmExitOpen: (open: boolean) => void
 }
 
 export const useUIStore = create<UIState>((set, get) => {
   const initial = getInitialTheme()
-  // Áp dụng ngay khi store khởi tạo (trước khi component nào mount)
   if (typeof document !== 'undefined') applyTheme(initial)
 
   return {
@@ -53,5 +64,11 @@ export const useUIStore = create<UIState>((set, get) => {
       applyTheme(t)
       set({ theme: t })
     },
+    activeInterview: null,
+    setActiveInterview: (activeInterview) => set({ activeInterview }),
+    pendingNavigation: null,
+    setPendingNavigation: (pendingNavigation) => set({ pendingNavigation }),
+    confirmExitOpen: false,
+    setConfirmExitOpen: (confirmExitOpen) => set({ confirmExitOpen }),
   }
 })

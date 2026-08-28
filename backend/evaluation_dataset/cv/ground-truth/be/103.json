@@ -1,0 +1,143 @@
+{
+  "cv_id": "cv_056",
+  "full_name": "Nguyễn Xuân An",
+  "email": "",
+  "phone": "",
+  "location": "My Thuan Apartment, Ward 16, 8 District, Ho Chi Minh City",
+  "summary": "",
+  "education": [
+    {
+      "school": "Fpt-Greenwich",
+      "major": "Software",
+      "degree": "",
+      "start_date": "",
+      "end_date": ""
+    },
+    {
+      "school": "Fpt-Aptech",
+      "major": "Software",
+      "degree": "",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "GSSHOP",
+      "position": "IT ERP Leader",
+      "start_date": "2021-03",
+      "end_date": "Present",
+      "description": [
+        "Manage and developer more function for ERP system of the Company",
+        "Manage and assign tasks to developers and system engineers",
+        "Support end users who work at the departments in company.",
+        "Meeting, report to BOD"
+      ]
+    },
+    {
+      "company": "SCJ TV Shopping Company",
+      "position": "IT Software Leader",
+      "start_date": "2015-07",
+      "end_date": "2021-03",
+      "description": [
+        "Researching, analyzing and proposing software solutions according to requirements of enterprises",
+        "Work closely with customers, design and marketing team in the execution of strategies.",
+        "Manage and motivate a team of web/application developers to continually improve user experience.",
+        "Project Management.",
+        "Manage and developer more function for ERP system of the company",
+        "Manage and developer more function for Ecommerce system of the company",
+        "Organizing the development of software systems.",
+        "Handing over and organizing instruction, training using software, evaluating the effectiveness of the software system after using.",
+        "Developing and extending the functionality of the active softwares.",
+        "Organize and monitoring the operation status of the software systems.",
+        "Evaluating the current status of the software application system in the business process.",
+        "Document development and maintain for analysis, design, implementation report, test/operation manual and procedures.",
+        "Manage and provide leadership, vision and direction for team members.",
+        "Set KPI for team and report directly for GD.",
+        "In charge of management the IT activities of business production systems within company."
+      ]
+    },
+    {
+      "company": "Blue Hole Factory company",
+      "position": "Senior Software Developer",
+      "start_date": "2012-02",
+      "end_date": "2015-05",
+      "description": [
+        "Development of Php & Mysql for the website.",
+        "Working with users to establish requirements and determine priorities.",
+        "Developing new functionalities, both back-end and front-end.",
+        "Developing new applications, components & functionality to existing systems.",
+        "Analyzing data and conducting compatibility and quality assurance testing.",
+        "Training new employees."
+      ]
+    },
+    {
+      "company": "Socom Company",
+      "position": "Web Developer",
+      "start_date": "2008-02",
+      "end_date": "2010-09",
+      "description": [
+        "Building Web applications using Php, MySQL.",
+        "Working in a data analyst role and with business intelligence applications.",
+        "Documenting features, technical specifications & infrastructure requirements.",
+        "Data entry, data auditing, creating data report & monitoring all data for accuracy",
+        "Installation and support for customers.",
+        "Developing new applications, components and functionalities to existing systems"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Java",
+    "Php",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "MySQL",
+    "SQL",
+    "SQL Server",
+    "Oracle",
+    "Spring",
+    "AngularJS",
+    "Laravel",
+    "Codeigniter",
+    "Bootstrap",
+    "Jquery",
+    "Ionic",
+    "React JS",
+    "Eclipse",
+    "NetBeans",
+    "Storm",
+    "Miplatform",
+    "IntelliJIDEA",
+    "Visual Studio Code",
+    "MCSA",
+    "SVN",
+    "GIT",
+    "MS Project",
+    "API",
+    "Webservice",
+    "Node JS",
+    "network",
+    "system",
+    "AWS",
+    "GitHub",
+    "Joomla development",
+    "Microsoft Office",
+    "Manager for projects",
+    "team worker",
+    "operations of all departments of retail company",
+    "clear & concise when explaining technical procedures to customers"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Intermediate"
+    },
+    {
+      "language": "Japanese",
+      "level": "Basic"
+    }
+  ]
+}

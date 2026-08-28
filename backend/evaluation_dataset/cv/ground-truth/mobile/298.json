@@ -1,0 +1,225 @@
+{
+  "cv_id": "cv_139",
+  "full_name": "Ngo Huu Thinh",
+  "email": "",
+  "phone": "",
+  "location": "Ha Noi",
+  "summary": "With more than 7 years’ experience working as an Android developer and a little time as a Team leader (I Working 6 years in Tinh Van Outsourcing and onsite many the company: Panasonic, NCB, Savvycom, Haveynas). I have gained a certain professionalism level as a Senior android developer or begin as a Team leader with skill: \n• Manage team member and the project. \n• Skill and experience for develop logistic system, banking system. \n• Proficient with Kotlin, Android SDK, Android Studio, Gradle, SVN, GIT, Redmine, Jira, Trello. \n• Skill and experience in software design (System Structure Design, Program Structure Design). \n• Be able to analysis, design, develop, test and deploy Android app from the ground up, build base project, library. \n• Skill and experience in improve performance. \n• Skill and experience in multi-threading and asynchronous programming. \n• Skill and experience in analysis and problem solving. \n• Skill and experience using android, RX java, data binding, third party. \n• Skill and experience using MVP, MVC and MVVM. \n• Skill and experience about application life cycle, basic UI elements & layout, basic animation technique, auto-layout. \n• Skill and experience for multiscreen, Restful api (json, xml), Activity, Fragment, Service, Broadcast receiver, SQLite, design layout xml, json, xml, google maps, firebase… \n• Skill and experience about application: play video, music, Websocket, WebRT, chat OTT, social (facebook, twitter). \n• Able to work independently and in a team, with high responsibility.",
+  "education": [
+    {
+      "school": "Da Nang Technology of University",
+      "major": "",
+      "degree": "Software Engineer",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Tinhvan Outsourcing Jsc., (Onsite Panasoic, Savvycom, Havey Nash, NCB bank)",
+      "position": "Team Leader, Developer",
+      "start_date": "2015-04",
+      "end_date": "Present",
+      "description": [
+        "Manage project, team member.",
+        "Design software System Structure Design, Program Structure Design.",
+        "Analysis, design, develop, test and deploy Android app from the ground up, build base project, library.",
+        "Android application programming."
+      ]
+    },
+    {
+      "company": "Tâm Hợp Nhất - Unitech",
+      "position": "Software Engineer",
+      "start_date": "2012-02",
+      "end_date": "2013-08",
+      "description": [
+        "Android application programming"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "YHC (Logistics)",
+      "role": "Developer",
+      "technologies": [],
+      "description": "Perform the functions of pickup and delivery, return goods, manage the shipping process."
+    },
+    {
+      "name": "Niggata (Logistics)",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "App upgrade, add OS upgrade function through the app."
+    },
+    {
+      "name": "Daiichi (Logistics)",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Perform the functions of pickup and delivery, bring back, manage the shipping process, synchronize vehicle data via Bluetooth, transfer data local to server."
+    },
+    {
+      "name": "NCB Smart",
+      "role": "Team leader, Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Perform transaction functions, account management and related services of NCB on mobile applications"
+    },
+    {
+      "name": "Live Stream video",
+      "role": "Android developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "The application is a social network that allows livestream videos, drop hearts, play animations on livestream videos, watch time life (same Bigo live application)."
+    },
+    {
+      "name": "EMC, Cấp phép",
+      "role": "Android developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Searching and report profile, license, location…"
+    },
+    {
+      "name": "Privilist",
+      "role": "Team leader",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Privilist is the app to manage the order/reservation of the bar, it allows ordering/reserving tables, drinks, food (split bill payment), order management/reservations."
+    },
+    {
+      "name": "Jardine",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Jadine is app to manage sales, meeting client, introduce product to client."
+    },
+    {
+      "name": "Heineken Order Taking",
+      "role": "Developer",
+      "technologies": [
+        "Java Android"
+      ],
+      "description": "Heniken Order Taking is app to order product, pay order and review orders and products has ordered."
+    },
+    {
+      "name": "Pesonal memory manager",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "The application allows to manage and store data (images, videos) allowing backup to the cloud (google drive, dropbox, onedrive)."
+    },
+    {
+      "name": "Technis music app",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "The Technics Music app allows you to select the music source and playback device. Used with the Technics audio player, the music application screen displays music stored on a DLNA-compatible server, content stored on the device running the application, and music files on memory devices USB connected, giving you built-in playback control."
+    },
+    {
+      "name": "Autobacs",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Autobacs app lets you search, sort oil a convenient and simple way."
+    },
+    {
+      "name": "Android Video",
+      "role": "Developer",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Android Video an application to sell video online."
+    }
+  ],
+  "skills": [
+    "Project Management",
+    "Team Management",
+    "Logistic System Development",
+    "Banking System Development",
+    "Kotlin",
+    "Android SDK",
+    "Android Studio",
+    "Gradle",
+    "SVN",
+    "GIT",
+    "Redmine",
+    "Jira",
+    "Trello",
+    "Software Design",
+    "System Structure Design",
+    "Program Structure Design",
+    "Analysis",
+    "Design",
+    "Development",
+    "Testing",
+    "Deployment",
+    "Android App Development",
+    "Base Project Development",
+    "Library Development",
+    "Performance Optimization",
+    "Multi-threading",
+    "Asynchronous Programming",
+    "Problem Solving",
+    "RX Java",
+    "Data Binding",
+    "Third-Party Integration",
+    "MVP",
+    "MVC",
+    "MVVM",
+    "Application Life Cycle Management",
+    "UI Elements",
+    "Layout Design",
+    "Animation Techniques",
+    "Auto-layout",
+    "Multiscreen Development",
+    "RESTful API",
+    "JSON",
+    "XML",
+    "Android Activity",
+    "Android Fragment",
+    "Android Service",
+    "Broadcast Receiver",
+    "SQLite",
+    "XML Layout Design",
+    "Google Maps",
+    "Firebase",
+    "Video Playback",
+    "Music Playback",
+    "Websocket",
+    "WebRTC",
+    "Chat OTT",
+    "Social Media Integration (Facebook, Twitter)",
+    "Independent Work",
+    "Teamwork",
+    "Responsibility",
+    "PHP",
+    "Javascript",
+    "CSS",
+    "HTML"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "reading 3"
+    },
+    {
+      "language": "English",
+      "level": "writing 2"
+    },
+    {
+      "language": "English",
+      "level": "communication 2"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "cv_id": "cv_025",
+  "full_name": "Phạm Ngọc Quan",
+  "email": "",
+  "phone": "",
+  "location": "07, 5F Street, Binh Hung Hoa A, Binh Tan, HCM City.",
+  "summary": "With many years of experience in .Net programming as a lead developer, I aim to join a company where I can contribute to upgrading products and adding valuable benefits. Additionally, I hope to foster a positive work environment, developing the talents and skills of team members to help the company thrive.",
+  "education": [
+    {
+      "school": "College of Technology and Industrial Management",
+      "major": "Information Technology.",
+      "degree": "",
+      "start_date": "2004",
+      "end_date": "2007"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Cooky Corporation",
+      "position": ".Net Development Manager",
+      "start_date": "2020-05",
+      "end_date": "2024-04",
+      "description": [
+        "Manage development team (POS Team).",
+        "Receive requests from departments, analyze, and plan product development.",
+        "Analyze and manage databases.",
+        "Assist the backend team in coding.",
+        "Assign tasks to team members. Supervise and manage the work of team members.",
+        "Report progress to the technical director.",
+        "Manage product releases.",
+        "Monitor, maintain system stability.",
+        "User guide."
+      ]
+    },
+    {
+      "company": "Foody Corporation",
+      "position": ".Net Development Manager",
+      "start_date": "2015-01",
+      "end_date": "2020-04",
+      "description": [
+        "Manage development team (QA, .Net Developers, Mobile Developers).",
+        "Analyze, develop functionalities for NowPOS software.",
+        "Analyze and manage databases.",
+        "Coordinate with the sales department to build functionalities according to customer requirements.",
+        "Assign tasks to team members. Supervise and manage the work of team members.",
+        "Assist the backend team in coding.",
+        "Report progress to the technical director.",
+        "Manage product releases.",
+        "Monitor, maintain system stability."
+      ]
+    },
+    {
+      "company": "IVG Vietnam Corporation",
+      "position": ".Net Development Leader",
+      "start_date": "2010-10",
+      "end_date": "2014-11",
+      "description": [
+        "Manage development team (Microsoft Dynamics CRM).",
+        "Implement Microsoft Dynamics CRM system.",
+        "Consult on solutions, exchange, and gather requirements from customers.",
+        "Analyze customer requirements.",
+        "Plan implementation, delegate tasks to team members, and monitor the progress of each member's work.",
+        "Participate in coding project modules and support team members to meet deadlines.",
+        "Write project-related documents such as: UAT documentation, user guide documentation, installation guide documentation.",
+        "Deploy the product and train users.",
+        "Provide weekly progress reports to the project director."
+      ]
+    },
+    {
+      "company": "Viet Software - Communication Joint Stock Company",
+      "position": ".Net Development Leader",
+      "start_date": "2007-11",
+      "end_date": "2010-09",
+      "description": [
+        "Manage development team.",
+        "Participate in database analysis, interface design, and coding modules for the project..",
+        "Design advertising banners and posters..",
+        "Guide interns at the company.",
+        "Participate in various other company activities."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Team Management",
+    "MS SQL",
+    "C#",
+    ".NET Framework",
+    ".NET Core",
+    "MVC",
+    "Windows Forms",
+    "Dev Express",
+    "HTML",
+    "JS",
+    "CSS",
+    "AngularJS",
+    "MQTT",
+    "Kafka",
+    "Redis cache",
+    "Redis",
+    "Elastic",
+    "GitHub",
+    "Gitlab",
+    "Jira",
+    "Jenkin",
+    "Logical Thinking",
+    "Creativity",
+    "High Work Pressure Tolerance"
+  ],
+  "certifications": [],
+  "languages": []
+}

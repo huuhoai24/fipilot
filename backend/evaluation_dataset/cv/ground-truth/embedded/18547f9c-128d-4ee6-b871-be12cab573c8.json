@@ -1,0 +1,60 @@
+{
+  "cv_id": "cv_071",
+  "full_name": "ĐẶNG NGỌC MINH TRÍ",
+  "email": "",
+  "phone": "",
+  "location": "66 Hòa Bình, Phường 5, Quận 11",
+  "summary": "I aspire to leverage my knowledge and background in code design to actively pursue my goals and create a positive impact. My aim is to continuously enhance my knowledge and skills, enabling me to contribute to the progress of society and accomplish significant milestones in the future.",
+  "education": [
+    {
+      "school": "Ton Duc Thang University",
+      "major": "Telecommunications Engineering",
+      "degree": "Bachelor in Telecommunications Engineering",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "H&H ELECTRONIC COMPONENTS AND EQUIPMENT COMPANY",
+      "position": "TECHNICAL STAFF",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "Installed and repaired computer equipment, ensuring optimal functionality and performance.",
+        "Conducted thorough hardware warranty checks to verify the integrity and compatibility of computer components."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C/C++",
+    "Verilog",
+    "HTML",
+    "Teamwork",
+    "Sociable",
+    "CMOS Structure",
+    "Digital Circuit Design",
+    "ASIC Design Flow",
+    "IP Core Design",
+    "Linux",
+    "Manual test",
+    "Automation test",
+    "ASIC Design"
+  ],
+  "certifications": [
+    "APTIS",
+    "Microsoft Office Specialist",
+    "MOS WORD",
+    "MOS EXCEL",
+    "Cisco Certified Network Associate",
+    "Semicon Certificate",
+    "Elementary IC Design"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "cv_id": "cv_106",
+  "full_name": "Nguyen Minh Duc",
+  "email": "",
+  "phone": "",
+  "location": "Dich Vong Hau, Cau Giay, Ha Noi",
+  "summary": "I'm Nguyen Minh Duc, a full-stack developer with 2 years of experience in mobile application technologies and 6 months of experience in building web applications, with good knowledge of GetX, Plugin, camera detection, Database Design, and Design. Learning new languages and technologies is what I am passionate about. Besides, I tend to work well within groups because I like to help others.",
+  "education": [
+    {
+      "school": "Posts and Telecommunications Institute of Technology",
+      "major": "Information Technology - Security",
+      "degree": "",
+      "start_date": "2016-09",
+      "end_date": "2021-03"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "FPT Software",
+      "position": "Android Fresher Programing",
+      "start_date": "2020-08",
+      "end_date": "2020-09",
+      "description": [
+        "1.5-month Android Fresher Programing.",
+        "Linux Kernel, Libraries, Android Runtime, Application Framework, Applications"
+      ]
+    },
+    {
+      "company": "Mitas Viet Nam Technologies JSC",
+      "position": "Information Security Interns",
+      "start_date": "2020-10",
+      "end_date": "2021-01",
+      "description": [
+        "3-month Information Security Interns",
+        "Research about Spirent Software, contractor for the military."
+      ]
+    },
+    {
+      "company": "CMC Technology Institute (CMC-CIST)",
+      "position": "Full Stack Developer",
+      "start_date": "2021-03",
+      "end_date": "2022-11",
+      "description": [
+        "Research and build mobile applications, web applications, and servers for the projects."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Read NFC on mobile devices",
+      "role": "",
+      "technologies": [
+        "Java",
+        "Dart",
+        "Kotlin",
+        "CameraX",
+        "ML Kit Google"
+      ],
+      "description": "Build SDK, and NFC reader plugin to integrate into customer applications. Responsibilities: Build NFC plugin: reads MRZ and QR codes with the camera and reads NFC of chip ID card. Accomplishments: Using CameraX, write a document describing how to use the plugin, and read NFC on a chip ID card."
+    },
+    {
+      "name": "eKYC application",
+      "role": "",
+      "technologies": [
+        "Kotlin",
+        "Dart",
+        "CameraX",
+        "ML Kit Google",
+        "Postman",
+        "GetX"
+      ],
+      "description": "Building eKYC application including face recognition, taking ID card photos, NFC reading. Responsibilities: Build eKYC application, build functions face recognition, face angle, taking ID card photo by frame in a camera plugin. Accomplishments: Face recognition by ML kit Google, data transmission via API, eKYC, GetX."
+    },
+    {
+      "name": "Remote Signing",
+      "role": "",
+      "technologies": [
+        "Spring boot",
+        "Angular",
+        "MariaDB",
+        "VMW",
+        "EJBCA"
+      ],
+      "description": "Build a remote digital signing system, users can use mobile application or web application to digitally sign. Responsibilities: Build module RA (manage users and certificates) and module CA (create certificates) using EJBCA. Accomplishments: Distribute certificate by EJBCA on CentOS 8, build server using Spring boot, build client using Vuexy-7.1.2 (Angular), read the information in the certificate (front-end)."
+    },
+    {
+      "name": "Timekeeping system for Vinmec",
+      "role": "",
+      "technologies": [
+        "Kotlin",
+        "Swift",
+        "Dart",
+        "Angular",
+        "WebSocket",
+        "Bluetooth",
+        "ML kit",
+        "Media Pipe Face Mesh",
+        "GetX",
+        "Firebase"
+      ],
+      "description": "Building a timekeeping system for employees and patients of Vinmec hospital. Use facial recognition for timekeeping and management systems on web applications and mobile applications. Responsibilities: - CIVAMS Face Employee application: Display the timekeeping schedule, edit user information, take 6 images of the user's face, and create timekeeping notifications using Firebase. - CIVAMS Face Admin application: Displays management information of all users, taking 6 face images. - Data transfer between mobile device and timekeeping device: Build data transfer application between Android with iOS and Android with Android using Bluetooth Class, LE, Dual. - Web application to manage timekeeping devices and users: Display information and control timekeeping devices in real-time, manage user information and take 6 photos of 6 face corners using Media Pipe Face Mesh. Accomplishments: Create notifications using Firebase, distribute applications on Play Store, Bluetooth technology, and facial recognition on web application and mobile application."
+    },
+    {
+      "name": "Base Project",
+      "role": "",
+      "technologies": [
+        "Mason",
+        "GetWidget",
+        "GetX",
+        "Firebase"
+      ],
+      "description": "Build an application with UI/UX with basic functions for the next projects. Responsibilities: Application design: Welcome, Login, Register, Edit, Search, Profile, Setting. And create base project by Mason. Accomplishments: Using Mason, designing UI/UX and creating virtual server from MocKoon."
+    },
+    {
+      "name": "OCR system",
+      "role": "",
+      "technologies": [
+        "ReactJS",
+        "BaseTable v1.13.0",
+        "Syncfusion"
+      ],
+      "description": "Building a system to retrieve information from documents such as ID cards, invoices, driver's licenses, etc. on mobile applications and web applications. Responsibilities: Building a web application (front-end) that displays and allow editing information about documents including ID card, vat, and tables with OCR. Accomplishments: Render OCR on images, build excel table based on BaseTable v1.13.0 on the web application."
+    },
+    {
+      "name": "Amitabha Buddha (v1.0.0)",
+      "role": "",
+      "technologies": [
+        "Flutter"
+      ],
+      "description": "An application that supports Buddhists to recite Buddha's name. It is available on Play store (Flutter)."
+    }
+  ],
+  "skills": [
+    "Dart",
+    "Java",
+    "Kotlin",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "C++",
+    "Swift",
+    "Flutter",
+    "Android",
+    "React",
+    "Angular",
+    "Spring Boot",
+    "JSON",
+    "IOS",
+    "SQLite",
+    "Firebase",
+    "MySQL",
+    "MariaDB",
+    "Android Studio",
+    "IntelliJ",
+    "Visual Studio",
+    "XCode",
+    "Postman",
+    "VMW",
+    "GitHub",
+    "Gitlab",
+    "Trello",
+    "You Track",
+    "Time management",
+    "Teamwork"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "TOEIC: 480/990"
+    }
+  ]
+}

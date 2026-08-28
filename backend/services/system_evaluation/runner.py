@@ -31,7 +31,8 @@ class SystemEvaluationRunner:
         self._voice = voice_benchmark or VoiceTurnBenchmark()
 
     async def run(self, dataset: EvaluationDataset) -> SystemEvaluationReport:
-        cv = await self._cv.evaluate(dataset.cv_cases)
+        cv_result = await self._cv.evaluate_by_format(dataset.cv_cases)
+        cv = cv_result.overall
         stt = await self._stt.evaluate(dataset.stt_cases)
         tts = await self._tts.evaluate(dataset.tts_cases)
         question = await self._question.evaluate(dataset.question_cases)
@@ -47,14 +48,17 @@ class SystemEvaluationRunner:
         }
         if section_statuses == {"no_data"}:
             status = "no_data"
-        elif "partial" in section_statuses:
+        elif "partial" in section_statuses or dataset.validation.status != "valid":
             status = "partial"
         else:
             status = "completed"
         return SystemEvaluationReport(
             dataset_name=dataset.name,
             status=status,
+            dataset_summary=dataset.summary,
+            dataset_validation=dataset.validation,
             cv_accuracy=cv,
+            cv_by_format=cv_result.by_format,
             stt=stt,
             tts=tts,
             llm=LLMMetrics(
@@ -62,4 +66,22 @@ class SystemEvaluationRunner:
                 evaluator=evaluator,
             ),
             voice_turn=voice,
+            limitations=_limitations(dataset),
         )
+
+
+def _limitations(dataset: EvaluationDataset) -> list[str]:
+    limitations = [
+        "Metric reliability is limited by the benchmark size in each dataset slice.",
+        "Latency results depend on model versions, hardware, runtime load, and network conditions.",
+    ]
+    if dataset.summary.synthetic_sections:
+        sections = ", ".join(dataset.summary.synthetic_sections)
+        limitations.append(
+            f"Synthetic benchmark cases are used only for these sections: {sections}."
+        )
+    if dataset.validation.skipped_samples:
+        limitations.append(
+            "Invalid samples were skipped and are represented only by aggregate validation counts."
+        )
+    return limitations

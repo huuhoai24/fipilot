@@ -1,0 +1,63 @@
+{
+  "cv_id": "cv_053",
+  "full_name": "Wang Li",
+  "email": "yuchen8603@yahoo.cn",
+  "phone": "+86-13986258296 | +86-27-87669205",
+  "location": "04 Financial Engineering, Economics and Management School, Wuhan University Wuhan 430072, P. R. China",
+  "summary": "",
+  "education": [
+    {
+      "school": "Economics and Management School, Wuhan University",
+      "major": "Financial Engineering",
+      "degree": "Bachelor of Science",
+      "start_date": "",
+      "end_date": "2008"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "China Construction Bank",
+      "position": "Summer Intern, Personal Financial Department",
+      "start_date": "2007-07",
+      "end_date": "2007-08",
+      "description": [
+        "Assisted with service of personal credit card.",
+        "Reviewed and collated the qualification of filed and signed contracts.",
+        "Participated in the bank’s strategic transforma tion and training program of customer service quality."
+      ]
+    },
+    {
+      "company": "Bank of China",
+      "position": "Summer Intern, Personal Consumption and Loan Department",
+      "start_date": "2006-07",
+      "end_date": "2006-08",
+      "description": [
+        "Assisted in H ousing Mortgage Loans and Auto Loans transactions.",
+        "Helped arrange official files.",
+        "Participated in the market investigation of Auto Loans which covered more than 90% staff in the bank and obtained more than 100 pieces of useful information."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Program of Chinese National Natural Science Foundation",
+      "role": "Prof. Assistant, Heterogeneous Investor and Asset Pricing",
+      "technologies": [],
+      "description": "Collecting relevant materials and papers. Data Analysis and Processing. Assisting with constructing and consummating the pricing model."
+    }
+  ],
+  "skills": [
+    "Microsoft Word",
+    "PowerPoint",
+    "Access",
+    "Excel",
+    "Eviews",
+    "Piano",
+    "Detail-oriented",
+    "Team-spirited",
+    "Responsible",
+    "Motivated"
+  ],
+  "certifications": [],
+  "languages": []
+}

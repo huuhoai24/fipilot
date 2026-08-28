@@ -1,0 +1,109 @@
+{
+  "cv_id": "cv_073",
+  "full_name": "VŨ MẠNH TUẤN",
+  "email": "",
+  "phone": "",
+  "location": "87/30 Nguyễn Sỹ Sách Phường 15, Tan Binh District, Ho Chi Minh, Vietnam",
+  "summary": "Looking for a stable job for a long-term commitment and opportunities for advancement, success in work Contributing to building a growing company.",
+  "education": [
+    {
+      "school": "Industrial university of ho chi minh city",
+      "major": "",
+      "degree": "Bachelor",
+      "start_date": "",
+      "end_date": "2015-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "CJ Foods Vietnam",
+      "position": "Master Data Management Supervisor",
+      "start_date": "2022-01",
+      "end_date": "Present",
+      "description": [
+        "Master data in the system Sthink & Lemon3",
+        "Analyze/Classify and find out the error causes",
+        "Fix the error data",
+        "Research and establish data quality control tools",
+        "Clean the obsolete data",
+        "Execute the input data",
+        "Input data into the system (Sthink & Lemon3)",
+        "Record down the risks during the input process",
+        "Undertake all new-coming projects about data",
+        "Make a test plan",
+        "Measure the efficiency of projects regarding data input and management",
+        "Make the deployment for relevant departments",
+        "Implement other assignments",
+        "Implement working guidance for the data administration team",
+        "Have training for newcomers",
+        "Other activities according to job requirements and assigned by superiors"
+      ]
+    },
+    {
+      "company": "Phu Nhuan Jewelry Joint Stock Company - PNJ",
+      "position": "Master Data ERP-SAP Specialist",
+      "start_date": "2018-11",
+      "end_date": "2022-01",
+      "description": [
+        "Master Data Management ERP-SAP(Functional modules MM, SD, PP, FI, CO)",
+        "Master data in the system SAP - S4/HANA",
+        "Upload & Update Basic materials, inventory, and warehouse management (SAP MM)",
+        "Upload & Update Bom & Routing uses master data to help businesses plan the manufacturing, sale, and distribution of goods (SAP PP)",
+        "Store the company's financial data and analyze financial (SAP FI)",
+        "Accrual",
+        "Inventory",
+        "Tax accounting",
+        "Fixed asset",
+        "General ledger",
+        "Financial statements",
+        "Master data governance",
+        "Processing data in the selling, shipping & billing. Modules sale and distribution (SAP SD)",
+        "Voucher & Discount",
+        "Promotion",
+        "Fix the error data",
+        "Research and establish data quality control tools",
+        "Clean the obsolete data",
+        "Record down the risks during the input process",
+        "Undertake all new-coming projects about data",
+        "Make a test plan",
+        "Measure the efficiency of projects regarding data input and management",
+        "Make the deployment for relevant departments",
+        "Implement other assignments",
+        "Implement working guidance for the data administration team",
+        "Have training for newcomers",
+        "Other activities according to job requirements and assigned by superiors"
+      ]
+    },
+    {
+      "company": "Chubb Life Insurance Vietnam Company Limited",
+      "position": "Data Entry Staff",
+      "start_date": "2015-10",
+      "end_date": "2018-04",
+      "description": [
+        "Proofing and entry data storage and management",
+        "insurance contract",
+        "Other administrative tasks..."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Problem Solving",
+    "Teamwork",
+    "Adaptability",
+    "Flexibility",
+    "Academic English",
+    "Computer Skill",
+    "Learn New Software Quickly",
+    "Time Management Skill"
+  ],
+  "certifications": [
+    "C_MDG_1909 - SAP Certified Application Associate - Master Data Governance SAP"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Expert"
+    }
+  ]
+}

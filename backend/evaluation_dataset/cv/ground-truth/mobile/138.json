@@ -1,0 +1,260 @@
+{
+  "cv_id": "cv_126",
+  "full_name": "PHẠM VĂN LINH",
+  "email": "",
+  "phone": "",
+  "location": "Go Vap",
+  "summary": "I have more than 3 years of experience working on mobile development (3+ YoE React Native, 1.5+ YoE Android) and more than 1 YoE in the team leader position. I look forward to working in a professional programming environment where I can develop my professional skills, learn new programming knowledge to complete my assigned work, and improve my English.",
+  "education": [
+    {
+      "school": "NONG LAM UNIVERSITY",
+      "major": "INFORMATION TECHNOLOGY",
+      "degree": "",
+      "start_date": "2016-09",
+      "end_date": "2020-09"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "FPT Information System",
+      "position": "",
+      "start_date": "2024-01",
+      "end_date": "Present",
+      "description": [
+        "Participate in developing and maintaining 3 digital citizen projects for Ho Chi Minh City, Khanh Hoa Province, Dong Thap Province",
+        "Create an advanced lookup component and reuse it for 10 features for the Khanh Hoa digital citizen application",
+        "Support mobile team to 🐛x bugs and shorten the time up to 3 times",
+        "Support web team to 🐛x minor bug",
+        "Communicate with PO, BA, UI/UX Designer, and Tech lead developers to clarify requirements and propose solutions",
+        "Manage version, testing, and upload using"
+      ]
+    },
+    {
+      "company": "ALTEK Technology Company",
+      "position": "MOBILE TEAM LEADER",
+      "start_date": "2022-06",
+      "end_date": "2023-11",
+      "description": [
+        "Build and maintain telecommunications and e-wallet applications with more than 1 million downloads for Viettel's investment markets (Metfone, Lumitel, Telemor, Natcom)",
+        "Exchanging expertise and consulting on technology solutions in the mobile 🐛eld for customers",
+        "Learn new technologies and techniques to optimize application performance",
+        "Manage mobile team (10 people) and report weekly progress to superiors",
+        "Receive tasks and evaluate them, then assign them to team members",
+        "W ork with other teams (BE, BA, QC) with Agile/Scrum",
+        "Create templates for company projects (React Native, Android Library module)",
+        "Fix Google reject app error at risk of app deletion (Intent redirection) and other Google reject app errors (Form safety, API level 33)",
+        "Manage version, testing, and upload to App Center, Firebase Distribution, Google Play, and AppStore",
+        "Achieved the title of Rising Star Employee (01/2023)",
+        "Hit KPIs A and B for many consecutive months"
+      ]
+    },
+    {
+      "company": "HDWEBSOFT Software Development Company",
+      "position": "REACT NATIVE DEVELOPER",
+      "start_date": "2021-01",
+      "end_date": "2022-04",
+      "description": [
+        "Turn UI designs and product speci🐛cations into intuitive UI",
+        "Clean code and optimize performance",
+        "Research and apply new techs to projects",
+        "Participate in code templates for the company",
+        "Participate in technical exchanges with customers",
+        "Integrated company's SDK",
+        "W orking with Agile/Scrum development process",
+        "Publish app to store",
+        "Be assessed positively by the manager: active, extremely adaptable...",
+        "Observe, learn, and catch projects well"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "DIGITAL CITIZEN",
+      "role": "React Native",
+      "technologies": [
+        "Typescript",
+        "Redux Saga",
+        "Redux Toolkit",
+        "Redux Persist",
+        "Firebase FCM",
+        "Firebase Event",
+        "Firebase Crashlytic"
+      ],
+      "description": "Create an advanced lookup component and reuse it for 10 features for the Khanh Hoa digital citizen application\nView location on Map via cluster area and custom display on Map\nCon🐛g i18n to use multi-language\nSupport another member and maintain the application by 🐛xing existing issues"
+    },
+    {
+      "name": "CAMID",
+      "role": "Android",
+      "technologies": [
+        "Java",
+        "Kotlin",
+        "Retrofit",
+        "RxJava",
+        "Firebase FCM",
+        "Firebase Event",
+        "Firebase Crashlytic",
+        "Firebase Remote Config",
+        "Firebase Dynamic Link"
+      ],
+      "description": "Con🐛g and handle deep-link into app for features (App links and Dynamic link)\nCon🐛g push noti🐛cation\nLoyalty feature\nHandle logic buy the package's service on the home screen\nCommunication between the game webview and the app to process play purchases\nCaching data with RxJava to improve UI/UX\nFix crash on Firebase Crashlytics\nFix Google reject app (Intent redirection, Form safety, API level 33)\nOptimize and improve the e🐛ciency of existing apps\nPublish app to Store"
+    },
+    {
+      "name": "CAMID NETWORK TEST LIBRARY",
+      "role": "Android",
+      "technologies": [
+        "Java",
+        "Retrofit",
+        "Telephony"
+      ],
+      "description": "Measure download/ upload/ ping speed\nCollect cell info (rsrp, rsrq, mcc, mcn, enb, ...)\nDetect location and mobile carrier information\nCreate a dynamic survey form and submit the measure result\nBuild the design to UI code\nIntegrate with API to transmit data to the server for reporting\nExport to library"
+    },
+    {
+      "name": "EMONEY",
+      "role": "Android, iOS",
+      "technologies": [
+        "MVP",
+        "MVVM",
+        "Kotlin",
+        "RxJava",
+        "Coroutine",
+        "Live data",
+        "Data binding",
+        "Firebase FCM",
+        "Firebase Event",
+        "Firebase Crashlytic",
+        "Firebase Remote Config",
+        "Firebase Dynamic Link",
+        "Firebase Hosting",
+        "Swift"
+      ],
+      "description": "Con🐛g dynamic link into app with a custom domain\nCon🐛g APNs Certi🐛cates/ APNs Authentication Key for iOS\nSecurity connect server side with con🐛g SSL on client app (use .crt 🐛le)\nExecute minor tasks for the iOS app same Android\nFix crash on Firebase Crashlytics\nIntegrate event log to serve report\nFix Google reject app (Form safety, API level 33)\nOptimize and improve the e🐛ciency of existing apps"
+    },
+    {
+      "name": "LUMIPAY",
+      "role": "React Native",
+      "technologies": [
+        "TypeScript",
+        "Redux Saga",
+        "Redux Persist",
+        "Google Maps",
+        "Firebase Remote Config",
+        "Firebase Dynamic Link",
+        "CodePush"
+      ],
+      "description": "Integrate native module eKYC\nIntegrate ESB for W 2B, B2W\nCon🐛g push noti🐛cation\nHandle refresh token and authentication with biometric\nCaching data with Redux persist\nBuild the Figma design to UI code\nFix Google reject app (Invalid Data safety form, API level 33)\nPublish app to the store (GG Play, App Store)"
+    },
+    {
+      "name": "MOSAN",
+      "role": "React Native",
+      "technologies": [
+        "TypeScript",
+        "Redux Saga",
+        "Redux Persist",
+        "Google Maps",
+        "Firebase Remote Config",
+        "Firebase Dynamic Link",
+        "CodePush"
+      ],
+      "description": "Con🐛guring multiple 🐛avors/ schema for 4 env (Prod, UAT, Stage, Dev)\nGenerate QR code and download it to share the payment method\nCon🐛g push noti🐛cation for app Agent, EU\nHandle expired session\nMove and sort categories\nPick a location on the map to register new agent\nOptimize and improve the e🐛ciency of existing apps"
+    },
+    {
+      "name": "NATCASH",
+      "role": "React Native",
+      "technologies": [
+        "TypeScript",
+        "Redux Saga",
+        "Redux Persist",
+        "Google Maps",
+        "Firebase Remote Config",
+        "Firebase Dynamic Link",
+        "CodePush"
+      ],
+      "description": "Integrate eKYC via API\nAnimation move the support icon on the screen\nCluster markers Google maps\nBuy Lottery on W ebview and purchases on the app\nPush noti🐛cation\nBuild the Figma design to UI code for new features\nPublish app to the store"
+    },
+    {
+      "name": "TROVE",
+      "role": "React Native",
+      "technologies": [
+        "React Native CLI",
+        "Axios",
+        "Firebase",
+        "Spotify",
+        "Google Maps"
+      ],
+      "description": "Clean code and 🐛x bug\nImplement UI components and libraries\nCRUD kernels and collections use react-native-richtext-editor\nHandle follow, unfollow contributors\nBuild the Figma design to UI code"
+    },
+    {
+      "name": "POOLPRO",
+      "role": "React Native",
+      "technologies": [
+        "Expo",
+        "GraphQL",
+        "Persist",
+        "AWS S3",
+        "Plaid",
+        "Circle CI",
+        "Expo turtle"
+      ],
+      "description": "Clean code and 🐛x bug\nShow job with location on Map\nPush noti🐛cation, review company via Arrivala before rating o🐛cial on Google\nHandle logic check-in, checkout, calculate the bill\nPersist data to check-in and checkout for o🐛ine feature\nPublish app to the store"
+    }
+  ],
+  "skills": [
+    "ES6 JavaScript",
+    "TypeScript",
+    "React Native Expo",
+    "React Native CLI",
+    "Redux Toolkit",
+    "Redux Saga",
+    "Redux Persist",
+    "Java",
+    "Kotlin",
+    "Objective C",
+    "Swift",
+    "Codepush",
+    "Expo OTA",
+    "RESTful API",
+    "Apollo",
+    "GraphQL client",
+    "Push Notification",
+    "Deeplink",
+    "Clean code",
+    "SOLID",
+    "OOP",
+    "MVVM",
+    "MVP",
+    "Google Maps",
+    "Sentry",
+    "Firebase FCM",
+    "Firebase Event",
+    "Firebase Crashlytic",
+    "Firebase Remote Config",
+    "Firebase Dynamic Link",
+    "Postman",
+    "Reactotron",
+    "Burp Suite",
+    "Proxyman",
+    "Xcode",
+    "Android Studio",
+    "Asana",
+    "Trello",
+    "Jira",
+    "Slack",
+    "App Center",
+    "Firebase Distribution",
+    "Google Play",
+    "AppStore",
+    "ReactJs",
+    "Appium",
+    "active",
+    "extremely adaptable",
+    "Observe",
+    "learn",
+    "catch projects well",
+    "Highly passionate about technology and software development",
+    "Proactive",
+    "effective self-management",
+    "research skills"
+  ],
+  "certifications": [],
+  "languages": []
+}

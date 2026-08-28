@@ -385,6 +385,14 @@ class VertexGeminiService(BaseLLMService):
         if not settings.google_cloud_project:
             raise LLMConfigurationError("GOOGLE_CLOUD_PROJECT is required for Vertex AI Gemini")
 
+        # Sanitize NO_PROXY on Windows where unbracketed ::1 causes httpx to fail with InvalidURL
+        import os
+        for env_key in ("NO_PROXY", "no_proxy"):
+            if env_key in os.environ:
+                items = [item.strip() for item in os.environ[env_key].split(",") if item.strip()]
+                clean_items = [item for item in items if not item.startswith("::")]
+                os.environ[env_key] = ",".join(clean_items)
+
         try:
             from google import genai
         except ImportError as error:  # pragma: no cover - exercised through dependency installation

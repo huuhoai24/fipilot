@@ -19,6 +19,7 @@ export interface InterviewSetupSnapshot {
   questionCountInput: string
   objective: string
   preparationStatus: 'idle' | 'preparing' | 'ready'
+  selectedRole?: string
 }
 
 interface InterviewSetupNavigationState {

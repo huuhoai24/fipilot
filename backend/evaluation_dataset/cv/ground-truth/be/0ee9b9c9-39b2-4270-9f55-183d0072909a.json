@@ -1,0 +1,144 @@
+{
+  "cv_id": "cv_031",
+  "full_name": "Pham Minh An",
+  "email": "",
+  "phone": "",
+  "location": "287/22 Au Duong Lan, Ward 4, District 8, Ho Chi Minh City, Vietnam",
+  "summary": "By leveraging my coding skills, experience, and understanding of the Java programming language, I aim to excel as a programmer and deliver significant value to customers. Moreover, I am eager to contribute to the overall growth and progress of the company.",
+  "education": [
+    {
+      "school": "Saigon University of Technology",
+      "major": "Computer Science",
+      "degree": "",
+      "start_date": "2016-09",
+      "end_date": "2020-09"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Tech Advanced Solutions",
+      "position": "Dev Java full stack (Java Spring Framework + Angular)",
+      "start_date": "2021-10",
+      "end_date": "Present",
+      "description": [
+        "Work on Spring Framework project",
+        "Collaborate with members from Vietnam and India team",
+        "Pick up user stories, analyze, design, and discuss with the team to tackle them",
+        "Invoke in an Agile team",
+        "Participate in the development of company products and fix bugs"
+      ]
+    },
+    {
+      "company": "PALTech Company Limited",
+      "position": "Dev Java full stack (Java Spring boot + Angular)",
+      "start_date": "2020-10",
+      "end_date": "2021-10",
+      "description": [
+        "Work on Spring Boot project",
+        "Collaborate with member from Vietnam",
+        "Pick up user stories, analyze, design, and discuss with the team to tackle them",
+        "Invoke in an Agile team",
+        "Participate in the development of company products and fix bugs"
+      ]
+    },
+    {
+      "company": "RAKUMO",
+      "position": "FULL STACK (Java + Python + Angular)",
+      "start_date": "2019-08",
+      "end_date": "2020-09",
+      "description": [
+        "Work on Spring Framework project",
+        "Collaborate with members from Vietnam",
+        "Pick up user stories, analyze, design, and discuss with the team to tackle them",
+        "Participate in the development of company products and fix bugs"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Web RETP",
+      "role": "Developer",
+      "technologies": [
+        "Spring Boot",
+        "Rest API"
+      ],
+      "description": "Web site and mobile app for traffic management"
+    },
+    {
+      "name": "Web Merito",
+      "role": "Developer",
+      "technologies": [
+        "Spring Boot",
+        "JDBC template",
+        "Hibernate",
+        "Rest API",
+        "Microservice"
+      ],
+      "description": "Web site for computational processing"
+    },
+    {
+      "name": "Web AQS",
+      "role": "Java BE, Angular FE",
+      "technologies": [
+        "Spring Boot",
+        "Angular 9",
+        "Hibernate",
+        "Rest API",
+        "Microservice"
+      ],
+      "description": "Web site and mobile app for computational processing"
+    },
+    {
+      "name": "WEB RAKUMO",
+      "role": "Java BE Developer, Python BE Developer",
+      "technologies": [
+        "Spring Framework",
+        "Django",
+        "Google App Engine",
+        "Angular",
+        "Dojo"
+      ],
+      "description": "Participate in the development of company products and fix bugs"
+    },
+    {
+      "name": "DESTOP APPLICATION MANAGE PURCHASE AND SALE ITEM GAME",
+      "role": "Analyst, Dev Desktop Developer",
+      "technologies": [
+        "Java Swing"
+      ],
+      "description": "Manage, Process, Statistics, Calculate, Sort, Search, Record All Sales Transactions"
+    },
+    {
+      "name": "Web DS SERVICE",
+      "role": "Java BE Developer",
+      "technologies": [
+        "Spring MVC",
+        "JSP",
+        "Hibernate",
+        "My SQL"
+      ],
+      "description": "Participate in the development of company products and fix bugs"
+    }
+  ],
+  "skills": [
+    "Java",
+    "PHP",
+    "Python",
+    "JavaScript",
+    "Spring Boot",
+    "Angular",
+    "Java Swing",
+    "Django",
+    "JPA",
+    "Hibernate",
+    "Git",
+    "My SQL",
+    "PostgreSQL",
+    "IntelliJ IDEA",
+    "PyCharm",
+    "Phpstorm",
+    "Datagrip"
+  ],
+  "certifications": [],
+  "languages": []
+}

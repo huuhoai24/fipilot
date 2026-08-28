@@ -1,0 +1,88 @@
+{
+  "cv_id": "cv_011",
+  "full_name": "NGUYEN VAN DAT",
+  "email": "",
+  "phone": "",
+  "location": "Dong Tam, Hai Ba Trung , Ha Noi",
+  "summary": "",
+  "education": [
+    {
+      "school": "Hanoi University of Science and Technology",
+      "major": "Electrics and Telecommunications",
+      "degree": "Engineer",
+      "start_date": "2017-08",
+      "end_date": "2022-08"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "HBLab",
+      "position": "AI Engineer",
+      "start_date": "2024-04",
+      "end_date": "Present",
+      "description": [
+        "Participating in the development Japanese POCR system (Extract Layout, Table Reconstruction)",
+        "Maintaining and developing functions for the Japanese OCR system (C++, Java)",
+        "Researching pipeline LLM using Langchain(RAG)"
+      ]
+    },
+    {
+      "company": "MB Bank",
+      "position": "AI Engineer",
+      "start_date": "2022-03",
+      "end_date": "2024-03",
+      "description": [
+        "Developed a solution and pipeline full pipeline OCR for Bank. Pipeline: Text Detection, Rotate Image, Text Recognition, Extraction Information. Optimize: Accuracy about 94% - 95% per paper , and Performance about 1s - 3s per paper on triton",
+        "Participating in the backend API development of the MLOps MB Bank. Automated Model Deployment and Training Functionality (Kafka, MongoDB)",
+        "Developing and Building an eKYC Solution for Banking. Accuracy OCR: 98% , developing a model classification id card(21 classes) with accuracy 99%",
+        "Building and Developing a full pipeline signature verification. Pipeline: Model signature detection, Model the role of the signer detection to find out if the person signed or not",
+        "Developing a Feature Extraction Model for Image Repository in a Bank using EfficientNet Model."
+      ]
+    },
+    {
+      "company": "Viettel Post",
+      "position": "Intern - AI Engineer",
+      "start_date": "2021-01",
+      "end_date": "2022-03",
+      "description": [
+        "Developing an Object Detection Model for Viettel Post Warehouse. Programming C to control servo (a leaser distance sensor be assembled with a servo), return a distance from laser to object. Programming python to segmentation object with U2Net model, return area of the object. Return a result of estimate the volume. Volume = Area of the object * Height"
+      ]
+    },
+    {
+      "company": "Lab EDABK",
+      "position": "Research Student",
+      "start_date": "2020-05",
+      "end_date": "2022-08",
+      "description": [
+        "Building and developing a model for detecting defects in phone screen products, deploying it on a server.",
+        "Building and developing a model to address the problem of detecting and tracking intruders in a monitored area using the DeepStream platform."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Python",
+    "C++",
+    "VS Code",
+    "Pycharm",
+    "K8s",
+    "Kafka",
+    "GitHub",
+    "Docker",
+    "GitLab CI/CD",
+    "Stable Diffusion",
+    "LLM",
+    "Langchain (RAG)",
+    "Triton",
+    "Pytorch",
+    "Tensorflow",
+    "FastAPI",
+    "ONNX",
+    "Keras",
+    "MySQL",
+    "MongoDB",
+    "S3"
+  ],
+  "certifications": [],
+  "languages": []
+}

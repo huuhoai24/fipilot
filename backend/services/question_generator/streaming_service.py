@@ -148,7 +148,7 @@ class QuestionStreamingService:
         stream_kwargs: dict = {
             "system_instruction": QUESTION_GENERATOR_SYSTEM_INSTRUCTION,
             "task_type": self.task_type,
-            "temperature": 0.2,
+            "temperature": 0.6,
         }
         if self.thinking_budget is not None:
             stream_kwargs["thinking_budget"] = self.thinking_budget

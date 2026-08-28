@@ -1,0 +1,117 @@
+{
+  "cv_id": "cv_084",
+  "full_name": "Phan Văn Hoàng",
+  "email": "",
+  "phone": "",
+  "location": "116/18 bình lợi, phường 13, quận bình thạnh, Hồ Chí Minh",
+  "summary": "5 years of experience as a Frontend Developer, with 2 year of mobile development using React Native. Proficient in modern frameworks such as React Native. Strong understanding of blockchain-related projects, including marketplace, decentralized exchanges (DEX), and lending platforms. Responsible for creating source code architecture and delegating tasks in various projects. Highly motivated to continuously learn and explore new technologies, ensuring the team stays up to date with the latest frameworks and libraries.",
+  "education": [
+    {
+      "school": "TRƯỜNG ĐẠI HỌC CÔNG NGHỆ (HUTECH)",
+      "major": "Kỹ thuật điện tử, truyền thông",
+      "degree": "",
+      "start_date": "2015-08",
+      "end_date": "2019-08"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Công ty Cổ phần công nghệ Tesse",
+      "position": "Frontend Developer",
+      "start_date": "2019-08",
+      "end_date": "Present",
+      "description": [
+        "Led project analysis for the company, determining project timelines, required features, work allocation, and source code creation.",
+        "Actively contributed to coding efforts within projects.",
+        "Provided guidance, shared experience, and mentored new team members."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "An online education platform for teaching and learning",
+      "role": "Frontend Developer",
+      "technologies": [
+        "ReactJS"
+      ],
+      "description": "An online education platform for teaching and learning."
+    },
+    {
+      "name": "Edutek",
+      "role": "Frontend Developer",
+      "technologies": [
+        "ReactJS"
+      ],
+      "description": "A Learning Management System (LMS) platform designed for enterprises and schools."
+    },
+    {
+      "name": "Defly Finance",
+      "role": "Frontend Developer",
+      "technologies": [
+        "ReactJS"
+      ],
+      "description": "A cross-chain decentralized finance (DeFi) project offering services like farming, staking, IDO, and lending. Developed the website and mobile versions"
+    },
+    {
+      "name": "VoiceGPT",
+      "role": "Frontend Developer",
+      "technologies": [
+        "ReactJS",
+        "React Native"
+      ],
+      "description": "A project enabling users to interact with ChatGPT through voice instead of typing."
+    },
+    {
+      "name": "Runtogether",
+      "role": "Mobile Developer",
+      "technologies": [
+        "React Native",
+        "Nuxtjs"
+      ],
+      "description": "A Move-to-Earn project combining Game-Fi and Social-Fi elements. Developed both the website and mobile versions"
+    },
+    {
+      "name": "Gigareal",
+      "role": "",
+      "technologies": [
+        "ReactJS",
+        "React Native"
+      ],
+      "description": "A real estate project providing a dashboard for internal company employees. Developed the mobile app and admin website"
+    },
+    {
+      "name": "Pibridge",
+      "role": "Mobile Developer",
+      "technologies": [
+        "React Native",
+        "Nuxtjs"
+      ],
+      "description": "A blockchain application allowing users to exchange Pi tokens."
+    },
+    {
+      "name": "Iztalk",
+      "role": "Mobile Developer",
+      "technologies": [
+        "React Native"
+      ],
+      "description": "An online interpretation application supporting multiple languages."
+    },
+    {
+      "name": "MQ House",
+      "role": "Frontend Developer",
+      "technologies": [
+        "Nuxtjs"
+      ],
+      "description": "A house rental search platform."
+    }
+  ],
+  "skills": [
+    "Reactjs",
+    "Nextjs",
+    "Vuejs",
+    "Nuxtjs",
+    "React-native"
+  ],
+  "certifications": [],
+  "languages": []
+}

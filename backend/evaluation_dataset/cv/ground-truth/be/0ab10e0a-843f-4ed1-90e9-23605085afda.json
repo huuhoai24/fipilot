@@ -1,0 +1,77 @@
+{
+  "cv_id": "cv_026",
+  "full_name": "Phạm Huỳnh Phi Bảo",
+  "email": "",
+  "phone": "",
+  "location": "63/46 Nguyen Bieu Street, Ward 1, District 5, Ho Chi Minh City.",
+  "summary": "I am a .NET developer with in-depth knowledge of SQL Server data, from database design to management and optimization, proficient in queries and stored procedures. I am able to research and acquire knowledge from the .NET framework. I have many years of experience in supply chain management, as well as building and deploying large-scale software projects. Great! I strength is being proficient in Business Flow to design effective workflow processes.",
+  "education": [
+    {
+      "school": "HIAST",
+      "major": "SOFTWARE ENGINEERING",
+      "degree": "",
+      "start_date": "2012",
+      "end_date": "2015"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "VIEN THONG A",
+      "position": "INTERNAL PROCESS DEVELOPER",
+      "start_date": "2016",
+      "end_date": "2018",
+      "description": [
+        "Developing management procedures f pany such as leave, budget management, and reporting by MVC, HTML, CSS, Javascript, Bootstrap, SQL server."
+      ]
+    },
+    {
+      "company": "MOBILE WORLD JSC (THE GIOI DI DONG)",
+      "position": "ERP DEVELOPER",
+      "start_date": "2018",
+      "end_date": "2019",
+      "description": [
+        "Managing and developing mas cluding employee information, products, customers, suppliers financial reports by Winform, Sql Server."
+      ]
+    },
+    {
+      "company": "FPT RETAIL (FPT SHOP)",
+      "position": "MRP TEAM LEADER",
+      "start_date": "2019",
+      "end_date": "2023",
+      "description": [
+        "Researching and developing MRP system to optimize resources, suggest the quantity of orders n m supplier, and distribute products to each shop ... by Winform, MVC, HTML, CSS, Javascript, Bootstrap, SQL server , SQL server, QL"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "3P EYE CARE",
+      "role": "",
+      "technologies": [
+        "Visual Statudio 2019",
+        ".NET MVC",
+        "SQL Server"
+      ],
+      "description": "Successfully built a project from database design to implementation and project management, including processes from reception, examination, surgery, drug sales, to payment collection"
+    }
+  ],
+  "skills": [
+    "C#",
+    "MVC",
+    ".NET Core",
+    "Entity k",
+    "WCF",
+    "kafka",
+    "SQL server",
+    "PostgreSQL",
+    "HTML",
+    "Javascript",
+    "CSS",
+    "Github",
+    "SourceTree",
+    "Sublime",
+    "Notepad+"
+  ],
+  "certifications": [],
+  "languages": []
+}

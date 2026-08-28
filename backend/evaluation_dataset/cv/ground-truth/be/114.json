@@ -1,0 +1,58 @@
+{
+  "cv_id": "cv_059",
+  "full_name": "Ly Nguyen Ngoc",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "2+ years of software experience\nStrong experiences in VB6, , C#,\nKnowledgeable of medical business domain, accounting management software, HRM\nGood at MSSQL, Crystal Report\nExperienced working in Asia Soft\nStrong experiences in analytical and system design database",
+  "education": [
+    {
+      "school": "HCMC University of Technology and Educational",
+      "major": "",
+      "degree": "",
+      "start_date": "2008",
+      "end_date": "2015"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Asia soft",
+      "position": "Software Development",
+      "start_date": "2014-09",
+      "end_date": "Present",
+      "description": [
+        "Develop applications in ERP system",
+        "Manage and develop Human Resource Management (HRM) application system.",
+        "Manage and develop CRM application system.",
+        "Support for IT manager at branches about ERP system.",
+        "Analyst and design request from departments at Head office and branches about applications system.",
+        "Write technical documents",
+        "Support for building standard right and granting auto right for users"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Alone work",
+    "Team work",
+    "Can communicate to the customer in project context effectively",
+    "C/C++",
+    "VB",
+    "C#",
+    "MSQL Server 2008 R2",
+    "Crystal report",
+    "VB6",
+    "MSSQL"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Native"
+    },
+    {
+      "language": "English",
+      "level": "Normal"
+    }
+  ]
+}

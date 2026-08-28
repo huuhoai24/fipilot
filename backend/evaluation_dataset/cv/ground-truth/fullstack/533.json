@@ -1,0 +1,133 @@
+{
+  "cv_id": "cv_109",
+  "full_name": "Trần Quang Tri",
+  "email": "",
+  "phone": "",
+  "location": "Ward 03, Go Vap District",
+  "summary": "Full-stack developer with 6+ Years of work experience in the software development.\nThe leader with 2+ years of work manage <5 members on the team\nNow I’m Head of IT with team <10 Member, extensive technical and team management experience help the team grow upskill\nGood spirit of learning, good at solving logical issues, handling interface, user experience and performance for applications",
+  "education": [
+    {
+      "school": "VNUHCM-University Of Science",
+      "major": "information system",
+      "degree": "",
+      "start_date": "2011",
+      "end_date": "2014"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "KHAI PHAT INTELLIGENT MART – KPSMALL & KIMART",
+      "position": "Head Of IT",
+      "start_date": "2022-02",
+      "end_date": "Present",
+      "description": [
+        "This is a startup company, it's like a 24h supermarket but goes in the clean food segment, organic food.",
+        "Work with an IT team of 5 members and over 5 partner provide the service to design, develop and operate the company’s products. Provide professional advice to departments, contribute to consulting BOD to make business strategy decisions",
+        "Work with an MKT team of 5 members to graphic design for media channels, build content for socials, analysis the data as behavior customer go to the channels.",
+        "Work with CEO to design prototype by figma to provide software development outsourcing team",
+        "Manage stack: leadship,Project management, .Net, PHP, Flutter, angular , my sql, postgresql",
+        "Project: Gofirst: [Technical lead] Successfully lead internal and outsource team develop to implement MDW to change all store's POS systems of supermarket >200 stores, >500 POS physical. Contribute to the success of the project as well as bring a new language into the IT team.",
+        "Project: Einvoice: [Project Manager] Successfully lead internal and outsource team develop and external vendor to develop new form electronic invoice with >100K items, >3 BUs",
+        "Project: WMS [Project Manager] Successfully lead internal and outsource team develop to implement MDW to change from manage warehouse internal to partner DHL.",
+        "Project: Order Management System: [Product Manager] manage team to build online order management system, manage online orders from Go's (BigC) partners: Grab, Now, Beamin, Zalo, Tiki, BigC App) Using Reactjs and .Net as backend",
+        "Project: Management: Manage the development team to maintain internal applications, perform services in accordance with business requirements.",
+        "Project: Operate: manage develop team to maintain batch jobs in-house and operation team coordination ( >10 members) to monitor the service. Successfully lead biz support team to work through COVID 19.",
+        "Project: Mobile Application: Manage the software development outsourcing team, ensuring they comply with the design and requirements of the company. The application have submit to Appstore name like “KPSMALL”, “KIMART”.",
+        "Project: WEB application: Successfully lead internal team to implement website application by Haravan partner ( ).",
+        "Project: WMS & TMS: Successfully lead internal, outsource team and partner team develop to implement application to manage warehouse internal.",
+        "Project: Offline Store: Successfully lead team and partner team to implement system (software & hardware). Contribute to the success of the project as well as bring a new business model into the company.",
+        "Project: MKT: Successfully lead content & design internal team to build the channels ( facebook, tiktok, youtube, SEO google).",
+        "Management: Manage the development team to maintain internal applications, perform services in accordance with business requirements.",
+        "Operate: manage team to maintain application and operation team coordination ( >10 members) to monitor the service.",
+        "Achievement: Manage my employees, help them solve problems, create favorable conditions for employees to learn and develop themselves according to their career path",
+        "Achievement: Partner management ( TKLog, CloudAZ, getfly, kiotviet, haravan,Bitton,Inovator ....)",
+        "Achievement: Understand retail industry business model",
+        "Achievement: Proficient in project management and plan management to ensure project progress"
+      ]
+    },
+    {
+      "company": "CIO coaching",
+      "position": "Assistant",
+      "start_date": "2023-03",
+      "end_date": "Present",
+      "description": [
+        "Full-stack developer",
+        "Tech stack: .Net, MuleSoft, Informatica, Oracle, sql server",
+        "Project: Contract Management System: Contract Management System manage the supplier’s contract and TC Using C# winform",
+        "Project: In-House reporting: implement in-house app ( web app, winform application), build reporting to user needs.",
+        "Project: Integration: implement the integration of all company’s internal system and external system",
+        "Operate: maintain batch jobs in-house and operation team coordination ( >10 members) to manage the service.",
+        "Achievement: Understand the Business process and core system",
+        "Achievement: Advise business solution to solve the issue",
+        "Achievement: Analysis the business requirement and deliver product to solve the user experience"
+      ]
+    },
+    {
+      "company": "Central Retail VietNam",
+      "position": "Application Lead | acting IT Manager",
+      "start_date": "2017-09",
+      "end_date": "2022-02",
+      "description": [
+        "Work with an IT team of over 100 members from 3 countries: VietNam, Taiwan and China to design, develop and operate the company’s products. Become the team leader of winform application projects",
+        "Tech stack: Powerbuilder, Talend, Oracle, Sqlite ...",
+        "Project: Pettycash system: small expenses Management winform application using PowerBuilder.",
+        "Project: AIS system: financial accounting management system winform application using PowerBuilder.",
+        "Project: Integration: Integrate data between AIS and ERP, and between other systems in company",
+        "Achievement: Successfully to apply Talend ( ETL) in company.",
+        "Achievement: Understand the biz user and how to solve their problems",
+        "Achievement: Know how to manage the oracle database and how to design the new database",
+        "Achievement: Completed 5/6 level for the company skills test"
+      ]
+    },
+    {
+      "company": "PouYuen VietNam",
+      "position": "Full-stack developer",
+      "start_date": "2012-03",
+      "end_date": "2017-07",
+      "description": [
+        "Work with an IT team of over 100 members from 2 countries: VietNam, Thailand to design, develop and operate the company’s products. Become the team leader of development team and acting IT manager to manage team to implement service’s company"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Oracle",
+    "mysql",
+    "sql server",
+    "sqlite",
+    "Powerbuilder",
+    "C# .Net",
+    "Talend",
+    "Tibco",
+    "Informatica",
+    "Rest API",
+    "MuleSoft",
+    "Git",
+    "SVN",
+    "ELK",
+    "Linux",
+    "Figma",
+    "Leadship",
+    "Business Analyst",
+    "Planing",
+    "Project management",
+    "Service Management",
+    "Partner Management",
+    "Tech Management",
+    "PHP",
+    "Flutter",
+    "angular",
+    "postgresql"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Native"
+    },
+    {
+      "language": "English",
+      "level": "Intermediate"
+    }
+  ]
+}

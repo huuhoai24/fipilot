@@ -1,0 +1,97 @@
+{
+  "cv_id": "cv_008",
+  "full_name": "LÊ QUANG SÁNG",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "Ability to work independently with high self-motivation and self-management. Always be proactive at work. High responsibility in work. Not afraid of hard work, not afraid to increase work (Overtime). Ready to help team members. Listening and absorbing knowledge, respect for all people. Sociable and cheerful.",
+  "education": [
+    {
+      "school": "University Economics and Laws – VNU - HCM",
+      "major": "Management Information System",
+      "degree": "University",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Gymasys Co., Ltd",
+      "position": "BI Consultant",
+      "start_date": "2016-09",
+      "end_date": "2017-04",
+      "description": [
+        "Build and turning OBIEE.",
+        "Support customers to build report and dashboard.",
+        "Reports status and issues.",
+        "Build and maintain, turning BI system.",
+        "Experience in Oracle database, OBIEE, ODI, BI administrator tool."
+      ]
+    },
+    {
+      "company": "CMC Sai Gon Technology & Solution (CMC TSSG)",
+      "position": "Data Engineer",
+      "start_date": "2017-04",
+      "end_date": "2020-04",
+      "description": [
+        "Receipt of new requirements and written documentation.",
+        "Documents detailed designs.",
+        "Build and maintain database.",
+        "ETL data using SSIS tool.",
+        "Build and maintain reports, dashboard using SSRS.",
+        "Communicate with customers.",
+        "Customer support.",
+        "Reports status and issues.",
+        "HoSE (Web deployment support for Ho Chi Minh Stock Exchange to manage all information and documents of internal and external organizations.)",
+        "Experience in SQL database, SSIS tool, SSRS tool.",
+        "Increase the ability to communicate and explain problems.",
+        "Step by step control the system, fix bugs when necessary.",
+        "Friendly working environment, the members are very sociable and happy, helping themselves to have conditions to improve their communication skills."
+      ]
+    },
+    {
+      "company": "CMC Sai Gon Technology & Solution (CMC TSSG)",
+      "position": "Data Engineer",
+      "start_date": "2020-04",
+      "end_date": "Present",
+      "description": [
+        "ETL data using ODI tool.",
+        "Documents detailed designs: Datamart, Technical Spec.",
+        "Support team to resolve issues.",
+        "Communicate with customers.",
+        "Reports status and issues.",
+        "Sacombank (Credit Risk Modeling )",
+        "Experience in Oracle database, ODI tool.",
+        "Increase the ability to communicate and explain problems.",
+        "Friendly working environment, the members are very sociable and happy, helping themselves to have conditions to improve their communication skills."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "SQL",
+    "PL/SQL",
+    "MS SQL Server",
+    "Oracle",
+    "SQL Server Integration Services (SSIS)",
+    "ODI",
+    "SSRS",
+    "OBIEE",
+    "BI power",
+    "Python",
+    "Ability to work independently",
+    "high self-motivation",
+    "self-management",
+    "proactive",
+    "High responsibility",
+    "Listening",
+    "absorbing knowledge",
+    "respect for all people",
+    "Sociable",
+    "cheerful",
+    "BI administrator tool",
+    "communication skills"
+  ],
+  "certifications": [],
+  "languages": []
+}

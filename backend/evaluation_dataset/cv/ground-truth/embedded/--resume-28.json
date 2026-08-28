@@ -1,0 +1,105 @@
+{
+  "cv_id": "cv_060",
+  "full_name": "Mr.Montri Chuencharoen",
+  "email": "ch_moc@hotmail.com | montri.ch75@gmail.com",
+  "phone": "098-264-4250",
+  "location": "24/509 Moo.1 Viphavadee-Rangsit Rd., Don Mueang, Bangkok 10210. Thailand.",
+  "summary": "A multi-skilled IT Manager with good all-round supervisory and technical expertise. I can development and management database system, network system in organization by safe course then high quality and security. Expert and experienced in ERP since the beginning of the system. As well as finishing the process.",
+  "education": [
+    {
+      "school": "University of Rangsit University",
+      "major": "Computer Engineering",
+      "degree": "Bachelor’s degree",
+      "start_date": "1993-07",
+      "end_date": "1999-08"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Nidec Electronics (Thailand) Co., Ltd.",
+      "position": "IT Supervisor",
+      "start_date": "1999-08",
+      "end_date": "2003-05",
+      "description": [
+        "Provide quality day to day support desk related equipment and maintenance as first and second level for user.",
+        "Train office staff in the most appropriate and efficient way of using new and existing business/office application.",
+        "Support AS/400 ,Lotus Notes, Server Data"
+      ]
+    },
+    {
+      "company": "Golden Land Property Development Public Company Limited.",
+      "position": "IT Administrator",
+      "start_date": "2003-05",
+      "end_date": "2007-07",
+      "description": [
+        "IT Project Planning & Budget.",
+        "Support troubleshooting user on Hardware and Software.",
+        "Implementation and Administrator in Database server.",
+        "Design architecture infrastructure IT Network system, Internet, Security System.",
+        "Administrator SAP support on ACC/FIN Department."
+      ]
+    },
+    {
+      "company": "Eason Paint Public Company Limited.",
+      "position": "MIS Division Manager",
+      "start_date": "2007-08",
+      "end_date": "2018-12",
+      "description": [
+        "Implement ERP, Perform system administrator functions for QAD/MFG Pro ERP. (Project manager)",
+        "Developing, Customizing and Manage consult form and report in QAD.",
+        "To Supervise IT Support, Programmer, System Engineer Coordinate with ERP corporate QAD team IT issues. Sale, Production, W/H, ACC/FIN team.",
+        "Manage support other program relate/integration with QAD application.",
+        "Training ERP internal course to user and new comer (New operation/Basics Knowledge).",
+        "Manage Provide day-to-day support related QAD application.",
+        "Infrastructure management.",
+        "Manage budget, Vendor control.",
+        "Support Eason over sea (Vietnam, Indonesia and Malaysia)",
+        "Design architecture infrastructure IT Network system, Internet Security System, Firewall, VOIP, Cisco, Sophos, Fortinet."
+      ]
+    },
+    {
+      "company": "Thai Edible Oil Co.,Ltd. (King Rice Oil Group)",
+      "position": "IT Division Manager",
+      "start_date": "2018-12",
+      "end_date": "2023-02",
+      "description": [
+        "Management of information technology and computer systems",
+        "Plan, organize, control and evaluate IT and electronic data operations.",
+        "Controlling, tracking personnel Communicate job expectations and evaluate performance.",
+        "Design, develop, implement and coordinate systems, policies and procedures.",
+        "Ensure data security network access and backup system",
+        "Perform customer user requests and system scans of enterprise policies.",
+        "System for checking and evaluating results",
+        "Manage your annual budget and ensure its worth.",
+        "Performing the software design of implementing a software solution to the description in all aspects of the software for building.",
+        "Supervising the system infrastructure to ensure functionality and efficiency.",
+        "Maintaining a consumer-focused outlook and aiding in the delivery of IT projects to market.",
+        "Ensuring all technology practices adhere to regulatory standards.",
+        "Providing advice to employees on sheet placement, design, system development, and service provision."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Ability to work in a fast-paced environment to set deadlines.",
+    "Good negotiation and interpersonal skills.",
+    "Strong organizational and analytical skills.",
+    "IT Management",
+    "ERP System",
+    "Integration Application development",
+    "Business Analysis",
+    "Implement ERP (QAD)",
+    "Oracle NetSuite",
+    "Good Command of Written and Spoken English.",
+    "Good Relationship.",
+    "Self-Confidence",
+    "Self-Motivate."
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Good Command"
+    }
+  ]
+}

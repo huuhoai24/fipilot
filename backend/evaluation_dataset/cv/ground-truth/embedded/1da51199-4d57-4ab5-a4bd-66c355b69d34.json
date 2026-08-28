@@ -1,0 +1,110 @@
+{
+  "cv_id": "cv_072",
+  "full_name": "NGUYEN VAN BINH",
+  "email": "",
+  "phone": "+84-966240130",
+  "location": "Lam Trai, Van Duong, Bac Ninh city, Bac Ninh province, Bac Ninh, Bac Ninh, Vietnam",
+  "summary": "Stability job, have a chance to study more about career knowledge, promotionopportunities...",
+  "education": [
+    {
+      "school": "National Economic Technical College",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2012-09",
+      "end_date": "2015-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "",
+      "position": "IT INFRASTRUCTURE IT ADMIN",
+      "start_date": "",
+      "end_date": "Present",
+      "description": [
+        "Manage network system for all branches in North of Vietnam (Bac Ninh, Hanoi, Hai Phong, Lang Son, Thai Nguyen)",
+        "Set up new IT system for new branches: (such as Bac Ninh 3rd Warehouse - 2019, Dong Nai branch - 2020, Hai Phong warehouse - 2021): Make plan & analysis the requirements",
+        "Drawing network diagram, network & CCTV locations, LAN & PBX system",
+        "Listup equipment (Server, switch, network RACK, PC, CCTV....) & tools (qty, brand, model...)",
+        "Esimate cost & get quotation",
+        "Follow & support to set up",
+        "Control network system, troubleshooting, recover network system whenever system error",
+        "Control/handle camera system",
+        "Manage PC (hardware) & related IT equipment, repair PC, troubleshooting/maintenance PC hardware",
+        "Take/provide solutions for manager related IT matters",
+        "Support users in daily works"
+      ]
+    },
+    {
+      "company": "Canon Viet Nam, Que Vo factory",
+      "position": "Engineer",
+      "start_date": "2015-08",
+      "end_date": "2018-06",
+      "description": [
+        "Take care team’s projects",
+        "Make plan for team",
+        "Manage team’s members",
+        "Assign jobs, appraise member’s working result & report manager",
+        "Build-up communicate between IT Dept. & other Depts. inside company.",
+        "Control Anti-virus management server/software (Software named Symantec)",
+        "Create policies apply for many purpose of work (ex: stop USB, camera, SD card... or prevent using personal devices, prevent access between 2 or more PCs/machines using network...)",
+        "Update newest definitions for anti-virus software.",
+        "Working on ACTIVE DIRECTORY (AD) SERVER",
+        "Build up server with AD, DHCP, DNS features.",
+        "Promote AD to domain system.",
+        "Create users, groups, security groups......",
+        "Make group policy apply for PC & Users in the domain",
+        "With DHCP: Create IP scopes and rules for each scopes (ex: define 1 scope or 1 IP address using dynamic or static IP only ...), use MAC filter to allow/deny each PC/device can use join to domain or not,",
+        "With DNS: Working with address resolution mechanism & reverse lookup to define 1 IP add with any name and reverse.",
+        "Working on FILE SERVER",
+        "FILE server clustering. Ensure system running smoothly.",
+        "File server resource management: Control files screen to block file types, set quota for folders.",
+        "Setup folder permission as requirement.",
+        "Working on BACKUP SYSTEM",
+        "Backup/restore servers (OS/DATA) by Backup Exec 16 - VERITAS software",
+        "Monitor backup jobs.",
+        "Working on MAIL SERVER (Microsoft Exchange Center)",
+        "Create/disable/delete email address for users. Connect mailbox for user.",
+        "Setup mail flow/rules for send/receive email on domain",
+        "Configure mailbox database.",
+        "Working with WINDOWS DEPLOYMENT SERVICES on Windows server: Deploy Windows’s image, drivers to install OS by the fastest way.",
+        "Working with WINDOWS SERVER UPDATE SERVICES on Windows server: Synchronize/apply security update patches from Microsoft for clients.",
+        "Working with PRINTER SERVER: Add/remove network printer/driver.",
+        "Working with VIRTUAL MACHINES (VMWare vCenter/ESXi host): Build up VMWare ESXi host, build up and configure vCenter server to control VMWare ESXi host and virtual machines.",
+        "Create and configure virtual machines base on virtual server's datastore.",
+        "Working with CAMERA SERVER/CLIENTS: Control camera server (Create user, policies, permission....)",
+        "Configure/setup camera clients.",
+        "Troubleshooting, recover network system whenever system error.",
+        "Setup/configure server (Configure iLO, RAID for server......).",
+        "Manage PC (hardware), repair PC, troubleshooting/maintenance PC hardware.",
+        "Guide/support group members in daily jobs.",
+        "Manage/monitor server & network system.",
+        "Contact/discuss with national/foreign venders.",
+        "Person in charge (P.I.C) of deploy & develop new system.",
+        "P.I.C of PC security committee (Communicate between IT Dept. & other Depts.)",
+        "Daily support users (by phone, email or directly at the user site) about PC problems, system problems, setup/connect printer, email troubleshooting (with Microsoft Outlook)....."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "IT Phần Cứng",
+    "CCTV",
+    "CCTV System Design",
+    "Windows Server 2012",
+    "Windows Server Management",
+    "IT Administration",
+    "IT Infrastructure",
+    "IT Hardware",
+    "Server Management"
+  ],
+  "certifications": [
+    "Google IT Support Professional Certificate",
+    "AKAMAI Network Engineering Certificate"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Advanced"
+    }
+  ]
+}

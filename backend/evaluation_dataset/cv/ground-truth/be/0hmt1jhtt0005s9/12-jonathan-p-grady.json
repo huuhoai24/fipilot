@@ -1,0 +1,94 @@
+{
+  "cv_id": "cv_046",
+  "full_name": "Jonathan P. Grady",
+  "email": "jgrady75@netscape.net",
+  "phone": "(412) 362-0769",
+  "location": "5819 Elwood St. Apt. 2 Pittsburgh, PA 15232",
+  "summary": "",
+  "education": [
+    {
+      "school": "Carnegie Mellon University",
+      "major": "Electronic Commerce",
+      "degree": "M.S.",
+      "start_date": "",
+      "end_date": "2001"
+    },
+    {
+      "school": "Ursinus College",
+      "major": "Economics & Business Administration",
+      "degree": "B.A.",
+      "start_date": "",
+      "end_date": "1997"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "ExxonMobil/Manpower Professional",
+      "position": "Delivery Processing Specialist (Contract Employee)",
+      "start_date": "2004-04",
+      "end_date": "2004-11",
+      "description": [
+        "Coordinated the daily delivery of gasoline and diesel to 650 company-branded stations in the Upstate New York and Mid-Atlantic regions.",
+        "Provided support in a call-center environment to all retail service stations in the United States, as well as fleet operations in Upstate New York and the Mid-Atlantic regions.",
+        "Evaluated sales trends and managed fuel inventory levels for retail service stations.",
+        "Trained and mentored new employees on all systems, controls, and delivery objectives."
+      ]
+    },
+    {
+      "company": "OnTV Pittsburgh",
+      "position": "Director of Production",
+      "start_date": "2001-06",
+      "end_date": "2003-05",
+      "description": [
+        "Directed all aspects of the company’s website production and web hosting, and managed the company’s retail outlet in Pittsburgh, PA.",
+        "Built and administered the company’s internal Windows 2000 network.",
+        "Coordinated move of company’s servers to a co-location facility, cutting related operating expenses by 50% and eliminating previous causes of downtime.",
+        "Programmed and designed web pages, set up customer email and FTP accounts, and provided technical support to all customers."
+      ]
+    },
+    {
+      "company": "Bloomberg L.P.",
+      "position": "Data Analyst",
+      "start_date": "1997-06",
+      "end_date": "2000-04",
+      "description": [
+        "Co-managed project with Bloomberg programming departments to automate the entry of mutual fund data: reduced average data entry time by one-third and increased data coverage by 400%.",
+        "Programmed and administered MS Access databases; provided Windows NT desktop support.",
+        "Provided support in a call-center environment to all Bloomberg Portfolio customers.",
+        "Trained new Bloomberg employees on all aspects of the Portfolio product."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Windows 95",
+    "Windows 98",
+    "Windows 2000",
+    "Windows NT",
+    "Windows XP",
+    "Macintosh",
+    "Linux",
+    "FreeBSD UNIX",
+    "HTML",
+    "XML",
+    "ASP",
+    "ColdFusion",
+    "JavaScript",
+    "VBA",
+    "SQL",
+    "Java",
+    "Perl",
+    "MS Office 2000",
+    "MS FrontPage",
+    "Macromedia Flash",
+    "Adobe Photoshop",
+    "Apache",
+    "IIS",
+    "DNS",
+    "Sendmail",
+    "TCP/IP",
+    "Wireless LAN"
+  ],
+  "certifications": [],
+  "languages": []
+}

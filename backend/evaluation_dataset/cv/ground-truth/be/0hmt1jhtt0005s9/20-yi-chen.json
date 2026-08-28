@@ -1,0 +1,84 @@
+{
+  "cv_id": "cv_054",
+  "full_name": "Yi Chen",
+  "email": "yi@asu.edu",
+  "phone": "",
+  "location": "Tempe, AZ 85281",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of Pennsylvania, PA.",
+      "major": "Computer and Information Science",
+      "degree": "Ph.D.",
+      "start_date": "",
+      "end_date": "2005"
+    },
+    {
+      "school": "University of Pennsylvania, PA.",
+      "major": "Computer and Information Science",
+      "degree": "M.S.",
+      "start_date": "",
+      "end_date": "2000"
+    },
+    {
+      "school": "Central South University, China",
+      "major": "Computer Science",
+      "degree": "B.S.",
+      "start_date": "",
+      "end_date": "1999"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Arizona State University, AZ",
+      "position": "Assistant Professor",
+      "start_date": "2005",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "IBM Research, T.J. Watson Center, NY.",
+      "position": "Research Intern",
+      "start_date": "Summer 2003",
+      "end_date": "Summer 2003",
+      "description": []
+    },
+    {
+      "company": "IBM Research, T.J. Watson Center, NY.",
+      "position": "Research Intern",
+      "start_date": "Summer 2002",
+      "end_date": "Summer 2002",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania, PA.",
+      "position": "Research Assistant",
+      "start_date": "2000",
+      "end_date": "2005",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania, PA.",
+      "position": "Teaching Assistant",
+      "start_date": "2000",
+      "end_date": "2001",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania, PA.",
+      "position": "Research Assistant",
+      "start_date": "1999",
+      "end_date": "2000",
+      "description": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Semi-structured and XML data",
+    "Data models and languages",
+    "Query processing and optimization techniques for databases and streams",
+    "Scientific data management"
+  ],
+  "certifications": [],
+  "languages": []
+}

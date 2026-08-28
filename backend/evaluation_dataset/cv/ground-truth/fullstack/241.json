@@ -1,0 +1,106 @@
+{
+  "cv_id": "cv_104",
+  "full_name": "TRẦN ANH ĐỨC",
+  "email": "",
+  "phone": "",
+  "location": "26 Hiep Binh Chanh, Thu Duc",
+  "summary": "My desire is to embark my career with a long term goal of becoming a fullstack developer. Participating in the company's projects to be able to develop and improve soft skills combined with programming skills in the best way, thereby contributing my efforts to the success and development of the company.\nI hope to work in a young, dynamic environment and I'm ready to approach new technologies.",
+  "education": [
+    {
+      "school": "UNIVERSITY INFORMATION TECHNOLOGY",
+      "major": "INFORMATION TECHNOLOGY",
+      "degree": "",
+      "start_date": "2018-08",
+      "end_date": "2022-09"
+    },
+    {
+      "school": "BINH LONG GIFTED AND SPECIALIZED HIGH SCHOOL",
+      "major": "MATHEMATICS AND INFORMATICS",
+      "degree": "",
+      "start_date": "2016-08",
+      "end_date": "2018-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "FPT SOFTWARE",
+      "position": "OJT - FRONTEND",
+      "start_date": "2022-02",
+      "end_date": "2022-05",
+      "description": [
+        "Designing frontend within object-oriented frameworks like ReactJS, TypeScript.",
+        "Responsive web using styled-component.",
+        "Complete the assigned tasks well.",
+        "Learn more knowledge and how to handle special situations.",
+        "Q&A skills help clarify questions."
+      ]
+    },
+    {
+      "company": "Thế giới di động",
+      "position": "FRONTEND WEB DEVELOPER",
+      "start_date": "2022-06",
+      "end_date": "Present",
+      "description": [
+        "Build an internal dashboard website using reactjs to serve app \"Quà Tặng VIP\"",
+        "Responsive web",
+        "Build report using framword react-chartJS",
+        "Apply micro frontend in website.(framework single-spa).",
+        "Fix bug and maintaince website"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "CREATE REACT MOVIE APP AND RESPONSIVE",
+      "role": "",
+      "technologies": [
+        "Axios",
+        "React-router-dom",
+        "Scss",
+        "Swiper",
+        "React-Hook"
+      ],
+      "description": "Build UI Website\nResponsive React Movie App.\nGet API from Themoviedb"
+    },
+    {
+      "name": "CREATE WEB ECOMMERCE",
+      "role": "",
+      "technologies": [
+        "Reactjs",
+        "redux",
+        "redux-saga",
+        "axios",
+        "tailwindcss",
+        "ExpressJS",
+        "mongoDB"
+      ],
+      "description": "Design web using Reactjs, redux, redux-saga, axios, tailwindcss\nUsing ExpressJS and mongoDB for backend."
+    }
+  ],
+  "skills": [
+    "Html5",
+    "CSS3",
+    "Bootstrap",
+    "Responsive",
+    "Javascript",
+    "ReactJS",
+    "Redux",
+    "Redux toolkit",
+    "Redux saga",
+    "Ant design",
+    "MaterialUI",
+    "Micro frontend (framework single-spa)",
+    "NodeJS(Express)",
+    "MongoDB",
+    "MySQL",
+    "PostgresQL",
+    "Typescript",
+    "Github",
+    "Docker"
+  ],
+  "certifications": [
+    "TOEIC Certificate Listening and Reading with score 570",
+    "TOEIC Certificate Speaking and Writing with score 270"
+  ],
+  "languages": []
+}

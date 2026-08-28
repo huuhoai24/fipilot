@@ -1,0 +1,94 @@
+{
+  "cv_id": "cv_113",
+  "full_name": "Nguyen Tinh",
+  "email": "",
+  "phone": "",
+  "location": "Tan Binh, Ho Chi Minh",
+  "summary": "To work in an flexible environment, a job that helps me to improve my logical thinking, communication,problem solving and time management skill.",
+  "education": [
+    {
+      "school": "Trường Đại học Khoa học Tự nhiên - Đại học Quốc gia (Vietnam National University Ho Chi Minh City - University of Science)",
+      "major": "SOFTWARE ENGINEERING",
+      "degree": "",
+      "start_date": "2016",
+      "end_date": "2019"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "IMT Solutions",
+      "position": "SOFTWARE ENGINEER",
+      "start_date": "2019-08",
+      "end_date": "2019-12",
+      "description": [
+        "Make a website user friendly and easy to use. The main purpose of this website is to manage email and get important information from pre-selected keywords from user."
+      ]
+    },
+    {
+      "company": "IMT Solutions",
+      "position": "SOFTWARE ENGINEER III",
+      "start_date": "2019-08",
+      "end_date": "2022-11",
+      "description": [
+        "Develop decentralization, management of medical examination, management of health indicators by year",
+        "Make a system of multiple choice questions for employees to help them get more excited when interacting with web and mobile apps",
+        "Make a leaderboard to evaluate the level of sports training of employees",
+        "Make a chart when users interact with the health app",
+        "Apply UI",
+        "Write unit tests, Selenium testing"
+      ]
+    },
+    {
+      "company": "Garastem",
+      "position": "FULL STACK DEVELOPER",
+      "start_date": "2022-11",
+      "end_date": "2023-03",
+      "description": [
+        "Analysis and design from customer requirements",
+        "Develop back-end APIs to interaction with Order Admin CMS and Order (using nodejs, Mongo, Expressjs)",
+        "Develop front end Shopping Cart and Admin CMS (using NextJS, TypeScript)"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Ruby on rails",
+    "Javascript",
+    "Docker",
+    "Docker-compose",
+    "Git",
+    "GitHub",
+    "Bitbucket",
+    "CircleCI",
+    "GitHub Actions",
+    "PostgreSQL",
+    "MySQL",
+    "Redis",
+    "AWS",
+    "Haml",
+    "Sass",
+    "CoffeeScript",
+    "logical thinking",
+    "communication",
+    "problem solving",
+    "time management",
+    "Rails 4",
+    "AngularJS",
+    "Rails 5",
+    "Rails 6",
+    "Rails 7",
+    "ReactJS",
+    "NodeJS",
+    "NextJS",
+    "Typescript",
+    "Mongo",
+    "Expressjs"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Working competence with decent written and verbal capabilities"
+    }
+  ]
+}

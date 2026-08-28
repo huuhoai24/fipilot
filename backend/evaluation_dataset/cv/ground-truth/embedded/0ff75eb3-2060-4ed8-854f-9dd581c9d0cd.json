@@ -1,0 +1,131 @@
+{
+  "cv_id": "cv_062",
+  "full_name": "Chu Ngọc Hoan",
+  "email": "",
+  "phone": "",
+  "location": "No. 5, Lane 82 Hai Ba Trung Dai La street-Hanoi",
+  "summary": "",
+  "education": [
+    {
+      "school": "National Economics University",
+      "major": "Business Administration",
+      "degree": "Bachelor of Business Administration",
+      "start_date": "1992",
+      "end_date": "1996"
+    },
+    {
+      "school": "The Military Technical Academy",
+      "major": "IT",
+      "degree": "IT Engineer",
+      "start_date": "1997",
+      "end_date": "2002"
+    },
+    {
+      "school": "Academy of Cryptography Techniques",
+      "major": "",
+      "degree": "Master's program",
+      "start_date": "2015",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Advanced International Corporation (AIC)",
+      "position": "Head of System Administration",
+      "start_date": "2014",
+      "end_date": "Present",
+      "description": [
+        "Building structure, assigning tasks, workflow of the room.",
+        "Organization of training, expert guidance and supervision of the implementation work of the staff in the room.",
+        "Construction design, cost estimates, construction plans AIC IT infrastructure.",
+        "Research policy making systems management, information security, allocation and monitoring of IT equipment, consumable supplies.",
+        "Managing the network infrastructure, servers, email ..."
+      ]
+    },
+    {
+      "company": "JSC Branch Logistics and Transportation Indo Tran (ITL)",
+      "position": "IT Supervisor",
+      "start_date": "2012-04",
+      "end_date": "2013-08",
+      "description": [
+        "Design, implement and manage the entire IT systems, office machines ITL North include: networking, phone, camera, printer, copier, timekeeper… with 16 points office, more than"
+      ]
+    },
+    {
+      "company": "Joint -stock company Venture Lili of France",
+      "position": "IT (System Administrator)",
+      "start_date": "2011",
+      "end_date": "2011",
+      "description": [
+        "Network Management System + Phone + Camera observations include: building and security management systems, database.",
+        "Construction and organization of basic skills instruction on the use of guns and equipment dedicated software ..",
+        "Perform network maintenance, computers, office equipment ..",
+        "Monitor performance of repairs, equipment office (phottocopy machine, printers ....).",
+        "Operational quality assurance activities of the telephone exchange is optimal.",
+        "Planning to purchase, manage, repair equipment, office machines"
+      ]
+    },
+    {
+      "company": "Group Joint Stock Company AUSTDOOR",
+      "position": "Network Administrator ( IT of Factory )",
+      "start_date": "2008-05",
+      "end_date": "2010-05",
+      "description": [
+        "Build and manage network security, database online.",
+        "Organization of basic skills instruction on the use of guns and network dedicated software.",
+        "Construction of computer configurations to suit the actual needs ..",
+        "Perform network maintenance, computers, office equipment ..",
+        "Subscribe to carry out repairs, office equipment (computer phottocopy, PC print ....).",
+        "Operational quality assurance activities of the telephone exchange is optimal."
+      ]
+    },
+    {
+      "company": "BachKhoa Internet Sercurity Center",
+      "position": "BKAV technical assistance manager (Call Center)",
+      "start_date": "2007-01",
+      "end_date": "2008-04",
+      "description": [
+        "Direct recruitment and training of new staff, and monitoring division customer support BKAV used for department employees.",
+        "Direct or instruct the staff to handle customer issues need to support (the difficult problem, complicated, sensitive)."
+      ]
+    },
+    {
+      "company": "Phuc Anh Industry Limitted Company",
+      "position": "Technical Warranty",
+      "start_date": "2002-04",
+      "end_date": "2006-12",
+      "description": [
+        "Monitor and find out errors from equipment, network system, computer.",
+        "Maintaining computer network system.",
+        "Repairing software errors, equipment errors…."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "System Administration",
+    "Network Administration",
+    "IT Management",
+    "IT Infrastructure",
+    "Information Security",
+    "Network Security",
+    "Database Administration",
+    "Server Administration",
+    "Email Administration",
+    "IT Asset Management",
+    "Technical Support",
+    "Hardware and Software Troubleshooting",
+    "Computer Network Maintenance",
+    "Windows Server 2008",
+    "MCSA",
+    "MCITP",
+    "Modern Network Defenses"
+  ],
+  "certifications": [
+    "HP mobility solutions",
+    "System Administrator (MCSA) Networking Academy IPMAC",
+    "Windows Server 2008 Administrator (MCITP) Networking Academy IPMAC",
+    "Modern Network Defenses (CSO-APT)"
+  ],
+  "languages": []
+}

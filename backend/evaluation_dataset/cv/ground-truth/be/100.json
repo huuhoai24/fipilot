@@ -1,0 +1,83 @@
+{
+  "cv_id": "cv_055",
+  "full_name": "NGUYỄN THÀNH ĐƯỢC",
+  "email": "",
+  "phone": "",
+  "location": "76 ấp 2 xã Tân Lập huyện Bắc Tân Uyên - BD, Bac Tan Uyen District, Binh Duong, Vietnam",
+  "summary": "",
+  "education": [
+    {
+      "school": "Binh Duong Aptech Computer Education",
+      "major": "",
+      "degree": "College",
+      "start_date": "",
+      "end_date": "2016-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Response Vietnam Company Ltd.",
+      "position": "DYNAMICS AX DEVELOPER - .NET DEVELOPER",
+      "start_date": "2017-06",
+      "end_date": "Present",
+      "description": [
+        "Develop intranet website based on .net technology.",
+        "Develop Microsoft Dynamics AX 365 Finance and Operation."
+      ]
+    },
+    {
+      "company": "Poh Huat Viet Nam Company Ltd.",
+      "position": "SOFTWARE MAINTAINING",
+      "start_date": "2016-01",
+      "end_date": "2017-06",
+      "description": [
+        "Management data flow of ERP.",
+        "Support all ERP's user.",
+        "Collect requirement from users and develope website (intranet) based on ERP's data."
+      ]
+    },
+    {
+      "company": "Stada Ltd Company",
+      "position": "SOFTWARE MAINTAINING",
+      "start_date": "2015-01",
+      "end_date": "2016-01",
+      "description": [
+        "Maintain warehouse management software",
+        "Calibration software."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "System for turning on - turning off home's lamps on android mobile phone",
+      "role": "",
+      "technologies": [
+        "Android"
+      ],
+      "description": "Successfull in research and deploy the system for turning on - turning off home's lamps on android mobile phone with slogan \" turnon/off home's lamps from anywhere in the world\"."
+    }
+  ],
+  "skills": [
+    "Power BI",
+    "Android",
+    "HTML",
+    "jQuery",
+    "Web API",
+    "Outlook coding.",
+    "X++",
+    "Excel coding",
+    "IoT",
+    "C#",
+    "Css",
+    "Bootstrap",
+    "Database",
+    "MVC 5"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Intermediate"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "cv_id": "cv_080",
+  "full_name": "Anderson Chu",
+  "email": "chuducan.dev@gmail.com",
+  "phone": "(+84)826677301",
+  "location": "",
+  "summary": "A highly motivated and detail-oriented web and mobile developer with three years of experience in the IT industry, specializing in ReactNative and ReactJS frameworks, as well as backend technologies like SpringBoot with Kotlin and NodeJS. Passionate about competitive programming, and data analytics, with skills in GoogleBigQuery, seeking an opportunity to contribute to innovative projects while further developing technical skills.",
+  "education": [
+    {
+      "school": "VNU-HCM University of Science",
+      "major": "Advanced Program in Computer Science (APCS)",
+      "degree": "Bachelor of Computer Science",
+      "start_date": "2019-10",
+      "end_date": "Present"
+    },
+    {
+      "school": "Long An High School for the Gifted",
+      "major": "Mathematics",
+      "degree": "High School",
+      "start_date": "2016-09",
+      "end_date": "2019-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "MoMo E-Wallet (M_Service JSC)",
+      "position": "Software Engineer",
+      "start_date": "2022-03",
+      "end_date": "Present",
+      "description": [
+        "Developed new modules for MoMo E-Wallet, ensuring seamless integration using ReactNative and TypeScript.",
+        "Contributed to the development of an new Android version of the platform app using Kotlin and Jetpack Compose.",
+        "Built internal web application tools using ReactJS for enhanced operational efficiency.",
+        "Queried, analyzed, and built monitoring tools using data from Google Cloud with BigQuery, utilizing SQL queries and custom extensions for data analytics.",
+        "Contributed to building internal server systems using Kotlin and SpringBoot framework.",
+        "Designed core platform for automation script recording and playback system for mini-apps.",
+        "Developed a Figma plugin to effortlessly convert UI designs into ReactNative code with just a few clicks.",
+        "Supported the development of a core library for the Financial Services Mobile Team."
+      ]
+    },
+    {
+      "company": "YOOT Technology & Training JSC",
+      "position": "Mobile Developer",
+      "start_date": "2021-10",
+      "end_date": "2022-03",
+      "description": [
+        "Developed mobile applications using ReactNative, Redux, OneSignal, Google Firebase, and JavaScript.",
+        "Translated business and technical requirements into extensible, scalable, and maintainable applications.",
+        "Collaborated with other developers and engineers to design, build, and maintain applications.",
+        "Diagnosed and fixed bugs and performance bottlenecks for native-feeling performance."
+      ]
+    },
+    {
+      "company": "Codelynx Software Services Ltd.",
+      "position": "Front-end Developer",
+      "start_date": "2020-12",
+      "end_date": "2021-10",
+      "description": [
+        "Developed a Q&A website for the Vietnamese ReactJS Community using ReactJS, Redux, Google Firebase, HTML, CSS, Google Analytics, and JavaScript."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "SaoLa - Wildlife Protection Platform",
+      "role": "",
+      "technologies": [],
+      "description": "Designed and implemented UI/UX for a mobile web app, winner of ZooHackathon Vietnam 2021."
+    },
+    {
+      "name": "Unisab - Student Information App",
+      "role": "",
+      "technologies": [],
+      "description": "Designed and implemented UI/UX for a mobile app, published on Google Play Store."
+    },
+    {
+      "name": "Stylix - Virtual clothing try-on app",
+      "role": "",
+      "technologies": [],
+      "description": "Designed and implemented UI/UX for a mobile app."
+    }
+  ],
+  "skills": [
+    "ReactNative",
+    "ReactJS",
+    "JetpackCompose",
+    "Kotlin",
+    "TypeScript",
+    "Redux",
+    "Firebase",
+    "RESTful APIs",
+    "SpringBoot",
+    "NodeJS",
+    "GoogleBigQuery",
+    "Python",
+    "SQL",
+    "Figma",
+    "AdobeXD",
+    "C++",
+    "Data Structures & Algorithms"
+  ],
+  "certifications": [],
+  "languages": []
+}

@@ -1,0 +1,264 @@
+{
+  "cv_id": "cv_052",
+  "full_name": "Stephen Chan",
+  "email": "chanste@pacbell.net",
+  "phone": "(415)377-5868 cell | (510)486-4340 work",
+  "location": "Fremont, CA 94536",
+  "summary": "",
+  "education": [
+    {
+      "school": "Carnegie-Mellon University",
+      "major": "Information and Decision Systems",
+      "degree": "B.S.",
+      "start_date": "",
+      "end_date": "1990"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "NERSC division, Lawrence Berkeley National Lab",
+      "position": "Computer Systems Engineer",
+      "start_date": "2001-01",
+      "end_date": "Present",
+      "description": [
+        "Team lead for PDSF Cluster: led team of 4 senior systems administrators in management of a 200 node computer cluster with 30 TB of online storage.",
+        "Set technical direction, interacted with vendors, led expansion to PDSF that doubled capacity.",
+        "Cluster used in physics experiments that detected phase shifts in solar neutrinos, and discovered additional supernova based on analysis of Hubble Space Telescope images.",
+        "Production Grid Lead: led multi-year, multi-group effort to deploy Grid Technologies across all NERSC production computer resources.",
+        "Defined overall architecture, operational procedures and implemented core infrastructure for security and authentication at NERSC",
+        "Participated in Global Grid Forum working groups relating to security",
+        "co-author of a GGF policy document on automated client certificate usage",
+        "author of GGF Production Grid Management security document on compromise mitigation.",
+        "led the development of an LDAP directory service across NERSC",
+        "implemented a secure credential repository for storage of PKI certificates",
+        "built specially hardened Linux systems for credential repository",
+        "interfaced repository with NERSC account management system and ESNet Certificate Authority",
+        "Completed project goals well in advance of original schedule",
+        "All NERSC production systems have Globus installed an available",
+        "DataGrid services in operation on all production systems",
+        "Established NERSC as an authority in the field of production Grid security."
+      ]
+    },
+    {
+      "company": "Reactivity Inc",
+      "position": "Technical Entrepreneur",
+      "start_date": "2000-07",
+      "end_date": "2000-12",
+      "description": [
+        "Responsible for internal IT infrastructure",
+        "Backup",
+        "Email",
+        "file servers",
+        "Phone system",
+        "corporate security"
+      ]
+    },
+    {
+      "company": "Quaartz Inc",
+      "position": "Director of Production Systems",
+      "start_date": "1999-09",
+      "end_date": "2000-07",
+      "description": [
+        "Manager of team responsible for 24x7 server operations",
+        "Negotiated deals with vendors for hardware, software and services",
+        "Recruited team from ground up",
+        "Project management",
+        "Administered production e-commerce environment",
+        "Set system configuration standards and remote installation configs",
+        "Monitoring",
+        "VPN implementation",
+        "Defined security policies",
+        "Ownership of processes relating to problem escalation, release management and reporting",
+        "Lead the design and implementation of the production server and network architecture, as well release management process from development environment into production systems."
+      ]
+    },
+    {
+      "company": "Portera Systems",
+      "position": "Manager of Internet Systems Engineering",
+      "start_date": "1998-11",
+      "end_date": "1999-09",
+      "description": [
+        "Managed systems engineering team",
+        "Recruiting developers and administrators",
+        "Specification of security practices",
+        "Main contact for WebTrust audit by KPMG",
+        "Negotiated with vendors for purchases",
+        "Technical Leadership",
+        "Architected and implemented internet portal in 90 days",
+        "Multi-language, multi-tiered platform",
+        "Supported syndicated news, email, search engine and trouble ticketing",
+        "Worked to define data models",
+        "Coded application code in Java and Perl using XML, DOM, SQL writing both client and server tools",
+        "Led design and implementation of applications release process",
+        "Created core Unix development and production environment single-handedly",
+        "Deployed complete open source tool chain, GCC, CVS, rsync, editors, gdb, make, etc…",
+        "Team lead for development of internal bug tracking system",
+        "Designed business to business XML strategy"
+      ]
+    },
+    {
+      "company": "Lucasfilm Limited",
+      "position": "Senior Unix Administrator",
+      "start_date": "1997-07",
+      "end_date": "1998-11",
+      "description": [
+        "Completely overhauled internal Unix environment to bring it to production quality",
+        "Deployed first intranet at Lucasfilm",
+        "Migrated email system",
+        "Upgraded and maintained Oracle Financials servers for Lucasfilm Limited, Industrial Light and Magic and LucasArts",
+        "Specified, purchased and maintained 1TB disk farm",
+        "Implemented Lucasfilm’s first firewall",
+        "System tuning for improved Oracle performance",
+        "Maintained Oracle servers and clients, as well as SQLNet services.",
+        "Web development",
+        "Developed security and session state infrastructure for Lucasfilm web applications",
+        "Wrote OO Perl modules to interface to Oracle backend",
+        "Defined schemas for portal infrastructure, as well as process for releasing schema changes from development into productin",
+        "Created release management system",
+        "Support of Star Wars Art Department",
+        "Supported Unix workstations used by animators in pre-production art department",
+        "Negotiated with vendors for over $2M of hardware and software upgrades",
+        "Mentoring junior administrators"
+      ]
+    },
+    {
+      "company": "Javasoft (Sun Microsystems)",
+      "position": "Web Systems Technologist",
+      "start_date": "1997-01",
+      "end_date": "1997-07",
+      "description": [
+        "lead technical resource for server administration of www.javasoft.com and ftp.javasoft.com",
+        "Administered internal search engine",
+        "Controlled process for publishing from internal development web content into production servers",
+        "Upgraded Javasoft web servers with no visible downtime to end users"
+      ]
+    },
+    {
+      "company": "The 3DO Company",
+      "position": "Senior Unix Administrator",
+      "start_date": "1995-08",
+      "end_date": "1997-01",
+      "description": [
+        "Lead administrator for site containing ~100 hosts",
+        "Technical leadership and mentoring to mid-level administrators",
+        "Operated servers for www.3do.com and 222.meridian69.com",
+        "Worked on team that designed billing system for Meridian69 online gaming system",
+        "Oracle DBA duties",
+        "Worked to define data model for billing system"
+      ]
+    },
+    {
+      "company": "J. Frank Consulting (now Chordiant Systems)",
+      "position": "Senior Unix Administrator",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "Sole administrator for site containing ~10 hosts",
+        "Overhauled internal environment for increased stability",
+        "Migration to new networking medium",
+        "Day to day operational duties for Unix and Windows environment"
+      ]
+    },
+    {
+      "company": "Stanford University",
+      "position": "Senior Systems Programmer",
+      "start_date": "1994-02",
+      "end_date": "1995-02",
+      "description": [
+        "Responsible for AFS file server administration",
+        "Monitoring of load and connectivity of servers",
+        "Implemented load balancing tools"
+      ]
+    },
+    {
+      "company": "Transarc Corporation",
+      "position": "Systems Programmer",
+      "start_date": "1993-01",
+      "end_date": "1994-02",
+      "description": [
+        "Responsible for creation and installation of new servers",
+        "IT lead for creation of licensing system for DCE/Encina",
+        "Defined database schemas for licensing information"
+      ]
+    },
+    {
+      "company": "Carnegie-Mellon University",
+      "position": "Database Applications Programmer",
+      "start_date": "1990-07",
+      "end_date": "1993-01",
+      "description": [
+        "Junior Ingres DBA",
+        "Creation of Telecom Department billing application",
+        "Training of users in application"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "project management",
+    "presentation skills",
+    "recruitment of teams",
+    "writing documentation",
+    "writing proposals",
+    "writing policies",
+    "task identification",
+    "task prioritization",
+    "network design",
+    "security practices",
+    "server environment design",
+    "server environment specification",
+    "server environment purchase",
+    "server environment implementation",
+    "producing specifications for developers",
+    "portal development leadership",
+    "email systems",
+    "news systems",
+    "search systems",
+    "RDBMS backend development",
+    "NERSC Grid leadership",
+    "DOE Science Grid development",
+    "production quality Grid infrastructures",
+    "batch computing clusters operations",
+    "Grid computing security standards",
+    "site computing",
+    "commercial computing infrastructures",
+    "research computing infrastructures",
+    "Perl",
+    "OO perl extensions",
+    "mod_perl",
+    "RDBMS interfaces",
+    "SQL",
+    "Oracle",
+    "C",
+    "C++",
+    "Python",
+    "XML",
+    "Java application servers",
+    "jserv",
+    "weblogic",
+    "HTTP",
+    "HTTPS",
+    "SSL",
+    "CGI",
+    "Data Modelling",
+    "content publishing management tools",
+    "site management tools",
+    "NFS",
+    "NIS",
+    "firewalls",
+    "search engines",
+    "Solaris",
+    "Linux",
+    "Irix",
+    "FreeBSD",
+    "DNS",
+    "sendmail",
+    "Globus Toolkit 2.x",
+    "PKI infrastructures",
+    "PAM",
+    "LDAP",
+    "VPN"
+  ],
+  "certifications": [],
+  "languages": []
+}

@@ -1,0 +1,194 @@
+{
+  "cv_id": "cv_130",
+  "full_name": "Lê Minh Quyền",
+  "email": "",
+  "phone": "",
+  "location": "Tuy Phước - Bình Định",
+  "summary": "Take advantages of programming skills & understanding of business processes to become an expert in enterprise software systems and help Users/Customers increase productivity. From that, I will contribute to development of the Company.",
+  "education": [
+    {
+      "school": "University of Science HCMC",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2009-09",
+      "end_date": "2013-12"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Duy Khanh Engineering Co., Ltd",
+      "position": "Developer, full-time",
+      "start_date": "2014-06",
+      "end_date": "2018-04",
+      "description": [
+        "Develop business software for a mechanical company",
+        "Help replace legacy system based on paper and MS Office with a unify software",
+        "Understand how business work and how ERP can improve it",
+        "Use low-code tools"
+      ]
+    },
+    {
+      "company": "Freelancer",
+      "position": "Developer, part-time",
+      "start_date": "2018-05",
+      "end_date": "2019-03",
+      "description": [
+        "Develop business software for a construction and a distribution company",
+        "Help automate manual systems",
+        "Make cross platform mobile apps",
+        "Deploy apps to cloud"
+      ]
+    },
+    {
+      "company": "PATC group",
+      "position": "Developer, full-time",
+      "start_date": "2019-04",
+      "end_date": "2020-01",
+      "description": [
+        "Learn functional and technical areas of Epicor (an ERP System for Manufacturing)",
+        "Customize the system and develop mobile app connect to ERP",
+        "Understand business process of Operations modules (Sales, Purchase, Inventory, Production...)",
+        "Understand architecture and how to install, customize Epicor"
+      ]
+    },
+    {
+      "company": "Eternal Prowess VN JSC",
+      "position": "IT team leader",
+      "start_date": "2020-02",
+      "end_date": "2020-04",
+      "description": [
+        "Research and build prototypes for applications: Migrate legacy ERP to C#",
+        "Dashboard (for Web/Mobile)",
+        "Request - Approve software (for Web/Mobile)",
+        "Machine learning, IoT",
+        "Understand potential of applying IT in a company",
+        "How to migrate PowerBuilder to C#",
+        "Cloud services for machine learning, IoT"
+      ]
+    },
+    {
+      "company": "Leading Star VN JSC",
+      "position": "ERP team leader, full-time",
+      "start_date": "2020-05",
+      "end_date": "Present",
+      "description": [
+        "Research how to build ERP software: Low-code frameworks",
+        "ERP workflow: SAP, Odoo...",
+        "Vertical solutions for Apparel Industry: SAP AFS, JD Edwards Apparel...",
+        "Research and build other software: Label RFID scan stations (for QC)",
+        "AGV robot",
+        "Other apps: HR, helpdesk...",
+        "Lead programming team",
+        "Deep understand ERP modules (Inventory, MRP, Production...)",
+        "Built and deployed modules: Sales, Purchase, Inventory and MRP",
+        "Built and deployed 3 RFID stations",
+        "Has roadmap to build automation systems with small team"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Software for Mechanical Company",
+      "role": "Team leader",
+      "technologies": [
+        "Visual Studio LightSwitch",
+        "C#",
+        "Android",
+        "Java",
+        "Devexpress XAF"
+      ],
+      "description": "Streamline activities: Order Entry, Engineering, Material Issue, Production, Shipment, Account Receivable and Purchase Request across departments. Mobile app: records time and production quantity at Shop Floor."
+    },
+    {
+      "name": "Mobile app connect to Epicor ERP",
+      "role": "Developer",
+      "technologies": [
+        "Android",
+        "Java"
+      ],
+      "description": "Inventory: record transactions, view inventory status. Shop floor: record time and production quantity"
+    },
+    {
+      "name": "Migrate PowerBuilder ERP to C#",
+      "role": "Developer",
+      "technologies": [
+        "Appeon PowerBuilder"
+      ],
+      "description": "Migrate PowerBuilder to C# backend. Build new frontend"
+    },
+    {
+      "name": "Request-Approve software",
+      "role": "Developer",
+      "technologies": [
+        "Xamarin Forms",
+        "Azure mobile SDK",
+        "Devexpress XAF"
+      ],
+      "description": "Allow employees to create requests and managers to approve/reject/forward those requests. Has mobile version"
+    },
+    {
+      "name": "Machine Learning projects",
+      "role": "Developer",
+      "technologies": [
+        "Azure Custom Vision",
+        "Azure Face API",
+        "Xamarin"
+      ],
+      "description": "Train and classify objects. Recognize face (for timekeeping app). Recognize license plate"
+    },
+    {
+      "name": "ERP for Garment Company",
+      "role": "Team leader",
+      "technologies": [
+        "Devexpress XAF",
+        "C#"
+      ],
+      "description": "Modules: Sales, Purchase, Inventory, Production, MRP. Special functions for Apparel industry: item variants, label, packing, forecast..."
+    },
+    {
+      "name": "RFID station for pack validation",
+      "role": "Team leader",
+      "technologies": [
+        "C#"
+      ],
+      "description": "Quality control system for garment finished goods. Compare number of RFID tags inside cartons and predefined quantities in database. Integrate with conveyors"
+    }
+  ],
+  "skills": [
+    ".NET",
+    "ERP",
+    "DevExpress",
+    "low-code tools",
+    "cross platform mobile apps",
+    "cloud",
+    "C#",
+    "Epicor",
+    "PowerBuilder",
+    "SAP",
+    "Odoo",
+    "SAP AFS",
+    "JD Edwards Apparel",
+    "RFID",
+    "AGV robot",
+    "Visual Studio LightSwitch",
+    "Android",
+    "Java",
+    "Devexpress XAF",
+    "Xamarin Forms",
+    "Azure mobile SDK",
+    "Azure Custom Vision",
+    "Azure Face API",
+    "Xamarin"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    },
+    {
+      "language": "Vietnamese",
+      "level": ""
+    }
+  ]
+}

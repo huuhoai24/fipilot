@@ -1,0 +1,127 @@
+{
+  "cv_id": "cv_028",
+  "full_name": "LE TRAN NHAT DANG",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh City, Viet Nam",
+  "summary": "Skilled in Enterprise Networking, Network Security, Cloud/Physical Firewall Configuration, Centralize Management, Routing and Switching, VPN,... System management on both Cloud and on-premises, VMs, DNS, DHCP , Storage management, Identity, SSO,... Windows servers hybrid core Infrastructure hands-on experience(Virtualization, Storage Backup/Replica/Deduplication, VMs backup,...) High level support for Microsoft 365 services for Mail Exchange Server, MS T eams, Sharepoint, Compliance, MS Intunes,... Good English Communication,experience with Global workplace (TOEIC 740 equivalent)",
+  "education": [
+    {
+      "school": "University of Science, Ho Chi Minh City",
+      "major": "IT Technician",
+      "degree": "Technician Certificate",
+      "start_date": "2018-12",
+      "end_date": "2019-08"
+    },
+    {
+      "school": "Ton Duc Thang University",
+      "major": "Telecommunication Technology",
+      "degree": "Engineer",
+      "start_date": "2012-08",
+      "end_date": "2017-09"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Mantu Inc",
+      "position": "Infrastructure Support Officer",
+      "start_date": "2022-09",
+      "end_date": "2024-05",
+      "description": [
+        "Provide Infrastructure Support tasks with IT Operations with Network, System, Office 365, Digital Collaboration, Telephony,...",
+        "Implement, Configuration NGFW, Switch, Router, Access Point,... (Cisco, Meraki, PaloAlto, Unifi,...)",
+        "Microsoft Azure administration (Entra ID, AD DS, VMs, NVA,...)",
+        "Monitoring and Troubleshooting.",
+        "Point of Contact and Project Implementation for IT Operations teams.",
+        "Plan and Deploy, using CI/CD within Azure DevOps.",
+        "Documents and Training."
+      ]
+    },
+    {
+      "company": "Welhunt Materials Enterprise",
+      "position": "IT Helpdesk Specialist",
+      "start_date": "2021-04",
+      "end_date": "2022-07",
+      "description": [
+        "Provide support for user with Hardware, Applications, peripheral,...",
+        "Deploy, Configure, Maintenance office Infrastructure (Fortinet, Cisco, Meraki, Unify, ...)",
+        "System/Servers configuration and deploy (Hyper-V , VMware,...)",
+        "Microsoft 365 administration.",
+        "Networking configuration and monitoring.",
+        "Solution Consulting."
+      ]
+    },
+    {
+      "company": "Gonsa Joint Stock Company",
+      "position": "IT Support Officer",
+      "start_date": "2019-12",
+      "end_date": "2021-03",
+      "description": [
+        "Deploy, configuration and monitor IT infrastructure (Meraki, Fortinet, Cisco, SAN, NAS...)",
+        "Managed mail servers, applications server and maintenance company data center infrastructure",
+        "Install, Troubleshooting user PC, Laptop and upgrade if needed",
+        "Provide IT support for internal users."
+      ]
+    },
+    {
+      "company": "Saigon Center Office Equipment Limited Company",
+      "position": "IT Technician",
+      "start_date": "2017-11",
+      "end_date": "2019-10",
+      "description": [
+        "Troubleshooted hardware and software issues for customers, resulting in an improved customer service experience",
+        "Installed, configured, and maintained operating systems, applications, and software"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Networking",
+    "System Administrator",
+    "Servers Management",
+    "IT Infrastructure",
+    "Azure",
+    "Computer Hardware",
+    "Network Security",
+    "Microsoft 365",
+    "Communication",
+    "Enterprise Networking",
+    "Cloud/Physical Firewall Configuration",
+    "Centralize Management",
+    "Routing and Switching",
+    "VPN",
+    "System management on both Cloud and on-premises",
+    "VMs",
+    "DNS",
+    "DHCP",
+    "Storage management",
+    "Identity",
+    "SSO",
+    "Windows servers hybrid core Infrastructure",
+    "Virtualization",
+    "Storage Backup/Replica/Deduplication",
+    "VMs backup",
+    "Mail Exchange Server",
+    "MS Teams",
+    "Sharepoint",
+    "Compliance",
+    "MS Intunes",
+    "Global workplace experience"
+  ],
+  "certifications": [
+    "Microsoft Certified: Azure Administrator Associate",
+    "Microsoft Certified: Azure Network Engineer Associate",
+    "Microsoft Certified: Azure Fundamentals",
+    "CCNA, Cisco Certificated Network Associate"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Good English Communication, TOEIC 740 equivalent"
+    },
+    {
+      "language": "Vietnamese",
+      "level": ""
+    }
+  ]
+}

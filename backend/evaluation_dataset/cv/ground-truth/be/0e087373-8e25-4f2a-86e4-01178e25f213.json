@@ -1,0 +1,118 @@
+{
+  "cv_id": "cv_029",
+  "full_name": "PHẠM VĂN THIỆU",
+  "email": "",
+  "phone": "",
+  "location": "46A, Tan Hoa 2 Street, Hiep Phu Ward, Thu Duc City, Ho Chi Minh City",
+  "summary": "3 years of experience in software development with python language (backend)\nSolve performance optimization problems in applications (including code optimization, database query optimization) with large data. Process searches quickly with large data using full text search..\nPro\u0000cient in using Linux, Docker\nSource code management tool GitHub, GitLab\nOOP object-oriented programming\nHave knowledge of frameworks Django, Fast API, Flask API, ...\nHave knowledge of Redis, Socket, Kafka, Celery, ...\nI'm currently researching more about microservice architecture and Elasticsearch",
+  "education": [
+    {
+      "school": "POSTS AND TELECOMMUNICATIONS INSTITUTE OF TECHNOLOGY",
+      "major": "",
+      "degree": "",
+      "start_date": "2017-09",
+      "end_date": "2022-01"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "BASE BUSINESS SOLUTION COMPANY",
+      "position": "SOFTWARE ENGINEER(PYTHON-BACKEND)",
+      "start_date": "2022-03",
+      "end_date": "Present",
+      "description": [
+        "Develop Unify CRM application",
+        "Using Django Framework, RESTful API",
+        "Using database: MongoDB, NoSQL",
+        "Integrate core, Third system, decentralize in the application",
+        "Solve performance optimization problems in applications",
+        "Create and assign package permissions based on functionality and capacity for each package, with duplicate rule",
+        "Knowledge of full text search and index mechanisms in databases",
+        "Develop APIs for web and mobile applications",
+        "Integrated token permission management mechanism feature.",
+        "Developing a scheduling tool integrated with Celery service.",
+        "Have experience migrating data."
+      ]
+    },
+    {
+      "company": "ENGLISH WING COMPANY (OUTSOURCE- PART TIME)",
+      "position": "SOFTWARE ENGINEER(PYTHON-BACKEND)",
+      "start_date": "2023-04",
+      "end_date": "2023-12",
+      "description": [
+        "Development of the Writing application (English learning project with GPT chat)",
+        "Using Fast API Frameworks",
+        "Using PostgreSQL database",
+        "Integrating core, Third system, integrating with GPT chat",
+        "Project management skills: Outsourcing project management, project task management",
+        "Completing the project on schedule and putting it into operation for Korean and Filipino students"
+      ]
+    },
+    {
+      "company": "TRI ANH TECHNOLOGY SOLUTIONS CO., LTD.",
+      "position": "SOFTWARE ENGINEER(PYTHON-BACKEND)",
+      "start_date": "2021-08",
+      "end_date": "2022-01",
+      "description": [
+        "Deploy VoIP call center system for clients.",
+        "Develop software for sample recognition using Python and OpenCV.",
+        "Develop software to read and analyze QR code information on Covid PC for managing health declarations of employees and customers during the Covid pandemic."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "WIRELESS SCIENCE RESEARCH TOPIC",
+      "role": "STUDENT RESEARCHER",
+      "technologies": [
+        "Atoll",
+        "Tems Discovery"
+      ],
+      "description": "STUDENT RESEARCHER 11/2020- 10/2021\nOptimize 5G wireless network and utilize software.\nResearch and utilize optimization software for wireless networks such as Atoll and Tems Discovery."
+    },
+    {
+      "name": "INTERNET OF THINGS (IOT) RESEARCH TOPIC",
+      "role": "STUDENT RESEARCHER",
+      "technologies": [
+        "Arduino",
+        "Firebase",
+        "C language"
+      ],
+      "description": "STUDENT RESEARCHER 11/2019- 10/2020\nDesign and construct an air quality measurement system through the public bus system.\nResearch and utilize environmental sensors.\nStudy and apply Arduino and Firebase.\nUtilize the C language to program Arduino for the IoT system."
+    }
+  ],
+  "skills": [
+    "O\u0000ce Computing",
+    "Communicate",
+    "Learn and develop new technologies",
+    "Linux",
+    "Docker",
+    "GitHub",
+    "GitLab",
+    "OOP object-oriented programming",
+    "Django",
+    "Fast API",
+    "Flask API",
+    "Redis",
+    "Socket",
+    "Kafka",
+    "Celery",
+    "Microservice architecture",
+    "Elasticsearch",
+    "Python",
+    "RESTful API",
+    "MongoDB",
+    "NoSQL",
+    "PostgreSQL",
+    "GPT chat",
+    "Project management",
+    "Outsourcing project management",
+    "project task management",
+    "OpenCV"
+  ],
+  "certifications": [
+    "Certi\u0000cate of Student Research in EUREKA Science Fair, Ho Chi Minh City, 2020.",
+    "Certi\u0000cate of Student Research at the Academic Level 2020, 2021."
+  ],
+  "languages": []
+}

@@ -1,0 +1,157 @@
+{
+  "cv_id": "cv_088",
+  "full_name": "Tran Ngoc Dan",
+  "email": "",
+  "phone": "",
+  "location": "Tran Nao, Thu Duc, TPHCM",
+  "summary": "I would like to apply for the position of Fontend Developer in a challange and dynamic environment to the long-term attachment, where I can utilize my skills and knowledge to contribute to the growth of the company. With 7 years of experience working as a Software Developer, I am eager to adapt new technologies and techniques, and am committed to continuously improving my skills and knowledge to devote my proficiency for web development industry.",
+  "education": [
+    {
+      "school": "University of Information Technology",
+      "major": "Software Engineering",
+      "degree": "",
+      "start_date": "2012-08",
+      "end_date": "2018-06"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Dutycast Co. Ltd",
+      "position": "Frontend Developer",
+      "start_date": "2021-08",
+      "end_date": "2023-09",
+      "description": [
+        "Worked closely with the development team to implement new features and bug fixes.",
+        "Implemented an optimized, accessible, and responsive UI.",
+        "Improved technologies about Javascript, HTML, CSS, Jquery.",
+        "Improved teamwork and communication skills.",
+        "Take responsibility to train new intership in project."
+      ]
+    },
+    {
+      "company": "TradingFoe Basis Trading Co. Ltd",
+      "position": "Frontend Developer",
+      "start_date": "2018-12",
+      "end_date": "2021-07",
+      "description": [
+        "Worked closely with the development team to implement new features and bug fixes.",
+        "Implemented an optimized, accessible, and responsive UI.",
+        "Learned new Reactjs, Javascript, HTML, CSS, Jquery technologies and new React Redux library.",
+        "Improve teamwork and communication skills."
+      ]
+    },
+    {
+      "company": "Freelancer",
+      "position": "Frontend Developer",
+      "start_date": "2020-09",
+      "end_date": "2022-03",
+      "description": [
+        "Development of features from customer requirements.",
+        "Estimate times based on assigned tasks.",
+        "Maintenance and upgrades follow customer requirements.",
+        "Learned new Nextjs technologies and new React Redux Saga library.",
+        "Improve time management and attitude when working."
+      ]
+    },
+    {
+      "company": "Fujinet Systems JSC",
+      "position": "Software Developer",
+      "start_date": "2016-07",
+      "end_date": "2018-05",
+      "description": [
+        "Analysis, Design, Development and Testing of features from customer requirements.",
+        "Maintenance and upgrades system follow customer requirements.",
+        "Learned new , Oracle technologies and MVC framework."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Dutycast Website",
+      "role": "Fontend Developer",
+      "technologies": [
+        "JavaScript",
+        "Jquery",
+        "HTML/CSS",
+        "VS Studio",
+        "GIT",
+        "Agile",
+        "Figma"
+      ],
+      "description": "Dutycast is a shopping assistant application that provide order service from 5,4M+ legitimate websites."
+    },
+    {
+      "name": "TradingFoe Website",
+      "role": "Fontend Developer",
+      "technologies": [
+        "Reactjs",
+        "Nextjs",
+        "Visual Studio",
+        "GIT",
+        "Agile",
+        "Figma"
+      ],
+      "description": "TradingFoe is the first Nordic business-to-business (B2B) e-commerce platform that enables cross-border trading between the Asian and Nordic market.."
+    },
+    {
+      "name": "Tax Torch (Freelancer)",
+      "role": "Fontend Developer",
+      "technologies": [
+        "Nextjs",
+        "VS Studio",
+        "GIT",
+        "Figma"
+      ],
+      "description": "Tax Torch is the only cloud based tax planning app on the market."
+    },
+    {
+      "name": "Virtual tour (Freelancer)",
+      "role": "Fontend Developer",
+      "technologies": [
+        "Reactjs",
+        "Nextjs",
+        "VS Studio",
+        "GIT",
+        "Figma"
+      ],
+      "description": "Virtual tour project builds one frame UI about landing page and register form, and allows customer to manage pages with domain, content, themes, styles and layout custom."
+    },
+    {
+      "name": "Chiyoda Application",
+      "role": "Software Developer",
+      "technologies": [
+        "VB .NET",
+        "Oracle",
+        "PostgreSQL",
+        "Visual Studio",
+        "GIT"
+      ],
+      "description": "CHIYODA project is Windows Form Application, which helps manage orders, planning, arrangement, manufacture, shipping, sales, claim/billing,... of industrial materials, package, decorative and publication printing services utilizing."
+    }
+  ],
+  "skills": [
+    "Javascript",
+    "HTML",
+    "CSS",
+    "Jquery",
+    "teamwork",
+    "communication",
+    "Reactjs",
+    "React Redux",
+    "Nextjs",
+    "React Redux Saga",
+    "time management",
+    "Oracle",
+    "MVC framework",
+    "VS Studio",
+    "GIT",
+    "Agile",
+    "Figma",
+    "VB .NET",
+    "PostgreSQL"
+  ],
+  "certifications": [
+    "Certificate of Global Software Talent training (Global Java Developer at FPT)"
+  ],
+  "languages": []
+}

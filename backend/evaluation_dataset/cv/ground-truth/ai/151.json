@@ -1,0 +1,121 @@
+{
+  "cv_id": "cv_007",
+  "full_name": "CHU QUANG KHẢI",
+  "email": "",
+  "phone": "",
+  "location": "District 7, Ho Chi Minh City",
+  "summary": "Develop expertise. Deliver values. Advance in career",
+  "education": [
+    {
+      "school": "Nanyang Technological University - Singapore",
+      "major": "ELECTRICAL AND ELECTRONIC ENGINEERING",
+      "degree": "BACHELOR OF ELECTRICAL AND ELECTRONIC ENGINEERING",
+      "start_date": "2001-06",
+      "end_date": "2005-05"
+    },
+    {
+      "school": "National University of Singapore",
+      "major": "APPLIED ECONOMICS",
+      "degree": "MASTER OF APPLIED ECONOMICS",
+      "start_date": "2010-06",
+      "end_date": "2011-12"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SELF-EMLOYED",
+      "position": "Data Analyst and Quant Trader",
+      "start_date": "2012-01",
+      "end_date": "2024-03",
+      "description": [
+        "Developed analytic software using Java Eclipse IDE to analyze financial trading data and tabulate results in chart format (Java AWT / Swing)",
+        "Developed and tested high-probability strategies in trading financial derivatives, specialized in trading commodity futures: crude oil, copper, gold, SP500 stock index",
+        "Experienced in investing in international equities/CFDs"
+      ]
+    },
+    {
+      "company": "IWOW TECHNOLOGY PTE LTD",
+      "position": "Senior Embedded Software Engineer",
+      "start_date": "2005-06",
+      "end_date": "2010-05",
+      "description": [
+        "Developed firmware for ARM micro-controlleGSM/GPRS modules and integrated embedded systems: GPS tracking device, Meter-Reading device, Fixed cellular terminal, etc.",
+        "Developed APIs and implemented customized AT commands for control of ARM-based GSM/GPRS modules externally",
+        "Lead software engineer for GSM-compliance FTA (Full Type Approval) certification test in Beijing",
+        "Firmware team lead: managed firmware team and worked with product team, hardware team, project managers",
+        "Work experience with ARM microcontrollers, RTOS, GNU Make, PCBs, SVN version control",
+        "Work experience in ARM Cortex MCU interrupts, IOs, multi-threading, task priorities, timers, debug tracing",
+        "Work experience with communication protocols: I2C, UART, SPI, TCP/IP, UDP"
+      ]
+    },
+    {
+      "company": "PHILIPS ELECTRONICS",
+      "position": "Engineering Intern",
+      "start_date": "2004-01",
+      "end_date": "2004-06",
+      "description": [
+        "Developed a Windows GUI to control TV chips via I2C protocol",
+        "Developed I2C driver to program Philips TV's EEPROM memory via UART RS232 port",
+        "Designed a circuitry to correct a color-loss problem of Philips TV"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C/C++",
+    "VB",
+    "Java",
+    "ARM micro-controllers",
+    "GSM",
+    "interrupts",
+    "GPIOs",
+    "RTOS",
+    "multi-threading",
+    "I2C",
+    "UART",
+    "SPI",
+    "GPS",
+    "TCP/IP",
+    "UDP",
+    "PCBs",
+    "GNU Make",
+    "SVN",
+    "Oracle",
+    "MySQL",
+    "MS Access",
+    "Agile development methodology",
+    "Source Insights",
+    "Eclipse IDE",
+    "Visual Studio",
+    "Strong analytical and logical thinking",
+    "adative",
+    "fast learner",
+    "Communication skill working in team",
+    "Responsible",
+    "Energetic",
+    "Resourceful",
+    "Open-minded",
+    "Java AWT",
+    "Java Swing",
+    "ARM Cortex MCU",
+    "timers",
+    "debug tracing",
+    "Windows GUI",
+    "RS232"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Proficient"
+    },
+    {
+      "language": "Chinese",
+      "level": ""
+    },
+    {
+      "language": "Vietnamese",
+      "level": "Proficient"
+    }
+  ]
+}

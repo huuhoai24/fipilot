@@ -1,0 +1,109 @@
+{
+  "cv_id": "cv_005",
+  "full_name": "Nguyen Dang Binh",
+  "email": "",
+  "phone": "",
+  "location": "Bac Ninh City",
+  "summary": "",
+  "education": [
+    {
+      "school": "Vietnamese-German University",
+      "major": "Mechatronic and Sensor System Technology",
+      "degree": "",
+      "start_date": "2017-09",
+      "end_date": "2019-09"
+    },
+    {
+      "school": "Vietnam National University HCMC",
+      "major": "",
+      "degree": "MBA",
+      "start_date": "2012-09",
+      "end_date": "2015-09"
+    },
+    {
+      "school": "Hanoi University of Science and Technology",
+      "major": "Automation and Control",
+      "degree": "",
+      "start_date": "2005-09",
+      "end_date": "2010-09"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Luster LightTech",
+      "position": "Vision Software Senior",
+      "start_date": "2023-08",
+      "end_date": "Present",
+      "description": [
+        "Develop the low-code software from internal platforms for vision projects.",
+        "Debug the software at AOI machine at Luxshare-ICT, Goerteck factory."
+      ]
+    },
+    {
+      "company": "Electronic ACE Antenna Company",
+      "position": "Software Engineer Senior Leader",
+      "start_date": "2020-03",
+      "end_date": "2023-05",
+      "description": [
+        "Measurement and detection defect software project: Develop the vision-based software to automatically detect the faulty region and measure eccentricity and distance of mechanical components using deep learning architecture such as Medical Image Segmentation, Vision Transformer, segmentation, detection, and classification.",
+        "Measurement of the depth software project: Develop sensor-based software to automatically measure the depth of ceramics.",
+        "Pick and Place software project: Develop a flexible vision-guided alignment solution to quickly and precisely locate and align patterns.",
+        "Inspection software project: Develop the visual inspection software for checking electronic and mechanical components, optical character recognition, and barcodes.",
+        "Monitor the stage project: Analysis of the time series data from driver servo like force, current, and velocity to detect the abnormality.",
+        "Design the hardware architecture of Lenses, Light, and Cameras and lead the concept of smart automation machines. Program the communication between the PC, embedded device, and PLC, Robot, Understand the electronic components, industrial automation.",
+        "Debug program for AOI function in SMT Machines."
+      ]
+    },
+    {
+      "company": "Electronic Vinsmart Company",
+      "position": "AI Engineer",
+      "start_date": "2019-07",
+      "end_date": "2020-03",
+      "description": [
+        "Research Smart City with recognition projects with Camera PTZ, Harassment, and Violence Recognition."
+      ]
+    },
+    {
+      "company": "Electronic Z755 Company",
+      "position": "Automation Engineer",
+      "start_date": "2010-10",
+      "end_date": "2017-10",
+      "description": [
+        "Design hardware and Program software on microcontroller AVR, ARM, and develop automation software using PLC, HMI, and Servo."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Python",
+    "C#",
+    "OpenCV",
+    "Tkinter",
+    "PyQT",
+    "WPF",
+    "C++",
+    "GUI",
+    "Tensorflow",
+    "Pytorch",
+    "protocol"
+  ],
+  "certifications": [
+    "Machine Learning by Stanford University Andrew Ng 2018",
+    "Deep Learning Specialization by Andrew Ng 2019",
+    "Machine learning/ MLOps online course 2022"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Upper – Intermediate"
+    },
+    {
+      "language": "Chinese",
+      "level": "Basic"
+    },
+    {
+      "language": "Vietnamese",
+      "level": "Native"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "cv_id": "cv_098",
+  "full_name": "Đoàn Anh Dũng",
+  "email": "",
+  "phone": "",
+  "location": "265/52 Nơ Trang Long, P11, Bình Thạnh",
+  "summary": "A dedicated and results-driven Senior ERP Application Consultant with 8+ years of experiences in system consultation. I am seeking an equivalent position where I can grow professionally and personally. I also seek challenging opportunities where I can fully use my skills in strong analytical skills, Finance & Accounting knowledge, ERP application consultant for the success of the organization.",
+  "education": [
+    {
+      "school": "HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY",
+      "major": "ACCOUNTANTCY",
+      "degree": "THE BACHELOR OF ACCOUNTANTCY",
+      "start_date": "2009",
+      "end_date": "2014"
+    },
+    {
+      "school": "INFOR",
+      "major": "",
+      "degree": "ERP CLOUDSUITE INDUSTRIAL CONSULTANT ASSOCIATE",
+      "start_date": "2022",
+      "end_date": ""
+    },
+    {
+      "school": "HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY",
+      "major": "",
+      "degree": "ENGLISH LV B CERTIFICATE",
+      "start_date": "2012",
+      "end_date": ""
+    },
+    {
+      "school": "UNIVERSITY OF SCIENCE – HCMUS",
+      "major": "",
+      "degree": "MICROSOFT EXCEL LV B CERTIFICATE",
+      "start_date": "2014",
+      "end_date": ""
+    },
+    {
+      "school": "ACADEMY OF FINANCE",
+      "major": "",
+      "degree": "CHIEF ACCOUNTANT CERTIFICATE",
+      "start_date": "2018",
+      "end_date": "2019"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "TRG INTERNATIONAL COMPANY - ERP SOFTWARE: INFOR CLOUDSUITE INDUSTRIAL (ERP SYTELINE)",
+      "position": "ERP SENIOR CONSULTANT",
+      "start_date": "2022-03",
+      "end_date": "Present",
+      "description": [
+        "Working as an expert to provide holistic solutions in implementing ERP Systems which includes Finance, Production, Procurement, Inventory Control and Sales modules.",
+        "Eliciting client's expectations, analyzing business requirements and proposing appropriate and effective solutions.",
+        "Designing business blueprint via Visio, functional specifications and getting client approval before construction phase.",
+        "Keep in touch between clients and developers to ensure the requirements are fully understood for customizations.",
+        "Presenting CRP (Conference Room Pilot) demos in order to achieve solution approval from the client",
+        "Delivering system configuration, data migration, data reconciliation",
+        "Designing test scripts for Unit Testing, Integration Testing, User Acceptance Testing (UAT)",
+        "Designing reports as requirement via Tool Mongoose of Infor",
+        "Delivering user trainings with the Training Materials and User Guides such as: Blue print, Moscow, Test Script, Funtional specification...",
+        "Building Financial Statements i.e. TB, P&L, BS using INFOR CLOUDSUITE excel add-in",
+        "Managing change requests, evaluating the impacts and proposing the effective remediation",
+        "Providing daily operation, month/year-end closing support, Go-live support for the clients via Helpdesk",
+        "Raising incidents, and collaborating with Infor Support Team in system issues troubleshooting."
+      ]
+    },
+    {
+      "company": "WINBOOKS SERVICES CO., LTD - ERP SOFTWARE: WINBOOKS ON WEB",
+      "position": "QUALITY CONTROL, QUALITY ASSURANCE, CONSULTANT",
+      "start_date": "2014-09",
+      "end_date": "2022-02",
+      "description": [
+        "Lead a team within 6 members",
+        "Consulted and worked as a tester for accounting software functionality",
+        "Ensured that the software works properly in compliance with Vietnamese accounting standards and regulations",
+        "Analyzed customer business requirements, provided suitable solutions for applying the software that meet the requirements",
+        "Explained accounting principles and business logic to developers to build new modules or functions.",
+        "Work with cross-functional teams to ensure quality throughout the software development lifecycle",
+        "Participating in design reviews and providing input on requirements, product design, and potential problems.",
+        "Tracking bugs and process of project via the JIRAs",
+        "Trace and check client's data via SQL",
+        "Write user guide for all functions on the software and update new guidance if the law on accounting is changed.",
+        "Meeting with client to know their business and what they are expecting for the software",
+        "Analyze software performance to meet the requirement",
+        "Delivered demos, training and customer support; wrote relevant documents during deployment and support process",
+        "Write and transfer guidance to clients and public guidance for product",
+        "Help client transfer data from old system to the product Winbooks on Web",
+        "Interacting with clients to understand product requirements.",
+        "Advice on using software for customers, support customers via phone, app, email",
+        "Meeting and training when client needed.",
+        "Tracing error data when closing period."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "In-depth knowledge of Finance & Accounting, applied to design and implement ERP Systems",
+    "Experienced through Software Development Life Cycle by using different implementation methodology – Waterfall, Agile",
+    "Experienced in documentation such as Business Requirement Document, Fit/Gap Analysis, Business Process Document, Functional Specification, Test Cases",
+    "Infor Operating Systems",
+    "Microsoft Office (Excel, Word, PowerPoint)",
+    "Visio",
+    "SQL queries for testing data",
+    "Jiras for tracking tasks",
+    "Communication skills",
+    "Problem-solving skills",
+    "Team player",
+    "Ability to work autonomously",
+    "Willingness to do what it takes",
+    "Self-education",
+    "Ability to complete tasks and set priorities without supervision.",
+    "Ability to lead a small project team.",
+    "Ability to present persuasively and effectively.",
+    "Ability responsible for the deployment of modules as Procurement, Inventory, Shopfloor control, Production, Finance, HR, Fixed Asset, CRM, Sales."
+  ],
+  "certifications": [
+    "INFOR CERTIFIED Professional - CloudSuite Industrial Associate Consultant (2022)",
+    "ERP CLOUDSUITE INDUSTRIAL CONSULTANT ASSOCIATE",
+    "ENGLISH LV B CERTIFICATE IN GOOD LEVEL",
+    "MICROSOFT EXCEL LV B CERTIFICATE IN EXCELLENT LEVEL",
+    "CHIEF ACCOUNTANT CERTIFICATE IN GOOD LEVEL"
+  ],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": ""
+    },
+    {
+      "language": "English",
+      "level": ""
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "cv_id": "cv_021",
+  "full_name": "TUNG NGUYEN",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh City, Viet Nam",
+  "summary": "To become a web developer, logical thinking is not a key factor to success (Even though people often quote the opposite). To me, logic is for Computer Scientists. If you are a web developer, you need to have an abstract thinking, continuously learn from everywhere (reading code on google, from colleagues and even problems in daily life) and know how to present your thoughts to others.",
+  "education": [
+    {
+      "school": "Ton Duc Thang University",
+      "major": "",
+      "degree": "Diploma Of Information Technology",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Forix Company",
+      "position": "PHP Developer",
+      "start_date": "2022-04",
+      "end_date": "2024-03",
+      "description": [
+        "Laravel Building a data analysis app to to find potential customers and advertise company's services through email marketing",
+        "Magento 2 Maintence and build new features for ecommerce projects:",
+        "Optmize and customize existing Magento modules or create new ones.",
+        "Fixing bugs and implemented enhancements that signifcantly improved web functionality and speed.",
+        "Integrating third-party extensions and APIs",
+        "Improving web applicaton security applicatons, minimizing hacker atacks."
+      ]
+    },
+    {
+      "company": "Sutrix Group",
+      "position": "PHP Developer",
+      "start_date": "2021-08",
+      "end_date": "2022-03",
+      "description": [
+        "WordPress Building forum and business sites using objects:Themes (Post type, Hierarchy, Taxonomies, etc.), widget, plugin (Actions Filters), rewrite, database, etc.",
+        "Phalcon Building e-commerce, travel and advertising websites with features such as: Multi-language, pagination, searching, product details, order and payment, manage account, manage invoice, send mail",
+        "APIs: Login using Google and Facebook, ReCAPTCHA, Payment Gate, building API for mobile app"
+      ]
+    },
+    {
+      "company": "FPT Telecom",
+      "position": "Sales & Digital Marketing",
+      "start_date": "2016-02",
+      "end_date": "2020-04",
+      "description": [
+        "Build a business website and find customers want to use internet and OTT media service through ofline channels (outdoor sales, door to door, etc.) and online channels (Google Ads, Facebook Marketing, SEO)",
+        "Marketing online skills: Google Ads, Google SEO, Facebook",
+        "Experience using WordPress CMS to create websites",
+        "SEO Tools: Google (Keyword, Analytics), Ahref, Majestic, etc"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "HTTP",
+    "OOP",
+    "SOLID",
+    "Design Patterns",
+    "HTML",
+    "CSS",
+    "JS",
+    "React",
+    "JQuery",
+    "KnockoutJs",
+    "Bootstrap",
+    "PHP",
+    "Laravel",
+    "Phalcon",
+    "Magento2",
+    "Expressjs",
+    "APIs",
+    "MySQL",
+    "Linux",
+    "Git",
+    "Docker",
+    "K8S",
+    "CI/CD",
+    "IaC",
+    "Cloud",
+    "Google Ads",
+    "Google SEO",
+    "Facebook",
+    "WordPress CMS",
+    "Google Keyword",
+    "Google Analytics",
+    "Ahref",
+    "Majestic"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Pre-intermediate"
+    }
+  ]
+}

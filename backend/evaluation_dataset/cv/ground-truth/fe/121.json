@@ -1,0 +1,155 @@
+{
+  "cv_id": "cv_091",
+  "full_name": "Nguyen Khanh Tien",
+  "email": "",
+  "phone": "",
+  "location": "232 Le Van Viet, Tp. Thu Duc, HCM",
+  "summary": "Over 3 years of experience in programming with good communication and quick learning skills - Strengths: Front-end technology - Proficiency in HTML, CSS, JavaScript - Strong proficiency in JavaScript, including DOM manipulation and the JavaScript object model - Thorough under standing of Angular, and it score principles- Experience with popular workflows (such as Redux)- Familiarity with RESTful APIs - Strong Experience in: JavaScript (ReactJS, Angular), MySQL, JSON, API - Proficient use of source code management tools: SVN, GIT - Proficiency in operating systems: Windows - Ability to learn and apply new technology quickly - Current working location: Ho Chi Minh, Viet Nam",
+  "education": [
+    {
+      "school": "HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY(HCMUT)",
+      "major": "Telecommunication electronic",
+      "degree": "",
+      "start_date": "2010",
+      "end_date": "2017-04"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "FRELANCER",
+      "position": "Full-stack Developer",
+      "start_date": "2022-01",
+      "end_date": "Present",
+      "description": [
+        "Business online and get a job design facebook advertising campaigns",
+        "Design webssite use React Js, Next Js based on project descriptions"
+      ]
+    },
+    {
+      "company": "FPT Software Q9",
+      "position": "Frontend Developer",
+      "start_date": "2021-07",
+      "end_date": "",
+      "description": [
+        "Programme outsourcing projects",
+        "Develop web module on given projects."
+      ]
+    },
+    {
+      "company": "FPT Japan",
+      "position": "BrSE",
+      "start_date": "2019-01",
+      "end_date": "2020-08",
+      "description": [
+        "Develop web module based on customer of descriptions",
+        "Support team offshore to exchange work with customers Japan"
+      ]
+    },
+    {
+      "company": "Global Cybersoft",
+      "position": "",
+      "start_date": "2016-07",
+      "end_date": "2018-11",
+      "description": [
+        "Programme outsourcing projects",
+        "Develop web module on given projects."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Thien Minh Express",
+      "role": "Developer",
+      "technologies": [
+        "ReactJS",
+        "NextJS",
+        "NodeJS"
+      ],
+      "description": "Develop Web travel"
+    },
+    {
+      "name": "FPT TELECOM",
+      "role": "Developer",
+      "technologies": [
+        "VueJS"
+      ],
+      "description": "Maintain and develop web"
+    },
+    {
+      "name": "Dental Room",
+      "role": "Developer",
+      "technologies": [
+        "Angular"
+      ],
+      "description": "Develop web modul based on project descriptions"
+    },
+    {
+      "name": "FLM900",
+      "role": "Support",
+      "technologies": [
+        "Angular",
+        "javascript",
+        "Japanese"
+      ],
+      "description": "Migration from flash platform to angular platform"
+    },
+    {
+      "name": "Hoshizaki",
+      "role": "BrSE",
+      "technologies": [
+        "Excell",
+        "Japanese"
+      ],
+      "description": "Data link, maintain database based on detail design"
+    },
+    {
+      "name": "Insurance",
+      "role": "Developer",
+      "technologies": [
+        "VBA"
+      ],
+      "description": "Develop insurance quotes for Japanese banks using VBA language"
+    },
+    {
+      "name": "ICOOL Karaoke",
+      "role": "Developer, Tester",
+      "technologies": [
+        "Angular"
+      ],
+      "description": "Create web + mobile app ICOOL Karaoke"
+    }
+  ],
+  "skills": [
+    "good communication",
+    "quick learning",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "DOM manipulation",
+    "JavaScript object model",
+    "Angular",
+    "Redux",
+    "RESTful APIs",
+    "ReactJS",
+    "MySQL",
+    "JSON",
+    "API",
+    "SVN",
+    "GIT",
+    "Windows",
+    "Ability to learn and apply new technology quickly",
+    "Node",
+    "ExpressJS",
+    "GraphQL",
+    "Apache",
+    "Log",
+    "Docker"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Japanese",
+      "level": ""
+    }
+  ]
+}

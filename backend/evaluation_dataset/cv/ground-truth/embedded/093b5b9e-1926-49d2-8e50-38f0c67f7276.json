@@ -1,0 +1,252 @@
+{
+  "cv_id": "cv_061",
+  "full_name": "Vũ Anh Tài",
+  "email": "",
+  "phone": "",
+  "location": "279 Pham The Hien, Ward 3, District 8",
+  "summary": "Always strive and achieve the goals you have set. Always face all diﬃculties and are not afraid of diﬃculties improve yourself day by day. Explore and learn new technologies to upgrade skills and experience to be able to contribute to the company. Looking for a professional environment where I can improve myself more and more.",
+  "education": [
+    {
+      "school": "LADEC COLLEGE",
+      "major": "Medium",
+      "degree": "NETWORK ADMINISTRATOR",
+      "start_date": "2012",
+      "end_date": "2015"
+    },
+    {
+      "school": "VNPRO",
+      "major": "CCNA - CCNP",
+      "degree": "Medium",
+      "start_date": "2016",
+      "end_date": "2017"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "TRƯỜNG NHẬT NGỮ LAPIS",
+      "position": "IT SUPPORT ( INTERN )",
+      "start_date": "2014-06",
+      "end_date": "2015-08",
+      "description": [
+        "Manage intranet at the School.",
+        "Support IT errors for everyone in the oﬃce.",
+        "Ensure network stability for teachers and students duringteaching program.",
+        "Backup data periodically by week.",
+        "Monitor and maintain IT equipment at the School.",
+        "Repair damaged IT equipment to the extent that it is still repairable, or recommended replacement when severely damaged.",
+        "Content management of the University's Website and Fanpage.",
+        "Periodic reporting to upper management."
+      ]
+    },
+    {
+      "company": "CÔNG TY DỊCH VỤ XUYÊN THÁI BÌNH PAN SERVICES",
+      "position": "IT SUPPORT",
+      "start_date": "2015-09",
+      "end_date": "2017-04",
+      "description": [
+        "Manage LAN - WAN internal network, Vmware virtualization system in the company.. ( 100 Users )",
+        "Manage Email Server system (Zimbra), monitor and build the system Anti Spam for Email Server.",
+        "Management of PBX system (Analog).",
+        "Camera system management (Analog).",
+        "Manage IT equipment and track repairs.",
+        "Content management of the company's website.",
+        "Support everyone at the company with computer problems, planning to make a guide ﬁle to ﬁx simple errors for users self-editing to the extent possible.",
+        "Support and record user's Erp errors, handle system errors Erp system in capacity. And report back to your superiors any errors arise.",
+        "Periodically maintain all computers in the company and report the status for superiors.",
+        "Periodic backup data according to the orders of superiors.",
+        "Make annual summary slide video for the company to use in YEP.",
+        "Periodically report and present current diﬃculties and needs handled by superiors."
+      ]
+    },
+    {
+      "company": "CÔNG TY Đ Ầ U T Ư VÀ TH ƯƠ NG M Ạ I SATORI",
+      "position": "IT EXCUTIVE",
+      "start_date": "2017-05",
+      "end_date": "2019-08",
+      "description": [
+        "Setup and manage LAN - WAN - VLAN and systems Server- Firewall - Domain - NAS - VPN at Company. and branches. (150 Users ). *** HQ in HCM, factory in Long An, representative oﬃce in Hanoi, 20 Outlets in HCM ***.",
+        "Manage Email Server system (Oﬃce 365). Install and guide User how to install email on phone - laptop.",
+        "Setup and manage Wiﬁ Uniﬁ system throughout the company and factory.",
+        "Management the Sagnoma PBX system (Voip). Deploy Mobile Call App Center from the VoIP PBX system for users and install on Smartphones.",
+        "Backup recording ﬁles on the switchboard for convenient call team management Center. Review missed calls from customers and deliver data back to Team Call Center to improve customer service better.",
+        "Manage company-wide camera system (Analog - IP).",
+        "Managing Website and Fanpage on the company's social network (Facebook, Linkedin, Youtube. .. ). Coordinating with Marketing department on internal posting content on social networking sites, and technical support on social network.",
+        "Manage IT equipment and track repairs.",
+        "Proposing to the Board of Directors to buy or replace the necessary equipment and damaged.",
+        "Advise the Board of Directors on necessary technologies for business operations.",
+        "Coordinate with departments to deploy ERP system - BRAVO. Gather enough information from the parts for the Erp system and work with software writers and coordinate system implementation support.",
+        "Coordinating with Sales department and synthesizing information to deploy the system DMS system.",
+        "Plan and build an automatic backup system of all public data periodically and the data of the software.",
+        "Check and maintain the entire Server system - Software - Call Center to make sure everything runs smoothly.",
+        "Schedule regular maintenance of computers throughout the company, and make oﬃce tips on the Website to support users. These options are handed over to IT Support for implementation.",
+        "Schedule time to periodically check the internet and bill printing system from the Outlets. Assign IT Support to perform.",
+        "Support Marketing Department to make simple websites for the purpose of promoting events or opening tours company factory.",
+        "Coordinating with Marketing Department to make videos to introduce the company and deploying SEO based on Google Search Console, Google Trend...",
+        "Receive periodic computer system status reports from IT Support, and synthesize and send periodic reports to the Board of Directors."
+      ]
+    },
+    {
+      "company": "CÔNG TY TH ƯƠ NG M Ạ I VÀ D Ị CH V Ụ VÂN H Ậ U",
+      "position": "IT TEAM LEADER",
+      "start_date": "2019-10",
+      "end_date": "2021-05",
+      "description": [
+        "Setup and manage local LAN - WAN and Server - Domain - NAS - SAN -VPN systems in the Company. and branches. ( 230 Users ) *** Headquarter in HCM, 2 DC in HCM, 1 branch in Can Tho, 1 branch in Da Nang ***",
+        "Manage the company-wide VMware virtualization system. A total of 14 virtual machines in the main oﬃce and branches.",
+        "Manage Email Server system (Microsoft Exchange - Zimbra). Install and guide User how to install email on phone - laptop.",
+        "Setup and manage Buffalo Wiﬁ system in the whole company.",
+        "Management of PBX system (Analog).",
+        "Management of camera system throughout the company. ( Analog - IP ) .",
+        "Management of the company's Facebook page. ( Facebook )",
+        "Manage IT equipment and track repairs. Plan and assign support work for 2 IT Support in 2 branches Can Tho and Da Nang.",
+        "Proposing to the Board of Directors to purchase or replace necessary and damaged equipment.",
+        "Advise the Board of Directors on necessary technologies for smoother IT system operation.",
+        "Planning to go on a business trip to maintain the entire system at branches periodic.",
+        "Coordinate with IT software at the company to build Server for Exact accounting software and Electronic Invoice.",
+        "Build a separate VPN Client system to serve users who work at home during the Covid epidemic situation.",
+        "Always check and monitor the VPN system to ensure stability for users when working at home during the Covid season.",
+        "Support for Sales to access the ﬁle server of the company working outside (VPN Client) and install mail.",
+        "Plan and build an automatic backup system of all company data periodically and the data of the software.",
+        "Schedule regular maintenance of computers in the whole company, and make oﬃce content in File Server to support users. These options are handed over to IT Support for implementation.",
+        "Report the work to the Board of Directors at the weekend and receive reports on the status of IT systems in branches from IT Support."
+      ]
+    },
+    {
+      "company": "CÔNG TY TNHH KAJIMA VI Ệ T NAM",
+      "position": "SENIOR IT ENGINEER",
+      "start_date": "2021-06",
+      "end_date": "Present",
+      "description": [
+        "Managing the company's LAN - WAN network. Always ensure the stability of the transmission lines.",
+        "Conﬁgure and regularly monitor VPN site to site in HQ and representative oﬃce in Hanoi with ongoing project sites in the company. ( HQ in HCM, representative oﬃce in Hanoi, and total project sites nationwide is 8 sites.)",
+        "Regularly monitor ﬁrewall devices (Fortinet) of the company, set appointment reminders to renew license packages of Firewall devices. Plan to prepare temporary backup ﬁrewall devices when the main ﬁrewall device fails for the entire ﬁrewall site in the company.",
+        "Deploying and conﬁguring a separate internet leaseline for using online meetings (Microsoft Teams) for all employees so that meetings are less interrupted.",
+        "Conﬁgure and regularly monitor the Meraki wiﬁ system for the whole company.",
+        "Conﬁgure the Room Alert system for the server room, to warn the air conditioner temperature in the server room for IT via SMS so that the IT Team can promptly handle if there are signs of unstable temperature.",
+        "Manage DC system (primary and second DC).",
+        "Deploy all users in DC on-premise to AzureAD (total 300 users) and manage with Intune Manager environment.",
+        "Set up the Company Portal environment from the features on Intune Manager to assign all users using email on the phone based on the policy from Intune Manager that information cannot be sent or copied outside.",
+        "Conﬁgure and manage the VMS system (Video Management System). Make sure the recorders and cameras always work properly on the VMS system.",
+        "Manage ﬁle servers, regularly monitor and clean up as best as possible when the ﬁle servers show signs of running low on space.",
+        "Plan to backup all data via Veeam system and Tape & Nas devices.",
+        "Regularly check the capacity of the Tape drives to ensure that the Tape drives are always in a stable state without affecting the Veeam backup system.",
+        "Manage Oﬃce 365 Premium email system (Including Microsoft Teams, Sharepoint, Onedrive, Yammer..... )",
+        "Check daily for notiﬁcations from the Sophos Antivirus system, and deal with system instructions for notiﬁcations of medium or higher. To ensure that all servers and computers in the company are always in the safest state.",
+        "Ensure the best possible security for the company.",
+        "Annually, will do Pentest with IT corporation about simulated attacks on the system. After the simulated attacks, there will be system assessment reports and based on that report information will complete processing for the mentioned vulnerabilities.",
+        "Coordinate and support each other with IT countries in the system of Kajima company to improve more skills and systems for the company.",
+        "Schedule periodic maintenance of all network equipment - servers for the company (once a month. )",
+        "Advise and present to IT Manager new technologies, digital transformation as well as information about vulnerabilities in IT news raised.",
+        "Coordinate with Vendor to administer and maintain HR and Accounting software systems periodically, plan SQL backup for two software systems every day.",
+        "Propose and plan for IT Manager about equipment that needs to be upgraded or replaced to avoid affecting the company's work.",
+        "Support IT Support team on error handling tasks for users on computers - laptops when the team is busy or on leave.",
+        "Weekly meeting and reporting on the current status of the system to IT Manager."
+      ]
+    },
+    {
+      "company": "CÔNG TY TNHH S Ả N XU Ấ T VÀ TH ƯƠ NG M Ạ I KHAI MINH",
+      "position": "FREELANCER",
+      "start_date": "2017-08",
+      "end_date": "2017-11",
+      "description": [
+        "Consulting and building Server system (Medium) 30 Users.",
+        "Set up Lan and Wan network for the company.",
+        "Deploying Mail hosting 50 Users for the company.",
+        "Setup computers and laptops into the system (Workgroup).",
+        "Synthesize information ﬁles and hand them over to the manager"
+      ]
+    },
+    {
+      "company": "CÔNG TY TNHH Đ Ầ U T Ư CAM LÂM",
+      "position": "FREELANCER",
+      "start_date": "2018-04",
+      "end_date": "2018-05",
+      "description": [
+        "Get back the network and server information from the provider.",
+        "Based on the information and reset the network system",
+        "Server and Email for the company.",
+        "Include: * WIFI * Lan - Wan * File sharing server * Re-create email management permissions.",
+        "Synthesize information ﬁles and hand them over to the manager."
+      ]
+    },
+    {
+      "company": "KHU CĂN HỘ THE BRIDGE VIEW",
+      "position": "FREELANCER",
+      "start_date": "2019-07",
+      "end_date": "2019-08",
+      "description": [
+        "Consulting E-Parking smart parking system for guests.",
+        "Planning and coordinating with the construction team to implement.",
+        "Check the whole system and retest all the handover functions back to the building manager."
+      ]
+    },
+    {
+      "company": "CÔNG TY AN BÌNH FOOD",
+      "position": "FREELANCER",
+      "start_date": "2022-03",
+      "end_date": "2022-04",
+      "description": [
+        "Consulting and deploying wiﬁ - camera system for the company.",
+        "Set up computers and laptops for the company (10 Users).",
+        "Deploying Mail Hosting.",
+        "Synthesize the information ﬁle and hand it over to the manager"
+      ]
+    },
+    {
+      "company": "PHÒNG KHÁM ĐA KHOA ĐẠI LỘ BÌNH DƯƠNG",
+      "position": "FREELANCER",
+      "start_date": "2022-04",
+      "end_date": "2022-06",
+      "description": [
+        "Consulting and deploying Server and security systems.",
+        "Deploy 3 websites according to the clinic's pathology specialties.",
+        "Setup intranet and computer for Telesales team at Clinic.",
+        "Setup Call Center system for Telesales at the Clinic.",
+        "Support in recruiting Marketing team and IT team for the Clinic.",
+        "Collect information and hand it over to the manager."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Microsoft Oﬃce",
+    "Photoshop",
+    "Proshow Producer",
+    "Teamwork",
+    "Handle and solve problems",
+    "Under high pressure",
+    "Sociable",
+    "Website Simple",
+    "Building and implementing a new system for Startup businesses",
+    "Understanding and supporting the development of enterprise software ERP",
+    "CRM",
+    "DMS",
+    "Can set up Cisco, HP network devices - (Switch, Routers, Firewall)",
+    "Palo Alto",
+    "Juniper",
+    "Fortinet",
+    "Watchguard",
+    "Install and conﬁgure, deploy and administer network services on Microsoft platforms in the business (Azure, Mail Exchange, Mail Mdeamon, Web, Firewall TMG, Oﬃce 365, PRTG, Kerio,...)",
+    "Cloud Server Infrastructure",
+    "Web Services",
+    "Email",
+    "Google",
+    "Amazon",
+    "Research on digital transformation technology for businesses",
+    "Basic understanding of management tools and running ads for businesses"
+  ],
+  "certifications": [
+    "CCNA",
+    "CCNP"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Communicate"
+    },
+    {
+      "language": "English",
+      "level": "reading and writing"
+    }
+  ]
+}

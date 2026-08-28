@@ -1,0 +1,136 @@
+{
+  "cv_id": "cv_030",
+  "full_name": "Chung Vi Huy",
+  "email": "",
+  "phone": "",
+  "location": "Nguyen Thuong Hien street, 1 ward, Go Vap district, Ho Chi Minh city",
+  "summary": "Have excellent ability, open-minded, goal-focused professional leader offering 16 years of experience in Computer industry. I am motivated and enthusiastic by new challenges and tasks and take excellent approach to achieve success in all projects, especially in developing telecommunications systems in the defense field. I have experience in working with different operating systems and platforms namely Windows, Linux, Cloud-based services and embedded OS like Windows CE, Linux-liked for ARM devices. Objective: To use my technical and management skills in a challenging environment and to bring maximum output and profit to the company by delivering quality deliverables and thereby gaining satisfied customers.",
+  "education": [
+    {
+      "school": "Ha Noi University of Technology",
+      "major": "Information System",
+      "degree": "Bachelor of Engineering",
+      "start_date": "",
+      "end_date": "2005"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "VinFast LLC",
+      "position": "IT MES Specialist",
+      "start_date": "2022-09",
+      "end_date": "2022-12",
+      "description": [
+        "Learning and Operating MES (Manufacturing Execution System)",
+        "Trouble-shooting issues, co-operating with partners (SAP, PLM, workers…) to make the vehicle productionsystem runnings smoothly."
+      ]
+    },
+    {
+      "company": "Cloud Nine Solutions Limited",
+      "position": "Project leader",
+      "start_date": "2021",
+      "end_date": "2022-08",
+      "description": [
+        "Getting requirements from Japanese customer (Daiwa Living), analyzing, designing modules for building PBX system on Cloud platform",
+        "Managing team members, co-operating to complete project tasks.",
+        "Successfully building PBX system running on Cloud platform for customer."
+      ]
+    },
+    {
+      "company": "Cloud Nine Solutions Limited",
+      "position": "Senior developer",
+      "start_date": "2020",
+      "end_date": "2021",
+      "description": [
+        "Getting requirements from Japanese customer (FUJITSU LIMITED), developing, testing functions for adjustment power system",
+        "Successfully delivering adjustment power system running on Cloud platform for customer."
+      ]
+    },
+    {
+      "company": "Technological Application and Production company (Tecapro)",
+      "position": "R&D Dept. Manager",
+      "start_date": "2016",
+      "end_date": "2018",
+      "description": [
+        "Taking the sole responsibility of ensuring that the final products delivered from team are with quality and efficiency.",
+        "Managing about 15 members in my department",
+        "Developing AI functions for running systems like speech recognition (based on Google Voice and Amazon Web Services)",
+        "Successfully integrating AI functions (TTS, Speech to Text in Vietnamese) for PBX system.",
+        "Redesign VoIP platform Asterisk (real-time database, call flow processing, GUI…) for company's products."
+      ]
+    },
+    {
+      "company": "Technological Application and Production company (Tecapro)",
+      "position": "R&D Software Manager",
+      "start_date": "2012",
+      "end_date": "2016",
+      "description": [
+        "Involving in design, code review, test review and implementation of assigned projects as technical lead.",
+        "Taking the responsibility of quality assurance of the deliverables from the team.",
+        "Resolving any technical issues faced by teammates",
+        "Research and applying successfully new platform ARM (TI AM335x Armcortex-A8 and AM5x Armcortex-A15) on new series of digital PBX systems."
+      ]
+    },
+    {
+      "company": "Technological Application and Production company (Tecapro)",
+      "position": "Software Designer",
+      "start_date": "2010",
+      "end_date": "2012",
+      "description": [
+        "Managing a team of 5-8 programmers and reviewing their code and test plan for validity and efficiency.",
+        "Integrating VoIP functions for the PBX telephony systems, using open-source platform Asterisk.",
+        "Building warships simulation system for purpose of training soldiers based on Unity technology."
+      ]
+    },
+    {
+      "company": "Technological Application and Production company (Tecapro)",
+      "position": "Programmer",
+      "start_date": "2006",
+      "end_date": "2010",
+      "description": [
+        "Developing modules in programming language C, C++ and C# for building PBX system",
+        "Successfully deploying digital PBX telephony system for The Department of Defense, including small-sized (64 subscribers), medium-sized (512 subscribers) and large-sized (1024 subscribers), step by step replacing old devices from other manufacture like Siemens, Alcatel, LG…"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "OOD",
+    "Project Management",
+    "Technical Documentation",
+    "MES system",
+    "C/C++",
+    "C#",
+    "JavaScript",
+    "HTML",
+    "XML",
+    "PHP",
+    "MySQL",
+    "MariaDB",
+    "MSSQL Server",
+    "MS Access",
+    "MS Visual Studio",
+    "MS Visual Embedded",
+    "Eclipse",
+    "Git",
+    "SVN",
+    "Windows 32/64bit",
+    "UNIX",
+    "Linux",
+    "Embedded OS",
+    "Windows CE",
+    "Ubuntu for ARM devices",
+    "x86/x64",
+    "ARM",
+    "Google Voice",
+    "Azure",
+    "Communication",
+    "Pro-active",
+    "Analytical ability",
+    "Problem solving"
+  ],
+  "certifications": [
+    "Management for Middle Managers (MMM)"
+  ],
+  "languages": []
+}

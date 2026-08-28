@@ -1,0 +1,91 @@
+{
+  "cv_id": "cv_083",
+  "full_name": "DANG THANH BINH",
+  "email": "",
+  "phone": "",
+  "location": "149/34 Ly Thanh Tong -Tan Thoi Hoa commune -Tan Phu dictrict-HCM city",
+  "summary": "",
+  "education": [
+    {
+      "school": "HUFLIT UNIVERSITY",
+      "major": "INFORMATION TECHNOLORY",
+      "degree": "UNIVERSITY",
+      "start_date": "",
+      "end_date": "2006"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Acadian Computer Technology (branch at Vietnam is Tan Dong Tien CO)",
+      "position": "PROGRAMER",
+      "start_date": "2006-09",
+      "end_date": "2009",
+      "description": [
+        "- Coding",
+        "- Test software"
+      ]
+    },
+    {
+      "company": "Trung tâm kỹ thuật tiêu chuẩn đo lường chất lương 3 (Quatest3)",
+      "position": "PROGRAMER",
+      "start_date": "2009-09",
+      "end_date": "2013",
+      "description": [
+        "-Trưởng nhóm (team leader) phát triền phần mềm và quản lý hệ thống phần mềm của cơ quan(ứng dụng công nghệ WPF).Kinh nghiệm triển khai phần mềm tốt."
+      ]
+    },
+    {
+      "company": "Tập đoàn Nguyễn Hoàng",
+      "position": "TEAM LEADER PROGRAMER",
+      "start_date": "2013-03",
+      "end_date": "2016",
+      "description": [
+        "-Trưởng ban (team leader) phát triền phần mềm và quản lý hệ thống phần mềm của cơ quan"
+      ]
+    },
+    {
+      "company": "Cty TNHH Công Nghệ iBest",
+      "position": "TECHNICAL LEADER",
+      "start_date": "2016-05",
+      "end_date": "Present",
+      "description": [
+        "-Trưởng phòng phát triển phần mềm ứng dụng"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "WPF",
+    "Pascal",
+    "C",
+    "VB6",
+    "C#",
+    "ASP",
+    "AJAX",
+    "HTML",
+    "CSS",
+    "Javascript",
+    "XML",
+    "MS Access",
+    "SQL Server",
+    "View",
+    "Store Produce",
+    "Crytal Report",
+    "Visio",
+    "DreamWear",
+    "Fireworks MX",
+    "Photoshop",
+    "General Form",
+    "WebService",
+    "DLL",
+    "Search General Form",
+    "Network Vlan",
+    "Firewall",
+    "Server domain",
+    "work good independent or group",
+    "research and quick new technolory acquire",
+    "Read and write English document of IT"
+  ],
+  "certifications": [],
+  "languages": []
+}

@@ -1,0 +1,128 @@
+{
+  "cv_id": "cv_134",
+  "full_name": "Dang Quoc Huy",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh, Vietnam",
+  "summary": "With an open mind, excellent analytical ability, honest and self-conscious. I can con\u0000dently solve any situation. I have 3 years of experience and have participated in 5 projects as an IOS developer. In the short term, I need to improve my technology skills to the max and be able to manage a small team. Towards the long-term goal, I can manage a large team and contribute ideas to the company's development.",
+  "education": [
+    {
+      "school": "Ho Chi Minh City University of Science",
+      "major": "SOFTWARE ENGINEERING",
+      "degree": "",
+      "start_date": "2017",
+      "end_date": "2021"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "NHN vietnam",
+      "position": "IOS DEVELOPER INTERN",
+      "start_date": "2021-03",
+      "end_date": "2021-06",
+      "description": [
+        "Get tasks from the team leader.",
+        "Guided by a senior developer.",
+        "Access and learn technology skills.",
+        "Participate in the tasks associated with the company's products."
+      ]
+    },
+    {
+      "company": "GMO Runsystem",
+      "position": "IOS DEVELOPER",
+      "start_date": "2021-06",
+      "end_date": "2022-03",
+      "description": [
+        "Get tasks from the team leader.",
+        "Participate in the tasks of the company's projects.",
+        "Write daily progress update reports.",
+        "Maintain and update features."
+      ]
+    },
+    {
+      "company": "Hybrid Technologies Vietnam",
+      "position": "IOS DEVELOPER",
+      "start_date": "2022-03",
+      "end_date": "2024-08",
+      "description": [
+        "Communicate and receive tasks from BrSE",
+        "Distribute them to members.",
+        "Write daily progress update reports.",
+        "Research new technology skills.",
+        "Participate in the tasks of the company's projects."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "COMICO",
+      "role": "IOS Developer Intern",
+      "technologies": [
+        "Swift",
+        "Realm",
+        "Moya",
+        "MVVM",
+        "Github"
+      ],
+      "description": "Guided by the senior developer. Get tasks from the team leader. Implement small features. Report to team leader through Github."
+    },
+    {
+      "name": "HONDA GO RIDDE",
+      "role": "IOS Developer",
+      "technologies": [
+        "Objective-C",
+        "AFNetworking",
+        "Facebook SDK",
+        "MapSDK"
+      ],
+      "description": "Get tasks from the team leader. Code layout programming and business logic in Objective-C. Report to the team leader through Gitlab and Redmine."
+    },
+    {
+      "name": "DRAMATCH",
+      "role": "IOS Developer",
+      "technologies": [
+        "Swift",
+        "Firebase",
+        "Realm",
+        "Alamo\u0000re"
+      ],
+      "description": "Get tasks from the team leader. Layout with Storyboard. Code business logic in Swift. Report to the team leader via Gitlab and Redmine."
+    },
+    {
+      "name": "RETTY",
+      "role": "IOS Developer",
+      "technologies": [
+        "SwiftUI (basic)",
+        "Facebook SDK",
+        "MVVM"
+      ],
+      "description": "Get tasks from the team leader. Use SwiftUI (basic) to implement small features. Remove the Thailand region code to convert the app to Global completely. Report to the team leader via Github."
+    },
+    {
+      "name": "MAGMAG",
+      "role": "IOS Developer",
+      "technologies": [
+        "Swift",
+        "Firebase",
+        "Realm",
+        "MVVM",
+        "Alamo\u0000re"
+      ],
+      "description": "Get tasks from BrSE. Distribute tasks to members. Code layout and business logic in Swift. Maintain and update features."
+    }
+  ],
+  "skills": [
+    "Swift",
+    "Objective-C",
+    "SwiftUI (basic)",
+    "MVVM",
+    "Realm",
+    "Alamo\u0000re",
+    "Moya",
+    "Firebase",
+    "Google Map SDK",
+    "Facebook SDK"
+  ],
+  "certifications": [],
+  "languages": []
+}

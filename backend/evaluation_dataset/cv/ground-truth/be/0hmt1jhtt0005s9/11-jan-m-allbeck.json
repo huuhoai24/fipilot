@@ -1,0 +1,120 @@
+{
+  "cv_id": "cv_045",
+  "full_name": "Jan M. Allbeck",
+  "email": "allbeck@seas.upenn.edu",
+  "phone": "215-573-9463",
+  "location": "Philadelphia, PA 19104-6389",
+  "summary": "Research for the Center for Human Modeling and Simulation at the University of Pennsylvania focused on embodied, autonomous agents with individuality, developing behavior-based animation of human movement especially for gesture, gait, and facial expression, constructing a parameterized action representation for real-time simulation and animation, and understanding the relationship between human movement, natural language, and communication.",
+  "education": [
+    {
+      "school": "Bloomsburg University",
+      "major": "Mathematics",
+      "degree": "BA",
+      "start_date": "",
+      "end_date": "1995"
+    },
+    {
+      "school": "Bloomsburg University",
+      "major": "Computer Science",
+      "degree": "BS",
+      "start_date": "",
+      "end_date": "1995"
+    },
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "MSE",
+      "start_date": "",
+      "end_date": "1997"
+    },
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "Ph.D. Candidate",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "All-Byte Consulting",
+      "position": "Computer Consultant",
+      "start_date": "1992",
+      "end_date": "1995",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Teaching Assistant",
+      "start_date": "1996",
+      "end_date": "1997",
+      "description": []
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Systems Programmer",
+      "start_date": "2001",
+      "end_date": "Present",
+      "description": [
+        "Management of HMS research projects including proposals, reports, software design and deliverables.",
+        "Work with HMS Director, Dr. Norman Badler as well as independently to supervise both individual and group projects consisting of both graduate and undergraduate students.",
+        "Participate in outreach activities through demonstrations of our immersive VR studio, LiveActor and HMS tours to high school groups, alumni, visiting researchers and teachers, and industry liaisons, as well as, through publications and publicity for HMS, the Digital Media Design program, and the UPenn student SIGGRAPH chapter.",
+        "Negotiate with hardware and software vendors and oversee or perform required installations.",
+        "Represent HMS at sponsor meetings and research conferences."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "ONR Virtual Environments for Training",
+      "role": "Programmer/content designer",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "NSF The Actionary: A Dictionary that Portrays Natural Language Expressions as Context-Sensitive Simulations of Human Actions",
+      "role": "Programmer/system designer/project manager",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "Pedestrians: Creating Agent Behaviors through Statistical Analysis of Observation Data",
+      "role": "Program/system designer",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "ACUMEN: Amplifying Control and Understanding of Multiple Entities",
+      "role": "Project manager",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "NASA Crew Task Simulation for Maintenance, Training, and Safety",
+      "role": "Project manager/programmer",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "LMCO Animation test-bed",
+      "role": "Project manager/programmer",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "ONR VIRTE (Virtual Technologies and Environments)",
+      "role": "Project manager",
+      "technologies": [],
+      "description": ""
+    },
+    {
+      "name": "NASA RIVET (Rapid Interactive Visualization for Extensible Training)",
+      "role": "Project manager",
+      "technologies": [],
+      "description": ""
+    }
+  ],
+  "skills": [],
+  "certifications": [],
+  "languages": []
+}

@@ -1,9 +1,0 @@
-{
-  "dataset_name": "fipilot-labelled-benchmark-v1",
-  "cv_cases": [],
-  "stt_cases": [],
-  "tts_cases": [],
-  "question_cases": [],
-  "evaluator_cases": [],
-  "voice_turns": []
-}

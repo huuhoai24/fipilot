@@ -1,0 +1,209 @@
+{
+  "cv_id": "cv_085",
+  "full_name": "TAI NGUYEN HUU",
+  "email": "",
+  "phone": "",
+  "location": "Binh Chieu Ward, Thu Duc City, HCM",
+  "summary": "Job responsibility, in accordance with the agreement and flexibly handling problems. Create the right process for the project development team to improve the quality of the team and the software product",
+  "education": [
+    {
+      "school": "Program CMU (Carnegie Mellon University) in Van Lang University",
+      "major": "SOFTWARE ENGINEERING - SOFTWARE LIFE CYCLE",
+      "degree": "",
+      "start_date": "2013-09",
+      "end_date": "2017-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Viet Thai International Company",
+      "position": "QA Manager (Sub-role: PM)",
+      "start_date": "2020-10",
+      "end_date": "Present",
+      "description": [
+        "Create a test process between the internal team and partner project teams (more than 10 people from many different test teams)",
+        "Prepare a test plan and quality de\u0000nition for the output product.",
+        "Build format test case, test suite, test scenario...",
+        "Execute the test cycle (Manual) before writing the automation test.",
+        "Aggregate test cases and reports for all projects (8 large integration projects and some small ones)",
+        "Training testing for the members.",
+        "Support for operational block issue.",
+        "Build automation tests for mobile app projects and micro-services systems (use: Selenium, and Appium for development)",
+        "Build performance tests and quantify the system's payload (use: Jmetter/ K6/ Katalon...)",
+        "Smoke test release (Con\u0000rm Golive or RollBack) - Manual.",
+        "Access and work throughout the operation block, clearly grasp the operating process and important businesses.",
+        "Solve problems arising in the team as well as the project in the implementation.",
+        "Manage resources: Team member + environment (Team internal and outsource BeOne/ Pyco outsource/ Odoo Int/ Novobi).",
+        "Manageintegrationprojectsandexecutionworkonspeci\u0000ctasks",
+        "Act as a uni\u0000ed bridge between departments, to develop products as expected.",
+        "Break down tasks and assign them.",
+        "Create a roadmap and timeline for the project.",
+        "Contact and work with partners (Payoo, Ascentis, Ahamove...)",
+        "Prepare pilot and go-live plans for products from time to time."
+      ]
+    },
+    {
+      "company": "OPSWAT VN Company",
+      "position": "QA Engineer II (QA Leader on a product)",
+      "start_date": "2018-12",
+      "end_date": "2021-02",
+      "description": [
+        "Create process testing + implement process.",
+        "Analysis requirement for plan test.",
+        "Planning and setting up the environment",
+        "Estimate + assign task + review.",
+        "Aggregate test case and report (use Jira + Zephyr + Con\u0000uence)",
+        "Manage resources (member + environment).",
+        "Training testing for the member.",
+        "Create a test cycle and execute (manual)",
+        "Report with director QA.",
+        "Integration of other products.",
+        "Write and manage automation tests (use Gradle + Groovy + Selenium) after the test manual is done."
+      ]
+    },
+    {
+      "company": "INTERSQUAD + PROTECHPLUS Company",
+      "position": "Project Manager (Part-time)",
+      "start_date": "2018-05",
+      "end_date": "2018-12",
+      "description": [
+        "Intersquad: Specializing in E-Com web projects",
+        "ProTechPlus: Specializing in real estate projects"
+      ]
+    },
+    {
+      "company": "Grateful Days VN Company",
+      "position": "Project Manager (sub-role: QA Lead)",
+      "start_date": "2017-08",
+      "end_date": "2018-05",
+      "description": [
+        "Solution branch: Receive project speci\u0000cation document from project manager group -> Successfully implement speci\u0000c work for implementation team -> Act as the middle man to handle project requirements issues and implementation team -> Summarize the results and present to the project director. Also, use Appium and Selenium to develop automation tests.",
+        "Game branch: Manage the quality of functions and graphics with game user behavior. Act as the end user to reproduce the bug of the game. Contribute ideas to improve some functions to suit player behavior (Manual)"
+      ]
+    },
+    {
+      "company": "The Gioi Di Dong Company",
+      "position": "QA Analysis & QA Engineer",
+      "start_date": "2017-02",
+      "end_date": "2017-07",
+      "description": [
+        "Make a test plan and execute the project - Manual (talk with Dev to come up with an implementation plan).",
+        "Support to check and handle customers' issues",
+        "Perform functional testing.",
+        "Track and verify the project functions have been deployed to users when they receive error feedback.",
+        "Check for errors and arrange Dev \u0000xes",
+        "Check the \u0000x and update the \u0000x for users to use.",
+        "Guiding students to practice working."
+      ]
+    },
+    {
+      "company": "Other projects I did",
+      "position": "PM, BA",
+      "start_date": "2015",
+      "end_date": "2018",
+      "description": [
+        "K-DOR - PM",
+        "Scott Carver - PM",
+        "SoftTeck Solution (Application) - PM",
+        "KitchenAid - PM",
+        "Farage - PM",
+        "Quan Ly Phong Tro (Application) - PM",
+        "Edeel (App/ Web/ Mobile) - QA"
+      ]
+    },
+    {
+      "company": "Project Tag Coach - Van Lang University",
+      "position": "Project Manager",
+      "start_date": "2015",
+      "end_date": "2017-05",
+      "description": [
+        "Meeting with customers to discuss project scope, make a project cost estimate, and communicate with customers.",
+        "Plan timelines and project delivery phases.",
+        "Deploy the management on the management tool according to the traditional model (WaterFall).",
+        "Assign work to the project team and proceed to build designs to align with customers.",
+        "Conduct project implementation and handle communication issues in the team to develop the project.",
+        "Release and present to the client on the correct timeline."
+      ]
+    },
+    {
+      "company": "Join Many Startup Projects Of The External Business",
+      "position": "PM (Scrum Master), PO/BA, Design, Quality Management (CMMI, Iso 9001), Leader QA/QC",
+      "start_date": "2015-09",
+      "end_date": "2016-09",
+      "description": [
+        "Meeting customers requesting, request analysis, documenting. Design software. Software quality management according to ISO standards 9001, providing measurement reports for the entire project. Risk Management. Take Test Plan and Test"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Jira",
+    "Confluence",
+    "Word",
+    "Excel",
+    "Powerpoint",
+    "Access",
+    "Java",
+    "JavaScript",
+    "TypeScript",
+    "C#",
+    "C++",
+    "Python",
+    "SQL",
+    "HTML",
+    "CSS",
+    "Groovy",
+    "Jmeter",
+    "Katalon",
+    "TestComplete (SmartBear)",
+    "Postman",
+    "Eclipse",
+    "Visual Studio",
+    "BrowserStack",
+    "IntelliJ",
+    "Zephyr",
+    "VM Ware",
+    "VirtualBox",
+    "Hyper-V",
+    "JUnit",
+    "NGUnit",
+    "Selenium",
+    "Appium",
+    "webDriver",
+    "Karma",
+    "Jasmine",
+    "Windows",
+    "macOS",
+    "Linux",
+    "Ubuntu",
+    "Debian",
+    "CentOS",
+    "Redhat",
+    "Redmine",
+    "Trello",
+    "Microsoft Project",
+    "ERP systems",
+    "CRM",
+    "Firebase",
+    "Micro-Services",
+    "Odoo-ERP"
+  ],
+  "certifications": [
+    "SOFTWARE TESTING + SOFTWARE ARCHITECTURE AND DESIGN + SOFTWARE PROJECT MANAGEMENT certificate",
+    "OPSWAT Certified Cybersecurity Associate",
+    "OPSWAT Certified MetaAccess Associate",
+    "OPSWAT Certified MetaDefender Associate",
+    "OPSWAT Certified Secure Data Workflow",
+    "OPSWAT Critical Infrastructure Protection"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    },
+    {
+      "language": "Vietnamese",
+      "level": ""
+    }
+  ]
+}

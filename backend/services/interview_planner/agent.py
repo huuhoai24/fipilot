@@ -55,7 +55,7 @@ class InterviewPlannerAgent:
                 InterviewPlan,
                 system_instruction=INTERVIEW_PLANNER_SYSTEM_INSTRUCTION,
                 task_type="simple",
-                temperature=0.1,
+                temperature=0.7,
                 thinking_budget=0,
                 operation="interview_planning",
             )

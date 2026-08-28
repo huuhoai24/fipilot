@@ -1,0 +1,74 @@
+{
+  "cv_id": "cv_115",
+  "full_name": "Trương Huy Hoàng",
+  "email": "",
+  "phone": "",
+  "location": "66 Street 6, Ward 5, Hiep Binh Chanh, Thu DucCity, TPHCM",
+  "summary": "Strong problem-solving abilities and a dedication to producing efficient and user-friendly software solutions. Possesses a comprehensive understanding of C#, AS400 systems, leveraging expertise to enhance operational efficiency and drive business success.",
+  "education": [
+    {
+      "school": "Hoa Sen University",
+      "major": "Information System",
+      "degree": "",
+      "start_date": "2010-10",
+      "end_date": "2014-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "DI Limited",
+      "position": "",
+      "start_date": "2017-03",
+      "end_date": "2024-04",
+      "description": [
+        "Main task is build an new ERP system to replace Movex(AS400) for BOD using ODOO",
+        "Developed and maintained C# applications for various business needs, including inventory management and reporting, dashboard.",
+        "Integrated AS400 and Movex platforms with C# applications to streamline business processes and improve efficiency.",
+        "Implemented WinForms interfaces for user interaction, ensuring a seamless and intuitive user experience(SteppingWeight, Midas .NET) using C#.",
+        "Worked closely with stakeholders to understand requirements and translate them into technical specifications, writing user document, technical documents in the internal wiki pages.",
+        "Actively participated in code reviews and contributed to continuous improvement initiatives to enhance team efficiency and productivity."
+      ]
+    },
+    {
+      "company": "Posco Vst",
+      "position": "Web developer in Posco ICT",
+      "start_date": "2014-10",
+      "end_date": "2017-03",
+      "description": [
+        "Response for Poscovst L2 system (ZRM line and CBL line)",
+        "Make new website to help them fulfill tasks (Delivery System, Delivery Schedule, Contract Management, Uniform Management, Asset Management, Standard Management) using .net Framework",
+        "Got promoted as an Assistant Manager, work directly with Project Manager to collect the requirement from all site.",
+        "June – Aug 2016: work on site in ThaiLand, develop and deploy Restaurant system (using RFID card to records, integrated web with Biostar system)",
+        "Make Posco Vst website and make bidding system to it.",
+        "Make a volunteer Korean Site (church sites) (asp .net Webforms)."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C#",
+    ".NET",
+    "VB .Net",
+    ".Net Frameworks",
+    "AS400",
+    "SQL",
+    "Postgre",
+    "Python",
+    "HTML",
+    "CSS3",
+    "Bootstrap",
+    "Access",
+    "ODOO"
+  ],
+  "certifications": [
+    "PMP certificated by FMIT ( April - 2023)",
+    "PTE: 62 (March-2016)",
+    "TOEIC: 690(March-2013)"
+  ],
+  "languages": [
+    {
+      "language": "ENGLISH",
+      "level": "★★★★★"
+    }
+  ]
+}

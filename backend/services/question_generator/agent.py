@@ -43,7 +43,7 @@ class QuestionGeneratorAgent:
                 InterviewQuestion,
                 system_instruction=QUESTION_GENERATOR_SYSTEM_INSTRUCTION,
                 task_type="simple",
-                temperature=0.2,
+                temperature=0.6,
                 thinking_budget=0,
                 operation="question_generation",
             )

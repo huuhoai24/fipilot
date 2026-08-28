@@ -1,0 +1,210 @@
+{
+  "cv_id": "cv_092",
+  "full_name": "TA VIET NINH",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "3+ years of experience in software project management. 5 years of experience as a .Net (C#) programmer. 5 years of experience working with Oracle, SQL Server, MySQL database systems.",
+  "education": [],
+  "experiences": [
+    {
+      "company": "FPT Information System",
+      "position": "Head of Department",
+      "start_date": "2019-09",
+      "end_date": "Present",
+      "description": [
+        "Project Manager"
+      ]
+    },
+    {
+      "company": "FPT Information System",
+      "position": "Employee",
+      "start_date": "2016-03",
+      "end_date": "2019-08",
+      "description": [
+        "Developer, TeamLead, Project Manager"
+      ]
+    },
+    {
+      "company": "FPT Software",
+      "position": "Employee",
+      "start_date": "2013-08",
+      "end_date": "2016-03",
+      "description": [
+        "Developer"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Digitize the insurance process",
+      "role": "Project Manager",
+      "technologies": [
+        "SVN",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Implement the insurance digitization process: digitally sign records, perform calculations and integrate core systems and provide portals for end users\nResponsibilities:\n• Participating in solution consulting, bid response and contract negotiation\n• Study and analysis customer requirements, acceptance criteria, software requirement specification, design\n• Planning, assign tasks, define workflow\n• Manage team , control quality and progress of project\n• Cost planning, sales planning, resource planning for the project\n• Control risk manager\n• Budget control"
+    },
+    {
+      "name": "Deploying the Zalo API integration service",
+      "role": "Project Manager",
+      "technologies": [
+        "SVN",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Implement API services that allow other users/applications to send one or more different types of messages to Zalo recipients\nResponsibilities:\n• Participating in solution consulting, bid response and contract negotiation\n• Study and analysis customer requirements, acceptance criteria, software requirement specification, design\n• Planning, assign tasks, define workflow\n• Manage team , control quality and progress of project\n• Cost planning, sales planning, resource planning for the project\n• Control risk manager\n• Budget control"
+    },
+    {
+      "name": "R&D Project",
+      "role": "Project Manager",
+      "technologies": [
+        "SVN",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Building an omni-channel connection platform, serving the cooperation between businesses to promote sales, increase revenue and profit.\nResponsibilities:\n• Learn the business/needs of businesses that sell products. Building the idea of a connected platform\n• Plan, build implementation costs and protect R&D projects with the leadership team\n• Planning, build team, assign tasks, define workflow\n• Manage team , control quality and progress of project\n• Cost planning, sales planning, resource planning for the project\n• Control risk manager\n• Budget control"
+    },
+    {
+      "name": "Maintenance project of software/integrated systems",
+      "role": "Project Manager",
+      "technologies": [
+        "SVN",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Group of maintenance projects: maintenance of Vietnam deposit insurance (DIV) information system, maintenance of information system of Vietnam national credit information center (CIC), maintenance of information system of National Financial Supervisory Commission Vietnamese (NFSC)\nResponsibilities:\n• Participating in solution consulting, bid response and contract negotiation\n• Study and analysis customer requirements, acceptance criteria, software requirement specification, design\n• Planning, assign tasks, define workflow\n• Manage team , control quality and progress of project\n• Cost planning, sales planning, resource planning for the project\n• Control risk manager\n• Budget control"
+    },
+    {
+      "name": "Information management Vietnam Deposit Insurance",
+      "role": "Team lead, developer",
+      "technologies": [
+        ".Net (C#)",
+        "Oracle server",
+        "TFS",
+        "SVN",
+        "Visual Studio 2013",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Management information collection, check deposit major and make deposit reporting system.\nResponsibilities:\n• Team lead (Manage member, planning, assign tasks, review codes)\n• Developer (Database design, Coding)"
+    },
+    {
+      "name": "Centralized Accounting System Vietnam Customs",
+      "role": "Team lead, developer",
+      "technologies": [
+        "HTML",
+        "CSS",
+        ".Net",
+        "JQuery",
+        "Oracle server",
+        "VSS",
+        "Visual Studio 2013",
+        "JIRA",
+        "Waterfall"
+      ],
+      "description": "Centralized accounting system managed import -export, tax, fees for commodities. Provide lookup system, reporting to support Vietnam Customs, cargo tracking and businesses.\nResponsibilities:\n• Team lead (Manage member, planning, assign tasks, review codes)\n• Developer (Database design, Coding)"
+    },
+    {
+      "name": "Structural Integrity Compliance System",
+      "role": "Developer",
+      "technologies": [
+        "HTML",
+        "CSS",
+        ".Net",
+        "JQuery",
+        "SQL server",
+        "VSS",
+        "Visual Studio",
+        "JIRA",
+        "Scrum - Agile"
+      ],
+      "description": "SICS is the management system of geological information on climate offshore petroleum rig each of Petronas . Predicts that climate and given the risk to help minimize the damage as much as possible Responsibilities:\n• Developer (Database design, Coding)"
+    },
+    {
+      "name": "Port Ship Management System",
+      "role": "Developer",
+      "technologies": [
+        "HTML",
+        "CSS",
+        ".Net",
+        "MVC",
+        "Entity Framework Code First",
+        "JQuery",
+        "SQL server",
+        "SVN",
+        "Visual Studio",
+        "JIRA",
+        "Scrum - Agile"
+      ],
+      "description": "Maintain and enhance old system . Develop module manage port wit h and report.\nResponsibilities:\n• Developer (Coding)"
+    },
+    {
+      "name": "NextG",
+      "role": "Developer",
+      "technologies": [
+        "HTML",
+        "CSS",
+        ".Net",
+        "JQuery",
+        "SQL server",
+        "VSS",
+        "Visual Studio",
+        "JIRA",
+        "Scrum - Agile"
+      ],
+      "description": "Migrate app manage document (from .net framework 1.1 to .net framework 4.5)\nResponsibilities:\n• Developer (Coding)"
+    }
+  ],
+  "skills": [
+    "Oracle",
+    "MySQL",
+    "SQL Server 2005",
+    "SQL Server 2008",
+    "SQL Server 2012",
+    ".NET (C#)",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "Visual Studio 2008",
+    "Visual Studio 2010",
+    "Visual Studio 2012",
+    "Visual Studio 2013",
+    "NetBeans",
+    "PL/SQL",
+    "SQL Navigator",
+    "Apache",
+    "Microsoft IIS",
+    "SVN",
+    "TFS",
+    "VSS",
+    "Object Oriented Programming (OOP)",
+    "Unified Modeling Language (UML)",
+    "Microsoft Word",
+    "Microsoft Excel",
+    "Microsoft PowerPoint",
+    "Microsoft Visio",
+    "Microsoft Project Plan",
+    "EdrawMind",
+    "Oracle Linux",
+    "Red Hat Linux",
+    "Windows Server 2003",
+    "Windows Server 2008",
+    "Windows Server 2012",
+    "Windows Server 2016",
+    "Microsoft Windows XP",
+    "Microsoft Windows 7",
+    "Microsoft Windows 8.1",
+    "Microsoft Windows 10",
+    "Microsoft Windows 11",
+    "JIRA",
+    "Waterfall",
+    "Scrum - Agile",
+    "Entity Framework Code First",
+    "MVC",
+    "JQuery"
+  ],
+  "certifications": [],
+  "languages": []
+}

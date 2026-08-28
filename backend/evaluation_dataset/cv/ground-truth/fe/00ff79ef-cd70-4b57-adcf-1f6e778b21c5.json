@@ -1,0 +1,90 @@
+{
+  "cv_id": "cv_082",
+  "full_name": "TRANG MINH TIEN",
+  "email": "tmtien051095@gmail.com",
+  "phone": "",
+  "location": "",
+  "summary": "I’m seeking a flexible and challenging environment where I can dedicate myself in, enjoy working, enhance my skills and have opportunities to promotion.\nIn the next three years, I have an aspiration to become a Product Manager. Therefore, I am looking forward to working in a professional environment, with experienced colleague to learning and sharing experiences.",
+  "education": [
+    {
+      "school": "Can Tho University",
+      "major": "Commercial Business",
+      "degree": "",
+      "start_date": "2013-08",
+      "end_date": "2017-12"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Nhan Luc Sieu Viet",
+      "position": "Business Analyst",
+      "start_date": "2020-08",
+      "end_date": "Present",
+      "description": [
+        "New Services",
+        "KPI & Commission",
+        "Merge 3 websites (Mywork, Viectotnhat, Timviecnhanh) into Vieclam24h",
+        "Coupon Promotion",
+        "New tools to support other departments",
+        "Maintain and improve system",
+        "Elicit and gather stakeholder’s requirements and transfer to developers",
+        "Verify Requirement",
+        "Determine system requirements and provide solutions.",
+        "Design Mockup.",
+        "Create document to transfer Business Process to Technical Team.",
+        "Support dev to building system",
+        "Support UAT, Go-live and maintenance.",
+        "Create User Manual Document.",
+        "Platform: Web",
+        "Domains: Sales Order, Recruiter/Seeker management,"
+      ]
+    },
+    {
+      "company": "INDIVIDUAL SYSTEMS LTD",
+      "position": "Business Analyst",
+      "start_date": "2018-01",
+      "end_date": "2020-07",
+      "description": [
+        "IHRM - Indivi Human Resources Management",
+        "IWMS - Indivi Warehouse Management System",
+        "Eliciting the business requirements from customer, creating FIT/GAP documents.",
+        "Analyzing and providing solutions based on requirements.",
+        "Modeling requirement by business flow, designing interface (Wireframe ,Mockup) by design tool(Justinmind) and recording requirements.",
+        "Receiving and solving issues and supporting Project leader to manage issues from end users.",
+        "Platform: Window application",
+        "Domains: Sale, Purchase, Warehouse management."
+      ]
+    },
+    {
+      "company": "INDIVIDUAL SYSTEMS LTD",
+      "position": "Tester",
+      "start_date": "2018-07",
+      "end_date": "2018-01",
+      "description": [
+        "IHRM - Indivi Human Resources Management",
+        "IWMS - Indivi Warehouse Management System",
+        "Reviewing software requirements and preparing test scenarios.",
+        "Executing tests on software usability.",
+        "Analyzing test results on database impacts, errors or bugs, and usability.",
+        "Preparing reports on all aspects related to the software testing carried out and reporting to the design team.",
+        "Platform: Window application",
+        "Domains: Sale, Purchase, Warehouse management."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Communication Skills",
+    "Teamwork",
+    "Microsoft Excel",
+    "SQL",
+    "Logical Thinking",
+    "Critical Thinking",
+    "Responsibility",
+    "Fast learner",
+    "Friendliness",
+    "Openness"
+  ],
+  "certifications": [],
+  "languages": []
+}

@@ -1,0 +1,79 @@
+{
+  "cv_id": "cv_100",
+  "full_name": "Le Trung Minh",
+  "email": "",
+  "phone": "",
+  "location": "Q.12",
+  "summary": "Software engineer with over 2 years of experience in software development and commercial applications. I look forward to joining the company to build innovative and creative business solutions to increase revenue for the company. In my previous roles, I completed projects on time 98% of the time. At the same time, build important processes to increase e\u0000ciency and optimize project time.",
+  "education": [
+    {
+      "school": "Sai Gon College",
+      "major": "INFOMATION TECHNOLOGY",
+      "degree": "Graduate with good degree",
+      "start_date": "2020",
+      "end_date": "2022"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Fmax Company",
+      "position": "FULLSTACK DEVELOPER",
+      "start_date": "2023-10",
+      "end_date": "2024-08",
+      "description": [
+        "Upgrading from B2C to B2B e-commerce system",
+        "Participate and work with UI/UX, BA/PM team during requirements analysis.",
+        "Maximize e\u0000ciency, data quality, scope, operability and \u0000exibility of the application.",
+        "Find and \u0000x software errors (debugging)",
+        "Modify, update, refactor and debug code",
+        "Learn new technologies, techniques/Improve existing technologies in line with company goals/strategies"
+      ]
+    },
+    {
+      "company": "Fmax Company",
+      "position": "FULLSTACK DEVELOPER",
+      "start_date": "2022-12",
+      "end_date": "2023-10",
+      "description": [
+        "Participate in discussions with departments to clarify desires and provide solutions in line with the company's strategy",
+        "Participate in upgrading the marketing toolkit (Product promotions, order promotions, promotional codes, \u0000ash sales)",
+        "Build a CMS system for the website and ensure compatibility for the website and mobile app (do not use open source code)"
+      ]
+    },
+    {
+      "company": "Minh Thu Handmade",
+      "position": "FULLSTACK DEVELOPER",
+      "start_date": "2022-06",
+      "end_date": "Present",
+      "description": [
+        "Build an e-commerce website for the \"Minh Thu handamde\" store.",
+        "For the user interface, use Vanilla JS and optimize the code from the built features, in addition to optimizing SEO e\u0000ciency in the project instead of focusing only on the features.",
+        "Permissions",
+        "Revenue Statistics",
+        "Order Management",
+        "News Management",
+        "User Management",
+        "Customer Management",
+        "Product Management",
+        "Category Management"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "PHP",
+    "Nodejs",
+    "Javascript",
+    "HTML5",
+    "SASS/CSS3",
+    "Reactjs",
+    "React native",
+    "Communication skills",
+    "convey ideas, work content clearly, fully, concisely",
+    "Self-study",
+    "eager to learn related knowledge and issues",
+    "Effective problem-solving skills"
+  ],
+  "certifications": [],
+  "languages": []
+}

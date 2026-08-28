@@ -1,0 +1,112 @@
+{
+  "cv_id": "cv_022",
+  "full_name": "Le Anh Tuan",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh, Vietnam",
+  "summary": "",
+  "education": [
+    {
+      "school": "FPT University",
+      "major": "",
+      "degree": "Software Engineer",
+      "start_date": "2012-10",
+      "end_date": "2018-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Pasona Tech VN",
+      "position": "Test Team Lead",
+      "start_date": "2019-09",
+      "end_date": "Present",
+      "description": [
+        "Key member.",
+        "Write documentation and train new members.",
+        "Build environment using Jenkin in Tomcat Linux, Tomcat Window, WebOXT.",
+        "Build environment with SQL, Oracle, Postgres DB.",
+        "Review testcase and review test."
+      ]
+    },
+    {
+      "company": "Pasona Tech VN",
+      "position": "QC Engineer",
+      "start_date": "2019-05",
+      "end_date": "2019-09",
+      "description": [
+        "Key member.",
+        "Analyzing requirements.",
+        "Write documentation- Implementation, Testing, and Quality control."
+      ]
+    },
+    {
+      "company": "FPT Software",
+      "position": "QC Engineer",
+      "start_date": "2018-12",
+      "end_date": "2019-04",
+      "description": [
+        "Analyzing requirements.",
+        "Write documentation",
+        "Implementation, Testing, and Quality control (Manual Testing)"
+      ]
+    },
+    {
+      "company": "FPT University",
+      "position": "QC Engineer",
+      "start_date": "2016-12",
+      "end_date": "2017-05",
+      "description": [
+        "Capstone Project",
+        "Analyzing requirements.",
+        "Analyze and design system function.",
+        "Design database for the system.",
+        "Write documentation",
+        "Implementation, Testing, and Quality control (Manual Testing)."
+      ]
+    },
+    {
+      "company": "FPT Software",
+      "position": "QC Engineer",
+      "start_date": "2015-05",
+      "end_date": "2015-08",
+      "description": [
+        "On Job Training",
+        "Using Selenium IDE"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "manual testing web application and mobile",
+    "automation testing in Web Application",
+    "Automation Testing Framework (Java)",
+    "black box testing",
+    "white box testing",
+    "functional testing",
+    "GUI testing",
+    "regression testing",
+    "integration testing",
+    "automation framework on Java",
+    "Jenkin",
+    "Tomcat Linux",
+    "Tomcat Window",
+    "WebOXT",
+    "SQL",
+    "Oracle",
+    "Postgres DB",
+    "Selenium IDE"
+  ],
+  "certifications": [
+    "JLPT N3"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Reading and Writing"
+    },
+    {
+      "language": "Japanese",
+      "level": "Reading and Writing"
+    }
+  ]
+}

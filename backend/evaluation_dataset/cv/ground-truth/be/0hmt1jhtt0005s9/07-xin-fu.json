@@ -1,0 +1,252 @@
+{
+  "cv_id": "cv_041",
+  "full_name": "XIN FU",
+  "email": "xfu@unc.edu",
+  "phone": "",
+  "location": "Chapel Hill / NC / USA / 27599-3360",
+  "summary": "",
+  "education": [
+    {
+      "school": "School of Information and Library Science, University of North Carolina at Chapel Hill",
+      "major": "Information and Library Science",
+      "degree": "Ph. D. student",
+      "start_date": "2003-08",
+      "end_date": "Present"
+    },
+    {
+      "school": "Department of Statistics and Operations Research, University of North Carolina at Chapel Hill",
+      "major": "Statistics",
+      "degree": "Master's student",
+      "start_date": "2004-08",
+      "end_date": "Present"
+    },
+    {
+      "school": "Department of Library and Information Science, Peking University",
+      "major": "Information Science",
+      "degree": "Master of Science",
+      "start_date": "2000-09",
+      "end_date": "2003-07"
+    },
+    {
+      "school": "English Program for Information Management Studies, School of English Language Communication, Beijing Foreign Studies University",
+      "major": "English (Information Management Orientation)",
+      "degree": "Bachelor of Arts",
+      "start_date": "1996-09",
+      "end_date": "2000-07"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "University of North Carolina at Chapel Hill",
+      "position": "Research Team Member",
+      "start_date": "2004-08",
+      "end_date": "Present",
+      "description": [
+        "Study how frequent users of structured data such as statistical files and databases make sense of and annotate information",
+        "Investigate the role annotations play in seeking and understanding information in electronic environments",
+        "Identify strategies and potential tools for annotating structured data"
+      ]
+    },
+    {
+      "company": "University of North Carolina at Chapel Hill",
+      "position": "Research Team Member",
+      "start_date": "2004-01",
+      "end_date": "Present",
+      "description": [
+        "Develop techniques for eliciting additional information from users (beyond a short query) about their information problems",
+        "Develop techniques for incorporating information about a user's search context into retrieval",
+        "Evaluate the effectiveness of such techniques"
+      ]
+    },
+    {
+      "company": "University of North Carolina at Chapel Hill",
+      "position": "Research Assistant",
+      "start_date": "2004-01",
+      "end_date": "2004-06",
+      "description": [
+        "Develop automatic methods to convert HTML files to text files and format them with certain tags that allow easy loading into database"
+      ]
+    },
+    {
+      "company": "",
+      "position": "Research Team Leader",
+      "start_date": "2002-09",
+      "end_date": "2003-06",
+      "description": [
+        "Constructed theoretical framework for evaluating the quality of Web search engine",
+        "Developed empirical framework for user centered evaluation of Web search services",
+        "Designed user search experiment to test the framework",
+        "Analyzed both qualitative and quantitative data from the experiment and modified the framework"
+      ]
+    },
+    {
+      "company": "",
+      "position": "Graduate Research Assistant",
+      "start_date": "2002-02",
+      "end_date": "2002-06",
+      "description": [
+        "Investigated major information organization and retrieval techniques used by Chinese and English Web search engines",
+        "Explored and evaluated the indices for measuring search engine quality"
+      ]
+    },
+    {
+      "company": "",
+      "position": "Research Team Leader",
+      "start_date": "2001-03",
+      "end_date": "2001-04",
+      "description": [
+        "Conducted survey on how classification was used by major Internet portals to organize information resources",
+        "Interviewed classification designers of two major Chinese Web portals to gain an understanding of their considerations and practical concerns",
+        "Proposed suggestions for improving classification design on Web portals."
+      ]
+    },
+    {
+      "company": "",
+      "position": "Team Assistant",
+      "start_date": "2001-01",
+      "end_date": "2001-03",
+      "description": [
+        "Participated in designing survey questionnaire to investigate the information needs of social sciences researchers in China",
+        "Collected data from about 50 social sciences researchers in Beijing"
+      ]
+    },
+    {
+      "company": "Peking University",
+      "position": "Teaching Assistant",
+      "start_date": "2002-09",
+      "end_date": "2003-01",
+      "description": [
+        "Led the lab session for 50 first-year students in their C Programming class and 15 fourth-year students in Multimedia Technologies class"
+      ]
+    },
+    {
+      "company": "Beijing Foreign Studies University",
+      "position": "Course Coordinator",
+      "start_date": "2001-03",
+      "end_date": "2001-06",
+      "description": [
+        "Invited 20 of my classmates in Peking University to offer Information Seminar Series for undergraduates in Beijing Foreign Studies University",
+        "Arranged the timetable, presided over all of the seminars and designed the grading system",
+        "The seminar was warmly welcomed by 100+ participants"
+      ]
+    },
+    {
+      "company": "Beijing Foreign Studies University",
+      "position": "Teaching Assistant",
+      "start_date": "2000-09",
+      "end_date": "2001-01",
+      "description": [
+        "Provided lab tutorial for 40 second-year students in their C Programming class"
+      ]
+    },
+    {
+      "company": "Beijing 21st Century School",
+      "position": "English teacher",
+      "start_date": "1999-03",
+      "end_date": "1999-06",
+      "description": [
+        "Taught English to about 30 elementary school students (grade 3-4) without using any Chinese"
+      ]
+    },
+    {
+      "company": "Office of International Relations, Peking University",
+      "position": "Graduate Assistant for Exchange Affairs",
+      "start_date": "2001-08",
+      "end_date": "2002-08",
+      "description": [
+        "Receiving His Excellency Prime Minister Guy Verhofstadt of Belgium (March 28, 2002)",
+        "Receiving Vice Chancellor of the University of Cambridge Professor Sir Alec Broers and his delegation (April 11-14, 2002)."
+      ]
+    },
+    {
+      "company": "HolyHigh Investment Consulting Company, Beijing",
+      "position": "CIO",
+      "start_date": "2000-05",
+      "end_date": "2001-01",
+      "description": [
+        "Made overall information policy for the start-up company with more than 20 employees and saw to its implementation",
+        "Set up the company’s knowledge center and website"
+      ]
+    },
+    {
+      "company": "Distance Learning Department, Beijing Foreign Studies University",
+      "position": "Database Designer",
+      "start_date": "1999-09",
+      "end_date": "1999-10",
+      "description": [
+        "Designed the Self-Access Center Management System for distance learning students"
+      ]
+    },
+    {
+      "company": "Distance Learning Department, Beijing Foreign Studies University",
+      "position": "Lab Assistant",
+      "start_date": "1999-09",
+      "end_date": "2000-01",
+      "description": [
+        "Instructed and assisted students in their computer lab sessions"
+      ]
+    },
+    {
+      "company": "Resource Center of School of English Language Communication, Beijing Foreign Studies University",
+      "position": "Library Assistant",
+      "start_date": "1999-09",
+      "end_date": "2000-01",
+      "description": [
+        "Designed the classification scheme for the school library with a collection of several thousand books, periodicals, dissertations and multimedia reading materials"
+      ]
+    },
+    {
+      "company": "Xinhua News Agency and Domestic News Department, China Daily",
+      "position": "Intern Reporter",
+      "start_date": "2000-02",
+      "end_date": "2000-04",
+      "description": [
+        "Assisted reporters in interviewing and writing/editing news articles"
+      ]
+    },
+    {
+      "company": "American Pavilion of 1999 China International Education Exhibition in Beijing",
+      "position": "Interpreter",
+      "start_date": "1999-11",
+      "end_date": "1999-11",
+      "description": []
+    },
+    {
+      "company": "Jiangxi TV English News",
+      "position": "Intern Editor and Announcer",
+      "start_date": "1998",
+      "end_date": "1998",
+      "description": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C Programming",
+    "HTML",
+    "Databases",
+    "Information Organization",
+    "Information Retrieval",
+    "Classification Design",
+    "Survey Design",
+    "Data Collection",
+    "Data Analysis",
+    "Website Development",
+    "Information Policy",
+    "News Writing/Editing",
+    "Interviewing",
+    "Translation",
+    "Teaching",
+    "Multimedia Technologies"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    },
+    {
+      "language": "Chinese",
+      "level": ""
+    }
+  ]
+}

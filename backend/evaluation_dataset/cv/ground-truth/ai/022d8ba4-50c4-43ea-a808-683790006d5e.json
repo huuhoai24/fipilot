@@ -1,0 +1,168 @@
+{
+  "cv_id": "cv_002",
+  "full_name": "SANG, THAI DINH",
+  "email": "",
+  "phone": "",
+  "location": "C904, 41Bis Apartment, 115 Tan Cang, Binh Thanh district, Ho Chi Minh city",
+  "summary": "With over 10 years of experience in software engineering, project management, and R&D, I am seeking opportunities for suitable positions to further develop myself and contribute to the growth of businesses based on my past expertise and experiences. As a proactive, responsible, and disciplined individual, I am always ready to take on challenges and strive to deliver the highest value to customers and businesses.",
+  "education": [
+    {
+      "school": "Zhejiang University of Technology",
+      "major": "Psychology with Behavioral Science",
+      "degree": "Bachelor of Psychology with Behavioral Science",
+      "start_date": "2017",
+      "end_date": "2019"
+    },
+    {
+      "school": "The University of Science",
+      "major": "Information Technology",
+      "degree": "Bachelor of Information Technology",
+      "start_date": "2009",
+      "end_date": "2013"
+    },
+    {
+      "school": "University Of Economics",
+      "major": "Business Administration",
+      "degree": "Bachelor of Business Administration",
+      "start_date": "2010",
+      "end_date": "2013"
+    },
+    {
+      "school": "The University of Science",
+      "major": "Data Science",
+      "degree": "Master of Data Science",
+      "start_date": "2014",
+      "end_date": "2015"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "RiverCrane Vietnam",
+      "position": "Team Leader",
+      "start_date": "2022",
+      "end_date": "2024",
+      "description": [
+        "Involved in and managed software projects for our value Customer in Japan, where I was responsible for planning, development, and quality control of the projects.",
+        "Oversaw the operation and coordination of the development team, controlled project risks, and implemented infrastructure construction and deployment requirements.",
+        "Implemented techniques to mitigate risks and optimize databases.",
+        "Analyzing requirements, planning, and identifying project resources.",
+        "Designing development documents and user guide documents.",
+        "Developing features and ensuring product quality with Laravel Framework.",
+        "Operating the team and managing risks."
+      ]
+    },
+    {
+      "company": "Department of Information and Communications Technology",
+      "position": "Head of IT Department",
+      "start_date": "2020",
+      "end_date": "2022",
+      "description": [
+        "Involved in the process of building and developing Information Technology applications as per the requirements of the People's Committee of Gia Lai Province.",
+        "Organizing, researching, and implementing plans, strategies for human resource training, developing technology applications in administrative management, and being responsible for information security in Gia Lai province."
+      ]
+    },
+    {
+      "company": "Pinduoduo Inc. - Pinduoduo Cloud",
+      "position": "Project Manager - Deputy R&D Director",
+      "start_date": "2016",
+      "end_date": "2020",
+      "description": [
+        "Involved in shaping and developing the initial stages of China's leading shopping platform - Pinduoduo.",
+        "During that time, I was responsible for building system architecture models and logical relationships between entities within the system.",
+        "In the next phase, in a project management role, I led the design and development of the core platform for Pinduoduo.",
+        "During this phase, I also participated in R&D projects to develop products.",
+        "Additionally, with the advancement of AI, I was tasked with building and developing Machine Learning and Deep Learning techniques to integrate and support the e-commerce platform with predictive user behavior analysis.",
+        "Towards the end of my tenure at Pinduoduo, I was involved in product strategy research and development.",
+        "Alongside senior leadership, we formulated short and long-term plans for the product, establishing large databases responsible for market research and analysis."
+      ]
+    },
+    {
+      "company": "Vietnam Institute of Information and Communication Strategy - VIICOS",
+      "position": "Research and Development Specialist",
+      "start_date": "2014",
+      "end_date": "2016",
+      "description": [
+        "Involved in researching and developing theories, professional standards, and techniques in the field of Information and Communication.",
+        "Participate in research, surveys, information collection, and statistical data processing regarding market changes, technology, and the scope of influence in Vietnam.",
+        "Responsible for developing data processing systems and digital transformation applications for relevant agencies.",
+        "Conduct research and implement scientific projects on technology and advanced technology in the field of Information and Communication.",
+        "Organize and carry out investigation tasks, statistical data processing regarding the impacts of the Information Technology market in Vietnam.",
+        "Design and develop related applications using .NET."
+      ]
+    },
+    {
+      "company": "VTM Vietnam",
+      "position": "Software Engineer",
+      "start_date": "2012",
+      "end_date": "2013",
+      "description": [
+        "Involved in projects to develop ERP applications for businesses in Japan, where we used Symfony and the latest core technologies available at that time to build the applications.",
+        "Participated in on-site projects for NEC Vietnam during my tenure here, working on data processing techniques using C++ and Python.",
+        "Analyzing requirements from Japanese clients and designing BRD documents.",
+        "Designing and building Database schema for required features.",
+        "Designing and developing features using PHP with the Symfony framework.",
+        "Conducting acceptance testing with developed features."
+      ]
+    },
+    {
+      "company": "Nucleus Software Exports Ltd.",
+      "position": "Software Engineer",
+      "start_date": "2010",
+      "end_date": "2014",
+      "description": [
+        "Participated in the development of Fintech projects and the foundational infrastructure for financial services.",
+        "For these projects, I was responsible for developing components related to data processing modules and developing API endpoints.",
+        "Developing core processing for data synchronization infrastructure between Fintech systems.",
+        "Multithreaded testing of data services.",
+        "Developing initial data processing for API endpoints."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Research & Analytical",
+    "Creativity",
+    "Planning & Time management",
+    "Programming",
+    "Project & Resource Management",
+    "Risk, Change & Quality Management",
+    "Leadership, Communication & Teamwork",
+    "Reporting and Evaluation",
+    "Software Development",
+    "Project Manager & Agile Manager",
+    "R&D",
+    "Networking, Security & Cloud",
+    "Risk Monitoring and Control"
+  ],
+  "certifications": [
+    "Certified Information Systems Security Professional (CISSP)",
+    "Project Management Professional (PMP)",
+    "Project Management Institute Risk Management Professional (PMI-RMP)",
+    "Agile Certified Practitioner (PMI-ACP)",
+    "CompTIA Network+",
+    "CompTIA Security+",
+    "Certified Cloud Security Professional (CCSP)",
+    "Cisco Certified Network Professional (CCNA)",
+    "Windows Server Administrator Associate (MD-101)",
+    "ITIL Foundation",
+    "ISTQB Certified Tester",
+    "Certified Usability Testing Professional (CUTP)",
+    "Deep Learning Specialization (Coursera)",
+    "TensorFlow Developer Certificate",
+    "Certified in Risk and Information Systems Control (CRISC)"
+  ],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Natural"
+    },
+    {
+      "language": "English",
+      "level": "Intermediate"
+    },
+    {
+      "language": "French",
+      "level": "Elementary"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "cv_id": "cv_027",
+  "full_name": "Mr Ha",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh, Vietnam",
+  "summary": "",
+  "education": [
+    {
+      "school": "Ly Tu Trong College of Ho Chi Minh City",
+      "major": "Software Engineering",
+      "degree": "",
+      "start_date": "2007",
+      "end_date": "2010"
+    },
+    {
+      "school": "Industrial University of Ho Chi Minh City",
+      "major": "Software science",
+      "degree": "Bachelor of Software science",
+      "start_date": "2010",
+      "end_date": "2012"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "E-SPACE (Vietnamese online education company)",
+      "position": "Product Manager",
+      "start_date": "2015",
+      "end_date": "2020",
+      "description": []
+    },
+    {
+      "company": "Pax Creation Asia",
+      "position": "Web Developer",
+      "start_date": "2013",
+      "end_date": "2015",
+      "description": [
+        "The system my boss brought from Japan since 2012",
+        "After that, The system was analyzed and redesigned from the Japanese teaching system"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "E-land",
+      "role": "",
+      "technologies": [
+        "Yii2 framework",
+        "nodejs",
+        "Mysql"
+      ],
+      "description": "E-land is a product startup Real estate technology platform. It's a product real estate technology platform that helps connect real estate brokers with each other."
+    },
+    {
+      "name": "E-space",
+      "role": "responsible for analyzing the request ideas from my boss. Data and functions are designed and developed by me.",
+      "technologies": [
+        "Yii2 framework",
+        "Yii2 api",
+        "nodejs",
+        "nodejs socket",
+        "WebRTC",
+        "Mysql",
+        "Angularjs",
+        "Java for app",
+        "Web RTC"
+      ],
+      "description": "E-space is a product startup education of Paxcreation company. It’s a product that my boss brought from Japan to develop and operate in Vietnam. After 3 years of operation, E-space separated from the Paxcreation company to operate separately. E-space had been in development and operation for 8 years. Project ideas We hire foreign teachers to open class schedules on E-space. We will divide the lesson into a 10-class, 20-class, 30-class package and resell it to students. Each session on E-space has 25 minutes and 50 minutes. Each time, students will go to the E-space system such as App, Website to book class schedules through the system. At class, students will join the teacher through the live stream online platform. Build System: We started a project with 2 people to build a system. The product was finished in 3 months, including basic functions such as: Teacher opening class schedule, closing class schedule, students setting a class schedule, canceling a class schedule … After the project came into operation, I was responsible for developing the extended functions until now. Function system: Sell and pay the package via E-space by integrating payment functions. Manage the opening of the teacher's schedule, teacher's hours, the quality of the teacher's teaching. Manage class schedules, cancellations and purchased packages. System livestream, chat, record video during teaching. Export payroll reports by month, Export revenue calculation report Export reports calculating the number of students enrolled monthly The system to build to manage teaching and booking. The system can record and output video after student and teacher class finishes. E-space system includes page basic functions: Teacher page is page for teacher Student page is page for student Company page is page for company Admin page is setting system Backend page is page for employees App for student Iphone/Ipad, Android, Windows App for teacher Iphone/Ipad, Android, Windows"
+    },
+    {
+      "name": "E-land",
+      "role": "",
+      "technologies": [
+        "Yii2 framework",
+        "Yii2 api",
+        "nodejs",
+        "nodejs socket",
+        "Mysql",
+        "Jquery",
+        "Javascript",
+        "Ajax"
+      ],
+      "description": "E-land is a page for sale real estate for rent"
+    },
+    {
+      "name": "Boxo",
+      "role": "",
+      "technologies": [
+        "Sequelize ORM",
+        "nodejs",
+        "nodejs socket",
+        "Mysql",
+        "Jquery",
+        "Javascript"
+      ],
+      "description": "Chat systems like facebook"
+    },
+    {
+      "name": "E-space",
+      "role": "",
+      "technologies": [],
+      "description": "The system my boss brought from Japan since 2012 After that, The system was analyzed and redesigned from the Japanese teaching system"
+    },
+    {
+      "name": "HR management system",
+      "role": "",
+      "technologies": [
+        "Yii2 Api",
+        "Angularjs 1"
+      ],
+      "description": "Employee management system. The manager will assign jobs to employees through the system The employee accepted,canceled the job The employee entrust other employees Calculate and pay employees Manage the working hours of employees. App for android, ios, windows"
+    },
+    {
+      "name": "Japanese language learning and teaching project",
+      "role": "",
+      "technologies": [
+        "Yii2 framework"
+      ],
+      "description": "Japanese language learning and teaching project"
+    }
+  ],
+  "skills": [
+    "Willing to learn",
+    "supportive",
+    "responsible",
+    "committed",
+    "Able to work under high pressure",
+    "Ability to self-study documents and apply new technologies",
+    "resourceful",
+    "good organizational skill",
+    "Goal-oriented",
+    "independent",
+    "drive",
+    "initiative",
+    "8+ years of working experience in Web application, Web service",
+    "Experience working with a PHP framework",
+    "Strong Yii2",
+    "CakePHP",
+    "Experience working with a Javascript framework",
+    "Angular",
+    "Working knowledge of databases and SQL",
+    "MYSQL",
+    "Experience working with Linux environments",
+    "Ubuntu 18.04",
+    "web server",
+    "Apache",
+    "Nginx",
+    "Experience building or working with Rest APIs",
+    "Ability to manage multiple, competing priorities simultaneously",
+    "Able to work well both independently and with the team to ensure quality",
+    "Love to learn and ask questions",
+    "detail-oriented",
+    "enjoy working with people",
+    "PHP",
+    "Yii2",
+    "RESTful api",
+    "Angularjs",
+    "Nodejs",
+    "Javascript",
+    "Jquery",
+    "Ajax",
+    "Css",
+    "Html"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Pre Intermediate"
+    },
+    {
+      "language": "Vietnamese",
+      "level": "Native"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "cv_id": "cv_069",
+  "full_name": "NGUYEN DINH LUC",
+  "email": "",
+  "phone": "",
+  "location": "Dai Dong – Tien Du – Bac Ninh",
+  "summary": "",
+  "education": [
+    {
+      "school": "School of Posts and Telecommunications Institute of Technology",
+      "major": "Information Technology",
+      "degree": "Students",
+      "start_date": "2008",
+      "end_date": "2013"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Dai Vu One Member Company Limited",
+      "position": "Installation staff, computer hardware warranty",
+      "start_date": "2011-04",
+      "end_date": "2014-02",
+      "description": [
+        "Installation: Receive contract and design network as well as install computer system for customer at home.",
+        "Training: Educate the customer about the system that fixes the system with basic errors."
+      ]
+    },
+    {
+      "company": "Hosco Software Company",
+      "position": "Employee Deploy software and hardware",
+      "start_date": "2014-02",
+      "end_date": "2015-01",
+      "description": [
+        "Deploy the on / off model for sales management software. Install, write documentation for each customer in the field of sales, restaurants, Gym (process → manipulate software)",
+        "Perform the installation, configure the computer to match the configuration of the software.",
+        "Carry out loading and unloading at customers' warehouses: fingerprint scanners, computers, controllers and doors."
+      ]
+    },
+    {
+      "company": "R-Keeper software Company",
+      "position": "Employee Deploy software and hardware",
+      "start_date": "2015-01",
+      "end_date": "2016-01",
+      "description": [
+        "Network consulting, LAN configuration, hardware consulting, deployment of restaurant and hotel management software."
+      ]
+    },
+    {
+      "company": "CMC Software Solutions Co., Ltd",
+      "position": "Solution Consultant and System Deployment Consultant",
+      "start_date": "2016-01",
+      "end_date": "2018-07",
+      "description": [
+        "Project management \"electronic document management\" for Mobifone customers.",
+        "Responsible for all matters related to customers, report the work to the center director or general director.",
+        "Implement and support eDocman document management system.",
+        "Administer the entire project, make requests as needed, resolve all issues related to the project.",
+        "Monitor the operation of the weekly server system (web servers, App servers, virtual servers ...).",
+        "Implement deployments of solutions with customer changes on the operating system.",
+        "Make daily, weekly, monthly, quarterly and annual reports.",
+        "Added support data to the daily task management system."
+      ]
+    },
+    {
+      "company": "Trendsetters Fashions Vietnam Company Limited",
+      "position": "IT Manager",
+      "start_date": "2018-07",
+      "end_date": "2019-07",
+      "description": [
+        "Network management",
+        "Server system management",
+        "manage internal switchboard system",
+        "manage computer systems at the factory",
+        "camera system management",
+        "manage timekeeper system",
+        "Support user",
+        "Management of specialized software systems"
+      ]
+    },
+    {
+      "company": "Samsung SDS Viet Nam Co., Ltd",
+      "position": "Senior Staff",
+      "start_date": "2019-08",
+      "end_date": "2020-11",
+      "description": [
+        "Manage and monitor the status of the server system of Samsung Corporation",
+        "Setup the server, design the installation location and also connect the network for the new server.",
+        "Survey, support to install servers at Samsung partner units when deploying new.",
+        "Report and implement new ideas every year.",
+        "Proposal to participate in annual courses. Implement projects and ideas after completing the course."
+      ]
+    },
+    {
+      "company": "Bao Minh Textile Joint Stock Company",
+      "position": "Team Leader",
+      "start_date": "2020-09",
+      "end_date": "Present",
+      "description": [
+        "Deploying ERP software for the textile industry (the first specialized management software for textiles in Vietnam) and managing other applications in the textile enterprise",
+        "Management of production related applications such as Penolopy fabric design software, Datacolor yarn dyeing color design software, Ogatex dyeing machine operating software for Yarn Dyeing factory, textile machine coordination software Toyota for Textile factory, Setex Software for Finishing factory……..",
+        "Integrate control applications to ERP software",
+        "Design reports for departments in the enterprise to meet the required data by I-net",
+        "Dev some small Modules when there are small changes on Eclip",
+        "Write a query to get data from Master Data into an excel file when there is a proposal on DB2",
+        "Coordinate the implementation of all Modules in the enterprise.",
+        "Technology orientation for businesses in accordance with the needs of the world."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "computer hardware warranty",
+    "network design",
+    "computer system installation",
+    "system training",
+    "software deployment",
+    "hardware deployment",
+    "sales management software",
+    "installation",
+    "configuration",
+    "loading and unloading",
+    "fingerprint scanners",
+    "controllers",
+    "network consulting",
+    "LAN configuration",
+    "restaurant and hotel management software",
+    "project management",
+    "electronic document management",
+    "eDocman document management system",
+    "server system monitoring",
+    "web servers",
+    "App servers",
+    "virtual servers",
+    "operating system changes",
+    "reporting",
+    "task management system",
+    "IT system management",
+    "ERP software",
+    "Penolopy fabric design software",
+    "Datacolor yarn dyeing color design software",
+    "Ogatex dyeing machine operating software",
+    "Toyota textile machine coordination software",
+    "Setex Software",
+    "control applications integration",
+    "report design",
+    "Module development",
+    "Eclip",
+    "query writing",
+    "DB2",
+    "Module implementation",
+    "Technology orientation",
+    "High sense of responsibility",
+    "willing to learn",
+    "careful personality",
+    "high pressure in the work",
+    "Good research ability",
+    "self-selling",
+    "Enthusiastic",
+    "Responsible",
+    "Honest",
+    "Careful",
+    "High adaptability",
+    "Open",
+    "friendly",
+    "Progressive spirit",
+    "Under pressure"
+  ],
+  "certifications": [],
+  "languages": []
+}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 from collections import defaultdict
 from collections.abc import Sequence
+from dataclasses import dataclass, field
 
 from infrastructure.speech.stt.base import StreamingSTTFactory
 from infrastructure.speech.tts.base import StreamingTTS
@@ -47,55 +48,104 @@ def _status(sample_count: int, failure_count: int) -> str:
     return "partial" if failure_count else "completed"
 
 
+@dataclass
+class _CVAccumulator:
+    sample_count: int = 0
+    failures: int = 0
+    true_positive: int = 0
+    predicted_count: int = 0
+    expected_count: int = 0
+    correct_fields: int = 0
+    total_fields: int = 0
+    latencies: list[float] = field(default_factory=list)
+
+    def metrics(self) -> CVAccuracyMetrics:
+        successful_samples = self.sample_count - self.failures
+        precision, recall, f1 = precision_recall_f1(
+            self.true_positive,
+            self.predicted_count,
+            self.expected_count,
+        )
+        return CVAccuracyMetrics(
+            status=_status(self.sample_count, self.failures),
+            sample_count=self.sample_count,
+            failure_count=self.failures,
+            skill_precision=precision if successful_samples else None,
+            skill_recall=recall if successful_samples else None,
+            skill_f1=f1 if successful_samples else None,
+            profile_field_accuracy=(
+                self.correct_fields / self.total_fields if self.total_fields else None
+            ),
+            processing_latency_ms=average(self.latencies),
+        )
+
+
+@dataclass(frozen=True)
+class CVBenchmarkResult:
+    overall: CVAccuracyMetrics
+    by_format: dict[str, CVAccuracyMetrics]
+
+
 class CVBenchmark:
     def __init__(self, extractor: ProfileExtractor, *, clock=time.perf_counter) -> None:
         self._extractor = extractor
         self._clock = clock
 
     async def evaluate(self, cases: Sequence[CVEvaluationCase]) -> CVAccuracyMetrics:
-        true_positive = predicted_count = expected_count = 0
-        correct_fields = total_fields = failures = 0
-        latencies: list[float] = []
+        return (await self.evaluate_by_format(cases)).overall
+
+    async def evaluate_by_format(
+        self, cases: Sequence[CVEvaluationCase]
+    ) -> CVBenchmarkResult:
+        overall = _CVAccumulator(sample_count=len(cases))
+        by_format = {
+            "pdf": _CVAccumulator(
+                sample_count=sum(case.document_format == "pdf" for case in cases)
+            ),
+            "docx": _CVAccumulator(
+                sample_count=sum(case.document_format == "docx" for case in cases)
+            ),
+        }
 
         for case in cases:
+            format_metrics = by_format.get(case.document_format)
             started = self._clock()
             try:
                 profile = await self._extractor.extract_profile(case.resume_text)
             except Exception:
-                failures += 1
+                overall.failures += 1
+                if format_metrics is not None:
+                    format_metrics.failures += 1
                 continue
             latency_ms = (self._clock() - started) * 1000 + case.document_processing_ms
-            latencies.append(max(0.0, latency_ms))
+            latency_ms = max(0.0, latency_ms)
+            overall.latencies.append(latency_ms)
+            if format_metrics is not None:
+                format_metrics.latencies.append(latency_ms)
             matched, predicted, expected = skill_counts(
                 case.expected_skills,
                 profile.skills,
             )
-            true_positive += matched
-            predicted_count += predicted
-            expected_count += expected
+            overall.true_positive += matched
+            overall.predicted_count += predicted
+            overall.expected_count += expected
+            if format_metrics is not None:
+                format_metrics.true_positive += matched
+                format_metrics.predicted_count += predicted
+                format_metrics.expected_count += expected
             correct, total = profile_field_counts(
                 profile.model_dump(mode="python"),
                 case.expected_profile_fields,
             )
-            correct_fields += correct
-            total_fields += total
+            overall.correct_fields += correct
+            overall.total_fields += total
+            if format_metrics is not None:
+                format_metrics.correct_fields += correct
+                format_metrics.total_fields += total
 
-        precision, recall, f1 = precision_recall_f1(
-            true_positive,
-            predicted_count,
-            expected_count,
-        )
-        return CVAccuracyMetrics(
-            status=_status(len(cases), failures),
-            sample_count=len(cases),
-            failure_count=failures,
-            skill_precision=precision if cases else None,
-            skill_recall=recall if cases else None,
-            skill_f1=f1 if cases else None,
-            profile_field_accuracy=(
-                correct_fields / total_fields if total_fields else None
-            ),
-            processing_latency_ms=average(latencies),
+        return CVBenchmarkResult(
+            overall=overall.metrics(),
+            by_format={name: values.metrics() for name, values in by_format.items()},
         )
 
 
@@ -129,8 +179,12 @@ class STTBenchmark:
             started = self._clock()
             try:
                 await stt.start_session()
-                for chunk in case.audio_chunks:
-                    await stt.process_audio_chunk(chunk)
+                if stt.supports_deferred_partials:
+                    for chunk in case.audio_chunks:
+                        await stt.append_audio(chunk)
+                else:
+                    for chunk in case.audio_chunks:
+                        await stt.process_audio_chunk(chunk)
                 final_event = await stt.finish_session()
                 if final_event is None:
                     raise RuntimeError("STT did not emit a final transcript.")
@@ -190,6 +244,7 @@ class TTSBenchmark:
         first_audio_latencies: list[float] = []
         generation_durations: list[float] = []
         duration_ratios: list[float] = []
+        audio_durations: list[float] = []
 
         for case in cases:
             started = self._clock()
@@ -214,6 +269,7 @@ class TTSBenchmark:
             audio_duration_ms = total_bytes / (sample_rate * 2) * 1000
             first_audio_latencies.append(first_audio_ms)
             generation_durations.append(generation_ms)
+            audio_durations.append(audio_duration_ms)
             duration_ratios.append(
                 generation_ms / audio_duration_ms if audio_duration_ms else 0.0
             )
@@ -224,7 +280,8 @@ class TTSBenchmark:
             failure_count=failures,
             first_audio_ms=average(first_audio_latencies),
             generation_duration_ms=average(generation_durations),
-            audio_duration_ratio=average(duration_ratios),
+            generated_audio_duration_ms=average(audio_durations),
+            real_time_factor=average(duration_ratios),
         )
 
 
@@ -234,10 +291,12 @@ class QuestionGeneratorBenchmark:
         generator: QuestionGenerator,
         judge: QuestionQualityJudge,
         *,
+        regenerate_existing: bool = False,
         clock=time.perf_counter,
     ) -> None:
         self._generator = generator
         self._judge = judge
+        self._regenerate_existing = regenerate_existing
         self._clock = clock
 
     async def evaluate(
@@ -252,12 +311,16 @@ class QuestionGeneratorBenchmark:
         for case in cases:
             started = self._clock()
             try:
-                question = await self._generator.generate_question(
-                    case.candidate_profile,
-                    case.interview_round,
-                    case.interview_config,
-                )
-                generation_ms = max(0.0, (self._clock() - started) * 1000)
+                if self._regenerate_existing or case.generated_question is None:
+                    question = await self._generator.generate_question(
+                        case.candidate_profile,
+                        case.interview_round,
+                        case.interview_config,
+                    )
+                    generation_ms = max(0.0, (self._clock() - started) * 1000)
+                else:
+                    question = case.generated_question
+                    generation_ms = None
                 score = await self._judge.score_question(
                     case.candidate_profile,
                     case.interview_round,
@@ -270,7 +333,8 @@ class QuestionGeneratorBenchmark:
             relevance.append(score.relevance_score)
             difficulty.append(score.difficulty_alignment)
             cv_alignment.append(score.cv_alignment)
-            latencies.append(generation_ms)
+            if generation_ms is not None:
+                latencies.append(generation_ms)
 
         return QuestionGeneratorMetrics(
             status=_status(len(cases), failures),

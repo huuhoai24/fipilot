@@ -1,0 +1,131 @@
+{
+  "cv_id": "cv_086",
+  "full_name": "Tin Tran",
+  "email": "",
+  "phone": "",
+  "location": "Nha Trang, Viet Nam",
+  "summary": "I'm a Web Developer with more than 10 years of experience. I have in-depth knowledge of HTML, CSS, JavaScript. I like to read the Technology Magazines and try it to optimize the working process, improve my skill and build several mini web-application with it.",
+  "education": [],
+  "experiences": [
+    {
+      "company": "Self-employed",
+      "position": "",
+      "start_date": "2021-08",
+      "end_date": "Present",
+      "description": [
+        "Build web application with NodeJS.",
+        "Build HTML templates."
+      ]
+    },
+    {
+      "company": "Job Ready",
+      "position": "Ruby on Rails Developer",
+      "start_date": "2020-02",
+      "end_date": "2021-07",
+      "description": [
+        "Work as a full-stack developer using Ruby on Rails, Active Record.",
+        "Work in a process using Agile with Scrum methodology."
+      ]
+    },
+    {
+      "company": "Self-employed",
+      "position": "",
+      "start_date": "2017-08",
+      "end_date": "2020-03",
+      "description": [
+        "Create a desktop app using Electron, HapiJs, MongoDB and Puppeteer to automate repeatedly tasks.",
+        "Build web application with NodeJS.",
+        "Build HTML templates."
+      ]
+    },
+    {
+      "company": "Bizzon",
+      "position": "Font-End Developer and Team Leader",
+      "start_date": "2014-04",
+      "end_date": "2017-08",
+      "description": [
+        "Research new technologies and training to team members.",
+        "Build Front-End structure to write HTML, CSS, JavaScript faster using Grunt, Gulp, Webpack, Yeoman...",
+        "Build some mini games using HTML Canvas with PixiJS, Phaser...",
+        "Proficient in creating animations for web-application using GSAP.",
+        "Optimize Web-Application for maximum speed and scalability.",
+        "Lead a team with 5 developers in outsourcing multiple websites that run digital marketing.",
+        "Support team members."
+      ]
+    },
+    {
+      "company": "TQ Design",
+      "position": "Developer",
+      "start_date": "2011-05",
+      "end_date": "2014-05",
+      "description": [
+        "Build websites for E-commerce, Real Estate and Tourism using"
+      ]
+    },
+    {
+      "company": "Tin Long",
+      "position": "PHP Developer",
+      "start_date": "2010-03",
+      "end_date": "2011-04",
+      "description": [
+        "Build websites/plugins for E-commerce, Real Estate and Tourism using Joomla,"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "NodeJS",
+    "HapiJS",
+    "ReactJS",
+    "VueJs",
+    "AngularJS (ver 1.x)",
+    "ES5",
+    "ES6+",
+    "TypeScript",
+    "Grunt",
+    "Gulp",
+    "Webpack",
+    "Git",
+    "Github",
+    "Bitbucket",
+    "GitLab",
+    "Jira",
+    "Trello",
+    "Confluence",
+    "MongoDB",
+    "Mongoose",
+    "MySQL",
+    "React Native",
+    "ElectronJs",
+    "Unit Test",
+    "Chai",
+    "Moca",
+    "End to End test",
+    "Jest",
+    "Enzyme",
+    "Puppeteer",
+    "Twilio Send Grid",
+    "Sentry",
+    "Mail Gun",
+    "Google Analytics",
+    "Ruby on Rails",
+    "Active Record",
+    "Agile",
+    "Scrum",
+    "Electron",
+    "HTML Canvas",
+    "PixiJS",
+    "Phaser",
+    "GSAP",
+    "Yeoman",
+    "Joomla",
+    "PHP"
+  ],
+  "certifications": [
+    "Web Development Certificate."
+  ],
+  "languages": []
+}

@@ -1,0 +1,94 @@
+{
+  "cv_id": "cv_015",
+  "full_name": "VU MINH HAI",
+  "email": "minhhai@gmail.com",
+  "phone": "04914329457",
+  "location": "No. 6, Lane 37/38, Dai Dong Street, Thanh Tri Ward, Hoang Mai District, Hanoi",
+  "summary": "- I would like to have professional working environment, with appropriate salary,and advancement opportunities in Career\n- I would like to have the opportunity to contribute myself and become a planning manager in the next 3 years.",
+  "education": [
+    {
+      "school": "HANOI UNIVERSITY OF SCIENCE AND TECHNOLOGY",
+      "major": "Polymer Chemistry",
+      "degree": "Degree classification: Fairly good",
+      "start_date": "1999",
+      "end_date": "2004"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SAINT-GOBAIN VIETNAM",
+      "position": "Planning Supervisor",
+      "start_date": "2017-07",
+      "end_date": "2024-05",
+      "description": [
+        "Production plan and Material Plan rolling 12 month",
+        "Based on Sales forecast, build up Long-term & Short-term business Planning about material supply & finished goods supply, inventory",
+        "Planning with multiples products : Frame, Decorative , Weber, Duraflex function",
+        "Production Planning with utilization & optimization machine capacity and production cost savings. Optimize material supply lead-time, control product with shelf-life ( have expire date).",
+        "Monitoring daily sales out to adjust production plan if need.",
+        "100% enough finished goods to delivery on time.",
+        "Material ordering management : local, oversea",
+        "Production Monthly, Weekly and daily, Evaluating production plan according to PSA, Evaluating Material plan by on time in full",
+        "Analyzing past actual Sale data and evaluate Forecast according to Sale forecast accuracy",
+        "M3 system, Warehouse Management System, Transport Management System",
+        "Coordinate Logistic to ensure raw materials for production",
+        "Control Inventory by Inventory level",
+        "Manage non moving inventory",
+        "Control Inventory that have self life by Inventory Level",
+        "Making planning tools and inventory policy to reduce manual work",
+        "KPIs to manage: OTTIF (on time fulfill), PSA ( Production Schedule Accuracy), Inventory level, SFA ( Sale forecast accuracy)"
+      ]
+    },
+    {
+      "company": "Hanes branch Viet Nam",
+      "position": "Capacity Planning",
+      "start_date": "2014-04",
+      "end_date": "2017-07",
+      "description": [
+        "Control Production plan to hit PSA",
+        "Control production plans according to FIFO",
+        "ERP system",
+        "Non Moving inventory",
+        "Long team Production Plan and short team Production Plan",
+        "Capacity planning based Lines, SAH and Efficiency",
+        "Material Planning based on Production plan"
+      ]
+    },
+    {
+      "company": "INTERNATIONAL CONTAINER JOINT STOCK COMPANY CAS",
+      "position": "Planning supervisor",
+      "start_date": "2006-01",
+      "end_date": "2012-12",
+      "description": [
+        "Production plan and Material Plan",
+        "Manage WH Team and Logistic Team"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Word",
+    "Excel",
+    "Power Point",
+    "Power BI",
+    "SQL",
+    "Communication skills",
+    "word skills",
+    "excel skills",
+    "ERP software skills",
+    "influencing skills",
+    "PBI",
+    "Python",
+    "data analytics"
+  ],
+  "certifications": [
+    "Polymer chemical engineer",
+    "Information Technology Engineer"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Pre-Intermediate, proficient in speaking, listening and reading"
+    }
+  ]
+}

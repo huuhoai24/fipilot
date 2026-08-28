@@ -1,18 +1,19 @@
 import React, {
   type FormEvent,
   type KeyboardEvent,
-  useEffect,
   useLayoutEffect,
   useRef,
-  useState,
 } from 'react'
-import { CheckCircle2, FileText, History, Loader2, Mic, RotateCcw, Send, Square, Volume2 } from 'lucide-react'
-import { BrandLogo } from '@/components/brand/BrandLogo'
+import {
+  CheckCircle2,
+  FileText,
+  History,
+  Loader2,
+  MessageSquare,
+  Send,
+} from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { AI_INTERVIEWER_LABEL, type InterviewerPersona } from '@/lib/interviewerPersonas'
-import { useSpeechInput } from '@/hooks/useSpeechInput'
-import { useInterviewerAudio } from '@/hooks/useInterviewerAudio'
-import { cn, formatElapsed } from '@/lib/utils'
+import { type InterviewerPersona } from '@/lib/interviewerPersonas'
 import type { V2InterviewSessionState, V2InterviewTurn } from '@/types'
 
 interface InterviewProgress {
@@ -36,13 +37,13 @@ interface TextInterviewRoomProps {
   onBackToHistory: () => void
 }
 
-interface TextInterviewRoomStatusProps {
+export interface TextInterviewRoomStatusProps {
   error?: string | null
   onBackToHistory: () => void
 }
 
-const COMPOSER_MIN_HEIGHT_PX = 72
-const COMPOSER_MAX_HEIGHT_PX = 144
+const COMPOSER_MIN_HEIGHT_PX = 140
+const COMPOSER_MAX_HEIGHT_PX = 320
 
 function questionText(turn: V2InterviewTurn): string {
   return typeof turn.question === 'string'
@@ -52,47 +53,6 @@ function questionText(turn: V2InterviewTurn): string {
 
 function answerText(turn: V2InterviewTurn): string {
   return turn.answer?.trim() || turn.candidate_answer?.trim() || ''
-}
-
-function candidateInitial(name: string): string {
-  return name.trim().charAt(0).toLocaleUpperCase() || 'C'
-}
-
-function formatRecordingTime(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainder = seconds % 60
-  return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`
-}
-
-function interviewLabel(state: V2InterviewSessionState): string {
-  const level = state.interview_config.experience_level
-  const style = state.interview_config.interview_style
-  const titleCase = (value: string) => `${value.charAt(0).toUpperCase()}${value.slice(1)}`
-  return `${titleCase(level)} ${titleCase(style)} Interview`
-}
-
-function transitionText(state: V2InterviewSessionState): string | null {
-  const current = state.current_turn
-  if (!current || current.question_type === 'opening') return null
-
-  const previous = state.completed_turns[state.completed_turns.length - 1]
-  const vietnamese = state.interview_config.language === 'vi'
-  if (current.question_type === 'follow_up' && previous?.question_type !== 'follow_up') {
-    return vietnamese
-      ? 'Tôi muốn tìm hiểu thêm một chút về phần này.'
-      : "I'd like to explore that a little further."
-  }
-  if (
-    previous
-    && previous.topic.trim()
-    && current.topic.trim()
-    && previous.topic !== current.topic
-  ) {
-    return vietnamese
-      ? 'Cảm ơn bạn. Chúng ta hãy chuyển sang một chủ đề khác.'
-      : "Thanks. Let's move to another topic."
-  }
-  return null
 }
 
 function closingText(state: V2InterviewSessionState): string {
@@ -105,330 +65,46 @@ function closingText(state: V2InterviewSessionState): string {
   return `${thanks}\n\nThat's all the questions I have for today. Thank you for your time.\n\nYour interview is now complete.`
 }
 
-function RoomHeader({
-  label,
-  status = 'In progress',
-  startedAt,
-}: {
-  label: string
-  status?: 'Opening' | 'In progress' | 'Complete' | 'Unavailable'
-  startedAt?: string | null
-}) {
-  return (
-    <header className="sticky top-0 z-20 border-b border-border bg-surface">
-      <div className="mx-auto flex h-14 w-full max-w-[1280px] items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6 lg:px-10">
-        <div className="flex shrink-0 items-center gap-2">
-          <BrandLogo className="h-7 w-7" />
-          <span className="font-display text-base font-semibold text-text-primary">
-            Fi<span className="text-accent">pilot</span>
-          </span>
-        </div>
-        <div className="flex min-w-max shrink-0 items-center gap-2 whitespace-nowrap text-xs sm:min-w-0 sm:shrink sm:gap-4 sm:text-sm">
-          <span className="hidden truncate font-medium text-text-primary sm:block">
-            {label}
-          </span>
-          <span
-            className="flex shrink-0 items-center gap-1.5 text-text-muted sm:gap-2"
-            role="status"
-          >
-            <span className="h-2 w-2 rounded-full bg-accent" aria-hidden="true" />
-            {status}
-          </span>
-          {startedAt && status !== 'Complete' && (
-            <ElapsedInterviewTimer startedAt={startedAt} />
-          )}
-        </div>
-      </div>
-    </header>
-  )
-}
-
-function ElapsedInterviewTimer({ startedAt }: { startedAt: string }) {
-  const [, setTick] = useState(0)
-  const validStart = Number.isFinite(Date.parse(startedAt))
-
-  useEffect(() => {
-    if (!validStart) return
-    const timer = window.setInterval(() => setTick((tick) => tick + 1), 1_000)
-    return () => window.clearInterval(timer)
-  }, [startedAt, validStart])
-
-  if (!validStart) return null
-  return (
-    <time
-      aria-label="Elapsed interview time"
-      className="shrink-0 border-l border-border pl-2 font-medium tabular-nums text-text-primary sm:pl-4"
-    >
-      {formatElapsed(startedAt)}
-    </time>
-  )
-}
-
-function InterviewerAvatar({
-  persona,
-  size = 'message',
-}: {
-  persona: InterviewerPersona
-  size?: 'message' | 'profile'
-}) {
-  const sizeClasses = size === 'profile'
-    ? 'h-12 w-12 text-sm'
-    : 'h-9 w-9 text-xs'
-
-  return (
-    <div
-      className={cn(
-        'flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-accent bg-accent-soft font-semibold text-accent',
-        sizeClasses,
-      )}
-      aria-hidden="true"
-    >
-      {persona.avatar.src ? (
-        <img src={persona.avatar.src} alt="" className="h-full w-full object-cover" />
-      ) : (
-        persona.avatar.initials
-      )}
-    </div>
-  )
-}
-
-function CandidateAvatar({ name }: { name: string }) {
-  return (
-    <div
-      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-surface-raised text-xs font-semibold text-text-primary"
-      aria-hidden="true"
-    >
-      {candidateInitial(name)}
-    </div>
-  )
-}
-
-const InterviewerMessage = React.forwardRef<HTMLLIElement, {
-  persona: InterviewerPersona
-  children: React.ReactNode
-  current?: boolean
-  audioControl?: React.ReactNode
-}>(
-  ({ persona, children, current = false, audioControl }, ref) => (
-    <li
-      ref={ref}
-      className="grid w-full max-w-[48rem] scroll-mb-40 grid-cols-[2.25rem_minmax(0,1fr)] items-start gap-3 sm:w-[78%]"
-    >
-      <InterviewerAvatar persona={persona} />
-      <article
-        aria-current={current ? 'true' : undefined}
-        aria-label={current ? `Current question from ${persona.name}` : `Message from ${persona.name}`}
-        className={cn(
-          'min-w-0 rounded-lg bg-surface px-4 py-3',
-          current && 'border-l-2 border-accent bg-surface-raised animate-fade-in motion-reduce:animate-none',
-        )}
-      >
-        <div className={cn(
-          'mb-1 flex items-center justify-between gap-2',
-          audioControl && 'min-h-11',
-        )}>
-          <p className="min-w-0 truncate text-sm font-medium text-accent">{persona.name}</p>
-          {audioControl}
-        </div>
-        <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
-          {children}
-        </div>
-      </article>
-    </li>
-  ),
-)
-InterviewerMessage.displayName = 'InterviewerMessage'
-
-function InterviewerAudioControl({
-  audio,
-}: {
-  audio: ReturnType<typeof useInterviewerAudio>
-}) {
-  const playing = audio.status === 'playing'
-  const preparing = audio.status === 'preparing'
-  const label = playing || preparing
-    ? 'Stop interviewer audio'
-    : audio.hasPlayed
-      ? 'Replay interviewer question'
-      : 'Play interviewer audio'
-
-  return (
-    <div className="flex shrink-0 items-center gap-2" aria-live="polite">
-      {audio.error && <span className="text-xs text-text-muted">Audio unavailable</span>}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        className="h-11 w-11 shrink-0"
-        aria-label={label}
-        title={preparing ? 'Preparing interviewer audio' : label}
-        onClick={playing || preparing ? audio.stopPlayback : () => void audio.startPlayback()}
-      >
-        {preparing ? (
-          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-        ) : playing ? (
-          <Square className="h-4 w-4" aria-hidden="true" />
-        ) : audio.hasPlayed ? (
-          <RotateCcw className="h-4 w-4" aria-hidden="true" />
-        ) : (
-          <Volume2 className="h-4 w-4" aria-hidden="true" />
-        )}
-      </Button>
-    </div>
-  )
-}
-
-function CandidateMessage({
-  name,
-  children,
-}: {
-  name: string
-  children: React.ReactNode
-}) {
-  return (
-    <li className="ml-auto grid w-full max-w-[48rem] grid-cols-[minmax(0,1fr)_2.25rem] items-start gap-3 sm:w-[78%]">
-      <article
-        aria-label={`Response from ${name}`}
-        className="min-w-0 rounded-lg bg-accent-soft px-4 py-3"
-      >
-        <p className="mb-1 truncate text-right text-sm font-medium text-text-muted" title={name}>{name}</p>
-        <div className="whitespace-pre-wrap break-words text-base leading-7 text-text-primary">
-          {children}
-        </div>
-      </article>
-      <CandidateAvatar name={name} />
-    </li>
-  )
-}
-
 export function TextInterviewRoomStatus({
   error,
   onBackToHistory,
 }: TextInterviewRoomStatusProps) {
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-bg">
-      <a
-        href="#main-content"
-        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-contrast transition-transform focus:translate-y-0"
-      >
-        Skip to main content
-      </a>
-      <RoomHeader label="Text interview" status={error ? 'Unavailable' : 'Opening'} />
-      <main id="main-content" className="mx-auto flex w-full max-w-3xl flex-1 items-center px-4 py-10 sm:px-6">
-        <section className="w-full border-y border-border py-8" aria-live="polite">
-          {error ? (
-            <>
-              <h1 className="font-display text-2xl font-semibold text-text-primary">
-                Interview unavailable
-              </h1>
-              <p role="alert" className="mt-3 max-w-2xl text-sm leading-6 text-danger">
-                {error}
-              </p>
-              <Button className="mt-6" type="button" variant="secondary" onClick={onBackToHistory}>
-                <History className="h-4 w-4" aria-hidden="true" />
-                Back to history
-              </Button>
-            </>
-          ) : (
-            <div className="flex items-center gap-4" role="status">
-              <Loader2 className="h-5 w-5 animate-spin text-accent" aria-hidden="true" />
-              <div>
-                <h1 className="font-display text-xl font-semibold text-text-primary">
-                  Opening interview room
-                </h1>
-                <p className="mt-1 text-sm text-text-muted">Loading your conversation.</p>
-              </div>
-            </div>
-          )}
-        </section>
-      </main>
+    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+      <div className="max-w-md space-y-4">
+        <p role="alert" className="rounded-lg border border-danger/30 bg-danger/10 p-4 text-sm text-danger">
+          {error || 'Interview session is unavailable.'}
+        </p>
+        <Button type="button" onClick={onBackToHistory}>
+          <History className="h-4 w-4" aria-hidden="true" />
+          Back to history
+        </Button>
+      </div>
     </div>
   )
 }
 
 export function TextInterviewRoom({
   state,
-  sessionId,
-  persona,
-  progress,
+  persona: _persona,
+  progress: _progress,
   answer,
   pendingAnswer,
   submitting,
-  startedAt,
+  startedAt: _startedAt,
   error,
   onAnswerChange,
   onSubmit,
   onViewReport,
   onBackToHistory,
 }: TextInterviewRoomProps) {
-  const candidateName = state.candidate_profile.name || 'Candidate'
-  const isFinished = !state.current_turn
-  const phase = state.phase ?? (isFinished ? 'closing' : 'interviewing')
-  const transition = transitionText(state)
-  const currentQuestionRef = useRef<HTMLLIElement>(null)
   const composerRef = useRef<HTMLTextAreaElement>(null)
   const restoreComposerFocusRef = useRef(false)
-  const shouldFollowConversationRef = useRef(true)
-  const previousQuestionIdRef = useRef<string | null>(null)
-  const interviewerAudioRequest = sessionId
-    ? isFinished
-      ? { key: 'closing', messageKind: 'closing' as const }
-      : state.current_turn
-        ? { key: `turn:${state.current_turn.turn_id}`, turnId: state.current_turn.turn_id }
-        : null
-    : null
-  const interviewerAudio = useInterviewerAudio({
-    sessionId,
-    request: interviewerAudioRequest,
-  })
-  const speechInput = useSpeechInput({
-    sessionId,
-    disabled: submitting || isFinished,
-    onTranscript: (transcript) => {
-      const current = answer.trimEnd()
-      onAnswerChange(current ? `${current} ${transcript}` : transcript)
-      window.setTimeout(() => composerRef.current?.focus({ preventScroll: true }), 0)
-    },
-    onRecordingStart: interviewerAudio.stopPlayback,
-  })
-  const speechInputBusy = speechInput.status === 'requesting'
-    || speechInput.status === 'recording'
-    || speechInput.status === 'processing'
-
-  useEffect(() => {
-    const questionId = state.current_turn?.turn_id ?? null
-    const isInitialQuestion = previousQuestionIdRef.current === null
-    previousQuestionIdRef.current = questionId
-    if (!questionId || (!isInitialQuestion && !shouldFollowConversationRef.current)) return
-
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-    currentQuestionRef.current?.scrollIntoView?.({
-      behavior: isInitialQuestion || reduceMotion ? 'auto' : 'smooth',
-      block: 'nearest',
-    })
-  }, [state.current_turn?.turn_id])
-
-  useEffect(() => {
-    const updateFollowPreference = () => {
-      const distanceFromBottom = document.documentElement.scrollHeight
-        - window.scrollY
-        - window.innerHeight
-      shouldFollowConversationRef.current = distanceFromBottom < 240
-    }
-    updateFollowPreference()
-    window.addEventListener('scroll', updateFollowPreference, { passive: true })
-    window.addEventListener('resize', updateFollowPreference)
-    return () => {
-      window.removeEventListener('scroll', updateFollowPreference)
-      window.removeEventListener('resize', updateFollowPreference)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (submitting || !restoreComposerFocusRef.current || !state.current_turn) return
-    composerRef.current?.focus({ preventScroll: true })
-    restoreComposerFocusRef.current = false
-  }, [state.current_turn, submitting])
+  const candidateName = state.candidate_profile.name || 'Candidate'
+  const candidateRole = state.candidate_profile.recent_role || state.candidate_profile.specialization || 'AI Engineer'
+  const candidateSkills = state.candidate_profile.skills || []
+  const isFinished = !state.current_turn
+  const activeTurn = state.current_turn || state.opening_turn
 
   useLayoutEffect(() => {
     const composer = composerRef.current
@@ -447,248 +123,194 @@ export function TextInterviewRoom({
   const handleComposerKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key !== 'Enter' || (!event.ctrlKey && !event.metaKey)) return
     event.preventDefault()
-    if (!submitting && !speechInputBusy && answer.trim()) event.currentTarget.form?.requestSubmit()
+    if (!submitting && answer.trim()) event.currentTarget.form?.requestSubmit()
   }
 
+  const topicTitle = activeTurn?.topic?.trim() || 'Technical Interview Question'
+
   return (
-    <div className="flex min-h-[100dvh] flex-col bg-bg">
-      <a
-        href="#main-content"
-        className="fixed left-4 top-4 z-50 -translate-y-20 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-contrast transition-transform focus:translate-y-0"
-      >
-        Skip to main content
-      </a>
-      <RoomHeader
-        label={interviewLabel(state)}
-        status={phase === 'opening' ? 'Opening' : isFinished ? 'Complete' : 'In progress'}
-        startedAt={startedAt}
-      />
-
-      <main id="main-content" className="flex flex-1">
-        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-8 sm:px-6 lg:px-10">
-          <section className="flex min-h-20 items-center gap-3 border-b border-border py-4" aria-labelledby="interviewer-title">
-            <InterviewerAvatar persona={persona} size="profile" />
-            <div className="min-w-0">
-              <h1 id="interviewer-title" className="truncate font-display text-lg font-semibold text-text-primary">
-                {persona.name}
-              </h1>
-              <p className="mt-1 truncate text-sm text-text-muted">
-                {persona.role !== AI_INTERVIEWER_LABEL && (
-                  <><span className="font-medium text-text-primary">{persona.role}</span><span aria-hidden="true"> · </span></>
-                )}
-                {AI_INTERVIEWER_LABEL}
-              </p>
-            </div>
-          </section>
-
-          <section className="flex-1 pt-4" aria-labelledby="conversation-title">
-            <div className="mb-3 flex items-center justify-end">
-              <h2 id="conversation-title" className="sr-only">
-                Conversation
+    <div className="mx-auto max-w-6xl space-y-6 pb-12">
+      {/* 2-Column Layout */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Left Column (2 spans): Topic, Current Question, Answer, Submit */}
+        <div className="space-y-6 lg:col-span-2">
+          {activeTurn && !isFinished && (
+            <div className="space-y-3">
+              {/* Topic Heading */}
+              <h2 className="text-base font-bold text-text-primary sm:text-lg">
+                {topicTitle}
               </h2>
-              <p className="shrink-0 text-xs font-medium tabular-nums text-text-muted">
-                {phase === 'opening'
-                  ? 'Opening'
-                  : isFinished
-                    ? 'Complete'
-                    : `Question ${progress.current} of ${progress.total}`}
-              </p>
-            </div>
 
-            <ol className="space-y-4" aria-live="polite">
-              {state.opening_turn && (
-                <>
-                  <InterviewerMessage persona={persona}>
-                    {questionText(state.opening_turn)}
-                  </InterviewerMessage>
-                  {answerText(state.opening_turn) && (
-                    <CandidateMessage name={candidateName}>
-                      {answerText(state.opening_turn)}
-                    </CandidateMessage>
-                  )}
-                </>
-              )}
-              {state.completed_turns.flatMap((turn) => {
-                const response = answerText(turn)
-                return [
-                  <InterviewerMessage key={`${turn.turn_id}-question`} persona={persona}>
-                    {questionText(turn)}
-                  </InterviewerMessage>,
-                  response ? (
-                    <CandidateMessage key={`${turn.turn_id}-answer`} name={candidateName}>
-                      {response}
-                    </CandidateMessage>
-                  ) : null,
-                ].filter((message): message is React.ReactElement => message !== null)
-              })}
-              {state.current_turn && (
-                <InterviewerMessage
-                  ref={currentQuestionRef}
-                  persona={persona}
-                  current
-                  audioControl={<InterviewerAudioControl audio={interviewerAudio} />}
-                >
-                  {transition && (
-                    <p className="mb-2 text-text-muted">{transition}</p>
-                  )}
-                  <p>{questionText(state.current_turn)}</p>
-                </InterviewerMessage>
-              )}
-              {pendingAnswer && (
-                <CandidateMessage name={candidateName}>
-                  {pendingAnswer}
-                </CandidateMessage>
-              )}
-              {submitting && pendingAnswer && (
-                <InterviewerMessage persona={persona}>
-                  <span className="flex items-center gap-2 text-sm text-text-muted" role="status">
-                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                    {persona.name} is preparing the next question...
-                  </span>
-                </InterviewerMessage>
-              )}
-              {isFinished && (
-                <InterviewerMessage
-                  persona={persona}
-                  current
-                  audioControl={<InterviewerAudioControl audio={interviewerAudio} />}
-                >
-                  {closingText(state)}
-                </InterviewerMessage>
-              )}
-            </ol>
-
-            {isFinished && (
-              <section className="mt-8 border-y border-border py-8" aria-labelledby="interview-complete-title">
-                <div className="flex items-start gap-4">
-                  <CheckCircle2 className="mt-1 h-6 w-6 shrink-0 text-accent" aria-hidden="true" />
-                  <div>
-                    <h2 id="interview-complete-title" className="text-xl font-semibold text-text-primary">
-                      Interview complete
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-text-muted">
-                      Your answers are saved. Your report may take a moment to finish generating.
-                    </p>
-                    <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                      <Button type="button" size="lg" onClick={onViewReport}>
-                        <FileText className="h-4 w-4" aria-hidden="true" />
-                        View report
-                      </Button>
-                      <Button type="button" size="lg" variant="secondary" onClick={onBackToHistory}>
-                        <History className="h-4 w-4" aria-hidden="true" />
-                        Back to history
-                      </Button>
-                    </div>
-                  </div>
+              {/* Current Question Card */}
+              <div className="rounded-2xl border border-[#d1fae5] bg-[#f0fdf4] p-6 shadow-xs dark:border-[#134e3a] dark:bg-[#062419]">
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-xs tracking-wider uppercase mb-3">
+                  <MessageSquare className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <span>CURRENT QUESTION</span>
                 </div>
-              </section>
-            )}
-          </section>
-        </div>
-      </main>
 
-      {!isFinished && (
-        <footer className="sticky bottom-0 z-10 border-t border-border bg-surface">
-          <div className="mx-auto w-full max-w-5xl px-4 py-2 sm:px-6 lg:px-10">
-            {error && (
-              <p role="alert" className="mb-3 rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 text-sm text-danger">
-                {error}
-              </p>
-            )}
-            <form
-              onSubmit={handleSubmit}
-              aria-busy={submitting || speechInput.status === 'processing'}
-              className="rounded-lg border border-border bg-surface-raised p-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-[var(--color-focus)] focus-within:ring-offset-2 focus-within:ring-offset-bg"
-            >
-              <label htmlFor="interview-answer" className="sr-only">
-                Your answer
-              </label>
-              <textarea
-                ref={composerRef}
-                id="interview-answer"
-                rows={2}
-                value={answer}
-                onChange={(event) => onAnswerChange(event.target.value)}
-                onKeyDown={handleComposerKeyDown}
-                disabled={submitting}
-                placeholder={submitting ? `Waiting for ${persona.name}...` : 'Type your answer...'}
-                aria-describedby="answer-composer-help speech-input-feedback"
-                aria-invalid={Boolean(error || speechInput.error)}
-                maxLength={12000}
-                className="w-full resize-none border-0 bg-transparent px-2 py-1 text-base leading-6 text-text-primary outline-none placeholder:text-text-muted disabled:cursor-wait disabled:text-text-muted"
-              />
-              <div id="speech-input-feedback" className="px-2" aria-live="polite" aria-atomic="true">
-                {speechInput.error && (
-                  <p role="alert" className="pb-2 text-xs leading-5 text-danger">{speechInput.error}</p>
-                )}
-                {!speechInput.error && speechInput.notice && (
-                  <p className="pb-2 text-xs leading-5 text-text-muted">{speechInput.notice}</p>
-                )}
+                <p className="text-base font-medium leading-relaxed text-text-primary sm:text-lg">
+                  {questionText(activeTurn)}
+                </p>
               </div>
-              <div className="flex items-center justify-between gap-2 border-t border-border px-2 pt-2 sm:gap-3">
-                <div className="flex min-w-0 flex-1 items-center gap-2">
-                  {sessionId && (
-                    speechInput.status === 'recording' ? (
-                      <Button
-                        type="button"
-                        variant="danger"
-                        size="md"
-                        aria-label="Stop recording"
-                        onClick={speechInput.stopRecording}
-                        className="h-11 shrink-0 px-3"
-                      >
-                        <Square className="h-3.5 w-3.5" aria-hidden="true" />
-                        Stop
-                      </Button>
-                    ) : (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        aria-label={speechInput.status === 'processing' ? 'Transcribing answer' : speechInput.status === 'error' ? 'Record again' : 'Start recording'}
-                        onClick={() => void speechInput.startRecording()}
-                        disabled={submitting || speechInput.status === 'requesting' || speechInput.status === 'processing'}
-                        className="h-11 w-11 shrink-0"
-                      >
-                        {speechInput.status === 'requesting' || speechInput.status === 'processing' ? (
-                          <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                        ) : (
-                          <Mic className="h-4 w-4" aria-hidden="true" />
-                        )}
-                      </Button>
-                    )
-                  )}
-                  <p id="answer-composer-help" className="min-w-0 text-xs leading-5 text-text-muted">
-                    {submitting
-                      ? 'Your answer is saved above while the next question is prepared.'
-                      : speechInput.status === 'recording'
-                        ? <span role="status" aria-label="Recording in progress">● Recording {formatRecordingTime(speechInput.elapsedSeconds)}</span>
-                        : speechInput.status === 'processing'
-                          ? <span role="status" aria-label="Transcribing answer">Transcribing...</span>
-                          : speechInput.status === 'requesting'
-                            ? <span role="status">Opening microphone...</span>
-                            : 'Ctrl/Cmd + Enter to send · Enter for a new line · Record up to 2 minutes'}
+            </div>
+          )}
+
+          {/* Pending Answer / Submitting indicator */}
+          {pendingAnswer && (
+            <div className="rounded-2xl border border-border bg-surface-raised p-4 text-sm text-text-primary italic">
+              <span className="font-semibold not-italic text-accent block mb-1">Your submitted answer:</span>
+              "{pendingAnswer}"
+            </div>
+          )}
+
+          {submitting && pendingAnswer && (
+            <div className="flex items-center gap-2 text-sm text-text-muted py-2" role="status">
+              <Loader2 className="h-4 w-4 animate-spin text-accent" aria-hidden="true" />
+              <span>Preparing the next question...</span>
+            </div>
+          )}
+
+          {/* Finished State */}
+          {isFinished && (
+            <div className="rounded-2xl border border-accent/20 bg-accent/5 p-8 text-center">
+              <CheckCircle2 className="mx-auto h-12 w-12 text-accent" aria-hidden="true" />
+              <h3 className="mt-3 text-2xl font-bold text-text-primary">
+                Interview complete
+              </h3>
+              <p className="mx-auto mt-2 max-w-lg text-sm text-text-muted whitespace-pre-line">
+                {closingText(state)}
+              </p>
+              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+                <Button type="button" size="lg" onClick={onViewReport}>
+                  <FileText className="h-4 w-4" aria-hidden="true" />
+                  View report
+                </Button>
+                <Button type="button" size="lg" variant="secondary" onClick={onBackToHistory}>
+                  <History className="h-4 w-4" aria-hidden="true" />
+                  Back to history
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Answer Composer */}
+          {!isFinished && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="interview-answer" className="block text-sm font-semibold text-text-primary mb-2">
+                  Answer
+                </label>
+
+                {error && (
+                  <p role="alert" className="mb-2 rounded-lg border border-danger/30 bg-danger/10 px-4 py-2.5 text-sm text-danger">
+                    {error}
                   </p>
+                )}
+
+                <div className="rounded-2xl border border-border bg-[#f8fafc] p-4 shadow-xs dark:bg-surface-raised focus-within:border-accent focus-within:ring-2 focus-within:ring-[var(--color-focus)]">
+                  <textarea
+                    ref={composerRef}
+                    id="interview-answer"
+                    value={answer}
+                    onChange={(event) => onAnswerChange(event.target.value)}
+                    onKeyDown={handleComposerKeyDown}
+                    disabled={submitting}
+                    placeholder="Type your answer..."
+                    aria-label="Your answer"
+                    maxLength={12000}
+                    className="w-full resize-none border-0 bg-transparent text-base leading-relaxed text-text-primary outline-none placeholder:text-text-muted disabled:cursor-wait disabled:text-text-muted"
+                  />
                 </div>
+              </div>
+
+              {/* Submit Button aligned to bottom right */}
+              <div className="flex justify-end">
                 <Button
                   type="submit"
                   size="md"
-                  disabled={submitting || speechInputBusy || !answer.trim()}
-                  aria-label={submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit answer'}
-                  className="h-11 shrink-0 px-4 disabled:opacity-60"
+                  disabled={submitting || !answer.trim()}
+                  aria-label={submitting ? 'Submitting' : error ? 'Retry answer' : 'Submit Answer'}
+                  className="bg-[#78b3a4] hover:bg-[#669f91] text-white gap-2 px-6 py-2.5 rounded-xl font-medium shadow-xs"
                 >
                   {submitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   ) : (
                     <Send className="h-4 w-4" aria-hidden="true" />
                   )}
-                  {submitting ? 'Sending' : error ? 'Retry' : 'Send'}
+                  <span>{submitting ? 'Submitting...' : 'Submit Answer'}</span>
                 </Button>
               </div>
             </form>
+          )}
+        </div>
+
+        {/* Right Column (1 span): Candidate Profile Summary & Completed Turns */}
+        <aside className="space-y-6 lg:col-span-1">
+          {/* Top Card: Candidate Profile */}
+          <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-xs">
+            <h3 className="text-base font-bold text-text-primary">
+              {candidateName}
+            </h3>
+            <p className="text-xs text-text-muted mt-0.5 mb-4">
+              {candidateRole}
+            </p>
+
+            {candidateSkills.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {candidateSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="inline-flex items-center rounded-full bg-[#e6f4f1] px-3 py-1 text-xs font-medium text-[#2d7a6e] dark:bg-[#13352f] dark:text-[#5eead4]"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-        </footer>
-      )}
+
+          {/* Bottom Card: Completed Turns */}
+          <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-xs">
+            <h3 className="text-sm font-bold text-text-primary mb-3">
+              Completed Turns
+            </h3>
+
+            {state.completed_turns.length === 0 ? (
+              <p className="text-xs text-text-muted">
+                No completed turns yet.
+              </p>
+            ) : (
+              <ol className="space-y-4 divide-y divide-border/60">
+                {state.completed_turns.map((turn, index) => {
+                  const response = answerText(turn)
+                  return (
+                    <li key={turn.turn_id} className={index > 0 ? 'pt-4' : ''}>
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="text-xs font-bold text-accent">
+                          Turn {index + 1}
+                        </span>
+                        {turn.topic && (
+                          <span className="text-[11px] text-text-muted truncate max-w-[130px]">
+                            {turn.topic}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs font-medium text-text-primary line-clamp-2">
+                        {questionText(turn)}
+                      </p>
+                      {response && (
+                        <p className="mt-1.5 text-xs text-text-muted line-clamp-2 italic bg-surface p-2.5 rounded-lg border border-border/50">
+                          "{response}"
+                        </p>
+                      )}
+                    </li>
+                  )
+                })}
+              </ol>
+            )}
+          </div>
+        </aside>
+      </div>
     </div>
   )
 }

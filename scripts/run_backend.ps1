@@ -34,6 +34,15 @@ foreach ($line in Get-Content -LiteralPath $envFile) {
     [Environment]::SetEnvironmentVariable($name, $value, "Process")
 }
 
+if ($env:NO_PROXY) {
+    $cleanNoProxy = ($env:NO_PROXY -split ',' | Where-Object { $_.Trim() -notmatch '^::' }) -join ','
+    [Environment]::SetEnvironmentVariable("NO_PROXY", $cleanNoProxy, "Process")
+}
+if ($env:no_proxy) {
+    $cleanNoProxyLower = ($env:no_proxy -split ',' | Where-Object { $_.Trim() -notmatch '^::' }) -join ','
+    [Environment]::SetEnvironmentVariable("no_proxy", $cleanNoProxyLower, "Process")
+}
+
 $python = @(
     (Join-Path $backendRoot ".venv\Scripts\python.exe"),
     (Join-Path $backendRoot "venv\Scripts\python.exe")

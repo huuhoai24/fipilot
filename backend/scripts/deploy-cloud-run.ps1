@@ -7,14 +7,14 @@ param(
     [ValidatePattern('^https://[^/]+/?$')]
     [string]$FrontendOrigin,
 
-    [string]$Region = 'us-central1',
+    [string]$Region = 'asia-southeast1',
     [string]$ArtifactRepository = 'ai-interview',
     [string]$ImageName = 'backend',
     [string]$ServiceName = 'ai-interview-backend',
     [string]$ServiceAccount = '',
     [string]$ImageTag = '',
     [string]$GeminiSimpleModel = 'gemini-2.5-flash',
-    [string]$GeminiComplexModel = 'gemini-2.5-pro',
+    [string]$GeminiComplexModel = 'gemini-2.5-flash',
     [int]$TimeoutSeconds = 300,
     [int]$MaxInstances = 5,
     [int]$MinInstances = 0,

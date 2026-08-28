@@ -1,0 +1,121 @@
+{
+  "cv_id": "cv_133",
+  "full_name": "Nguyễn Thành Nguyên",
+  "email": "",
+  "phone": "",
+  "location": "239 Hoa Binh street, Hiep Tan Ward, Tan Phu District, HCM City",
+  "summary": "My short-term have a stable job, becom e an excellent em ployee, accum ulate m ore experience, practice skills to handle the job effectively, accurately and quickly.\n My long-term goal is to explore different areas of technology and work to address the area of expertise that I want to study. I want to be an expert in a particular \u0000eld of m obile program m ing in the long term , but I know the \u0000rst step is to build a solid foundation and study the basics of program m ing.",
+  "education": [
+    {
+      "school": "CAN THO UNIVERSITY",
+      "major": "INFOTMATION TECHNOLOGY",
+      "degree": "",
+      "start_date": "2014-09",
+      "end_date": "2018-12"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "CNV HOLDINGS JOINT STOCK COMPANY",
+      "position": "MOBILE DEVELOPER",
+      "start_date": "2021-05",
+      "end_date": "2023-03",
+      "description": [
+        "Able to working with RESTFul API, Firebase, Push Noti\u0000cation, Provider with Flutter.",
+        "Deeplink open app paym ent Mom o",
+        "Em bed paym ent and delivery app Aham ove",
+        "Participate in developing som e projects running on App Store and Google Play.",
+        "Team work and independence.",
+        "Research and Learning."
+      ]
+    },
+    {
+      "company": "JASON DIGITAL MEDIA SERVICES TRADING COMPANY LIMITED",
+      "position": "WEB DEVELOPER AND MOBILE FLUTTER BASIC",
+      "start_date": "2018-12",
+      "end_date": "2020-12",
+      "description": [
+        "Custom add rental Point of sale for WooCom m erce.",
+        "Used to m anipulate wordpress hooks.",
+        "Used RESTful API",
+        "Kotlin basic",
+        "Pro\u0000cient in using Git to m anage source code",
+        "Dartcore and Widget Tree",
+        "Debug and optim ize application perform ance",
+        "Pro\u0000cient use of Getx",
+        "Knowledge of MVP, MVVM, Clean Architecture"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "WEB AN TUONG DEP",
+      "role": "",
+      "technologies": [
+        "WordPress"
+      ],
+      "description": "Website to buy, sell and rent products"
+    },
+    {
+      "name": "ENGLISH LEARNING APP",
+      "role": "",
+      "technologies": [],
+      "description": "Application to watch videos with pronunciation according to the m outh and worth the test with pictures"
+    },
+    {
+      "name": "LOYALTY APP",
+      "role": "",
+      "technologies": [
+        "Google",
+        "Apple ID",
+        "Firebase",
+        "Momo",
+        "Vnpay",
+        "App Store",
+        "Play Store"
+      ],
+      "description": "This application serves as a com prehensive answer to the needs of \u0000rm s in the e-com m erce, booking, spa."
+    },
+    {
+      "name": "POS APP",
+      "role": "",
+      "technologies": [
+        "Ahamove"
+      ],
+      "description": "Loyalty m anagem ent app"
+    }
+  ],
+  "skills": [
+    "FLUTTER",
+    "PHP",
+    "RESTFul API",
+    "Firebase",
+    "Push Notification",
+    "Provider",
+    "Deeplink",
+    "Momo",
+    "Ahamove",
+    "Team work",
+    "Research",
+    "WooCommerce",
+    "WordPress hooks",
+    "Kotlin",
+    "Git",
+    "Dartcore",
+    "Widget Tree",
+    "Debugging",
+    "Application performance optimization",
+    "Getx",
+    "MVP",
+    "MVVM",
+    "Clean Architecture",
+    "Google Login",
+    "Apple ID Login",
+    "Vnpay",
+    "App Store deployment",
+    "Google Play deployment",
+    "UI design development"
+  ],
+  "certifications": [],
+  "languages": []
+}

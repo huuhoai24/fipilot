@@ -1,0 +1,89 @@
+{
+  "cv_id": "cv_120",
+  "full_name": "NGUYỄN CHÍ THANH",
+  "email": "",
+  "phone": "",
+  "location": "Tran Binh Trong street, Binh Thanh district, Ho Chi Minh city, Viet Nam",
+  "summary": "A Flutter developer with 2+ years of experience, willing to learn and develop to become proficient in mobile application development. I used to develop some mobile app and web app such as ERP system, Investment Advisory Services and Fintech. I am seeking a challenging position where I can utilize my skills to contribute to the success of the organization.",
+  "education": [
+    {
+      "school": "HO CHI MINH CITY UNIVERSITY OF TECHNOLOGY",
+      "major": "",
+      "degree": "Bachelor of Engineering Computer Science",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "UNIT Technology Corporation",
+      "position": "MOBILE DEVELOPER",
+      "start_date": "2022-03",
+      "end_date": "2023-02",
+      "description": [
+        "Participate in the development of mobile application for bank.",
+        "Develop some new features for the application such as loyalty, transfer money, insurance, QR payment, deeplink, secure app content,...",
+        "Contribute ideas to improve UI, UX to enhance the user experience.",
+        "Analyze, evaluate, and improve the performance of the application such as restructuring the architecture to make the code readable, understandable, and testable. Separated the API and UI using Isolate to improve speed, use a few packages to support fast coding such as mason, freezed and add tests into the project.",
+        "Collaborate with bank members to develop project.",
+        "Work with third-party partners to integrate some modules, features into the application such as insurance, fund certificate, eKYC, NAPAS,..."
+      ]
+    },
+    {
+      "company": "SKT-TECH",
+      "position": "MOBILE DEVELOPER",
+      "start_date": "2020-11",
+      "end_date": "2022-01",
+      "description": [
+        "Developed the entire application and implement features such as ticket sales on mobile devices, delivery management, reporting...",
+        "Integrated VNPay payment by VNPAY POS and issues an invoice after successful payment on POS devices.",
+        "Built RESTful API with python using django framework."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "CHAT APP",
+      "role": "FULL STACK DEVELOPER",
+      "technologies": [],
+      "description": "Mobile app allow users to chat with each other."
+    },
+    {
+      "name": "SESTEN",
+      "role": "FULL STACK DEVELOPER",
+      "technologies": [],
+      "description": "Mobile app help to learn English."
+    }
+  ],
+  "skills": [
+    "Team-work",
+    "Work independently",
+    "Collaboration",
+    "Communication",
+    "Problem solving",
+    "Flutter",
+    "Django",
+    "Express",
+    "Dart",
+    "Python",
+    "Java",
+    "Javascript",
+    "Html",
+    "Css",
+    "PostgreSQL",
+    "SQLite",
+    "FireStore",
+    "Git",
+    "Test",
+    "Heroku",
+    "Azure",
+    "Figma",
+    "Miro",
+    "Wordpress",
+    "Visual Studio Code",
+    "Android Studio",
+    "Xcode"
+  ],
+  "certifications": [],
+  "languages": []
+}

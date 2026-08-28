@@ -1,0 +1,210 @@
+{
+  "cv_id": "cv_035",
+  "full_name": "Bradley M Andrews",
+  "email": "brad.andrews gmail.com",
+  "phone": "",
+  "location": "",
+  "summary": "",
+  "education": [
+    {
+      "school": "Stanford University",
+      "major": "Psychology",
+      "degree": "BA",
+      "start_date": "",
+      "end_date": "1998"
+    },
+    {
+      "school": "UC Berkeley",
+      "major": "",
+      "degree": "Masters of Information Management",
+      "start_date": "2005",
+      "end_date": "2007"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "UC Berkeley",
+      "position": "Teaching Assistant, Info Systems 250 – Computer-Based Communications Systems and Networks",
+      "start_date": "2006-01",
+      "end_date": "Present",
+      "description": [
+        "Hold weekly office hours for a graduate class on computer networks.",
+        "Grade assignments and exams, answer questions, meet regularly with the professor."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Programmer / Analyst, Residential and Student Service Programs",
+      "start_date": "2005-07",
+      "end_date": "Present",
+      "description": [
+        "As a part-time employee, participate in departmental web and database software development efforts.",
+        "Code various applications in Java, PHP, ColdFusion, and ASP.",
+        "Serve as project manager for various software development and integration projects."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Manager, Residential Computing",
+      "start_date": "2003-09",
+      "end_date": "2005-06",
+      "description": [
+        "Serve as the General Manager of the Office of Residential Computing in Housing and Dining Services at UC Berkeley, which supports networking and computing in Berkeley's residence halls. Residential Computing employs almost 50 people and has annual budgets of approximately $350k (staffing), $60k (operations), and $100-$300k (projects).",
+        "Directly supervise 5 employees. Resolve conflicts and ensure effective collaboration between a widely diverse staff with sometimes competing priorities.",
+        "Responsible for all aspects of customer service, consulting support, technical support, and staff development and training in support of over 6,000 clients on our broadband network and over 150 managed desktop workstations (Macintosh, Windows, and Linux).",
+        "Oversaw systems and software development efforts on mostly Linux and BSD systems that provide critical services such as file sharing, http, dhcp, and dns.",
+        "Manage web and print marketing campaigns for client outreach and education.",
+        "Work closely with other staff in Housing and Dining IT Management and across campus on IT committees on technical, project management, wireless networking, and security issues."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Manager, Residential Computing",
+      "start_date": "2002-06",
+      "end_date": "2002-12",
+      "description": [
+        "Serve as the General Manager of the Office of Residential Computing in Housing and Dining Services at UC Berkeley, which supports networking and computing in Berkeley's residence halls. Residential Computing employs almost 50 people and has annual budgets of approximately $350k (staffing), $60k (operations), and $100-$300k (projects).",
+        "Directly supervise 5 employees. Resolve conflicts and ensure effective collaboration between a widely diverse staff with sometimes competing priorities.",
+        "Responsible for all aspects of customer service, consulting support, technical support, and staff development and training in support of over 6,000 clients on our broadband network and over 150 managed desktop workstations (Macintosh, Windows, and Linux).",
+        "Oversaw systems and software development efforts on mostly Linux and BSD systems that provide critical services such as file sharing, http, dhcp, and dns.",
+        "Manage web and print marketing campaigns for client outreach and education.",
+        "Work closely with other staff in Housing and Dining IT Management and across campus on IT committees on technical, project management, wireless networking, and security issues."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Systems Manager, Residential Computing",
+      "start_date": "2003-01",
+      "end_date": "2003-08",
+      "description": [
+        "Managed systems and software development efforts of the Office of Residential Computing in Housing and Dining Services at UC Berkeley, which supports networking and computing in Berkeley's residence halls.",
+        "Directed a staff of 10 system administrators and programmers responsible for maintaining mostly Linux and BSD systems that provide critical services such as http, database, dhcp, and dns.",
+        "Managed a staff of 6 technical consultants that provide hardware, software, and networking support to over 150 desktop workstations and servers running Windows XP, MacOS X, and Linux. Planned long-term technical strategies as well as short-term troubleshooting and analysis.",
+        "Supervised and participated in the development of a wide range of database-driven software in an object-oriented Perl environment with Postgres / Oracle database and both web and command-line interfaces.",
+        "Coded a network management system to cover approximately 6,000 nodes using SNMP with Perl objects in the middle and a web front-end.",
+        "Designed and implemented a cookies-based authentication scheme for internal ops website.",
+        "Implemented department-wide documentation effort. This effort greatly enhanced our technical documentation and has served as a resource for staff during various staff transitions and project handoffs.",
+        "Created and implemented requirements-driven software development model based on the spiral programming methodology that improved our process while dovetailing nicely with existing project management tools.",
+        "Installed, upgraded, troubleshot, and repaired a network of mostly Cisco equipment that serves over 6,000 users.",
+        "Worked closely with other staff in Housing and Dining IT and across campus on IT committees and working groups."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Systems Manager, Residential Computing",
+      "start_date": "2000-12",
+      "end_date": "2002-05",
+      "description": [
+        "Managed systems and software development efforts of the Office of Residential Computing in Housing and Dining Services at UC Berkeley, which supports networking and computing in Berkeley's residence halls.",
+        "Directed a staff of 10 system administrators and programmers responsible for maintaining mostly Linux and BSD systems that provide critical services such as http, database, dhcp, and dns.",
+        "Managed a staff of 6 technical consultants that provide hardware, software, and networking support to over 150 desktop workstations and servers running Windows XP, MacOS X, and Linux. Planned long-term technical strategies as well as short-term troubleshooting and analysis.",
+        "Supervised and participated in the development of a wide range of database-driven software in an object-oriented Perl environment with Postgres / Oracle database and both web and command-line interfaces.",
+        "Coded a network management system to cover approximately 6,000 nodes using SNMP with Perl objects in the middle and a web front-end.",
+        "Designed and implemented a cookies-based authentication scheme for internal ops website.",
+        "Implemented department-wide documentation effort. This effort greatly enhanced our technical documentation and has served as a resource for staff during various staff transitions and project handoffs.",
+        "Created and implemented requirements-driven software development model based on the spiral programming methodology that improved our process while dovetailing nicely with existing project management tools.",
+        "Installed, upgraded, troubleshot, and repaired a network of mostly Cisco equipment that serves over 6,000 users.",
+        "Worked closely with other staff in Housing and Dining IT and across campus on IT committees and working groups."
+      ]
+    },
+    {
+      "company": "Adams Middle School, WCCUSD",
+      "position": "Teacher",
+      "start_date": "2000-08",
+      "end_date": "2001-06",
+      "description": [
+        "Taught 5 classes as full-time teacher in a 35-computer lab.",
+        "Developed a year's curriculum of beginning and intermediate computer literacy for 6-8th graders.",
+        "Served as IT resource for the entire school."
+      ]
+    },
+    {
+      "company": "Stanford University",
+      "position": "Director of Software Development, Residential Computing",
+      "start_date": "1998-09",
+      "end_date": "2000-08",
+      "description": [
+        "Principal software architect in the Residential Computing Department of Stanford University, which supports networking and computing in Stanford's residence halls.",
+        "Managed software development efforts, including a staff of 6 developers.",
+        "Developed and maintained a large code collection of Perl, C, Java, Javascript, and HTML. Developed and maintained online database systems including Sybase, Oracle, mySQL, and Filemaker.",
+        "Developed a tiered survey application with Java Servlet, Java Applet, and standard web (DHTML) components. Database objects served as the model for all three components (survey taking application, survey creation application, and results reporting applet).",
+        "Created a Java Servlet-based network registration system with web front end for use by over 6.000 clients and 50 internal staff.",
+        "Implemented a Perl-based Human Resources tracking (Recruitment, Hiring and Training) system with web front end.",
+        "Spent months reorganizing the departmental code base, cleaning up spaghetti code and unifying libraries to enable better team development and maintainability.",
+        "Served as Web designer and Webmaster for both static and dynamic (cgi / servlets) web content.",
+        "Worked with a diverse community including administrators, students, and other technical co-workers inside and outside the university."
+      ]
+    },
+    {
+      "company": "Sun Microsystems",
+      "position": "Intern",
+      "start_date": "1998-05",
+      "end_date": "1998-09",
+      "description": [
+        "Administered a network of Sun SPARC, Intel Pentium, and Apple Macintosh computers in the Human-Computer Interaction (HCI) Labs at Sun Microsystems.",
+        "Wrote a Perl CGI-based web calendaring system that interfaced with the corporate scheduling system.",
+        "Configured systems, administered network information databases, activated subnets using hubs, routers, and patch panels, and maintained and used professional-grade video production equipment in recording studios.",
+        "Coordinated projects with co-workers and administrators from other departments around Sun."
+      ]
+    },
+    {
+      "company": "Stanford University",
+      "position": "Instructor, CS196 - Microcomputer Consulting",
+      "start_date": "1997-09",
+      "end_date": "1998-06",
+      "description": [
+        "Gave lectures, prepared curriculum, planned laboratories assignments, administered class online resources, and assigned grades in a class of 30 students."
+      ]
+    },
+    {
+      "company": "Stanford University",
+      "position": "Teaching Assistant, Psych 140 – Sleep and Dreams",
+      "start_date": "1994-01",
+      "end_date": "1995-03",
+      "description": [
+        "Conducted weekly sections for an undergraduate class on sleep biology and research.",
+        "Graded assignments and exams, answered questions, attended weekly TA meetings."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Java",
+    "Javascript",
+    "Perl",
+    "HTML",
+    "C++",
+    "C",
+    "XML/XSL",
+    "SNMP",
+    "Fundamentals of OO design",
+    "Spiral Model for software development",
+    "Postgres",
+    "Oracle",
+    "Sybase",
+    "mySQL",
+    "Apache",
+    "Java Servlets",
+    "Perl CGI",
+    "Windows XP/2000",
+    "Linux",
+    "Solaris",
+    "Mac OSX",
+    "web",
+    "dns",
+    "dhcp",
+    "firewall",
+    "network management",
+    "wireless network implementation",
+    "PHP",
+    "ColdFusion",
+    "ASP",
+    "BSD",
+    "Cisco equipment",
+    "object-oriented Perl",
+    "DHTML",
+    "Filemaker"
+  ],
+  "certifications": [],
+  "languages": []
+}

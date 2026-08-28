@@ -1,0 +1,112 @@
+{
+  "cv_id": "cv_058",
+  "full_name": "TRAN DUC VIET",
+  "email": "",
+  "phone": "",
+  "location": "105, Yen Hoa, Cau Giay, Ha Noi, Viet Nam",
+  "summary": "I am Java Back-End developer. I have 3 years of experience in developing web-based application using Java, REST web services and work in Agile/Scrum. I am a hard-working, willing to explore new technologies and easily integrate into the new environment. I am seeking a working environment where I can gain more knowledge and experience to widen not only my technical skills but also people skills.",
+  "education": [
+    {
+      "school": "National Economics University (NEU)",
+      "major": "",
+      "degree": "Bachelor of Information Technology",
+      "start_date": "2017",
+      "end_date": "2020"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Nittsu System Co., Ltd.",
+      "position": "Backend Developer, Frontend Developer",
+      "start_date": "2022-03",
+      "end_date": "Present",
+      "description": [
+        "Developing business features",
+        "Communicating with customers when design documents have problems.",
+        "Bug fixing & maintenance.",
+        "Testing.",
+        "Preparing documents for releasing product"
+      ]
+    },
+    {
+      "company": "GCT . TECHNOLOGY SOLUTION JOINT STOCK",
+      "position": "Backend Developer, Frontend Developer",
+      "start_date": "2021-09",
+      "end_date": "2022-04",
+      "description": [
+        "Requirement gathering & analysis",
+        "Developing business features",
+        "Bug fixing & maintenance",
+        "Testing",
+        "Preparing documents for releasing product."
+      ]
+    },
+    {
+      "company": "GCT . TECHNOLOGY SOLUTION JOINT STOCK",
+      "position": "Backend Developer",
+      "start_date": "2021-06",
+      "end_date": "2021-08",
+      "description": [
+        "Requirement gathering & analysis",
+        "Write API to handle the assigned business.",
+        "Testing",
+        "Preparing documents for releasing product."
+      ]
+    },
+    {
+      "company": "GCT . TECHNOLOGY SOLUTION JOINT STOCK",
+      "position": "Backend Developer",
+      "start_date": "2021-03",
+      "end_date": "2021-05",
+      "description": [
+        "Requirement gathering & analysis",
+        "Bug fixing & maintenance",
+        "Testing",
+        "Creating reports from a variety of data sources."
+      ]
+    },
+    {
+      "company": "HT VIETNAM CONSTRUCTION AND TECHNOLOGY JOINT STOCK COMPANY",
+      "position": "Backend Developer, Frontend Developer",
+      "start_date": "2020-06",
+      "end_date": "2020-12",
+      "description": [
+        "Requirement gathering & analysis",
+        "Develop a number of SEO standard sales websites according to customer requirements"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Communication",
+    "Collaboration &Teamwork",
+    "Adaptability",
+    "Research",
+    "Problem solving",
+    "Java",
+    "JavaScript",
+    "SQL",
+    "HTML/CSS",
+    "Spring Framework",
+    "Junit / Mockito /Jest",
+    "MySQL",
+    "PostgreSQL",
+    "SQL Server",
+    "Git",
+    "Visual Studio",
+    "Eclipse",
+    "SQL Server Management Studio",
+    "OOP (Object Oriented Programming)"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Aptis C, Listening and reading fluently, Ability to write and speak in basic"
+    },
+    {
+      "language": "Japanese",
+      "level": "Equivalent of N5(I am learning N3)"
+    }
+  ]
+}

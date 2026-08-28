@@ -1,0 +1,110 @@
+{
+  "cv_id": "cv_129",
+  "full_name": "Lê Quốc Chấn",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "",
+  "education": [
+    {
+      "school": "Tien Giang University",
+      "major": "Software Engineer",
+      "degree": "",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Freelancer",
+      "position": "Mobile & Web developer",
+      "start_date": "2020-03",
+      "end_date": "Present",
+      "description": [
+        "Receive requests from customers, analyze requirements, analyze application functionality, choose technology to develop for applications, assign tasks to team members",
+        "Design database, develop api for the applications",
+        "Support team members coding functions, fix bugs of the applications"
+      ]
+    },
+    {
+      "company": "Thu Vien Phap Luat Co., Ltd",
+      "position": "Mobile developer",
+      "start_date": "2018-06",
+      "end_date": "2020-06",
+      "description": [
+        "Design UI/UX, coding functions of the applications of the flutter technology platform",
+        "Coding api for the applications to be get data"
+      ]
+    },
+    {
+      "company": "VTV-Hyundai Home Shopping",
+      "position": "Android developer",
+      "start_date": "2016-08",
+      "end_date": "2018-02",
+      "description": [
+        "Participate in application development VTV-Hyundai Home Shopping",
+        "Participate develop net shopping system features",
+        "Participate develop BO system features"
+      ]
+    },
+    {
+      "company": "FPT Digital Retail Joint Stock Company",
+      "position": "Mobile developer",
+      "start_date": "2014-05",
+      "end_date": "2016-07",
+      "description": [
+        "Participate develops applications for company"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Java",
+    "Swift",
+    "Dart",
+    "OOP",
+    "MVC",
+    "MVP",
+    "Design pattern",
+    "Activity",
+    "Intent",
+    "Broadcast Intent",
+    "Broadcast Receiver",
+    "Android Service",
+    "Manifest",
+    "Resource",
+    "Notification",
+    "Android SDK",
+    "UI Kit",
+    "Cocoa touch",
+    "Core data",
+    "Core location",
+    "iOS SDK",
+    "BloC",
+    "Provider",
+    "Widget Components",
+    "Futter SDK",
+    "Firebase Cloud Message",
+    "Google Cloud Message",
+    "Google Map api",
+    "Google sign in",
+    "Youtube api",
+    "Facebook api",
+    "OneSignal api",
+    "Building and submitting app to Google Play Store",
+    "Building and submitting app to iOS App Store",
+    "github",
+    "svn",
+    "Oracle",
+    "SQL Server",
+    "Html",
+    "CSS",
+    "Javascript",
+    "Jquery",
+    "angularJS",
+    "Ajax",
+    "Team management"
+  ],
+  "certifications": [],
+  "languages": []
+}

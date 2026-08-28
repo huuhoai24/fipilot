@@ -1,0 +1,127 @@
+{
+  "cv_id": "cv_110",
+  "full_name": "HUỲNH MINH KIỆT",
+  "email": "",
+  "phone": "",
+  "location": "Lê Quang Định, Phường 1, Gò Vấp, HCM",
+  "summary": "Senior full-stack developer with over 7 years of experience building and maintaining web, mobile, and desktop applications. Proﬁcient in .NET Core, C# on the back-end, and Flutter,Angular, WinForms, and WPF on the front-end. Skilled in creating intuitive and user-friendly interfaces, with a strong focus on performance and security. Experience in both solo and team English, have experience working with foreigners.",
+  "education": [
+    {
+      "school": "HCM City University of Food Industry",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2013-08",
+      "end_date": "2016-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Capital Aid for Employment of the Poor Microﬁnance Institution (CEP)",
+      "position": "Senior Fullstack Developer",
+      "start_date": "2021-03",
+      "end_date": "Present",
+      "description": [
+        "CEP-CBNV Project: Develop features for credit department and staﬀ such as customer survey, customer debt collection, community development, employee information, update new citizen identity by QR code... Submit the app to apple store and google play. - Skills used: Flutter , Dart, RESTAPI .NET CORE. - Team size: 1",
+        "CEP Project: This is an application for customers, they use the app to know loan information, loan history, monthly payment date, interest rate information, apply for a new loan... - Skills used: React Native, RESTAPI .NET CORE. - Team size: 2",
+        "CoreBanking Project: This is a project for the banking system, they are used for loan application management, credit collection management, savings deposit management, and many functions for internal employees.... - Skills used: .Net Core 6, Devextreme, DevExpress,AdminLTE,BootStrap.C#... - Team size: 4"
+      ]
+    },
+    {
+      "company": "Minh Phương Logistics",
+      "position": "SOFTWARE DEVELOPER",
+      "start_date": "2018-04",
+      "end_date": "2020-02",
+      "description": [
+        "Onsite in Standard Charter Bank: LITS(Lending Information Tracking System) Project: Develop modules about mortgage loan, personal loans,car loans... - Front-end: HTML,CSS,Bootstrap,Javascript,Jquery, Devexpress Control. - Back-end: C#,.Net,Entity Framework,LINQ,Crystal Report... - Database: SQL Server - Team size: 2",
+        "Onsite in Global CyberSoft: POS-PN Project: Develop a sales software application for Phuong Nam bookstore. It includes the following features: cashier, import and export goods, warehouse management, billing export... - App Technologies: WPF and RestFul API(Java). - Team size: 6",
+        "Intranet Website: Staﬀ management,assets management, book meeting rooms, take leave ... - Front-end: HTML,CSS,Bootstrap,Javascript,Typescript,Jquery, Angular 4,Devexpress. - Back-end: C#,.Net,Microservices,RESTFUL API,Entity Framework,SSO,OWIN - Database: SQL Server",
+        "Enterprise Website: E-commerce website - Front-end: HTML,CSS,Bootstrap,Javascript,Typescript,Jquery, Angular 7,Devexpress. - Back-end: C#,.Net,Microservices,RESTFUL API,Entity Framework,SSO,OWIN,Nancy.",
+        "FMBP mobile app: Driver management, vehicle management,trip management... - Front-end: Flutter , Dart lang. - Back-end: C#,.Net,Microservices,RESTFUL API,Entity Framework,SSO,OWIN,Nancy.",
+        "MPI mobile app: Staﬀ management,assets management, book meeting rooms, take leave ... - Front-end: Flutter , Dart lang. - Back-end: C#,.Net,Microservices,RESTFUL API,Entity Framework,SSO,OWIN,Nancy.",
+        "IGLS Winform Application: Application for management tractors, containers, and warehousing... - C#,.Net + Devexpress. - Back-end: WCF,APIs,.Net - Database: SQL Server",
+        "IGLS Website for third party: Convert ASP Webform to Angular 4. Display order information, orders status at inbound and outbound, vehicle tracking. - Front-end: HTML,CSS,Bootstrap,Javascript,Typescript,Jquery, Angular 4,Devexpress. - Back-end: C#,.Net,Microservices,RESTFUL API,Entity Framework,SSO,OWIN - Database: SQL Server",
+        "Other: Install Open Source Nextcloud to Intranet Website to management image, document..."
+      ]
+    },
+    {
+      "company": "FPT Telecom",
+      "position": ".NET Developer",
+      "start_date": "2016-08",
+      "end_date": "2018-04",
+      "description": [
+        "Member FPT: TV package management system, customers information management ... - ASP Classic,HTML,CSS,Bootstrap,Kendo UI,Javascript,Jquery,Ajax. - Database: SQLServer , Oracle.",
+        "ERP System: Convert SQL Database to Oracle. Convert Asp Classic to MVC5. - Front-end: ASP Classic, ASP MVC5, HTML, CSS, Bootstrap, KendoUI, Javascript, Jquery , Ajax. - Back-end: REST API, ASP MVC, Entity Framework. - Database: SQL Server, Oracle"
+      ]
+    },
+    {
+      "company": "",
+      "position": "Fullstack Developer(Freelancer)",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "S-Invest App mobile (available on both android and ios): This is a project related to ﬁnancial services, customers can freely choose investment packages such as bond investment, real estate investment, nursing home investment... - Skills used: Flutter , Dart, RESTAPI .NET CORE.",
+        "Web for admin: Thiswebisusedtoprovidesomefunctionsforsomedepartmentssuchasaccounting customerservice IT"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C#",
+    "Dart",
+    "Javascript",
+    "TypeScript",
+    "Express(NodeJs)",
+    "Net Core 5",
+    "Net Core 6",
+    ".Net MVC",
+    "ASP Webform",
+    "ASP Classic",
+    "WCF",
+    "SOAP",
+    "RESTFUL API",
+    "Entity Framework",
+    "Nancy",
+    "Crystal Report",
+    "Devexpress XAF",
+    "Bootstrap",
+    "HTML5",
+    "CSS3",
+    "Jquery",
+    "Devextreme",
+    "AngularJS",
+    "Angular 4",
+    "Angular 8",
+    "Kendo UI",
+    "SignalR",
+    "Winform",
+    "WPF",
+    "Flutter",
+    "SQL Server",
+    "Oracle",
+    "SQLite",
+    "Git",
+    "Agile development methodologies",
+    "REST API design",
+    "Azure cloud platform",
+    "Figma",
+    "Visual Studio Code",
+    "Visual Studio 2017",
+    "Visual Studio 2019",
+    "Visual Studio 2022",
+    "GIT Hub",
+    "SVN",
+    "TFS",
+    ".NET Webform",
+    "Ajax",
+    "SSO",
+    ".Net",
+    "Microservices",
+    "OWIN",
+    "MVC5",
+    "React Native",
+    "AdminLTE",
+    "LINQ"
+  ],
+  "certifications": [],
+  "languages": []
+}

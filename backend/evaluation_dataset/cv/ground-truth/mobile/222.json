@@ -1,0 +1,128 @@
+{
+  "cv_id": "cv_135",
+  "full_name": "TRƯƠNG LONG",
+  "email": "",
+  "phone": "",
+  "location": "307/41 Thach Lam Street, Phu Thanh Ward, Tan Phu District, Ho Chi Minh City",
+  "summary": "",
+  "education": [
+    {
+      "school": "",
+      "major": "MBA",
+      "degree": "Master",
+      "start_date": "",
+      "end_date": "2021"
+    },
+    {
+      "school": "FPT University",
+      "major": "Software Engineering",
+      "degree": "Bachelor",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Data Design Viet Nam",
+      "position": "Project Manager",
+      "start_date": "2018-01",
+      "end_date": "Present",
+      "description": [
+        "Outsourcing/Product Company",
+        "Manage Product software, planning the product, estimate, measuring the result.",
+        "Negotiation with customer, third party, end users, company.",
+        "Planning, Proposing project and progress management for product, coordinate with teams",
+        "Manage Org-chart in Departments.",
+        "Track, analyze and monitor technology performance metrics",
+        "Ensure resource availability and allocation. Manage the relationship with the client and all stakeholders.",
+        "Some Client: Toyota, Naito, QTSC…"
+      ]
+    },
+    {
+      "company": "CJ-Blue JSC",
+      "position": "Project Manager",
+      "start_date": "2016-04",
+      "end_date": "2017-12",
+      "description": [
+        "Agency Company (360 Degree Marketing)",
+        "Lead Teams to develop product/outsource website/Mobile app system such as:",
+        "Negotiation with Customer.",
+        "Planning, Proposing web site and progress management for product, coordinate with teams",
+        "Ensure that all projects are delivered on-time, within scope and within budget.",
+        "Build up skeleton project include website system",
+        "Some Client: Bibigo, Mobil, VCB, the Lug..."
+      ]
+    },
+    {
+      "company": "FPT Software",
+      "position": "Project Manager",
+      "start_date": "2013-04",
+      "end_date": "2016-03",
+      "description": [
+        "Outsourcing Company",
+        "Lead Teams to develop outsource website/Mobile app system such as:",
+        "Negotiation with Customer.",
+        "Planning, Proposing web site and progress management for product, coordinate with teams",
+        "Ensure that all projects are delivered on-time, within scope and within budget.",
+        "Ensure resource availability and allocation. Manage the relationship with the client and all stakeholders.",
+        "Some Client: Petronas Oil and Gas of Malaysia, Polytechnic University of Singapore, Japan …"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Live Games website",
+      "role": "Project Manager",
+      "technologies": [
+        ".NET MVC",
+        ".NET Core",
+        "Micro-services architect",
+        "Azure cloud hosting",
+        "dedicate Server"
+      ],
+      "description": "- Build a platform such as lives’ casino, the one integrated by live casino of Evolution and Build a Crypto Currency Payment gateway for end-user"
+    },
+    {
+      "name": "SP Mobile",
+      "role": "Project Manager",
+      "technologies": [
+        "Xamarin",
+        ".NET MVC"
+      ],
+      "description": "‘- Portal Mobile app to manage Staff and Student in school."
+    },
+    {
+      "name": "Liquid8",
+      "role": "Scrum Master",
+      "technologies": [
+        "Angular",
+        ".NET MVC"
+      ],
+      "description": "‘- Web Ecommerce for Petronas can buy/sell internal product (Material/Equipment)"
+    },
+    {
+      "name": "Viet Nam Invoice Management Tool (VIMT)",
+      "role": "Project Manager",
+      "technologies": [
+        ".NET MVC"
+      ],
+      "description": "‘- Build the web app manage Invoices of Intel Product Viet Nam"
+    }
+  ],
+  "skills": [
+    "Teamwork",
+    "English communication",
+    "Risk Management",
+    "Adaptable",
+    "Creative Thinker",
+    "Deals with Difficult People",
+    "Leadership",
+    "Self-study",
+    "Management Human Skill",
+    "Planning"
+  ],
+  "certifications": [
+    "Certificate Scrum Master (PSM) on July 9, 2021"
+  ],
+  "languages": []
+}

@@ -1,0 +1,169 @@
+{
+  "cv_id": "cv_114",
+  "full_name": "Pham Kim Long",
+  "email": "",
+  "phone": "",
+  "location": "Binh Tan District, Ho Chi Minh City",
+  "summary": "Experienced as Full-Stack Developer with 4+ years’ experience in Website Development and Dynamics 365 CRM.",
+  "education": [
+    {
+      "school": "Ho Chi Minh City Technical And Economic College - HOTEC",
+      "major": "Information Technology Specialized Software Develope",
+      "degree": "",
+      "start_date": "2014",
+      "end_date": "2016"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "TRUECOMERCE DICENTRAL VIETNAM",
+      "position": "Technical Consultant",
+      "start_date": "2017-10",
+      "end_date": "2022-01",
+      "description": [
+        "Collaborating with the business analyst (BA) team to analyze client requirements, provide support and consultation for customization of functions and reports.",
+        "Ultilized MUI – Material UI for the customize UI – User interface and development plugin and workflow D365(Dynamic 365 CRM).",
+        "Create and deployment API Service: Call center (Avaya), sent sms (eSMS) and migration data with Microsoft D365 FO and Dynamic AX.",
+        "Deployment, and unit testing of functions, maintainance and providing feedback to the BA team."
+      ]
+    },
+    {
+      "company": "POUYUEN VIETNAM",
+      "position": "Fresher Developer",
+      "start_date": "2016-10",
+      "end_date": "2017-10",
+      "description": [
+        "Working on a web application project. Proficient in and MVC framework for deploying B2B and B2C systems.",
+        "Maintain and deploy the data entry system with updates.",
+        "Assisting the team leader in identifying and resolving issues in the entry system."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Predict students at VUS",
+      "role": "",
+      "technologies": [
+        "SQL server 2017",
+        "Azure Synapse",
+        "Analyst Services",
+        "SSIS",
+        "SSAS",
+        "Visual studio 2017",
+        "C#",
+        "Power BI"
+      ],
+      "description": "Analyze and build reports based on data set to predict students about to drop out of school."
+    },
+    {
+      "name": "Ewarranty Web at TRUECOMERCE DICENTRAL VIETNAM",
+      "role": "",
+      "technologies": [
+        "ReactJS",
+        "API’s Zalo OA (Zalo Official Account)",
+        "Javascript",
+        "HTML",
+        "CSS responsive",
+        "Visual studio 2017",
+        "Team Explorer for TFS 2017"
+      ],
+      "description": "Managing communication customer service people and customer."
+    },
+    {
+      "name": "NOVALAND at TRUECOMERCE DICENTRAL VIETNAM",
+      "role": "",
+      "technologies": [
+        "D365 – CRM",
+        "workflow CRM",
+        "plugin CRM",
+        "Jquery",
+        "Javascript",
+        "HTML",
+        "CSS responsive",
+        "CRM Dynamic 365",
+        "Visual studio 2017",
+        "Plugin Registration Tool",
+        "Ribbon WorkBench"
+      ],
+      "description": "Creating Sales Web UI. Building API for new feature, working with API (eSMS) sent OTP/SMS to customer, import customer list, synce data from other database by API."
+    },
+    {
+      "name": "Attention Time at TRUECOMERCE DICENTRAL VIETNAM",
+      "role": "",
+      "technologies": [
+        "Web MVC",
+        "Entity framework 4.5",
+        "C#",
+        "Jquery",
+        "Javascript",
+        "Bootstrap",
+        "CSS",
+        "Responsive",
+        "SignalR",
+        "Webservice",
+        "Repository design pattern",
+        "SQL server 2017",
+        "Visual studio 2017",
+        "Team Explorer for TFS 2017"
+      ],
+      "description": "Managing employee information and checking work time of all of employee. Sync data from single access database file from other system. My Responsibility is creating a web application with some feature include: time tracking slide, view chart, view and export report."
+    },
+    {
+      "name": "Service Order Management at TRUECOMERCE DICENTRAL VIETNAM",
+      "role": "",
+      "technologies": [
+        "Web MVC",
+        "Entity framework 4.5",
+        "C#",
+        "Jquery",
+        "Javascript",
+        "Bootstrap",
+        "CSS",
+        "Responsive",
+        "Webservice",
+        "Repository design pattern",
+        "SQL server 2017",
+        "Visual studio 2017",
+        "Team Explorer for TFS 2017"
+      ],
+      "description": "It is a web portal base on interacting with Dynamic 365. Daikin is a partner company with with the large data. Currently this company has two systems both CRM and AX dynamic but they are difficult to maintain and scale add new functions. so our responsibility is to create a portal with mvc pattern, it can manage some functions required by the customer and must base on the data of AX and CRM Dynamic Systems."
+    },
+    {
+      "name": "FWD at TRUECOMERCE DICENTRAL VIETNAM",
+      "role": "",
+      "technologies": [
+        "D365 – CRM (on-primes)",
+        "Workflow CRM",
+        "Plugin CRM",
+        "Avaya",
+        "Jquery",
+        "Javascript",
+        "HTML",
+        "CSS Responsive",
+        "CRM Dynamic 365",
+        "Visual studio 2017",
+        "Plugin Registration Tool",
+        "Ribbon WorkBench"
+      ],
+      "description": "Creating call customer list and opportunity, Sent OTP, Import customer list, Export phone call list, Synce data from other database by API."
+    }
+  ],
+  "skills": [
+    "HTML5",
+    "Javascript",
+    "Jquery framework",
+    "CSS",
+    "Bootstrap framework",
+    "Materital UI",
+    "ReactJS",
+    "C#",
+    "SQL Server",
+    "knowledge Core",
+    "D365 CRM",
+    "IIS – internet information services",
+    "Git",
+    "TFS – team foudation service"
+  ],
+  "certifications": [],
+  "languages": []
+}

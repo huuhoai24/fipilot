@@ -1,0 +1,168 @@
+{
+  "cv_id": "cv_138",
+  "full_name": "Nguyen The Anh",
+  "email": "",
+  "phone": "",
+  "location": "Nam Tu Liem-Ha Noi",
+  "summary": "",
+  "education": [
+    {
+      "school": "Hanoi University of Science and Technology",
+      "major": "Information System",
+      "degree": "Bachelor of Information Technology Sciences",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Samsung Electronic Viet Nam – SVMC",
+      "position": "Developer / Project Leader",
+      "start_date": "2014-06",
+      "end_date": "2020-03",
+      "description": []
+    },
+    {
+      "company": "WooriBank Việt Nam",
+      "position": "Developer / Maintenance man",
+      "start_date": "2020-03",
+      "end_date": "Present",
+      "description": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Team RIL and IMS",
+      "role": "Developer",
+      "technologies": [
+        "Notepate ++",
+        "P4",
+        "Quickbuild",
+        "Reviewing",
+        "Java",
+        "C",
+        "C++"
+      ],
+      "description": "Checking problem, Analysis problem and Resolving problem. RIL: Radio Interface Layer (Is layer community between AP Layer and CP layer (firmware), Regarding to Radio, Network (send and receive Data, information…)). IMS: IP Multimedia Sub-System (Regarding to 3G 4G, Help to community quickly, Use IP package, Community with AP , RIL, Protocol)."
+    },
+    {
+      "name": "Team Project Leader",
+      "role": "Project Leader of A510F , A520F , A720F, A910F , A750F,A405FN..",
+      "technologies": [],
+      "description": "Setup schedule, draw risks and systematically manage to conduct the project successfully. Draw and systematically manage items to approve to commercialize the product. Conduct overall activities regarding software requirement analysis, software testing, change point management and etc. Key Tasks: [Product approval] Participate in tasks related to approval required for commicialization. [Requirement analysis and change management] Participate in managing the analyzed project-related requirement, change and output. [Branch management] Release software versions by securing and managing the stability of software branch. [Responding to QA(Quality Assurance) Set schedule for verifying software project and participate in responding to issue detected during software testing. [Responding to VOC (Voice of Customer) Check and respond to customer’ voices on the software project and prepare the software and participate in distributing it."
+    },
+    {
+      "name": "EmoiBank – Android App",
+      "role": "Developer",
+      "technologies": [
+        "Kotlin",
+        "Java",
+        "MVVM",
+        "Webview",
+        "Observer",
+        "Resful API",
+        "Retrofit",
+        "RxKotlin",
+        "RESTful API",
+        "Glide",
+        "SmartSVN",
+        "Room",
+        "Dependency Injection",
+        "FireBase"
+      ],
+      "description": "Implement new function, Fix bug, Modify interface."
+    },
+    {
+      "name": "QR for Napas– Android App",
+      "role": "Developer",
+      "technologies": [
+        "Kotlin",
+        "Zxing library"
+      ],
+      "description": "Integrate this to Bank App. Create QR image from User Information (accountNumber/CardNumber, BankCode, NapasCode, ServiceCode, Amount, Remark…). Decode information from QR Image."
+    },
+    {
+      "name": "VSD System – Securities Depository System",
+      "role": "Maintenance man",
+      "technologies": [
+        "Java",
+        "C",
+        "JSP",
+        "Jeus",
+        "Tibero"
+      ],
+      "description": "Maintenance Sysstem, Fix bug, Modify interface. Maintain the server to receive data VSD. Check display wrong relate to UI. Check Error relate to Logic. Add more UI. Modified report. Compare Data returned from VSD and Data in System."
+    },
+    {
+      "name": "Insert Data from File Exported of Core to DB of E-Invoice",
+      "role": "Developer",
+      "technologies": [
+        "C#",
+        "Tibero Database"
+      ],
+      "description": "Implement New Project. Read File from Folder. Import Data to Tibero Database. Make application automotic run everyday."
+    }
+  ],
+  "skills": [
+    "Java",
+    "Kotlin",
+    "Python",
+    "UML diagram",
+    "HTML",
+    "PHP",
+    "CSS",
+    "Bootrap",
+    "XML",
+    "C",
+    "C++",
+    "Windows",
+    "Ubuntu",
+    "Eclipse",
+    "phpstorm",
+    "Visual Studio .NET",
+    "Android Studio",
+    "Pycharm",
+    "Visual Studio Code",
+    "learning to learn",
+    "listening skills",
+    "problem solving skills",
+    "creative thinking skills",
+    "Can work under high pressure",
+    "Can work independent",
+    "take part in work group",
+    "Can analyze software",
+    "design software",
+    "management software",
+    "Good thinking ability",
+    "creativity in work",
+    "Hard working",
+    "“Can-do” ability",
+    "Ability to find out and research new technologies",
+    "Have sense of responsibility in the work",
+    "Sociable",
+    "enthusiasm",
+    "3G",
+    "4G",
+    "trace code",
+    "trace log",
+    "fix bug",
+    "WVCS",
+    "VSD",
+    "Code Tool Auto"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Mother tongue"
+    },
+    {
+      "language": "English",
+      "level": "Good (Reading /Writing)"
+    },
+    {
+      "language": "Korean",
+      "level": "Topik 1"
+    }
+  ]
+}

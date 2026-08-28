@@ -1,0 +1,131 @@
+{
+  "cv_id": "cv_048",
+  "full_name": "Kelly Bryant",
+  "email": "bryantkelly@gmail.com",
+  "phone": "415 902-3462",
+  "location": "3435 Cesar Chavez, Suite 306 San Francisco, CA 94110",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of California, Berkeley - School of Information",
+      "major": "Human-Computer Interaction, User Interface Design, Information Visualization and Database Management",
+      "degree": "Masters of Information Management and Systems",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "Keene State College",
+      "major": "Mathematics, Minor: Art",
+      "degree": "Bachelor of Arts",
+      "start_date": "",
+      "end_date": "1998-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Educational Technology Services – UC Berkeley",
+      "position": "Interaction Designer",
+      "start_date": "2005-10",
+      "end_date": "Present",
+      "description": [
+        "Designed user interaction for an online equipment reservation system",
+        "Communicated design recommendations to a development team using wireframing techniques",
+        "Performed heuristic evaluation and provided design recommendations for open source course management system"
+      ]
+    },
+    {
+      "company": "Uhle Collections @ Berkeley – UC Berkeley",
+      "position": "Graduate Student Researcher",
+      "start_date": "2005-01",
+      "end_date": "2005-05",
+      "description": [
+        "Created a user interface design that enables easy search and browse of a large archaeology collection",
+        "Used several prototyping techniques to perform user testing at various stages of an iterative design process"
+      ]
+    },
+    {
+      "company": "Endres Ware - Architects Engineers",
+      "position": "Information Designer",
+      "start_date": "2001-08",
+      "end_date": "2005-10",
+      "description": [
+        "Designed and implemented company website that showcases architecture and engineering projects",
+        "Developed an intranet site to manage in house processes and information for quick reference",
+        "Created promotional materials including postcards, brochures, business cards, statement of qualifications",
+        "Restructured file/data storage using logon scripts to increase efficiency and utilize resources"
+      ]
+    },
+    {
+      "company": "Sapient - TEK Systems",
+      "position": "Helpdesk Administrator",
+      "start_date": "2000-11",
+      "end_date": "2001-02",
+      "description": [
+        "Provided first level technical support to advanced users",
+        "Participated in support team, 70% field support 30% call tracking in Remedy Help Desk"
+      ]
+    },
+    {
+      "company": "Keene State College - Campus Technology Services",
+      "position": "Helpdesk Technician",
+      "start_date": "1998-10",
+      "end_date": "2000-09",
+      "description": [
+        "Managed daily activities of a technical support center in an academic setting including seven technicians",
+        "Provided first line technical support for over 550 faculty and staff members",
+        "Created and maintained documentation related to technical policies and procedures"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "iBuyRight",
+      "role": "Project Manager",
+      "technologies": [],
+      "description": "Created a proof of concept user interface for a mobile phone application that will provide social and environmental information about products to consumers allowing them to make informed choices. Served as Project Manager for Masters final project team to set project goals and milestones as well as to communicate progress with stakeholders Played a key role in the visual and interaction design of mobile prototypes Performed needs and usability analysis using interview, surveys and comparative analysis"
+    },
+    {
+      "name": "Empty Orchestra",
+      "role": "",
+      "technologies": [
+        "MySQL",
+        "PHP"
+      ],
+      "description": "Designed and implemented a database of karaoke studios and songs that alleviates search and browse problems with current karaoke systems Implemented design using MySQL and PHP and documented system design in a written report"
+    },
+    {
+      "name": "UFOVis",
+      "role": "",
+      "technologies": [
+        "Yahoo! Maps API"
+      ],
+      "description": "Created a visualization of UFO sighting data to facilitate potential spatial and temporal pattern recognition for information visualization course Implemented design using Yahoo! Maps API"
+    }
+  ],
+  "skills": [
+    "principals of graphic design and visual communication",
+    "logical and analytical approach to problem solving",
+    "Photoshop",
+    "Illustrator",
+    "Indesign",
+    "GoLive",
+    "Flash",
+    "ActionScript",
+    "Flash Lite",
+    "Dreamweaver",
+    "Fireworks",
+    "Omnigraffle",
+    "Microsoft Office products",
+    "MS Project",
+    "Visio",
+    "HTML",
+    "CSS",
+    "Javascript",
+    "PHP",
+    "mySQL",
+    "Java",
+    "XML"
+  ],
+  "certifications": [],
+  "languages": []
+}

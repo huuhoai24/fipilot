@@ -1,0 +1,142 @@
+{
+  "cv_id": "cv_132",
+  "full_name": "Hieu Nguyen Trung",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "Year years of experience in SAP. SAP Certified Application Associate – Procurement with SAP ERP 6.0 EHP6 (MM): C_TSCM52_66 Have knowledge and experience to maintain and implement mostly international projects A drive for excellent performance, top results and accomplishments. Strong critical thinking and problem solving skills. Effective teamwork and collaboration with colleagues and team members. Excellent English and German writing and verbal skills. Strong business background. Key communicator with foreign customers",
+  "education": [
+    {
+      "school": "Greenwich University of UK",
+      "major": "Business and Administration",
+      "degree": "Bachelor of Business and Administration",
+      "start_date": "",
+      "end_date": "2012"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SAMSUNG ELECTRONICS CO., LTD",
+      "position": "MIS Supervisor",
+      "start_date": "2016-09",
+      "end_date": "Present",
+      "description": [
+        "SAP G -ERP administrator with modules: SD/LE/MM/FI/CO, handle all processes: Sales, Logistics, Accounting, Workflow for both 02 subs SAVINA(CE/IT) and SEVT(HHP)",
+        "Mobile DMS system administrator and fully support Sales & MD",
+        "GSBN and B2B system administration to support B2B business.",
+        "System administrator of external Samsung RMCE program: Mobile MCS, FSM Sam Club..",
+        "Co work and follow HQ guideline to deploy new SAP process for SAVINA, SEVT",
+        "Give full training for users in nationwide: Samsung employee, Field Force RS, Customers.",
+        "Setup EDI interface system with extern al Samsung partners and customers (KAM, ASP, MD)",
+        "Have a good relationship with all departments to understand business needs to improve process and system."
+      ]
+    },
+    {
+      "company": "Shiseido Vienam",
+      "position": "SAP MM Consultant",
+      "start_date": "2016-02",
+      "end_date": "2016-08",
+      "description": [
+        "Master data management.",
+        "Main functions for MM module",
+        "Gather user requirements, analyze the current business processes and scenarios of the client and recommend/develop solution.",
+        "Develop Basic Designs based on fix-gap analysis.",
+        "Prepare and send Q&A to customer team.",
+        "Training user about MM process.",
+        "Record issue log and report"
+      ]
+    },
+    {
+      "company": "Sankei Vietnam",
+      "position": "SAP MM Consultant",
+      "start_date": "2015-06",
+      "end_date": "2016-01",
+      "description": [
+        "Implement SAP system",
+        "Main functions for Procurement, Sale, FI processes",
+        "Gather user requirements, analyze the current business processes and scenarios of the client and recommend/develop solution.",
+        "Develop Basic Designs based on fix-gap analysis.",
+        "Prepare and send Q&A to customer team.",
+        "Training user about MM process.",
+        "Record issue log and report"
+      ]
+    },
+    {
+      "company": "Frieslandcampina – Dutch Lady Vietnam",
+      "position": "SAP MM Consultant",
+      "start_date": "2015-05",
+      "end_date": "2015-11",
+      "description": [
+        "Master data management.",
+        "Main functions for MM module",
+        "Gather user requirements, analyze the current business processes and scenarios of the client and recommend/develop solution.",
+        "Develop Basic Designs based on fix-gap analysis.",
+        "Prepare and send Q&A to customer team.",
+        "Training user about MM process.",
+        "Record issue log and report"
+      ]
+    },
+    {
+      "company": "UMC ELECTRONICS VIETNAM LIMITED.",
+      "position": "MM Consultant",
+      "start_date": "2014-04",
+      "end_date": "2015-10",
+      "description": [
+        "Get requirements from user, analyze and write Blueprint (Functional Design).",
+        "Training for user Business flow in SAP.",
+        "Write out FS (Functional Specification) documents and work with ABAP Consultant for developing Add-on programs.",
+        "Create new reports in SAP system for customer.",
+        "Support users do UAT.",
+        "Do Data Migration from legacy system to SAP system for Go -live phase.",
+        "Support after Go-live.",
+        "Support users do the Physical count the first time on SAP system."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "SAP ERP 6.0 EHP5",
+    "SAP Material Management (MM)",
+    "Enterprise Structure",
+    "Procurement process",
+    "Inventory Management",
+    "SAP Integration",
+    "Integration between MM modules with SD, WM, and QM Module and Barcode system",
+    "SAP Basic",
+    "Transport Request Management",
+    "Authorization Management",
+    "SAP Interface",
+    "BAPI Interface",
+    "SAP Migration",
+    "LSMW",
+    "Customized program with BDC",
+    "Time management",
+    "Communication",
+    "Team work",
+    "MS Word",
+    "MS Excel",
+    "MS PP",
+    "MS Visio",
+    "Order Fulfillment Process"
+  ],
+  "certifications": [
+    "English Certificate from Victoria University of Wellington, New Zealand 2010",
+    "SAP Certified Application Associate – Procurement with SAP ERP 6.0 EHP6 (MM): C_TSCM52_66",
+    "SAP Overview Qualification from FPT Software (MM, FICO, SD)",
+    "ABAP qualification from FPT Software"
+  ],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "Fluent"
+    },
+    {
+      "language": "English",
+      "level": "Fluent"
+    },
+    {
+      "language": "German",
+      "level": "Good"
+    }
+  ]
+}

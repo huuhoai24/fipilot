@@ -1,0 +1,194 @@
+{
+  "cv_id": "cv_042",
+  "full_name": "Gilok Choi",
+  "email": "higilok@yahoo.com",
+  "phone": "512.241.0544",
+  "location": "Austin, TX 78712-0390",
+  "summary": "",
+  "education": [
+    {
+      "school": "School of Information, University of Texas at Austin",
+      "major": "",
+      "degree": "Admitted to Doctoral Program",
+      "start_date": "2002",
+      "end_date": ""
+    },
+    {
+      "school": "Ewha University, Seoul, Korea",
+      "major": "Communication",
+      "degree": "Master of Arts",
+      "start_date": "",
+      "end_date": "1998"
+    },
+    {
+      "school": "Ewha University, Seoul, Korea",
+      "major": "Journalism and Broadcasting",
+      "degree": "Bachelor of Arts",
+      "start_date": "",
+      "end_date": "1994"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "~Fast Tex Project",
+      "position": "Website Developer",
+      "start_date": "2006-01",
+      "end_date": "2006-05",
+      "description": [
+        "convert a static JavaScript search tree in OdonataCentral website (http://odonatacentral.bfl.utexas.edu/) into a dynamic webpage generated from the existing database"
+      ]
+    },
+    {
+      "company": "ARMA (Association of Information Management Professionals)",
+      "position": "Website Developer (internship)",
+      "start_date": "2005-09",
+      "end_date": "2006-01",
+      "description": [
+        "redesign the original ARMA Austin Chapter website (http://www.arma-austin.org/)"
+      ]
+    },
+    {
+      "company": "School of Information, University of Texas at Austin",
+      "position": "Teaching Assistant",
+      "start_date": "2005-09",
+      "end_date": "2006-05",
+      "description": [
+        "Understanding and Serving Users and Digital Media Design I"
+      ]
+    },
+    {
+      "company": "~Fast Tex Project",
+      "position": "Website Developer",
+      "start_date": "2005-06",
+      "end_date": "2005-08",
+      "description": [
+        "develop a website for Ethnicity, Culture and Substance Use Disorder (www.utexas.edu/courses/dinitto/index.htm)",
+        "develop a new search scheme and administration pages for Texas German Dialect Project (http://www.tgdp.org/)"
+      ]
+    },
+    {
+      "company": "School of Information, University of Texas at Austin",
+      "position": "Teaching Assistant",
+      "start_date": "2004-09",
+      "end_date": "2005-05",
+      "description": [
+        "Understanding and Serving Users and Digital Media Design I"
+      ]
+    },
+    {
+      "company": "School of Information, University of Texas at Austin",
+      "position": "Research Assistant",
+      "start_date": "2003-06",
+      "end_date": "2004-08",
+      "description": [
+        "a series of studies on user responses on ClearType text style",
+        "sponsored by Microsoft Corporation"
+      ]
+    },
+    {
+      "company": "School of Information, University of Texas at Austin",
+      "position": "Teaching Assistant",
+      "start_date": "2003-07",
+      "end_date": "2003-08",
+      "description": [
+        "Understanding and Serving Users"
+      ]
+    },
+    {
+      "company": "ITAL (Institute for Technology and Learning), University of Texas at Austin",
+      "position": "Web Developer and Usability Specialist (internship)",
+      "start_date": "2003-01",
+      "end_date": "2003-06",
+      "description": [
+        "test usability of University of Texas website in terms of accessability (particularly focused on disability)",
+        "create captioned videos using Quick Time Pro and SMIL (Synchronized Multimedia Integration Language)"
+      ]
+    },
+    {
+      "company": "CourseShare.com",
+      "position": "Interface Designer (internship)",
+      "start_date": "2001-07",
+      "end_date": "2001-12",
+      "description": [
+        "create new web pages and maintaining the company website"
+      ]
+    },
+    {
+      "company": "Korean Broadcasting Institute",
+      "position": "Research Assistant",
+      "start_date": "1997-02",
+      "end_date": "1997-10",
+      "description": [
+        "research on media regulation policy in European Countries"
+      ]
+    },
+    {
+      "company": "Korean Press Institute",
+      "position": "Research Assistant",
+      "start_date": "1995-10",
+      "end_date": "1995-12",
+      "description": [
+        "research on disaster reports of Korean newspapers"
+      ]
+    },
+    {
+      "company": "Jaeil Advertising Company",
+      "position": "A. E. (internship)",
+      "start_date": "1995-07",
+      "end_date": "1995-08",
+      "description": [
+        "survey target markets, create TV and newspaper advertisements"
+      ]
+    },
+    {
+      "company": "Ewha University",
+      "position": "Department Assistant",
+      "start_date": "1994",
+      "end_date": "1995",
+      "description": [
+        "Communication Dept."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Usability Studies on Second Language Learning Websites",
+      "role": "",
+      "technologies": [],
+      "description": "Joint research with Profs. Liu Min in Instructional Technology and other doctoral students in Foreign Language Education; Created user scenarios for usability tests, developed user response questionnaire, conducted usability tests, and wrote a paper"
+    },
+    {
+      "name": "Online Font Locating Tool Project",
+      "role": "",
+      "technologies": [],
+      "description": "Performed a research on users’ satisfaction when using an online visual tool to identify and locate fonts with Profs. Hsing-liang Chen; Developed a web-based application for survey, conducted statistical analyses, and wrote research papers"
+    },
+    {
+      "name": "Microsoft ClearType Project",
+      "role": "",
+      "technologies": [],
+      "description": "Microsoft sponsored research project with Profs. Andrew Dillon and Randolph Bias; Performed a series of studies on user response to ClearType text enhancement technology; Developed web-based applications for experiments, conducted experiments and statistical analyses, and wrote research reports."
+    },
+    {
+      "name": "Digital Video Library Project",
+      "role": "Research assistant",
+      "technologies": [],
+      "description": "Research assistant for Profs. Hsing-liang Chen’s video library project; Investigate students' response on in-class video use and a university wide digital video library; Developed a web-based application for survey, conducted statistical analysis, and wrote research reports"
+    }
+  ],
+  "skills": [
+    "human-computer interaction",
+    "user interface design",
+    "usability studies and methods",
+    "Web-based applications",
+    "three dimensional virtual environments",
+    "multimedia",
+    "databases",
+    "JavaScript",
+    "Quick Time Pro",
+    "SMIL (Synchronized Multimedia Integration Language)",
+    "statistical analyses"
+  ],
+  "certifications": [],
+  "languages": []
+}

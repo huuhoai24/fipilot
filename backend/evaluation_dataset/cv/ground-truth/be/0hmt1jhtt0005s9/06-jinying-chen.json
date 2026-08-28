@@ -1,0 +1,134 @@
+{
+  "cv_id": "cv_040",
+  "full_name": "Jinying Chen",
+  "email": "jinying@cis.upenn.edu",
+  "phone": "(732) 668-7728",
+  "location": "Piscataway, NJ, 08854",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "Ph.D. candidate",
+      "start_date": "2001",
+      "end_date": "Present"
+    },
+    {
+      "school": "University of Pennsylvania",
+      "major": "Computer and Information Science",
+      "degree": "M.S.",
+      "start_date": "2000",
+      "end_date": "2001"
+    },
+    {
+      "school": "Tsinghua University",
+      "major": "Computer Science and Technology",
+      "degree": "M.E.",
+      "start_date": "1998",
+      "end_date": "2000"
+    },
+    {
+      "school": "Tsinghua University",
+      "major": "Computer Science and Technology",
+      "degree": "B.S.",
+      "start_date": "1994",
+      "end_date": "1998"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Department of Computer and Information Science, University of Pennsylvania",
+      "position": "Ph.D. Candidate",
+      "start_date": "2001",
+      "end_date": "2006",
+      "description": [
+        "High performance supervised word sense disambiguation (WSD) through combining linguistically motivated features and a smoothed Maximum Entropy (MaxEnt) model. The system achieved higher accuracy than previous best systems on the SENSEVAL2 English verb data.",
+        "Unsupervised and active learning methods for WSD. EM clustering for Chinese verb senses and active learning for English verb senses.",
+        "Clustering-based feature selection for WSD.",
+        "Noun clustering and semi-automatically created noun taxonomies, used for semantic features for WSD.",
+        "Nominal entity detection for the Chinese Automatic Content Extraction (CACE) project (summer 2003, summer 2004).",
+        "Boosting and TAG (Tree Adjoining Grammar) Supertagging for template relation detection, a subtask of the MUC-7 information extraction task (fall, 2001)."
+      ]
+    },
+    {
+      "company": "Department of Computer Science & Technology, Tsinghua University, Beijing, China",
+      "position": "Master Student, Senior College Student",
+      "start_date": "1997",
+      "end_date": "2000",
+      "description": [
+        "Visualization, dimension reduction, and classification algorithms for Chinese character recognition.",
+        "A classification algorithm, based on Mahalanobis distance and dimension reduction, for distinguishing well-similar handwritten Chinese characters."
+      ]
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Teaching assistant",
+      "start_date": "Spring, 2002",
+      "end_date": "Spring, 2002",
+      "description": [
+        "Teaching assistant for the graduate-level course CIT594 II – Programming Languages and Techniques, which is oriented to master students in the Department of Computer and Information Science, University of Pennsylvania."
+      ]
+    },
+    {
+      "company": "University of Pennsylvania",
+      "position": "Teaching assistant",
+      "start_date": "Fall, 2001",
+      "end_date": "Fall, 2001",
+      "description": [
+        "Teaching assistant for the graduate-level course CIS500 – Programming Languages, which is oriented to Ph.D. students in the Department of Computer and Information Science, University of Pennsylvania."
+      ]
+    },
+    {
+      "company": "Tsinghua University",
+      "position": "Teaching assistant",
+      "start_date": "Fall, 1998",
+      "end_date": "Fall, 1998",
+      "description": [
+        "Teaching assistant for the undergraduate-level course “Introduction to Artificial Intelligence” in the Department of Computer Science and Technology, Tsinghua University."
+      ]
+    },
+    {
+      "company": "Tsinghua University",
+      "position": "Editorial work",
+      "start_date": "Summer, 1998",
+      "end_date": "Summer, 1998",
+      "description": [
+        "Participation in the editorial work (collecting and editing about 200 vocabulary entries) for a major computer dictionary – English-Chinese Dictionary of Computers and Multimedia (published by Tsinghua University Press, 2003) in Tsinghua University under the supervision of Dr. Fuzong Lin."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Machine learning",
+    "Feature engineering",
+    "Natural language processing (NLP)",
+    "Automatic word sense disambiguation",
+    "Clustering semantically coherent words",
+    "Automatic acquisition of large-scale semantic taxonomies",
+    "Information retrieval",
+    "Information extraction",
+    "Machine translation",
+    "Bioinformatics",
+    "Word sense disambiguation (WSD)",
+    "Maximum Entropy (MaxEnt) model",
+    "EM clustering",
+    "Chinese verb senses",
+    "English verb senses",
+    "Clustering-based feature selection",
+    "Noun clustering",
+    "Semantic features",
+    "Nominal entity detection",
+    "Boosting",
+    "TAG (Tree Adjoining Grammar) Supertagging",
+    "Template relation detection",
+    "Chinese character recognition",
+    "Visualization",
+    "Dimension reduction",
+    "Classification algorithms",
+    "Mahalanobis distance",
+    "Programming Languages",
+    "Artificial Intelligence"
+  ],
+  "certifications": [],
+  "languages": []
+}

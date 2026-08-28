@@ -1,0 +1,350 @@
+{
+  "cv_id": "cv_024",
+  "full_name": "Nguyen Van Chung",
+  "email": "",
+  "phone": "",
+  "location": "Duong 2 – Mai Dinh – Soc Son – Ha Noi",
+  "summary": "I have good knowledge in software engineering, experience in professional software companies as Java -Technology Developer for 8 years. Good knowledge in Java , Java script, Jquery, SQL... Have experience in Windows and Linux platforms. I also have the ability to learn, research solutions. Always patient, careful and creative. Good skills to work independently, teamwork and communication to solve complex problems.",
+  "education": [],
+  "experiences": [
+    {
+      "company": "Ominext JSC",
+      "position": "Teamlead",
+      "start_date": "2018-08",
+      "end_date": "Present",
+      "description": [
+        "Create a relationship between doctor (DR) and pharmacist (MR).",
+        "Manage user information, medical examination information, drugs...",
+        "Create groups in the hospital, groups outside the hospital and manage the groups.",
+        "Create meeting frames displayed on the calendar and handle meeting schedules between DR and MR",
+        "Real-time handling of side-menu indicators",
+        "Processing statistical reports detailing meeting history information",
+        "Perform detail design and estimate",
+        "Design database",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "Ominext JSC",
+      "position": "",
+      "start_date": "2017-03",
+      "end_date": "2018-06",
+      "description": [
+        "Management of hospital information about the department, doctors, other configuration information related to the time of admission, book online reception.",
+        "Dealing online with booking appointments for patients, sending email daily…",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "Ominext JSC",
+      "position": "",
+      "start_date": "2016-11",
+      "end_date": "2017-03",
+      "description": [
+        "Build web pages using HTML5-Canvas to create templates so that users can add text, images, edit photos, zoom in, crop and save and export to PDF, PNG...",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "Ominext JSC",
+      "position": "Team Lead",
+      "start_date": "2016-06",
+      "end_date": "2016-11",
+      "description": [
+        "Website for employers finding employees. Include candidate management information, job management, education level, candidate's desires, search for candidates, send mail export CV file…",
+        "Design database",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "Ominext JSC",
+      "position": "",
+      "start_date": "2016-03",
+      "end_date": "2016-05",
+      "description": [
+        "Patient information management, dental map display, user statistics report, visitor statistics…",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "INET Corporation",
+      "position": "",
+      "start_date": "2015-10",
+      "end_date": "2016-03",
+      "description": [
+        "Building service management functions, service packages, information partners associated with the service.",
+        "Report revenue statistics, report MO -MT, export data to excel file…",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "INET Corporation",
+      "position": "",
+      "start_date": "2016-01",
+      "end_date": "2016-03",
+      "description": [
+        "Write APIs for communication between the client-server for user information, charge rates, user registration, and login via facebook…",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "CMC Soft",
+      "position": "",
+      "start_date": "2014-05",
+      "end_date": "2014-11",
+      "description": [
+        "Manage the entire system as a proxy, database and hardware.",
+        "Configure hardware, view hardware and hardware status information, and network.",
+        "It allows administrators to configure system parameters, Query uses traffic information, creates and manages user policies, views access logs ...",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS.",
+        "Review other developers’ code."
+      ]
+    },
+    {
+      "company": "Ancoti JSC",
+      "position": "",
+      "start_date": "2012-11",
+      "end_date": "2014-03",
+      "description": [
+        "Building a website introducing tourism products: tours, hotels, cars, yachts, etc.",
+        "Management of product information, orders, statistical reports on each product...",
+        "Support Team Lead to analyze requirements.",
+        "Perform detailed design.",
+        "Develop Java, SQL, HTML, Javascript, CSS."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Project (08/2018 – Present)",
+      "role": "Teamlead - Perform detail design and estimate - Design database - Review other developers’ code.",
+      "technologies": [
+        "MongoDB",
+        "SpringBoot",
+        "Restful API",
+        "Firebase",
+        "Google Cloud Functions",
+        "Google Pub/Sub",
+        "Jenkins",
+        "GRPC",
+        "Microservices",
+        "Intellij",
+        "Robo3T"
+      ],
+      "description": "Create a relationship between doctor (DR) and pharmacist (MR). - Manage user information, medical examination information, drugs... - Create groups in the hospital, groups outside the hospital and manage the groups. - Create meeting frames displayed on the calendar and handle meeting schedules between DR and MR - Real-time handling of side-menu indicators - Processing statistical reports detailing meeting history information"
+    },
+    {
+      "name": "PHC - Hospital",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "Ibatis",
+        "Spring",
+        "Spring MVC",
+        "Jasper Report",
+        "Restful API",
+        "Eclipse",
+        "Navicat",
+        "Remote Desktop Connection",
+        "Ireport",
+        "Windows",
+        "PostgreSQL"
+      ],
+      "description": "Management of hospital information about the department, doctors, other configuration information related to the time of admission, book online reception. Dealing online with booking appointments for patients, sending email daily…"
+    },
+    {
+      "name": "IMAGE – HTML5",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Html5",
+        "Canvas",
+        "PHP Cake",
+        "FabricJS",
+        "NetBeans",
+        "WinSCP",
+        "SSH Secure File Transfer",
+        "Java",
+        "Linux"
+      ],
+      "description": "Build web pages using HTML5-Canvas to create templates so that users can add text, images, edit photos, zoom in, crop and save and export to PDF, PNG..."
+    },
+    {
+      "name": "Flyout",
+      "role": "Team Lead - Design database - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "JSF",
+        "Hibernate",
+        "Jasper report",
+        "Eclipse",
+        "Navicat",
+        "Ireport",
+        "Windows",
+        "MySQL"
+      ],
+      "description": "Website for employers finding employees. Include candidate management information, job management, education level, candidate's desires, search for candidates, send mail export CV file…"
+    },
+    {
+      "name": "Y Ba Nha Khoa",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "Ibatis",
+        "Spring",
+        "Spring MVC",
+        "Jasper report",
+        "Eclipse",
+        "Pg Admin",
+        "Remote Desktop Connection",
+        "Ireport",
+        "Windows",
+        "PostgreSQL"
+      ],
+      "description": "Patient information management, dental map display, user statistics report, visitor statistics…"
+    },
+    {
+      "name": "Project (10/2015 – 03/2016)",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "JSF",
+        "JDBC",
+        "Jasper report",
+        "NetBeans",
+        "Ireport",
+        "SSH Secure File Transfer",
+        "Linux",
+        "OracleDB"
+      ],
+      "description": "Building service management functions, service packages, information partners associated with the service. Report revenue statistics, report MO -MT, export data to excel file…"
+    },
+    {
+      "name": "Backend LiveScore",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "JDBC",
+        "Restful API",
+        "NetBeans",
+        "SSH Secure File Transfer",
+        "Linux",
+        "OracleDB"
+      ],
+      "description": "Write APIs for communication between the client-server for user information, charge rates, user registration, and login via facebook…"
+    },
+    {
+      "name": "SSL Proxy",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS. - Review other developers’ code.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "Struts 2",
+        "Hibernate",
+        "Jasper report",
+        "NetBeans",
+        "Ireport",
+        "Linux",
+        "MySQL"
+      ],
+      "description": "Manage the entire system as a proxy, database and hardware. Configure hardware, view hardware and hardware status information, and network. It allows administrators to configure system parameters, Query uses traffic information, creates and manages user policies, views access logs ..."
+    },
+    {
+      "name": "APT Travel",
+      "role": "Support Team Lead to analyze requirements. - Perform detailed design. - Develop Java, SQL, HTML, Javascript, CSS.",
+      "technologies": [
+        "Java",
+        "SQL",
+        "HTML",
+        "Javascript",
+        "CSS",
+        "Struts",
+        "Liferay portal",
+        "Netbeans",
+        "Linux",
+        "MySQL"
+      ],
+      "description": "Building a website introducing tourism products: tours, hotels, cars, yachts, etc. Management of product information, orders, statistical reports on each product..."
+    }
+  ],
+  "skills": [
+    "Java technologies",
+    "Struts",
+    "Struts 2",
+    "SpringBoot",
+    "Spring MVC",
+    "Hibernate",
+    "JPA",
+    "Firebase",
+    "Google Cloud Functions",
+    "GRPC",
+    "Microservices",
+    "MySQL",
+    "OracleDB",
+    "PostgreSQL",
+    "MongoDB",
+    "Eclipse",
+    "NetBean",
+    "Intellij",
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "SVN",
+    "Git",
+    "Git flow",
+    "Liferay Portal",
+    "Web Services",
+    "Apache Tomcat",
+    "System analysis and design",
+    "Software Architecture",
+    "Jenkins",
+    "Sonarqube",
+    "Jasper report"
+  ],
+  "certifications": [
+    "HDSE certificat"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Read and translate documents"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "cv_id": "cv_095",
+  "full_name": "NGUYỄN THỊ THU HUYỀN",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh, Viet Nam",
+  "summary": "Apply for a Developer position\nFind good opportunities to learn and develop from other speople and become a professional programmer.",
+  "education": [
+    {
+      "school": "Tây Nguyên University",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2014",
+      "end_date": "2018"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "BAOMI company",
+      "position": "Developer frontend",
+      "start_date": "2022-07",
+      "end_date": "Present",
+      "description": [
+        "Convert ﬁle ﬁgma in to HTML, CSS, javascript and connect api.",
+        "Create website use framework Next js"
+      ]
+    },
+    {
+      "company": "AES company",
+      "position": "Developer frontend",
+      "start_date": "2020-06",
+      "end_date": "2022-06",
+      "description": [
+        "Convert ﬁle ﬁgma, photoshop in to HTML, CSS, javascript and connect api.",
+        "Create website use framework Vue js, Nuxt js"
+      ]
+    },
+    {
+      "company": "Beeknights company",
+      "position": "Developer Backend and frontend",
+      "start_date": "2019-04",
+      "end_date": "2020-06",
+      "description": [
+        "Project: Sqkii-pwa",
+        "Convert ﬁle Sket in to HTML, CSS, javascript and intergrate api.",
+        "Project: Product for Beeknights Company.",
+        "Backend: use Laravel write Write api for use fontend",
+        "Fontend: convert ﬁle Sket in to HTML, CSS, javascript and intergrate api.",
+        "Project: Sqkii-land.",
+        "Backend: use Firebase Function."
+      ]
+    },
+    {
+      "company": "Robustar company",
+      "position": "Developer Backend and frontend",
+      "start_date": "2018-09",
+      "end_date": "2019-03",
+      "description": [
+        "Project: farm management.",
+        "Login, create farm, device manage.",
+        "Create api add weight.",
+        "Project: Atom Ads.",
+        "Google sign in",
+        "Get client customer google ads.",
+        "Get report google ads google api.",
+        "Create plugin ATOMADS in Wordpress and get info account, categories, products.",
+        "Get location by name google api.",
+        "Setting campaign in google adwords."
+      ]
+    },
+    {
+      "company": "Bamboo company",
+      "position": "Developer Wordpress",
+      "start_date": "2018-06",
+      "end_date": "2018-09",
+      "description": [
+        "Create wordpress site",
+        "Site maintenance",
+        "Edit website interface."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "HTML/CSS",
+    "PHP",
+    "VUE JS",
+    "NUXT JS",
+    "QUASAR",
+    "LARAVEL",
+    "MY SQL",
+    "REACT JS",
+    "Git",
+    "Bitbucket",
+    "GitLap",
+    "Nextjs",
+    "Javascript",
+    "Postgresql",
+    "Firebase",
+    "React native",
+    "Wordpress",
+    "Google Adwords Api",
+    "Google Adwords",
+    "Google API",
+    "Figma",
+    "Photoshop",
+    "Sket"
+  ],
+  "certifications": [],
+  "languages": []
+}

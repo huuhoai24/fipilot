@@ -9,37 +9,8 @@ from shared.schemas import (
 
 
 def begin_text_conversation(state: InterviewSessionState) -> InterviewSessionState:
-    """Add a persisted opening exchange without replacing the planned first question."""
-    if (
-        state.interview_config.mode != InterviewMode.TEXT
-        or state.phase != "interviewing"
-        or state.current_turn is None
-    ):
-        return state
-
-    opening_question = InterviewQuestion(
-        question=_opening_text(state),
-        language=state.interview_config.language,
-        topic="Introduction",
-        difficulty="easy",
-        expected_answer_points=[],
-        follow_up_questions=[],
-    )
-    opening_turn = InterviewTurn(
-        turn_id="turn-opening",
-        question=opening_question,
-        question_type="opening",
-        difficulty="easy",
-        topic="Introduction",
-        expected_signal=[],
-    )
-    return state.model_copy(
-        update={
-            "phase": "opening",
-            "current_turn": opening_turn,
-            "pending_turn": state.current_turn,
-        }
-    )
+    """Go straight to the first planned interview question without an introductory turn."""
+    return state
 
 
 def answer_opening(

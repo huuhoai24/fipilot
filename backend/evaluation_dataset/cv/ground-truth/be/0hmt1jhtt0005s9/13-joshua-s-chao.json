@@ -1,0 +1,164 @@
+{
+  "cv_id": "cv_047",
+  "full_name": "Joshua S. Chao",
+  "email": "joshuach@sims.berkeley.edu",
+  "phone": "(408) 834-9702",
+  "location": "1522 Henry Street #D Berkeley CA 94709",
+  "summary": "",
+  "education": [
+    {
+      "school": "School of Information Management & Systems (SIMS) UC Berkeley",
+      "major": "",
+      "degree": "Master of Information Management & Systems",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "College of Engineering, Haas School of Business, and SIMS joint program UC Berkeley",
+      "major": "",
+      "degree": "Management of Technology Certificate (MOT)",
+      "start_date": "",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "UC Berkeley",
+      "major": "Cognitive Science with a Minor in Computer Science",
+      "degree": "Bachelor of Arts",
+      "start_date": "",
+      "end_date": "2001-12"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SIMS, UC Berkeley",
+      "position": "Team Lead and Product Manager",
+      "start_date": "2005-12",
+      "end_date": "Present",
+      "description": [
+        "Taking the role of team lead and product manager for the VertSearch project, a SIMS Master’s Project.",
+        "The project is an online personal profiler designed to facilitate the task of employment matching for both job seekers and employers.",
+        "Features include profile customization, visualization of professional qualifications, document repository and indexing (search), and job filtering.",
+        "Responsibilities include managing a technical development team and a non-technical research team to complete the product design, prototyping, needs assessment, and market research.",
+        "We will present our findings and demo our prototype at the end-of-term project showcase."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "President",
+      "start_date": "2005-12",
+      "end_date": "Present",
+      "description": [
+        "Elected as the president of the UC Berkeley China Club.",
+        "The China Club brings together UC Berkeley graduate students from campus departments such as the schools of information, engineering, and business who share a common interest in understanding and meeting the challenges related to China's rise as a global cultural, economic, and intellectual power.",
+        "Our mission is to promote Chinese awareness by fostering strong ties between UC Berkeley graduate students and members of industry, academia, and governmental bodies who share a common interest in China.",
+        "In January 2006, we organized a trip to China where we met with student organizations and Chinese companies.",
+        "The trip was a success and resulted in the creation of strong bilateral ties between our club and our Chinese counterparts."
+      ]
+    },
+    {
+      "company": "UC Berkeley",
+      "position": "Fellowship Recipient and IT Manager",
+      "start_date": "2005-10",
+      "end_date": "Present",
+      "description": [
+        "Selected as a fellowship recipient and IT Manager for the CRC, a think-tank dedicated to strategy, education, and policy challenges regarding China’s rise as a global power.",
+        "Responsibilities include IT strategy, event planning and logistics, and event promotion.",
+        "Currently assisting in the organization of the China Venture Capital Forum in Shenzhen, China to be held in April 2006."
+      ]
+    },
+    {
+      "company": "California Digital Library, University of California",
+      "position": "Graduate Student Researcher",
+      "start_date": "2005-08",
+      "end_date": "2006-01",
+      "description": [
+        "Consulted for CDL as a Graduate Student Researcher with the School of Information Management & Systems.",
+        "The project involved an assessment of a usage statistic collection and reporting system for the online Melvyl library catalog.",
+        "Responsibilities included evaluation of the system and research into additional methods and sources of information.",
+        "Resulting from this project was a recommendation document outlining improvements to the system."
+      ]
+    },
+    {
+      "company": "China Digital Times, UC Berkeley",
+      "position": "Member of the IT strategy team",
+      "start_date": "2005-08",
+      "end_date": "2005-12",
+      "description": [
+        "Worked as a member of the IT strategy team at the China Digital Times, an online collaborative news project focused on China issues spearheaded by the Graduate School of Journalism.",
+        "Tasks included feature design and content contribution."
+      ]
+    },
+    {
+      "company": "Garage Cinema Research, UC Berkeley",
+      "position": "Graduate Student Researcher and System Developer",
+      "start_date": "2005-01",
+      "end_date": "2005-08",
+      "description": [
+        "Employed as a Graduate Student Researcher and system developer for the Mobile Media Metadata (MMM) group.",
+        "The MMM project collected mobile phone camera usage data through a centralized photo-sharing application.",
+        "Worked on both the server and client applications for the system."
+      ]
+    },
+    {
+      "company": "NTT Multimedia Communications Laboratories, Inc.",
+      "position": "Software Engineer",
+      "start_date": "2001-06",
+      "end_date": "2005-06",
+      "description": [
+        "Employed as a software engineer on the Wireless team working on various projects related to enterprise wireless LANs.",
+        "Some of my projects included the access system used in NTT Communication’s HotSpot WiFi service in Japan, a logging and analysis system on the AirBears WiFi network at UC Berkeley, and a WiFi VPN product.",
+        "Since NTT MCL was a small company, I worked on many different aspects of each project such as web design, software design, database design, documentation and marketing materials for trade-shows."
+      ]
+    },
+    {
+      "company": "Department of Computer Science, UC Berkeley",
+      "position": "Teaching Assistant",
+      "start_date": "2000-08",
+      "end_date": "2000-12",
+      "description": [
+        "Instructed as a teaching assistant for Structure and Interpretation of Computer Programs (CS61A) during the Fall semester of 2000 where I lead weekly discussion sections, office hours, review sessions, and graded assignments and tests."
+      ]
+    },
+    {
+      "company": "Sun Microsystems Laboratories",
+      "position": "Engineering Intern",
+      "start_date": "2000-05",
+      "end_date": "2000-08",
+      "description": [
+        "Employed as an engineering intern on the Phaser project, a massively parallel simulation engine, where I developed a Verilog HDL language compliance test-suite for the compiler group.",
+        "Over the course of the internship, my team helped discover and catalog hundreds of bugs."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Product Design",
+    "Prototyping",
+    "Needs Assessment",
+    "Market Research",
+    "IT Strategy",
+    "Event Planning",
+    "Logistics",
+    "Event Promotion",
+    "System Evaluation",
+    "Feature Design",
+    "Content Contribution",
+    "System Development",
+    "Server Applications",
+    "Client Applications",
+    "Software Engineering",
+    "Web Design",
+    "Software Design",
+    "Database Design",
+    "Documentation",
+    "Marketing Materials",
+    "Verilog HDL"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "Mandarin Chinese",
+      "level": "Conversational Fluency"
+    }
+  ]
+}

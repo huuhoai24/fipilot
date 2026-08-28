@@ -1,0 +1,86 @@
+{
+  "cv_id": "cv_094",
+  "full_name": "HUE NGUYEN",
+  "email": "",
+  "phone": "",
+  "location": "Hanoi, Vietnam",
+  "summary": "With 01 year of experience in project management, 01 year in application operation and over 5 years as a programmer. I believe that I will complete the job well and ensure the results of the projects I participate in.",
+  "education": [
+    {
+      "school": "Thanh Dong university",
+      "major": "",
+      "degree": "",
+      "start_date": "2020-09",
+      "end_date": "Present"
+    },
+    {
+      "school": "Bachkhoa-Aptech",
+      "major": "",
+      "degree": "",
+      "start_date": "2014-09",
+      "end_date": "2015-09"
+    },
+    {
+      "school": "The North VietNam College of Agricuture and Rural Development",
+      "major": "",
+      "degree": "",
+      "start_date": "2011-09",
+      "end_date": "2014-09"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Viettel Commerce - Viettel Group",
+      "position": "Project Manager",
+      "start_date": "2018-06",
+      "end_date": "Present",
+      "description": [
+        "09/ /2021 Developer and operate the application",
+        "07/2021 - Now Project Management. Proficient with databases: SQL sever, orcale, Proficient in programming",
+        "experience in operating applications and operating systems.",
+        "01 experience in project management.",
+        "Developer (winform, web MVC, DB Sql sever, Orcale)."
+      ]
+    },
+    {
+      "company": "IT Solution & Resources Company.",
+      "position": "Developer",
+      "start_date": "2017-06",
+      "end_date": "2018-06",
+      "description": [
+        "Developer ( SQL, HTML, CSS, WEB MVC) Websites related to e-commerce, real estate trading floors, warehouse management, product introduction websites, companies, tourism websites....."
+      ]
+    },
+    {
+      "company": "ADC SOFTWARE",
+      "position": "Developer",
+      "start_date": "2017-06",
+      "end_date": "2018-06",
+      "description": [
+        "Developer ( SQL, HTML, CSS, WEB MVC) Websites related to e-commerce, real estate trading floors, warehouse management, product introduction websites, companies, tourism websites....."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Project Management",
+    "SQL sever",
+    "Oracle",
+    "programming",
+    "winform",
+    "web MVC",
+    "SQL",
+    "HTML",
+    "CSS",
+    "Word",
+    "Excel",
+    "Powerpoint"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    }
+  ]
+}

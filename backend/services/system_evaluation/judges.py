@@ -32,7 +32,7 @@ Score the generated interview question from 0.0 to 1.0 on each dimension.
 - cv_alignment: uses supported candidate evidence rather than generic trivia.
 
 Candidate profile:
-{candidate_profile.model_dump_json(exclude={{"candidate_id"}})}
+{candidate_profile.model_dump_json(exclude={"candidate_id"})}
 
 Interview round:
 {interview_round.model_dump_json()}
@@ -49,5 +49,5 @@ Generated question:
             system_instruction=_SYSTEM_INSTRUCTION,
             task_type="complex",
             temperature=0.0,
-            thinking_budget=0,
+            thinking_budget=None,
         )

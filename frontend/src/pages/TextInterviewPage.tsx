@@ -22,6 +22,7 @@ import {
   loadInterviewPreferences,
   saveInterviewPreferences,
 } from '@/lib/interviewPreferences'
+import { calculateRoleMatches } from '@/lib/roleMatching'
 import {
   getInterviewAnswerError,
   getResumeUploadError,
@@ -32,6 +33,7 @@ import {
   type InterviewSetupSnapshot,
   useInterviewSetupNavigationStore,
 } from '@/store/useInterviewSetupNavigationStore'
+import { useUIStore } from '@/store/useAppStore'
 import type {
   CandidateProfile,
   ExperienceLevel,
@@ -238,6 +240,13 @@ export function TextInterviewPage({
   >(restoredSetup?.preparationStatus ?? 'idle')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [selectedRoleTitle, setSelectedRoleTitle] = useState<string>(
+    restoredSetup?.selectedRole ?? '',
+  )
+  const roleMatches = useMemo(
+    () => calculateRoleMatches(uploadedCandidateProfile),
+    [uploadedCandidateProfile],
+  )
   const restoredPreparationIsReady = restoredSetup?.preparationStatus === 'ready'
   const uploading = resumeUploadStatus === 'uploading'
   const durationMinutes = useMemo(() => parseIntegerSetting(durationInput, 5, 180), [durationInput])
@@ -258,6 +267,34 @@ export function TextInterviewPage({
       ))
     }
   }, [])
+
+  const setActiveInterview = useUIStore((s) => s.setActiveInterview)
+
+  useEffect(() => {
+    if (routeSessionId && state?.current_turn) {
+      setActiveInterview({
+        sessionId: routeSessionId,
+        mode: 'text',
+        hasStarted: true,
+      })
+    } else {
+      setActiveInterview(null)
+    }
+    return () => {
+      setActiveInterview(null)
+    }
+  }, [routeSessionId, state?.current_turn, setActiveInterview])
+
+  useEffect(() => {
+    const isOngoing = Boolean(routeSessionId && state?.current_turn)
+    if (!isOngoing) return
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [routeSessionId, state?.current_turn])
 
   useEffect(() => {
     void checkBackendAvailability()
@@ -432,6 +469,7 @@ export function TextInterviewPage({
     setUploadError(null)
     setResumeUploadStatus('idle')
     setPreparationStatus('idle')
+    setSelectedRoleTitle('')
   }
 
   const uploadSelectedResume = async () => {
@@ -452,8 +490,12 @@ export function TextInterviewPage({
     }
   }
 
+  const lastStartTimeRef = useRef<number>(0)
   const startInterview = async (event: FormEvent) => {
     event.preventDefault()
+    const now = performance.now()
+    if (now - lastStartTimeRef.current < 1000) return
+    lastStartTimeRef.current = now
     if (
       !candidateId.trim()
       || !interviewStartData
@@ -484,8 +526,12 @@ export function TextInterviewPage({
     }
   }
 
+  const lastSubmitTimeRef = useRef<number>(0)
   const submitAnswer = async (event: FormEvent) => {
     event.preventDefault()
+    const now = performance.now()
+    if (now - lastSubmitTimeRef.current < 1000) return
+    lastSubmitTimeRef.current = now
     const text = answer.trim()
     if (!sessionId || !text || submissionInFlightRef.current || !state?.current_turn) return
     submissionInFlightRef.current = true
@@ -699,6 +745,7 @@ export function TextInterviewPage({
                   questionCountInput,
                   objective,
                   preparationStatus,
+                  selectedRole: selectedRoleTitle || roleMatches[0]?.title,
                 },
               }}
               onOpen={() => rememberSetup(
@@ -716,6 +763,7 @@ export function TextInterviewPage({
                   questionCountInput,
                   objective,
                   preparationStatus,
+                  selectedRole: selectedRoleTitle || roleMatches[0]?.title,
                 },
               )}
             />
@@ -731,6 +779,58 @@ export function TextInterviewPage({
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                {roleMatches.length > 0 && (
+                  <div className="space-y-3 pb-4 border-b border-border">
+                    <div>
+                      <h3 className="text-sm font-bold text-text-primary">Step 2: Choose Interview Focus</h3>
+                      <p className="text-xs text-text-muted mt-0.5">Calculated match based on your CV evidence.</p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" role="radiogroup" aria-label="Choose Interview Focus">
+                      {roleMatches.map((match) => {
+                        const isSelected = (selectedRoleTitle || roleMatches[0]?.title) === match.title
+                        return (
+                          <button
+                            key={match.id}
+                            type="button"
+                            role="radio"
+                            aria-checked={isSelected}
+                            onClick={() => {
+                              setSelectedRoleTitle(match.title)
+                              if (!objective || objective.startsWith('Focus on ')) {
+                                setObjective(`Focus on ${match.title} core competencies and problem-solving.`)
+                              }
+                            }}
+                            className={`p-3.5 rounded-xl border text-left cursor-pointer transition-all ${
+                              isSelected
+                                ? 'border-accent bg-accent/10 shadow-sm ring-1 ring-accent'
+                                : 'border-border bg-surface-raised hover:border-border/80'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-1 mb-1">
+                              <span className="text-xs font-bold text-text-primary leading-tight">{match.title}</span>
+                              <span className={`text-xs font-extrabold ${match.score > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-text-muted'}`}>
+                                {match.score}%
+                              </span>
+                            </div>
+                            {match.summary ? (
+                              <p className="text-[11px] text-text-muted line-clamp-2 leading-relaxed">{match.summary}</p>
+                            ) : null}
+                            {match.matchedSkills && match.matchedSkills.length > 0 ? (
+                              <div className="mt-2 pt-1.5 border-t border-border/50 text-[11px] text-text-muted leading-relaxed">
+                                <span className="font-semibold text-text-primary">Skills: </span>
+                                <span>
+                                  {match.matchedSkills.slice(0, 4).join(' · ')}
+                                  {match.matchedSkills.length > 4 ? ' · ...' : ''}
+                                </span>
+                              </div>
+                            ) : null}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid gap-4 lg:grid-cols-2">
                   <div>
                     <Label htmlFor="interview-style">Interview type</Label>

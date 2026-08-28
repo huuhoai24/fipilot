@@ -1,0 +1,98 @@
+{
+  "cv_id": "cv_102",
+  "full_name": "VĂN CÔNG THẮNG",
+  "email": "",
+  "phone": "",
+  "location": "9 Nguyễn Thái Sơn P3",
+  "summary": "My career objective is to become a Senior Full-Stack Software Developer at a leading organization in the field of information technology. With over 10 years of experience in software development and expertise in C#, Python,.. I am committed to contributing to the organization's success by driving product development and improving operational efficiency. I possess a strong knowledge of MVC, SQL, PostreSQL, MongoDB, Odoo,..., and the ability to work effectively in a creative and problem-solving environment. I stay updated with the latest technological trends and am eager to learn, ensuring that the organization's products remain at the forefront of technology. I aspire to be part of an exceptional team, contributing to the development of advanced software applications and addressing diverse software development challenges.",
+  "education": [
+    {
+      "school": "HOA SEN UNIVERSITY",
+      "major": "Information Technology",
+      "degree": "BACHELOR OF INFORMATION TECHNOLOGY",
+      "start_date": "2008-09",
+      "end_date": "2012-04"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "TS24 CORP",
+      "position": "C# junior full-stack software developer",
+      "start_date": "2014-10",
+      "end_date": "2016-02",
+      "description": [
+        "Integrated Point of Sale (POS) Application: developed an integrated point-of-sale software application that seamlessly interacted with POS systems and inventory management, enhancing inventory control and sales transactions.",
+        "Payment Gateway Integration: I integrated electronic payment methods, digital wallets, and online payment gateways into the application, providing a convenient payment experience for customers.",
+        "Security and User Management: I ensured customer data security and implemented user management with authentication and authorization capabilities.",
+        "Custom User Interfaces: I created customized user interfaces to meet the specific needs of individual clients, providing flexibility in the application's usage.",
+        "Performance Optimization: I optimized the application's performance to ensure quick response times, which are crucial in a sales environment.",
+        "Testing and Bug Fixing: I conducted rigorous testing and bug-fixing to maintain the stability of the application under various circumstances."
+      ]
+    },
+    {
+      "company": "TS24 CORP",
+      "position": "C# SEnior full-stack software developer",
+      "start_date": "2016-02",
+      "end_date": "2023-11",
+      "description": [
+        "Customs Procedure Handling System: I developed an application system to support customs procedures, including the import and export of goods, management of customs documents, and verification of relevant documentation.",
+        "Integration with Customs Authorities: I integrated the application with customs authorities to ensure compliance with customs regulations and legal requirements during the import and export processes.",
+        "Customs Data Management: I developed data management tools to track customs information, ensuring accuracy and efficiency in document and data management.",
+        "Security and Information Protection: I focused on ensuring the security of customs-related information and implemented security layers to safeguard critical data.",
+        "Testing and Verification: I conducted thorough testing and verification to ensure the stability and reliability of the application in the Customs-required environment."
+      ]
+    },
+    {
+      "company": "TS24 CORP",
+      "position": "PYTHON SEnior full-stack software developer",
+      "start_date": "2019-01",
+      "end_date": "2023-11",
+      "description": [
+        "School Bus Management Module: I developed a module for school bus management within Odoo 15, enabling efficient tracking of school bus routes, student attendance, and scheduling to ensure safe and reliable transportation for students.",
+        "Condominium Management Module: I created a module for condominium management in Odoo 15, which allows for streamlined management of condominium facilities, resident communication, maintenance requests, and billing.",
+        "Sales Management Module: I designed a module for sales management in Odoo 15, providing tools for order processing, inventory management, and sales reporting to enhance the sales process's efficiency and effectiveness.",
+        "Human Resources Management Module: I developed a human resources management module within Odoo 15, facilitating employee records management, leave requests, attendance tracking, and payroll processing."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Python",
+    "C++",
+    "C#",
+    "HTML",
+    "XML",
+    "React",
+    "Angular",
+    "Spring",
+    "Django",
+    "MVC",
+    "Entity Framework",
+    "Odoo framework",
+    "Git",
+    "SVN",
+    "SQL",
+    "MySQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Google Cloud",
+    "Adobe",
+    "Posman",
+    "PGAdmin4",
+    "PTS",
+    "Premiere Pro",
+    "Teamwork",
+    "Problem-Solving",
+    "Planning and Project Management",
+    "Security Awareness"
+  ],
+  "certifications": [
+    "TOEIC 830"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "UPPER INTERMEDIATE"
+    }
+  ]
+}

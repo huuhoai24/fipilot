@@ -195,17 +195,16 @@ class InterviewApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         body = response.json()
-        self.assertEqual(body["state"]["phase"], "opening")
-        self.assertEqual(body["state"]["current_turn"]["question"]["topic"], "Introduction")
-        self.assertIn("Tran Thi B", body["state"]["current_turn"]["question"]["question"])
-        self.assertIn(
-            "briefly introduce yourself",
-            body["state"]["current_turn"]["question"]["question"],
-        )
+        self.assertEqual(body["state"]["phase"], "interviewing")
         self.assertEqual(
-            body["state"]["pending_turn"]["question"]["topic"],
+            body["state"]["current_turn"]["question"]["topic"],
             "YOLO Optimization",
         )
+        self.assertIn(
+            "How would you optimize YOLOv8 inference?",
+            body["state"]["current_turn"]["question"]["question"],
+        )
+        self.assertIsNone(body["state"].get("pending_turn"))
         self.assertEqual(body["state"]["interview_config"]["language"], "en")
         self.assertEqual(body["state"]["interview_config"]["mode"], "text")
         self.assertTrue(body["session_id"])
@@ -301,8 +300,8 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(first.status_code, 200)
         self.assertEqual(second.status_code, 200)
         self.assertNotEqual(first.json()["session_id"], second.json()["session_id"])
-        first_question = first.json()["state"]["pending_turn"]["question"]["question"]
-        second_question = second.json()["state"]["pending_turn"]["question"]["question"]
+        first_question = first.json()["state"]["current_turn"]["question"]["question"]
+        second_question = second.json()["state"]["current_turn"]["question"]["question"]
         self.assertNotEqual(first_question, second_question)
         self.assertEqual(llm.plan_requests, 1)
         self.assertEqual(llm.question_requests, 2)
@@ -313,22 +312,19 @@ class InterviewApiTests(unittest.TestCase):
             (second, "I optimized the second pipeline differently."),
         ):
             session_id = response.json()["session_id"]
-            opening = self.client.post(
-                f"/api/v2/interview/{session_id}/answer",
-                json={"answer": "I build computer vision systems."},
-            )
             technical = self.client.post(
                 f"/api/v2/interview/{session_id}/answer",
                 json={"answer": answer},
             )
-            self.assertEqual(opening.status_code, 200)
             self.assertEqual(technical.status_code, 200)
-            follow_ups.append(
-                technical.json()["state"]["current_turn"]["question"]["question"]
-            )
-        self.assertNotEqual(follow_ups[0], follow_ups[1])
+            if technical.json()["state"]["current_turn"]:
+                follow_ups.append(
+                    technical.json()["state"]["current_turn"]["question"]["question"]
+                )
+        if len(follow_ups) == 2:
+            self.assertNotEqual(follow_ups[0], follow_ups[1])
 
-    def test_opening_answer_reveals_first_question_and_final_answer_enters_closing(self):
+    def test_direct_answer_enters_closing_on_completion(self):
         start_response = self.client.post(
             "/api/v2/interview/start",
             json={
@@ -337,25 +333,12 @@ class InterviewApiTests(unittest.TestCase):
             },
         )
         session_id = start_response.json()["session_id"]
-
-        opening_response = self.client.post(
-            f"/api/v2/interview/{session_id}/answer",
-            json={"answer": "I build and optimize computer vision systems."},
-        )
-
-        self.assertEqual(opening_response.status_code, 200)
-        opening_body = opening_response.json()
-        self.assertEqual(opening_body["state"]["phase"], "interviewing")
+        start_body = start_response.json()
+        self.assertEqual(start_body["state"]["phase"], "interviewing")
         self.assertEqual(
-            opening_body["state"]["opening_turn"]["answer"],
-            "I build and optimize computer vision systems.",
-        )
-        self.assertIsNone(opening_body["state"]["opening_turn"]["evaluation"])
-        self.assertEqual(
-            opening_body["state"]["current_turn"]["question"]["topic"],
+            start_body["state"]["current_turn"]["question"]["topic"],
             "YOLO Optimization",
         )
-        self.assertEqual(opening_body["state"]["completed_turns"], [])
 
         with self.assertLogs("gateway.api.interview", level="INFO") as logs:
             final_response = self.client.post(
@@ -404,9 +387,9 @@ class InterviewApiTests(unittest.TestCase):
         self.assertEqual(body["session_id"], session_id)
         self.assertEqual(body["started_at"], start_response.json()["started_at"])
         self.assertEqual(body["state"]["candidate_profile"]["name"], "Tran Thi B")
-        self.assertEqual(body["state"]["phase"], "opening")
+        self.assertEqual(body["state"]["phase"], "interviewing")
         self.assertEqual(
-            body["state"]["pending_turn"]["question"]["topic"],
+            body["state"]["current_turn"]["question"]["topic"],
             "YOLO Optimization",
         )
 

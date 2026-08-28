@@ -1,5 +1,5 @@
 import React, { act } from 'react'
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import { BrowserRouter, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -122,10 +122,11 @@ describe('TextInterviewPage interview mode', () => {
 
     expect(await screen.findByRole('heading', { name: 'Vo Quang Trieu' })).toBeInTheDocument()
     expect(screen.getByText('AI / Machine Learning')).toBeInTheDocument()
-    expect(screen.getByText('2 years')).toBeInTheDocument()
-    expect(screen.getByText('3 detected')).toBeInTheDocument()
-    expect(screen.getByText('Python · PyTorch · LangGraph · RAG · CUDA')).toBeInTheDocument()
-    expect(screen.queryByText('FastAPI')).not.toBeInTheDocument()
+    const summaryRegion = screen.getByRole('region', { name: 'Vo Quang Trieu' })
+    expect(within(summaryRegion).getByText('2 years')).toBeInTheDocument()
+    expect(within(summaryRegion).getByText('3 detected')).toBeInTheDocument()
+    expect(within(summaryRegion).getByText('Python · PyTorch · LangGraph · RAG · CUDA')).toBeInTheDocument()
+    expect(within(summaryRegion).queryByText('FastAPI')).not.toBeInTheDocument()
     expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'View full profile' })).toHaveAttribute(
       'href',

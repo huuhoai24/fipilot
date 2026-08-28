@@ -1,0 +1,86 @@
+{
+  "cv_id": "cv_038",
+  "full_name": "Jiangping Chen",
+  "email": "jpchen@unt.edu",
+  "phone": "(940) 369-8393",
+  "location": "209 Information Science Building P.O. BOX 311068 Denton, TX 76203",
+  "summary": "",
+  "education": [
+    {
+      "school": "Syracuse University",
+      "major": "Information Transfer",
+      "degree": "Ph.D.",
+      "start_date": "",
+      "end_date": "2003"
+    },
+    {
+      "school": "Library of Chinese Academy of Sciences",
+      "major": "Information Science",
+      "degree": "M.S.",
+      "start_date": "",
+      "end_date": "1995"
+    },
+    {
+      "school": "Wuhan University",
+      "major": "Information Science",
+      "degree": "B.S.",
+      "start_date": "",
+      "end_date": "1988"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "University of North Texas",
+      "position": "Assistant Professor",
+      "start_date": "2004-01",
+      "end_date": "Present",
+      "description": []
+    },
+    {
+      "company": "Center for Natural Language Processing, School of Information Studies, Syracuse University",
+      "position": "Research Analyst",
+      "start_date": "2000-05",
+      "end_date": "2003-12",
+      "description": []
+    },
+    {
+      "company": "School of Information Studies, Syracuse University",
+      "position": "Graduate Assistant",
+      "start_date": "1999-08",
+      "end_date": "2000-04",
+      "description": []
+    },
+    {
+      "company": "Information Institute of the Ministry of Electronics Industry",
+      "position": "Research Associate",
+      "start_date": "1995-04",
+      "end_date": "1998-08",
+      "description": []
+    },
+    {
+      "company": "Wuhan Documentation and Information Center, Chinese Academy of Sciences",
+      "position": "Research Assistant",
+      "start_date": "1988-06",
+      "end_date": "1995-03",
+      "description": []
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Cross-Language Information Retrieval",
+    "Automatic Question Answering",
+    "Information Extraction",
+    "Chinese Information Processing",
+    "Automatic Metadata Generation",
+    "Automatic Classification",
+    "Clustering",
+    "Web Database Systems",
+    "Information Systems Evaluation",
+    "Usability Studies",
+    "Data Modeling",
+    "Dynamic WWW Control Structures",
+    "Information Retrieval Interaction"
+  ],
+  "certifications": [],
+  "languages": []
+}

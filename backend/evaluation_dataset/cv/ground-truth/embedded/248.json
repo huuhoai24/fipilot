@@ -1,0 +1,93 @@
+{
+  "cv_id": "cv_075",
+  "full_name": "NGUYỄN XUÂN TRƯỜNG",
+  "email": "",
+  "phone": "",
+  "location": "My Dinh Ward, Nam Tu Liem District, Ha Noi City",
+  "summary": "I hope to work in a professional working environment, where I can develop professional skills, learn new knowledge to successfully complete the assigned work.",
+  "education": [
+    {
+      "school": "MILITARY TECHNICAL ACADEMY",
+      "major": "Electronics and Telecommunication",
+      "degree": "University (Updaged)",
+      "start_date": "2010",
+      "end_date": "2012"
+    },
+    {
+      "school": "MILITARY TECHNICAL ACADEMY",
+      "major": "Electronics and Telecommunication",
+      "degree": "Colleges (Regular full time)",
+      "start_date": "2007",
+      "end_date": "2010"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "HB TRADINVEST .,JSC",
+      "position": "IT Specialisrt",
+      "start_date": "2017-12",
+      "end_date": "Present",
+      "description": [
+        "Maintaining intranet system, website, Data storage, email, Polycom",
+        "Maintaining network system, firewall, switch, vlan, network link …",
+        "Making plans and schemes to build up and upgrade the system on a quarterly and yearly basis.",
+        "Developing system solutions, software for departments to increase the work efficiency."
+      ]
+    },
+    {
+      "company": "THT SOLUTIONS .,JSC",
+      "position": "Manager of Technical Department",
+      "start_date": "2016-08",
+      "end_date": "2017-12",
+      "description": [
+        "System management Server, SAN, Hyper-V, Polycom ...",
+        "Deploying configuration firewall Fortinet, Juniper, WatchGuard, Draytek Vigor.",
+        "Deploying centralized wifi system: HP Aruba, Ruskus, Unifi, Cambium network ….",
+        "Deploying wifi marketing system.",
+        "Deploying the chain of fruit stores Klever Juice (K.L.E.V.E)"
+      ]
+    },
+    {
+      "company": "THT SOLUTIONS .,JSC",
+      "position": "IT Support",
+      "start_date": "2012-07",
+      "end_date": "2016-08",
+      "description": [
+        "Support customer user services of company",
+        "Setup software, windows for PC and latop",
+        "Replace computer components.",
+        "Do work according to leadership requirements."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "INVOLVED PROJECT",
+      "role": "",
+      "technologies": [],
+      "description": "System management Server, SAN, Hyper-V, Polycom ..."
+    }
+  ],
+  "skills": [
+    "SYSTEM",
+    "NETWORK",
+    "Fortinet",
+    "Juniper",
+    "WatchGuard",
+    "Draytek Vigor",
+    "HP Aruba",
+    "Ruskus",
+    "Unifi",
+    "Cambium network"
+  ],
+  "certifications": [
+    "Completing MCSA course at BachKhoa Information Technology Academy",
+    "Completing CCNA course at BachKhoa Information Technology Academy"
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "level": "for communication"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "cv_id": "cv_090",
+  "full_name": "NGAN DANG THI KIM",
+  "email": "",
+  "phone": "",
+  "location": "Hanoi",
+  "summary": "",
+  "education": [
+    {
+      "school": "National Economics University",
+      "major": "Business English",
+      "degree": "Degree of Bachelor",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [
+    {
+      "company": "VNPT EPAY",
+      "position": "Senior Business Analyst | Planning Executive",
+      "start_date": "2018",
+      "end_date": "Present",
+      "description": [
+        "Defining services at high level such as business model, business goals",
+        "Making detail analysis for system development",
+        "Output: Business requirement documents, Product requirement documents, Functional & Non-functional Requirement Specifications (activity diagrams, wireframes, prototype, UX, main data for APIs...)",
+        "Working with Product manager on making product roadmap basing on business goals",
+        "Breaking down from product roadmap to backlogs, prioritizing & grouping backlogs into phases",
+        "Making detail schedule of development for each phase including analysis, design, development, QA, launching, pilot",
+        "Monitoring, updating, reporting actual progress",
+        "Working with IT to make testcase & Conducting SIT, UAT",
+        "Monitoring service after each phase update (for new development)",
+        "Daily service monitoring by making data analysis",
+        "Conducting trainings for both internal and external users",
+        "Basing on analyzed data & clients' feedback to get the insights and make proposals for: Product improvement",
+        "Basing on analyzed data & clients' feedback to get the insights and make proposals for: Business improvement such as increasing profit by saving cost",
+        "Working with Product manager in making service policy, P&L stimulation",
+        "Making business proposals for merchants, partners",
+        "BA leader: training BAs, assigning other BAs between projects",
+        "English/ Korean/ Vietnamese interpretation (ad-hoc)"
+      ]
+    },
+    {
+      "company": "Will-be Solutions Vina",
+      "position": "Business Analyst",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "Market research & feasibility analysis",
+        "Defining business processes, main functions",
+        "Supporting IT team in making System Requirements Specification"
+      ]
+    },
+    {
+      "company": "Will-be Solutions Vina",
+      "position": "Project Assistant",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "Assisting Project Manager in planning & following up project progress",
+        "Participating in making bidding documents, contracts, project deliverables, project signoff & acceptance documents",
+        "Working as the project contact point",
+        "Vietnamese/ English Interpretation",
+        "Other project administration tasks"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "E-WALLET",
+      "role": "",
+      "technologies": [],
+      "description": "B2B2C E-wallet\n1. Related entities:\n- User: Individual/ Corporate users\n- External connection: Product providers (Partners), Payment processors, Merchants\n2. Main modules being in charge of:\n- E-wallet for individual users (App, Web-view in app), including:\n+ Basic functions: Register/ Login, KYC, Bank linking, Cash-in, Cash-out, Money transfer, Wallet limit...\n+ Value added services on e-wallet: Mobile top-up, Bill payment, Voucher purchase\n+ Payment: processing payments by the payment methods provided in e-wallet\n- E-wallet for corporate users (Website), including: Cash-in, Cash-out, Money transfer, Settlement for collected transactions, Transaction monitoring...\n- Backoffice for internal management"
+    },
+    {
+      "name": "ECOMERCE",
+      "role": "",
+      "technologies": [],
+      "description": "Ecommerce website for game, mobile cards, bill payment\n1. Related entities:\n- User: Individual buyer\n- External connection: Product providers, Payment processors\n2. Main modules being in charge of:\n- Services/ products on website\n- Payment: proceeding purchases from buyer by multiple payment methods\n- Promotion: creating promotions for sales/ business purposes\n- Backoffice for internal management and for partners"
+    },
+    {
+      "name": "PAYMENT GATEWAY",
+      "role": "",
+      "technologies": [],
+      "description": "Payment gateway for ecommerce websites/ application to process transactions from buyer\n1. Related entities:\n- User: Merchants\n- External connection: Banks, Payment gateways, E-wallets\n2. Main modules being in charge of:\n- Payment processor: processing transaction from merchants, supporting payment methods such as: Card, E-wallet, QR, Bank transfer,...\n- Payment window: channel for buyers to make payments\n- Backoffice for internal management and merchants including customer management, settlement, reconciliation, operation, reports, function configuration"
+    },
+    {
+      "name": "CONSULTING PROJECT",
+      "role": "",
+      "technologies": [],
+      "description": "Market research & feasibility analysis for the development of a leading payment gateway"
+    },
+    {
+      "name": "CENTRALIZED AND INTEGRATED PAYMENT PLATFORM - SYSTEM INTEGRATION PROJECT",
+      "role": "",
+      "technologies": [],
+      "description": "System integration project Providing centralized and integrated payment service platform for bill, tax, social insurance payment (Research & making proposal)"
+    },
+    {
+      "name": "REPORT SUBMISSION SYSTEM TO STATE BANK OF VIETNAM - SYSTEM INTEGRATION PROJECT",
+      "role": "",
+      "technologies": [],
+      "description": "System integration project Providing report submission system for a bank to submit required reports to the State Bank of Vietnam"
+    },
+    {
+      "name": "PROCUREMENT OF DATA MANAGEMENT, DATA WAREHOUSE AND RELATED APPLICATIONS FOR THE STATE BANK OF VIETNAM (SG4)",
+      "role": "",
+      "technologies": [],
+      "description": "System integration project Providing Data Submission, Data Warehouse and Business Intelligence Software for the State Bank of Vietnam"
+    }
+  ],
+  "skills": [
+    "Excel",
+    "Google sheet",
+    "Power point",
+    "Word",
+    "Drawio",
+    "Figma",
+    "Logical thinking",
+    "Management",
+    "Multi task",
+    "Teamwork"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    },
+    {
+      "language": "Korean",
+      "level": ""
+    }
+  ]
+}

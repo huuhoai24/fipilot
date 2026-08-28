@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { History, Loader2, LogOut, MessageSquareText, Mic, Settings } from 'lucide-react'
 import { Sidebar } from './Sidebar'
+import { ExitInterviewModal } from '@/components/interview/ExitInterviewModal'
 import { BrandLogo } from '@/components/brand/BrandLogo'
 import { useUIStore } from '@/store/useAppStore'
 import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 
 export function AppLayout() {
-  const { sidebarCollapsed } = useUIStore()
+  const { sidebarCollapsed, activeInterview, setPendingNavigation, setConfirmExitOpen } = useUIStore()
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [loggingOut, setLoggingOut] = useState(false)
@@ -42,6 +43,7 @@ export function AppLayout() {
         Skip to main content
       </a>
       <Sidebar />
+      <ExitInterviewModal />
       <header className="sticky top-0 z-30 border-b border-border bg-surface/95 px-3 py-2 backdrop-blur md:hidden">
         <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -77,6 +79,13 @@ export function AppLayout() {
               key={to}
               to={to}
               end={to === '/'}
+              onClick={(e) => {
+                if (activeInterview?.hasStarted && !window.location.pathname.startsWith(to)) {
+                  e.preventDefault()
+                  setPendingNavigation(to)
+                  setConfirmExitOpen(true)
+                }
+              }}
               className={({ isActive }) =>
                 cn(
                   'flex h-9 shrink-0 items-center gap-1.5 rounded-md px-3 text-xs font-medium',

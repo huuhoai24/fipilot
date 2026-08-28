@@ -299,6 +299,12 @@ export const api = {
     return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}`)
   },
 
+  endV2Interview: async (sessionId: string | number): Promise<V2InterviewSessionResponse> => {
+    return requestJson(`${API_ROOT_URL}/api/v2/interview/${sessionId}/end`, {
+      method: 'POST',
+    })
+  },
+
   generateInterviewReport,
 
   getInterviewReport: async (sessionId: string | number): Promise<InterviewReportResponse> => {

@@ -1,0 +1,86 @@
+{
+  "cv_id": "cv_107",
+  "full_name": "Tran Quang An",
+  "email": "",
+  "phone": "",
+  "location": "District 8, Ho Chi Minh, Vietnam",
+  "summary": "",
+  "education": [
+    {
+      "school": "FPT Polytechnic Tay Nguyen",
+      "major": "Software Technology",
+      "degree": "",
+      "start_date": "2012-10",
+      "end_date": "2015-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Cong ty Step Media",
+      "position": ".Net Core Full-stack Developer",
+      "start_date": "2022-10",
+      "end_date": "2023-12",
+      "description": [
+        "Develop functions for the website",
+        "Work with manager, QA team, implement task, ﬁx bug",
+        "An accounting and auditing project, helping businesses manage revenue balance and accounting balance"
+      ]
+    },
+    {
+      "company": "AQ Group",
+      "position": ".Net Core Full-stack Developer",
+      "start_date": "2020-06",
+      "end_date": "2022-09",
+      "description": [
+        "Build API for the system",
+        "Develop functions for the website",
+        "Work with customers to receive requests and clarify requirements",
+        "is a booking platform, allowing users to book for hotels, restaurants, yachts... Make it easier for customers to book and pay"
+      ]
+    },
+    {
+      "company": "Cong ty co phan Medilog",
+      "position": ".Net Core Full-stack Developer",
+      "start_date": "2018-11",
+      "end_date": "2020-06",
+      "description": [
+        "Develop functions for the website",
+        "Work with customers to receive requests and clarify requirements",
+        "Design Database",
+        "is a website about freight, order management, customer management"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "C#",
+    ".net core MVC",
+    "Web API",
+    "OOP",
+    "Design Pattern",
+    "HTML",
+    "CSS",
+    "bootstrap",
+    "JavaScript",
+    "Jquery",
+    "Ajax",
+    "XML",
+    "Json",
+    "SQL server",
+    "stored procedure",
+    "view",
+    "linq to sql",
+    "Entity Framework",
+    "Git",
+    "ReactJs",
+    "Micro Service",
+    "Azue Function",
+    "Restful API",
+    "Azue",
+    "Window Service",
+    "RabitMQ",
+    "Payment Online"
+  ],
+  "certifications": [],
+  "languages": []
+}

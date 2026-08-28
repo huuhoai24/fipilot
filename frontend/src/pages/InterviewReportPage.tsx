@@ -84,8 +84,8 @@ function expectedSignals(turn: V2InterviewTurn): string[] {
 }
 
 function interviewIsComplete(state: V2InterviewSessionState): boolean {
-  if (state.current_turn != null || state.pending_turn != null) return false
-  if (state.phase === 'closing') return true
+  if (state.phase === 'closing' || state.current_turn == null) return true
+  if (state.pending_turn != null) return false
   return (
     state.completed_turns.length >= state.interview_config.question_count
   )

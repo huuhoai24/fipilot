@@ -1,0 +1,145 @@
+{
+  "cv_id": "cv_034",
+  "full_name": "NGUYEN VAN CUONG",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "4 years of experience : Svn ,Jira , Gitlab , CI/CD, Jenkins , Docker Microservice , Saga( Choreography - Orchestration ) Kafka, activceMQ , JMS Angular ReactJs Zuul GateWay ( some thoughts ) Redis Spring( boot , security , oauth2 , JWT, Timer , schedule-task ) Jpa , Hibernate , Mybatis , JDBC UnitTest : Junit5, Mockito Keycloak (My guideline ) JasperReport Oracle , MySql , Postgresql FileStorage & management : Minio , FTP, SFTP",
+  "education": [
+    {
+      "school": "HaNoi University Of Industry",
+      "major": "",
+      "degree": "",
+      "start_date": "",
+      "end_date": ""
+    }
+  ],
+  "experiences": [],
+  "projects": [
+    {
+      "name": "ERP-ViettelStore (9/2020 – 6/2021)",
+      "role": "",
+      "technologies": [
+        "CI/CD",
+        "Docker",
+        "Microservice",
+        "Kafka",
+        "Saga",
+        "Angular",
+        "Zuul GateWay",
+        "Redis",
+        "Springboot",
+        "Jpa",
+        "Hibernate",
+        "Keycloak",
+        "JasperReport",
+        "Oracle"
+      ],
+      "description": "Ecomerce website for Viettel. Company Viettelimex. Team size 31. Responsibilities: Techonogy dispartment. Programming Languages: Angular 10 , Java. Tools Intellij, VScode , Oracle , Svn , Jira, Gitla b"
+    },
+    {
+      "name": "OneConnect (1/2020 – 9/2020)",
+      "role": "",
+      "technologies": [
+        "Microservice",
+        "SpringBoot",
+        "Oracle",
+        "ReactJs",
+        "Mybatis",
+        "Redis"
+      ],
+      "description": "Build a loan module in the banking website. Company CMC Global. Team size 10. Responsibilities: Dev. Programming Languages: ReactJS , Java , Oracle , Mysql , Gitlab , Jira. Tools Intellij ,WebStome"
+    },
+    {
+      "name": "RMHub (1/2019– 12/2019)",
+      "role": "",
+      "technologies": [
+        "Spring Security",
+        "Junit5",
+        "Mockito",
+        "Jpa",
+        "Hibernate",
+        "Microservice",
+        "Spring boot",
+        "Kafka",
+        "Redis"
+      ],
+      "description": "RMHUB is an extensible and modern system for motorway management. It is a complex and modular software system that captures gathering information from roadside devices. Company CMC Global. Team size 30. Responsibilities: dev. Programming Languages: Java. Tools Intellij ,postgresDB , Jira , Git"
+    },
+    {
+      "name": "Dịch vụ công (1 /2018)",
+      "role": "",
+      "technologies": [
+        "Liferay",
+        "Bootstrap",
+        "HTML",
+        "CSS",
+        "JS"
+      ],
+      "description": "It is an online public service software designed to solve public administrative procedures for people, businesses and assist officials to solve administrative procedures quickly, towards publicity, transparency, Simple, clear and lawful. Company Ecoit. Team size 10. Responsibilities dev. Programming Languages Java, Postgres. Tools Eclipse, Postgres"
+    }
+  ],
+  "skills": [
+    "Svn",
+    "Jira",
+    "Gitlab",
+    "CI/CD",
+    "Jenkins",
+    "Docker",
+    "Microservice",
+    "Saga",
+    "Kafka",
+    "activceMQ",
+    "JMS",
+    "Angular",
+    "ReactJs",
+    "Zuul GateWay",
+    "Redis",
+    "Spring",
+    "boot",
+    "security",
+    "oauth2",
+    "JWT",
+    "Timer",
+    "schedule-task",
+    "Jpa",
+    "Hibernate",
+    "Mybatis",
+    "JDBC",
+    "UnitTest",
+    "Junit5",
+    "Mockito",
+    "Keycloak",
+    "JasperReport",
+    "Oracle",
+    "MySql",
+    "Postgresql",
+    "FileStorage",
+    "Minio",
+    "FTP",
+    "SFTP",
+    "Angular 10",
+    "Java",
+    "Intellij",
+    "VScode",
+    "Gitla b",
+    "SpringBoot",
+    "WebStome",
+    "postgresDB",
+    "Git",
+    "Liferay",
+    "Bootstrap",
+    "HTML",
+    "CSS",
+    "JS",
+    "Eclipse",
+    "Postgres"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Nomal Reading, self-introduce"
+    }
+  ]
+}

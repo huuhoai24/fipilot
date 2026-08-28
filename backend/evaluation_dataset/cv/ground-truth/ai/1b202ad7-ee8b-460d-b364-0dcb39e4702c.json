@@ -1,0 +1,185 @@
+{
+  "cv_id": "cv_012",
+  "full_name": "VŨ ĐỨC ĐỘ",
+  "email": "",
+  "phone": "",
+  "location": "Cầu Giấy - Hà Nội",
+  "summary": "I have over 3 years of experience working at product companies as an AI Engineer. My main responsibility is building systems and solving problems by using Machine Learning and AI technology. In addition, I have tasks and skills related to data collection, processing, management, and analysis.",
+  "education": [
+    {
+      "school": "Military Technical Academy (MTA)",
+      "major": "Data Technology",
+      "degree": "",
+      "start_date": "2015",
+      "end_date": "2020"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "TEPA",
+      "position": "",
+      "start_date": "2021",
+      "end_date": "Present",
+      "description": [
+        "Researching and developing Real Estate Price Prediction System by machine learning.",
+        "Researching and developing Recommendation System.",
+        "Researching Text to speech project."
+      ]
+    },
+    {
+      "company": "VNPT IT",
+      "position": "Intern Pentester",
+      "start_date": "2017",
+      "end_date": "2019",
+      "description": [
+        "Testing and defining website vulnerability.",
+        "Using Linux, deploy environment for case studies.",
+        "Using Python for resolving issues such as crawling information, processing data, automatic modules, ..."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Speech-to-Text Vietnamese",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "Deep Learning(sequence-to-sequence)"
+      ],
+      "description": "Speech-to-Text Vietnamese"
+    },
+    {
+      "name": "Text to Speech Vietnamese",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "FlaskAPI",
+        "Deep learning(FastPitch, G2P)"
+      ],
+      "description": "Text to Speech Vietnamese"
+    },
+    {
+      "name": "Vietnamese CRM Chatbot",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "RaSa"
+      ],
+      "description": "Vietnamese CRM Chatbot"
+    },
+    {
+      "name": "VoiceBot for Cenhomes Sales Department",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "RaSa",
+        "Speech2Text",
+        "Text2Speech"
+      ],
+      "description": "VoiceBot for Cenhomes Sales Department"
+    },
+    {
+      "name": "Virtual assistant system",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "RaSa",
+        "Speech2Text",
+        "Text2Speech"
+      ],
+      "description": "Virtual assistant system"
+    },
+    {
+      "name": "Real Estate Price Prediction System",
+      "role": "main developer",
+      "technologies": [
+        "Python",
+        "FlaskAPI",
+        "Machine learning(linear regression,KNN, Decision Tree, Random Forest,.. )",
+        "S3",
+        "MongoDB"
+      ],
+      "description": "Real Estate Price Prediction System"
+    },
+    {
+      "name": "Recommendation System",
+      "role": "main developer",
+      "technologies": [
+        "Python",
+        "FlaskAPI",
+        "Machine learning",
+        "Kafka",
+        "Clickhouse",
+        "CronJob"
+      ],
+      "description": "Recommendation System"
+    },
+    {
+      "name": "Text to Speech Vietnamese",
+      "role": "main developer",
+      "technologies": [
+        "Python",
+        "FlaskAPI",
+        "Deep learning(Tacotron2, FastSpeech, G2P)"
+      ],
+      "description": "Text to Speech Vietnamese"
+    },
+    {
+      "name": "Scene Text Recognition",
+      "role": "member",
+      "technologies": [
+        "Python",
+        "Yolo v5",
+        "OCR"
+      ],
+      "description": "Scene Text Recognition"
+    }
+  ],
+  "skills": [
+    "Data processing",
+    "Data Mining",
+    "Web Scraping",
+    "NLP",
+    "Computer vision",
+    "Speech",
+    "Redash",
+    "Metabase",
+    "MongoDB",
+    "MySQL",
+    "PostgresSQL",
+    "Clickhouse",
+    "Redis",
+    "Docker",
+    "RabbitMQ",
+    "Kafka",
+    "MinIO",
+    "S3",
+    "Python",
+    "Deep Learning",
+    "FlaskAPI",
+    "RaSa",
+    "Speech2Text",
+    "Text2Speech",
+    "Machine learning",
+    "linear regression",
+    "KNN",
+    "Decision Tree",
+    "Random Forest",
+    "Yolo v5",
+    "OCR",
+    "sequence-to-sequence",
+    "FastPitch",
+    "G2P",
+    "Tacotron2",
+    "FastSpeech",
+    "CronJob",
+    "CRM",
+    "ERP",
+    "website vulnerability testing",
+    "Linux",
+    "System analysis",
+    "System upgrading"
+  ],
+  "certifications": [],
+  "languages": []
+}

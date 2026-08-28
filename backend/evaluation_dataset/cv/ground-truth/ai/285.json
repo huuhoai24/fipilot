@@ -1,0 +1,147 @@
+{
+  "cv_id": "cv_016",
+  "full_name": "Nam Le",
+  "email": "",
+  "phone": "",
+  "location": "",
+  "summary": "I am an Engineer researching and developing Computer Vision with 7 years of experience. I joined many projects with the applications Inspection, Measurement, Pick and Place, and Assembly. In the projects, I participate in the development of the algorithms of image processing for the vision system. I worked and have an understanding of devices in the Machine Vision System such as Cameras, Lenses, Lighting, IPC, Embedded PCs (Raspberry Pi, Jetson Nano), PLC, Motion controllers, IO controllers, and Robotics. Additionally, I also study and investigate AI, I have an understanding of basic machine learning and deep learning. I have worked so many with the YOLOv8 model, and I can train data with GPU or Google Colab and integrate inference of the YOLOv8 model into real projects with C++ language.",
+  "education": [
+    {
+      "school": "HANOI UNIVERSITY TECHNOLOGY OF SCIENT",
+      "major": "",
+      "degree": "ENGINEER",
+      "start_date": "2011",
+      "end_date": "2016"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "AN HONG",
+      "position": "SOFTWARE ENGINEER",
+      "start_date": "2017",
+      "end_date": "2020",
+      "description": [
+        "Calculating and selecting the devices for Vision Systems.",
+        "Setup and Alignment of the devices for vision systems.",
+        "Developed the features for the software of the vision systems."
+      ]
+    },
+    {
+      "company": "RAV",
+      "position": "COMPUTER VISION ENGINEER",
+      "start_date": "2020",
+      "end_date": "2022",
+      "description": [
+        "Develop software for automated machines using a control PC.",
+        "Develop the algorithm computer vision for the automated machine with OpenCV library and C++ language."
+      ]
+    },
+    {
+      "company": "FREELANCE",
+      "position": "COMPUTER VISION ENGINEER",
+      "start_date": "2022-11",
+      "end_date": "2023-08",
+      "description": [
+        "Setup and Alignment of the devices for Visual Inspection Systems combined cartesian-robot, SCARA robot, and 6-axis robot.",
+        "Participate in the development of projects about automated machines, and vision machines."
+      ]
+    },
+    {
+      "company": "SAEKWANG VINA",
+      "position": "COMPUTER VISION ENGINEER",
+      "start_date": "2023-10",
+      "end_date": "Present",
+      "description": [
+        "Research and develop algorithms for computer vision and integrate AI (YOLOv8) into real projects.",
+        "Develop automated vision machines.",
+        "Research and develop algorithms for computer vision and AI."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Sealing Inspection",
+      "role": "",
+      "technologies": [
+        "OpenCV",
+        "C++",
+        "C#",
+        "WPF",
+        "USB3 Camera",
+        "PLC"
+      ],
+      "description": "Check the width and height of the sealing layer with speciation. Check the defect on the surface of the sealing layer"
+    },
+    {
+      "name": "Dino Camera check hole CNC",
+      "role": "",
+      "technologies": [
+        "Dino Camera",
+        "Jetson Nano",
+        "Arduino",
+        "PLC",
+        "OpenCV",
+        "CLI/C++",
+        "WPF",
+        "Qt"
+      ],
+      "description": "Check the presence of the hole cutting by CNC, and measure the width and height of the edge cutting CNC."
+    },
+    {
+      "name": "Integrate AI model for check chipping, cracks on edge screen panel",
+      "role": "",
+      "technologies": [
+        "Linescan Camera",
+        "PLC",
+        "OpenCV",
+        "YOLOv8",
+        "Onnx",
+        "C++",
+        "CLI",
+        "Winform"
+      ],
+      "description": "Screen panels after the process of cutting, and grinding will often get defects such as chipping or cracking. This defect is very di\u0000cult to differentiate from another image that is not a defect. Only when using an AI model just can resolve this problem."
+    },
+    {
+      "name": "Pick and place the product with the SCARA robot",
+      "role": "",
+      "technologies": [
+        "SCARA Robot",
+        "GigE Camera",
+        "OpenCV",
+        "C++"
+      ],
+      "description": "Calculate and send coordinate, direct rotate to SCARA Robot Epson for pick and place product."
+    }
+  ],
+  "skills": [
+    "C++",
+    "C#",
+    "Qt",
+    "MFC",
+    "Winform",
+    "WPF",
+    "Visual Studio",
+    "Anaconda",
+    "Jupiter notebook",
+    "Google Colab",
+    "Windows",
+    "Linux(Ubuntu)",
+    "Git",
+    "PowerShell",
+    "Python",
+    "OpenCV",
+    "PyTorch",
+    "YOLO",
+    "TCP/IP",
+    "RS232",
+    "Modbus"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": "Intermediate"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "cv_id": "cv_068",
+  "full_name": "PHAN THANH HOA",
+  "email": "",
+  "phone": "",
+  "location": "133 Bang Dang Street – Ward 2 – Tan Binh district",
+  "summary": "",
+  "education": [
+    {
+      "school": "HCM City Open University",
+      "major": "Computer Science",
+      "degree": "",
+      "start_date": "2010",
+      "end_date": "2014"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SIP CORP",
+      "position": "IT Supervisor",
+      "start_date": "2018",
+      "end_date": "Present",
+      "description": [
+        "Manage all aspects of the implementation and operation of information and functional systems for the Company, including software applications, network, phone systems and end-user computers.",
+        "Manage 3 IT staff to resolve issues in a timely manner: PC, Printer, Laptop (400 PC and more than 100 printer)",
+        "Oversee all IT support requests, incidents and problems, manage all IT Helpdesk processes for communicating outage/emergency activities to the Company.",
+        "Manage the System: Domain AD, DHCP, DNS, File Server, Email, SQL, Vmware Vsphere ESXI, Hyper-V, vCenter, Central Server, …",
+        "Manage networking: Firewall, LAN, WAN, Leased Line, VPN.",
+        "Manage Camera system (More 300 cam) Analog and IP Camera.",
+        "Provide help desk and technical services assistance to employees.",
+        "Implement, maintain, and ensure maximum uptime for IT systems.",
+        "Oversee the provisioning of the end-user services.",
+        "Ensure minimal downtime or interruption to staff productivity.",
+        "Ensure security of information technology assets, data, network access, and backup systems.",
+        "Maintain inventory and details of IT Equipment including asset numbers and user registers.",
+        "Ensure Software licencing in full compliance with requirements and instructions.",
+        "Ensure integrity of databases is maintained and monitored.",
+        "Ensure frequent Back-ups of management working stations and all servers, maintenance and update patch for Server, Client.",
+        "Administers user accounts.",
+        "Ensure and manage user access rights are set up correctly and permanently reviewed.",
+        "Develop and enhance Information Systems policies and procedural manuals to assure data accuracy, security, legal and regulatory compliance.",
+        "Develop best practices and written documentation for all server maintenance.",
+        "Manage IT staff, which includes hiring, training, guidance, and discipline.",
+        "Manage annual IT budget and ensure cost effectiveness.",
+        "Manage hardware and software vendor relationships.",
+        "Support ERP Team, Attendance Management software."
+      ]
+    },
+    {
+      "company": "Fuji CAC Joint Stock Company – Fuji Electric Group",
+      "position": "IT Deputy",
+      "start_date": "2016-12",
+      "end_date": "Present",
+      "description": [
+        "Manage 3 IT staff to resolve issues in a timely manner: PC, Printer, Laptop (250 PC and more than 80 printer)",
+        "Manage the infrastructure IT, technical support, FAX, Printer, Scan, Wifi, LAN, Internet, website, License, Software.",
+        "Manage the System: Domain AD, DHCP, DNS, File Server, Email, SQL, Vmware Vsphere ESXI, Hyper-V, vCenter, Central Server, …",
+        "Maintenance and update patch for Server, Client.",
+        "Backup database AD, ERP, Camera, Router Config, NAS, (Veeam Backup and SQL Backup)….",
+        "Manage environment sensors system data center room.",
+        "Manage networking: Firewall, LAN, WAN, Leased Line, VPN.",
+        "Manage Camera system (More 200 cam) Analog and IP Camera.",
+        "Manage call center: PDX system and One contact system.",
+        "Manage email server."
+      ]
+    },
+    {
+      "company": "Tan Hiep Phat Group",
+      "position": "IT Executive – System Admin – Help Desk",
+      "start_date": "2016-02",
+      "end_date": "2016-12",
+      "description": [
+        "IT Executive support and manage end user: PC, Laptop, Printer, OS, (400 PC) …",
+        "Support, design and deployment network project.",
+        "Manage the infrastructure IT: Printer, Switch, Wifi, Internet, LAN, Intranet, Time Attendance machine, Software.",
+        "Maintenance and update patch to client ( 1400 client)",
+        "Manage, install all software.",
+        "Manage email profile, Outlook, monitor computer status.",
+        "Manage environment sensors system data center room.",
+        "Manage and export data time attendance to HR dept."
+      ]
+    },
+    {
+      "company": "Vietnam eSports Company(VED) – Garena Group",
+      "position": "IT Technical –Customer Service Team",
+      "start_date": "2014-12",
+      "end_date": "2016-02",
+      "description": [
+        "Technical support internet room with Gcafe, Cyberpay software.",
+        "Support account gamer : LOL and FO3",
+        "Troubleshoot, consulting for customer using the services of company.",
+        "IT Helpdesk CS room."
+      ]
+    },
+    {
+      "company": "ESC Online Solution",
+      "position": "Internship",
+      "start_date": "2013-06",
+      "end_date": "2014-03",
+      "description": [
+        "Design website by open source (Joomla, tomato, nuke Viet,.. ) : HTML 5, CSS3,..",
+        "Participation main project.",
+        "Hand over and signing contracts with customers.",
+        "Troubleshoot, consulting for customer using the services of company."
+      ]
+    },
+    {
+      "company": "Open Universary",
+      "position": "Technical support",
+      "start_date": "2011",
+      "end_date": "2014",
+      "description": [
+        "Leader team support : 20 collabrator",
+        "Support, install software",
+        "Support hardware",
+        "Maintenance and fix hardware, software",
+        "Support the network and computer system design input."
+      ]
+    },
+    {
+      "company": "Shichida Institute of Education, Vietnam",
+      "position": "Collaborators in Information Technology",
+      "start_date": "",
+      "end_date": "",
+      "description": [
+        "Cleaning, arranging teaching aids.",
+        "Support the design of network lines for the company.",
+        "Supports server installation."
+      ]
+    },
+    {
+      "company": "Group BINH DINH compatriot",
+      "position": "Admin",
+      "start_date": "2010",
+      "end_date": "",
+      "description": [
+        "Manage group diary.",
+        "Communicate information about BINH DINH compatriot for all members",
+        "Confirm the entry of members - more than 122,000 members.",
+        "Up program for boards off flavor.",
+        "Confirm – collect the post of members in group."
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Microsoft Office",
+    "Internet",
+    "Database management",
+    "SQL server",
+    "Linq",
+    "Access",
+    "C++",
+    "C#",
+    "Mobile programming windowsphone",
+    "HTML5",
+    "CSS3",
+    "Dreamweaver",
+    "MCSA 2008",
+    "MCSA 2012",
+    "CCNA",
+    "Proshow Producer",
+    "Aegisub",
+    "Proficient use of social networks",
+    "Design and implementation of network infrastructure systems",
+    "Team work",
+    "Organize",
+    "Communicate",
+    "Ability to handle situations well",
+    "Flexible behavior",
+    "To withstand high pressure job",
+    "Ability to learn",
+    "Ability to anticipate problems, risks and find ways to overcome"
+  ],
+  "certifications": [
+    "CCNA",
+    "MCSA 2008",
+    "MCSA 2012"
+  ],
+  "languages": [
+    {
+      "language": "Vietnamese",
+      "level": "mother language"
+    },
+    {
+      "language": "English",
+      "level": "communication"
+    }
+  ]
+}

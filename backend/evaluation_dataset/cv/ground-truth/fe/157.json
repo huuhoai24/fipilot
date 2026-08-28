@@ -1,0 +1,180 @@
+{
+  "cv_id": "cv_099",
+  "full_name": "Nguyen Thanh Sang",
+  "email": "",
+  "phone": "",
+  "location": "District 7, HCMC",
+  "summary": "Experienced Web Developer with 5 years of expertise in Education, Finance, and Management sectors. Proficient in both front-end and back-end development with a strong ability to work independently and lead projects to successful completion.",
+  "education": [
+    {
+      "school": "Nguyen Tat Thanh University",
+      "major": "",
+      "degree": "Web Development",
+      "start_date": "2015",
+      "end_date": "2019"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Công ty Cổ Phần Tiến Bộ Sài Gòn (ASC)",
+      "position": "WEB DEVELOPER",
+      "start_date": "2019-07",
+      "end_date": "Present",
+      "description": [
+        "Providing total solutions for Education & Training management.",
+        "Maintain and upgrade existing product features.",
+        "Collaborate with colleagues to clarify requirements and development plans."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Admissions",
+      "role": "FRONT-END, BACK-END DEVELOPER",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "Javascript",
+        "Bootstrap",
+        "Ajax",
+        "KendoUI",
+        "NET MVC",
+        "LinQ",
+        "C#",
+        "SQL"
+      ],
+      "description": "Admissions registration page for students."
+    },
+    {
+      "name": "School Project",
+      "role": "FRONT-END, BACK-END DEVELOPER",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "Javascript",
+        "Bootstrap",
+        "Ajax",
+        "KendoUI",
+        "NET MVC",
+        "LinQ",
+        "C#",
+        "SQL",
+        "Syncfusion"
+      ],
+      "description": "Management of student information, status, and scores."
+    },
+    {
+      "name": "Online exam / Practice exercises",
+      "role": "FRONT-END, BACK-END DEVELOPER",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "Javascript",
+        "Bootstrap",
+        "Ajax",
+        "KendoUI",
+        "NET MVC",
+        "LinQ",
+        "C#",
+        "SQL"
+      ],
+      "description": "Website to take the test and manage the test process."
+    },
+    {
+      "name": "Admissions (V2)",
+      "role": "FRONT-END, BACK-END DEVELOPER",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "Javascript",
+        "Bootstrap",
+        "Ajax",
+        "KendoUI",
+        "NET MVC",
+        "LinQ",
+        "C#",
+        "SQL",
+        "Redis"
+      ],
+      "description": "Enhanced admissions registration page based on state regulations."
+    },
+    {
+      "name": "Academic finance",
+      "role": "FRONT-END, BACK-END DEVELOPER",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "Javascript",
+        "Bootstrap",
+        "Ajax",
+        "KendoUI",
+        "NET MVC",
+        "LinQ",
+        "C#",
+        "SQL"
+      ],
+      "description": "Revenue and expenditure management solutions for education."
+    },
+    {
+      "name": "Digital signatures",
+      "role": "FRONT-END DEVELOPER",
+      "technologies": [
+        "Angular 10+",
+        "Typescript",
+        "Rxjs",
+        "Postman",
+        "HTML",
+        "SCSS",
+        "Javascript"
+      ],
+      "description": "Legally recognized electronic signature solution."
+    },
+    {
+      "name": "Report statistics",
+      "role": "FRONT-END DEVELOPER",
+      "technologies": [
+        "Angular 10+",
+        "Typescript",
+        "Rxjs",
+        "Postman",
+        "HTML",
+        "SCSS",
+        "Javascript"
+      ],
+      "description": "Technology upgrade for report generation."
+    }
+  ],
+  "skills": [
+    "HTML5",
+    "CSS3",
+    "Javascript",
+    "Bootstrap",
+    "JQuery",
+    "Ajax",
+    "KendoUI",
+    "Angular",
+    "Typescript",
+    "RxJS",
+    "MVC",
+    "C#",
+    "SQL Server",
+    "Git",
+    "GitHub",
+    "Sourcetree",
+    "Jira",
+    "TFS",
+    "HTML",
+    "CSS",
+    ".NET MVC",
+    "LinQ",
+    "SQL",
+    "Redis Cahce"
+  ],
+  "certifications": [],
+  "languages": [
+    {
+      "language": "English",
+      "level": ""
+    }
+  ]
+}

@@ -7,7 +7,7 @@
   },
   "metric_display": {
     "mae_vs_human": "0.7 / 10",
-    "consistency": "97.34%"
+    "consistency": "85.34%"
   },
   "human_benchmark_sample_count": null,
   "human_rater_count": null,

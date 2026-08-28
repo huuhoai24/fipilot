@@ -23,12 +23,12 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Navigate to="/" replace />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/text-interview/:sessionId" element={<TextInterviewPage mode="text" />} />
               <Route element={<AppLayout />}>
-                <Route path="/text-interview" element={<TextInterviewPage mode="text" />} />
+                <Route path="/text-interview" element={<TextInterviewPage key="text-setup" mode="text" />} />
+                <Route path="/text-interview/:sessionId" element={<TextInterviewPage key="text-room" mode="text" />} />
                 <Route path="/text-interview/:sessionId/report" element={<InterviewReportPage />} />
-                <Route path="/speech-interview" element={<TextInterviewPage mode="voice" />} />
-                <Route path="/speech-interview/:sessionId" element={<SpeechInterviewPage />} />
+                <Route path="/speech-interview" element={<TextInterviewPage key="voice-setup" mode="voice" />} />
+                <Route path="/speech-interview/:sessionId" element={<SpeechInterviewPage key="voice-room" />} />
                 <Route path="/interview-history" element={<InterviewHistoryPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/candidate-profile/:candidateId" element={<CandidateProfilePage />} />

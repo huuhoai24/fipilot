@@ -1,0 +1,113 @@
+{
+  "cv_id": "cv_018",
+  "full_name": "Duc Le",
+  "email": "",
+  "phone": "",
+  "location": "Ho Chi Minh City, Vietnam",
+  "summary": "A logical thinker, a natural planner and organizer. I have good business acumen and am capable of learning quickly, strengthened with high curiosity that help me to well adapt to various business domains and positions successfully. Typically, not very good at selling myself in speech, but definitely, I am competent and always strive to delivering high quality working standards",
+  "education": [
+    {
+      "school": "University of Manitoba",
+      "major": "Data science and Business Management",
+      "degree": "Master's degree",
+      "start_date": "2019-09",
+      "end_date": "2022-02"
+    },
+    {
+      "school": "University of Economics Ho Chi Minh city",
+      "major": "International Bussiness",
+      "degree": "Bachelor's degree",
+      "start_date": "2010",
+      "end_date": "2014"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Cadena HRM",
+      "position": "Project Manager",
+      "start_date": "2017-11",
+      "end_date": "2019-05",
+      "description": [
+        "Monitor International Projects from initiation through delivery using Waterfall & Agile approach",
+        "Serve as liaison between the company and customers to ensure all expectations, targets and requirements are met",
+        "Plan, organize and manage different projects simultaneously",
+        "Project requirements handling & analysis",
+        "Team support & management: Task, Expectation and Conflict Management; People development",
+        "Perform sprint demonstration",
+        "Work closely with technical lead to ensure work quality and resource utilization",
+        "Monitor project deliverables and progress through effective and continuous communication with project members",
+        "Disseminate information on any problems or potential delays in a timely manner",
+        "#Projects Portfolio: successfully develop & integrate HRM Software Product to client’s system – digitalize operations & improve efficiency; some of the most prominent projects including: - Laos: ST Bank (Industry: Banking – Local Partner: Datacom) - Thailand: GNX – GDC: Grand Diamond Hotel & Casino (Industry: Hotel & Casino – Local Partner: Genex Solution) - Cambodia: Community Development Foundation Cambodia (Industry: NGO – Local Partner: Campura)"
+      ]
+    },
+    {
+      "company": "Baker Hughes",
+      "position": "Human Resources Analyst - Project",
+      "start_date": "2017-01",
+      "end_date": "2017-10",
+      "description": [
+        "Analyze current operations",
+        "Define data recovery and improvement projects goals",
+        "Plan, organize and deliver projects",
+        "Manage HR operations to ensure smooth transition, icluding: - C&B & Recruitment - System management & Performance Management"
+      ]
+    },
+    {
+      "company": "A.P. Moller - Maersk",
+      "position": "HR Generalist - HR Project",
+      "start_date": "2016-03",
+      "end_date": "2016-10",
+      "description": [
+        "HR Transformation (Digitalization) Project: - Work with global team on project planning & delivery - Facilitate new system & processes training & Hypercare for Managers & staff in transition period",
+        "Manage HR operations to ensure smooth transition to new system/process, including:",
+        "# Compensation and Benefits - Monthly deliver Payroll, PIT & Insurance timely including Gorvernment reports and payment with high accuracy - Quaterly and Yearly bonus calculation - Advising and explaining concerns for employees about C&B matters, Group Policies and Labor law. - Managing Data Transfer & Integration – Local focal point for Payroll Parallel running and cross checking with Global External Payroll Partner in HR Transformation project.",
+        "# Recruitment - Take lead for Temporary position recruitment for all Viet Nam locations and Cambodia - Manage & Record Cluster Recruitment System - Manage Recruitment Transformation Project: coordinating to support process change for recruiment – transferring to Global partner.",
+        "Manage HR Systems & Performance Review Cycle"
+      ]
+    },
+    {
+      "company": "Talentnet Corporation",
+      "position": "Human Resources Consultant",
+      "start_date": "2015-01",
+      "end_date": "2016-02",
+      "description": [
+        "Provide HR Management Services for Contractors from Onboarding to Termination",
+        "Provide Professional HR Consultancy for Clients on Labor Relations & Regulations",
+        "HRIS implementation project: support in system testing, giving feedback to development team, facilitate new system training"
+      ]
+    },
+    {
+      "company": "Queen Food Company Limited",
+      "position": "Online sales intern",
+      "start_date": "2013-12",
+      "end_date": "2014-10",
+      "description": [
+        "Research and generate lists of potential customers.",
+        "Post Sales advertisings",
+        "Provide input on customer briefs, presentations, and sales literature.",
+        "Help develop client relationships and retain existing accounts.",
+        "Assist in evaluating new opportunities.",
+        "Learn and apply sales techniques.",
+        "Maintain sales record"
+      ]
+    }
+  ],
+  "projects": [],
+  "skills": [
+    "Project Management",
+    "Consulting",
+    "Stakeholder Management",
+    "Customer Service",
+    "Teamwork",
+    "Business Analytics",
+    "Creative Problem Solving",
+    "Business Analysis",
+    "Data Analytics",
+    "Negotiation"
+  ],
+  "certifications": [
+    "Certificate of completion - PMP Training - Master of Project Academy",
+    "Project Selection Methods - Udemy"
+  ],
+  "languages": []
+}

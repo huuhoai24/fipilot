@@ -1,0 +1,142 @@
+{
+  "cv_id": "cv_036",
+  "full_name": "CALVERT W. JONES",
+  "email": "cjones@sims.berkeley.edu",
+  "phone": "",
+  "location": "786 Lombard Street, San Francisco, CA 94133",
+  "summary": "",
+  "education": [
+    {
+      "school": "University of California, Berkeley",
+      "major": "Information Management & Systems",
+      "degree": "Ph.D.",
+      "start_date": "2004-09",
+      "end_date": "2009-05"
+    },
+    {
+      "school": "University of California, Berkeley",
+      "major": "Information Management & Systems",
+      "degree": "M.I.M.S.",
+      "start_date": "2004-09",
+      "end_date": "2006-05"
+    },
+    {
+      "school": "Columbia College, Columbia University",
+      "major": "Philosophy, Computer Science",
+      "degree": "B.A.",
+      "start_date": "",
+      "end_date": "2003-05"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "Markle Foundation",
+      "position": "Researcher",
+      "start_date": "2005-06",
+      "end_date": "2005-08",
+      "description": [
+        "Collaborated with Stefaan Verhulst (Chief of Research) and the Task Force on National Security in the Information Age to research American intelligence reorganization, conceptual approaches to terrorism, and information-sharing provisions to support a newly decentralized national security community."
+      ]
+    },
+    {
+      "company": "Hoover Institution, Stanford University",
+      "position": "Research Assistant",
+      "start_date": "2005-01",
+      "end_date": "2005-04",
+      "description": [
+        "Carried out research for Judge Abraham Sofaer, a Senior Fellow in Foreign Policy and National Security Affairs, in preparation for a conference on state responses to transnational cyber-threats hosted by Carnegie Mellon University and the Georgia Institute of Technology."
+      ]
+    },
+    {
+      "company": "World Learning",
+      "position": "Research Assistant",
+      "start_date": "2003-09",
+      "end_date": "2004-08",
+      "description": [
+        "Conducted research on country conditions",
+        "wrote grant proposals, capacity statements, and policy papers for publication",
+        "helped coordinate the organization’s October 2003 conference in the U.K.",
+        "provided assistance for worldwide projects",
+        "Worked with Dr. Ann Hudock, Senior Advisor for Democracy and Governance, to develop new projects in Vietnam.",
+        "Worked with Jill Benderly, Co-Director of STAR, a ten-year regional program to promote women’s economic and political development in the post-Yugoslav republics.",
+        "Served as principal writer and researcher on two successful grant proposals to USAID."
+      ]
+    },
+    {
+      "company": "Computer Ethics Institute (CEI)",
+      "position": "Program Manager Associate",
+      "start_date": "2003-10",
+      "end_date": "2004-07",
+      "description": [
+        "Worked with Dr. Ramon Barquin, director of the Computer Ethics Institute, affiliated with the Brookings Institution.",
+        "Developed grant proposals and edited publications, most recently on the challenges of information-sharing in the digital era."
+      ]
+    },
+    {
+      "company": "Johns Hopkins University Center for Talented Youth (CTY)",
+      "position": "Teaching Assistant",
+      "start_date": "2003",
+      "end_date": "2003",
+      "description": [
+        "Served as teaching assistant for two college-level courses in computer science (Data Structures and Algorithms) and philosophy (Logic: Principles of Reasoning).",
+        "Each course was offered in an intensive 3-week, residential format with 7 hours of class per day."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Al Qaeda’s Innovative Improvisers: Consequences of the Network Structure for Innovation and Learning in Global Politics.",
+      "role": "",
+      "technologies": [],
+      "description": "Submitted for publication (18 September 2005), Cambridge Review of International Affairs."
+    },
+    {
+      "name": "Online Impression Management: Case studies of activist Web sites and their credibility enhancing tactics during the Kosovo war.",
+      "role": "",
+      "technologies": [],
+      "description": "(Presented at the University of Oxford, Oxford Internet Institute, “Safety and Security in a Networked World,” 8-10 September 2005)."
+    },
+    {
+      "name": "Democratizing the Media",
+      "role": "",
+      "technologies": [],
+      "description": "Surveys and critiques media sector support around the world, developed out of a paper presented to the Ford Foundation and Aspen Institute in October 2003."
+    },
+    {
+      "name": "The Challenge of Information Sharing: Balancing National Security and Civil Liberties in the Post-9/11 Era",
+      "role": "",
+      "technologies": [],
+      "description": "Assisted in editing for this report on information-sharing strategies, published by the Brookings Institution ITS, Computer Ethics Institute, and Ascential Software Corporation."
+    }
+  ],
+  "skills": [
+    "Strong writing ability",
+    "Strong presentation and public speaking skills",
+    "Proficiency in German",
+    "Proficiency in Spanish",
+    "Web site development",
+    "Java programming",
+    "database development",
+    "software engineering",
+    "Strong skills in mathematics",
+    "statistics",
+    "data analysis",
+    "Event planning",
+    "conference facilitation skills",
+    "Adaptability to foreign cultures",
+    "experience living abroad"
+  ],
+  "certifications": [
+    "Zertificat Deutsch"
+  ],
+  "languages": [
+    {
+      "language": "German",
+      "level": "Proficiency"
+    },
+    {
+      "language": "Spanish",
+      "level": "Proficiency"
+    }
+  ]
+}

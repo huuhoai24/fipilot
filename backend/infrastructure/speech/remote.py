@@ -185,7 +185,8 @@ class RemoteAudioPipeline:
         self._connection_context = None
         self._websocket = None
         if context is not None:
-            await context.__aexit__(None, None, None)
+            with suppress(Exception):
+                await context.__aexit__(None, None, None)
 
     async def _send_audio(
         self,

@@ -1,0 +1,135 @@
+{
+  "cv_id": "cv_127",
+  "full_name": "CAO DUC ANH",
+  "email": "",
+  "phone": "",
+  "location": "Thu Duc City, HCM City",
+  "summary": "Experienced and dedicated mobile app developer offering more than 8 years of expertise to the IT industry. Dynamic and personable with strong focus on application lifecycle. Strengths in Android native development and cross-platform mobile development with React Native.",
+  "education": [
+    {
+      "school": "UNIVERSITY OF SCIENCES - HCM",
+      "major": "Information Technology",
+      "degree": "",
+      "start_date": "2010",
+      "end_date": "2014"
+    }
+  ],
+  "experiences": [
+    {
+      "company": "SMARTPAY",
+      "position": "Mobile developer",
+      "start_date": "2021-05",
+      "end_date": "2023-12",
+      "description": [
+        "Developed e-wallet application in react native (Ví SmartPay).",
+        "Built functions: QR payment, transaction history, loan, withdraw money from FE Credit card, increase income for merchants…",
+        "Used technical: Redux-Saga, React Navigation, Apisauce, React Native Firebase, Native module, Class component, React hooks",
+        "Developed card payment application in Kotlin for POS device (SmartPOS).",
+        "Built functions: installment, insurance, link order, config White Label app, OPOS…",
+        "Used technical: MVVM, MVP, Dagger, Coroutines, Retrofit, Databinding, Live data, MQTT",
+        "Developed android libraries for SmartPay (Android SDK).",
+        "SDK: Fema SDK - Java, Merchant Locator – Kotlin",
+        "Published SDKs to Github"
+      ]
+    },
+    {
+      "company": "TMA SOLUTIONS",
+      "position": "Mobile developer",
+      "start_date": "2020-12",
+      "end_date": "2021-05",
+      "description": [
+        "Developed and maintenance map application (Java/Objective C).",
+        "Used Adapter Design Pattern",
+        "Used map framework of customer",
+        "Checked for memory leaks on Android",
+        "Performed assigned tasks: report, design, code, unit test.",
+        "Worked with Japanese customers"
+      ]
+    },
+    {
+      "company": "VIETNAM INTERNATIONAL BANK",
+      "position": "Mobile developer",
+      "start_date": "2018-10",
+      "end_date": "2020-04",
+      "description": [
+        "Developed mobile banking application in Java/Objective C (My VIB).",
+        "Built functions: Reward, Saving, Change UI, Prudential...",
+        "Used technical: Realm database, Rest APIs, Retrofit",
+        "Developed SmartSale app in react native.",
+        "Built functions: source code structure, login, interest rates, notification…",
+        "Used technical: Redux-Saga, React Navigation, Apisauce, React Native Firebase, React Native SSL Pinning",
+        "Deployed app to TestFlight"
+      ]
+    },
+    {
+      "company": "NEWSTEAD TECHNOLOGIES VIET NAM",
+      "position": "Mobile developer",
+      "start_date": "2017-07",
+      "end_date": "2018-10",
+      "description": [
+        "Developed application for restaurant (NuPOS – Swift/Kotlin).",
+        "Created new app for iphone and android from app of Ipad",
+        "Built functions: Activities, Serve…",
+        "Used technical: MVC, Firebase, SQLite, Retrofit, Printer, Socket",
+        "Developed application for bar (Ione Bottle app – Kotlin).",
+        "Functions involved: Checkin, Checkout",
+        "Used technical: Retrofit, Rx Java, Camera"
+      ]
+    },
+    {
+      "company": "FPT SOFTWARE HCM",
+      "position": "Software developer",
+      "start_date": "2014-10",
+      "end_date": "2017-03",
+      "description": [
+        "Developed and maintenance application for ultrasound machines (C/C++/MFC).",
+        "Analyzed the requirement, design, code, unit test, maintenance, report.",
+        "Worked with Japanese customers.",
+        "Worked with ISO process."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Flutter project: Watch Ads, Random Everything",
+      "role": "",
+      "technologies": [
+        "Flutter",
+        "firebase message",
+        "google admob",
+        "provider",
+        "drawer",
+        "widget"
+      ],
+      "description": "Created new app in Flutter"
+    },
+    {
+      "name": "PHP Website project: NITRA Collection of Mar",
+      "role": "",
+      "technologies": [
+        "PHP",
+        "Ubuntu",
+        "AWS-EC2"
+      ],
+      "description": "Published to Ubuntu server on AWS-EC2:"
+    }
+  ],
+  "skills": [
+    "Android (Kotlin/Java)",
+    "React Native (Javascript)",
+    "IOS (Swift/Objective C)",
+    "Flutter",
+    "C/C++",
+    "Git",
+    "SVN",
+    "Sketch",
+    "Zeplin",
+    "Figma",
+    "Marvelapp",
+    "Photoshop",
+    "Confluence",
+    "Jira"
+  ],
+  "certifications": [],
+  "languages": []
+}
