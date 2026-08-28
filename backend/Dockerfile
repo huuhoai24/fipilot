@@ -2,7 +2,8 @@ FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=8000
+    PORT=8000 \
+    PYTHONPATH=/app
 
 WORKDIR /app
 
@@ -13,6 +14,12 @@ RUN apt-get update \
 COPY pyproject.toml uv.lock ./
 COPY fipilot ./fipilot
 COPY api ./api
+COPY core ./core
+COPY gateway ./gateway
+COPY services ./services
+COPY infrastructure ./infrastructure
+COPY shared ./shared
+COPY app ./app
 COPY main.py ./main.py
 COPY alembic.ini ./alembic.ini
 COPY alembic ./alembic

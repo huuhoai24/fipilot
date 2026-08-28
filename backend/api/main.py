@@ -22,9 +22,9 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    logger.info("Loading the resume extraction model")
-    get_extractor()
-    logger.info("Resume extraction model is ready")
+    # Pipeline mới (DocumentService + ResumeAgent) khởi tạo lazy qua DI.
+    # Không còn cần pre-load YOLO model ở startup.
+    logger.info("FiPilot API starting up (new pipeline: DocumentService + ResumeAgent)")
     yield
 
 
@@ -32,17 +32,22 @@ app = FastAPI(title="FiPilot Resume API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origin_regex=r"https?://.*",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-MAX_FILE_SIZE = 5 * 1024 * 1024
+# ---------------------------------------------------------------------------
+# New structured routers (gateway layer)
+# ---------------------------------------------------------------------------
+from gateway.api.resume import router as _resume_router  # noqa: E402
+from gateway.api.interview import router as _interview_router  # noqa: E402
+
+app.include_router(_resume_router)
+app.include_router(_interview_router)
+
+MAX_FILE_SIZE = 10 * 1024 * 1024
 MAX_AUDIO_SIZE = 20 * 1024 * 1024
 
 _extractor = None
@@ -129,7 +134,10 @@ def search_domain_hits(description: str, role: str) -> tuple[dict, ...]:
 
         return tuple(search_domain(description, role, top_k=3))
     except Exception:
-        logger.warning("Domain knowledge lookup failed; continuing with resume context", exc_info=True)
+        logger.warning(
+            "Domain knowledge lookup failed; continuing with resume context",
+            exc_info=True,
+        )
         return ()
 
 
@@ -138,7 +146,9 @@ def get_domain_hits(project: dict, role: str) -> list[dict]:
     return list(search_domain_hits(description, role)) if description else []
 
 
-def choose_project(work_experience: list[dict], used_project_names: list[str] | None = None) -> dict:
+def choose_project(
+    work_experience: list[dict], used_project_names: list[str] | None = None
+) -> dict:
     used_names = set(used_project_names or [])
     candidates = [
         project
@@ -185,14 +195,18 @@ def register(request: RegisterRequest):
 
         user = create_user(request.email, request.full_name, request.password)
         token = create_session(user.id)
-        response = Response(content=json.dumps(auth_user_payload(user)), media_type="application/json")
+        response = Response(
+            content=json.dumps(auth_user_payload(user)), media_type="application/json"
+        )
         set_auth_cookie(response, token)
         return response
     except ValueError as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
     except Exception as error:
         logger.exception("Registration failed")
-        raise HTTPException(status_code=503, detail="Authentication service is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Authentication service is unavailable"
+        ) from error
 
 
 @app.post("/api/v1/auth/login")
@@ -204,14 +218,18 @@ def login(request: LoginRequest):
         if user is None:
             raise HTTPException(status_code=401, detail="Invalid email or password")
         token = create_session(user.id)
-        response = Response(content=json.dumps(auth_user_payload(user)), media_type="application/json")
+        response = Response(
+            content=json.dumps(auth_user_payload(user)), media_type="application/json"
+        )
         set_auth_cookie(response, token)
         return response
     except HTTPException:
         raise
     except Exception as error:
         logger.exception("Login failed")
-        raise HTTPException(status_code=503, detail="Authentication service is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Authentication service is unavailable"
+        ) from error
 
 
 @app.get("/api/v1/auth/me")
@@ -222,7 +240,9 @@ def current_user(request: Request):
         user = get_user_from_token(request.cookies.get("fipilot_session"))
     except Exception as error:
         logger.exception("Could not load current user")
-        raise HTTPException(status_code=503, detail="Authentication service is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Authentication service is unavailable"
+        ) from error
     if user is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return auth_user_payload(user)
@@ -250,7 +270,9 @@ def synthesize_speech(request: SpeechRequest):
         return Response(content=audio, media_type="audio/wav")
     except Exception as error:
         logger.exception("Speech synthesis failed")
-        raise HTTPException(status_code=502, detail="Speech synthesis failed") from error
+        raise HTTPException(
+            status_code=502, detail="Speech synthesis failed"
+        ) from error
 
 
 @app.post("/api/v1/speech/recognize")
@@ -276,7 +298,9 @@ async def recognize_speech(audio: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(error)) from error
     except Exception as error:
         logger.exception("Speech recognition failed")
-        raise HTTPException(status_code=502, detail="Speech recognition failed") from error
+        raise HTTPException(
+            status_code=502, detail="Speech recognition failed"
+        ) from error
 
 
 @app.post("/api/v1/interview/questions")
@@ -361,7 +385,9 @@ def generate_next_interview_question(request: InterviewNextRequest):
             )
             follow_up_count = request.follow_up_count + 1
         else:
-            project = choose_project(request.work_experience, request.used_project_names)
+            project = choose_project(
+                request.work_experience, request.used_project_names
+            )
             next_question = generate_question(
                 llm,
                 project,
@@ -371,7 +397,9 @@ def generate_next_interview_question(request: InterviewNextRequest):
             )
             follow_up_count = 0
 
-        next_question["project"] = str(project.get("name", next_question["company"])).strip()
+        next_question["project"] = str(
+            project.get("name", next_question["company"])
+        ).strip()
         next_question["project_context"] = project
         return {
             "decision": decision,
@@ -415,58 +443,179 @@ def generate_interview_report(request: InterviewReportRequest):
 
 @app.post("/api/v1/resume/upload")
 async def upload_resume(
+    request: Request,
     file: UploadFile = File(...),
     client_id: UUID | None = Form(default=None),
 ):
+    """Upload a PDF or DOCX resume.
+
+    **Pipeline mới** (thay thế YOLO):
+        1. Validate extension + size
+        2. DocumentService: pymupdf4llm (PDF) / python-docx (DOCX)
+        3. SHA-256 hash → cache check (memory → DB)
+        4. ResumeAgent → full CandidateProfile
+        5. Persist → PostgreSQL resumes table
+
+    **Response**:
+    ```json
+    {
+        "id": "<uuid>",
+        "candidate_id": "<uuid>",
+        "filename": "...",
+        "profile": {
+            "name": "...", "skills": [...],
+            "experiences": [...], "education": [...], ...
+        },
+        "extraction": {"status": "complete|partial", "source_type": "pdf|docx", ...}
+    }
+    ```
+    """
+    import hashlib
+    import shutil
+
+    from core.dependencies import (
+        CurrentUser,
+        get_current_user,
+        get_document_service,
+        get_llm_service,
+        get_processed_resume_cache,
+        get_resume_agent,
+        get_resume_repository,
+    )
+    from infrastructure.documents import DocumentProcessingError
+    from services.profile_scanner.cache import RESUME_EXTRACTION_VERSION
+    from services.profile_scanner.exceptions import NonResumeDocumentError
+
     started_at = time.perf_counter()
-    filename = file.filename or ""
-    if not filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+    filename = file.filename or "resume"
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+
+    # 1. Validate extension
+    if ext not in {"pdf", "docx"}:
+        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF và DOCX.")
 
     content = await file.read()
+
+    # 2. Validate size
     if len(content) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=413, detail="File exceeds 10 MB limit")
-    if not content.startswith(b"%PDF-"):
-        raise HTTPException(
-            status_code=400, detail="The uploaded file is not a valid PDF"
-        )
+        raise HTTPException(status_code=413, detail="File vượt quá giới hạn 5 MB.")
 
     tmp_path = None
     try:
-        with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=f".{ext}", delete=False) as tmp:
             tmp.write(content)
             tmp_path = Path(tmp.name)
 
-        extraction_started_at = time.perf_counter()
-        result = get_extractor().pipeline(tmp_path)
-        logger.info(
-            "Resume extraction completed for %s in %.2f seconds",
-            filename,
-            time.perf_counter() - extraction_started_at,
-        )
-        payload = json.loads(result)
-        resume_id = None
-        try:
-            from fipilot.persistence import save_resume
+        # 3. SHA-256 hash
+        content_hash = hashlib.sha256(content).hexdigest()
 
-            resume_id = save_resume(client_id, filename, payload)
-        except Exception:
-            logger.exception("Database persistence failed during resume upload")
-        return {"id": resume_id, "filename": filename, "profile": payload}
-    except ValueError as e:
-        raise HTTPException(status_code=422, detail=str(e))
+        # Resolve user_id từ client_id (backward compat) hoặc fallback
+        user_id = str(client_id) if client_id else "legacy-anonymous"
+
+        document_service = get_document_service()
+        resume_cache = get_processed_resume_cache()
+        resume_agent = get_resume_agent(get_llm_service())
+        repository = get_resume_repository()
+
+        # 4. Extract text (pymupdf4llm cho PDF, python-docx cho DOCX)
+        try:
+            document_result = document_service.extract_document(
+                str(tmp_path), filename, content_type=file.content_type
+            )
+        except DocumentProcessingError as exc:
+            raise HTTPException(status_code=exc.status_code, detail=exc.safe_message)
+
+        resume_text = document_result.text
+        if not resume_text or len(resume_text.strip()) < 50:
+            raise HTTPException(
+                status_code=422, detail="Không trích xuất được đủ text từ file."
+            )
+
+        # 5. Cache lookup
+        profile = resume_cache.get(user_id, content_hash, RESUME_EXTRACTION_VERSION)
+        cache_source = "memory_cache"
+
+        if profile is None:
+            db_hit = repository.find_by_content_hash(
+                user_id=user_id, content_hash=content_hash
+            )
+            if db_hit is not None:
+                profile = db_hit
+                cache_source = "db_cache"
+                resume_cache.store(
+                    user_id, content_hash, profile, RESUME_EXTRACTION_VERSION
+                )
+
+        # 6. LLM extraction (ResumeAgent) — chỉ khi cache miss
+        is_fresh = False
+        if profile is None:
+            cache_source = "extracted"
+            try:
+                processing_result = await resume_agent.extract_profile_result(
+                    resume_text
+                )
+                profile = processing_result.profile
+            except NonResumeDocumentError as exc:
+                raise HTTPException(status_code=422, detail=exc.safe_message)
+            is_fresh = True
+
+        # 7. Persist
+        resume_id = None
+        if is_fresh:
+            try:
+                persisted = repository.save_resume(
+                    user_id=user_id,
+                    filename=filename,
+                    profile=profile,
+                    content_hash=content_hash,
+                    resume_text=resume_text,
+                )
+                resume_cache.store(
+                    user_id, content_hash, profile, RESUME_EXTRACTION_VERSION
+                )
+                resume_id = persisted.candidate_id
+                profile = persisted
+            except Exception:
+                logger.exception("Database persistence failed during resume upload")
+        else:
+            resume_id = getattr(profile, "candidate_id", None)
+
+        elapsed_ms = int((time.perf_counter() - started_at) * 1000)
+        logger.info(
+            "Resume upload completed: %s in %dms (source=%s)",
+            filename,
+            elapsed_ms,
+            cache_source,
+        )
+
+        profile_dict = profile.model_dump(exclude={"candidate_id"})
+        # Backward compatibility cho frontend cũ đọc work_experience
+        profile_dict["work_experience"] = profile_dict.get("experiences", [])
+
+        return {
+            # backward-compat: giữ "id" cũ, thêm "candidate_id" mới
+            "id": resume_id,
+            "candidate_id": resume_id,
+            "filename": filename,
+            "profile": profile_dict,
+            "extraction": {
+                "status": "partial" if document_result.is_partial else "complete",
+                "source": cache_source,
+                "source_type": document_result.source_type,
+                "extraction_method": document_result.extraction_method,
+                "character_count": document_result.character_count,
+                "file_hash": content_hash,
+                "elapsed_ms": elapsed_ms,
+            },
+        }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Extraction failed: {e}")
+    except Exception as exc:
+        logger.exception("Unexpected error during resume upload")
+        raise HTTPException(status_code=500, detail=f"Extraction failed: {exc}")
     finally:
         if tmp_path is not None:
             tmp_path.unlink(missing_ok=True)
-        logger.info(
-            "Resume upload request completed for %s in %.2f seconds",
-            filename,
-            time.perf_counter() - started_at,
-        )
 
 
 @app.get("/api/v1/resumes/latest")
@@ -477,7 +626,9 @@ def latest_resume(client_id: UUID):
         resume = get_latest_resume(client_id)
     except Exception as error:
         logger.exception("Could not load the latest resume")
-        raise HTTPException(status_code=503, detail="Database is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Database is unavailable"
+        ) from error
     if resume is None:
         raise HTTPException(status_code=404, detail="No saved resume was found")
     return resume
@@ -491,7 +642,9 @@ def interview_result(session_id: str, client_id: UUID):
         result = get_interview_result(session_id, client_id)
     except Exception as error:
         logger.exception("Could not load interview %s", session_id)
-        raise HTTPException(status_code=503, detail="Database is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Database is unavailable"
+        ) from error
     if result is None:
         raise HTTPException(status_code=404, detail="Interview was not found")
     return result
@@ -505,4 +658,6 @@ def interview_history(client_id: UUID):
         return {"interviews": list_interview_sessions(client_id)}
     except Exception as error:
         logger.exception("Could not load interview history")
-        raise HTTPException(status_code=503, detail="Database is unavailable") from error
+        raise HTTPException(
+            status_code=503, detail="Database is unavailable"
+        ) from error

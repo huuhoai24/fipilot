@@ -1,0 +1,360 @@
+Test file exists: True
+Validation passed: DOCX, 36557 bytes
+File Hash: 09bc01abdfcf08e3715b9b554a81b2635d001c3324f4bf9d6aeb17767a95eca3
+=== Document parser messages ===
+Using Tesseract for OCR processing.
+
+Extracted 4471 characters
+-- Preview --
+## NGUYEN HUU HOAI 
+
+AI Engineer Quy Nhon City, Viet Nam | +84 359 948 940 | Email | LinkedIn 
+
+PROFESSIONAL SUMMARY 
+
+Proactive AI Engineer with a strong foundation in Machine Learning, Computer Vision, and Deep Learning. Ex-perienced in building LLM integrations via Azure OpenAI. Eager to leverage technical expertise and a fast-learning mindset to bridge AI research with production-ready solutions. 
+
+TECHNICAL STACKS 
+
+Languages: Python, SQL, R, C# 
+
+Frameworks & Libraries: PyTorch, TensorFlow, Scikit-learn, OpenCV, YOLO 
+
+Version Control: Git, Gitlab 
+
+Backend & APIs: RESTful APIs, .NET Core 
+
+Database: CosmosDB, PostgreSQL 
+
+CI/CD & Project Management: Azure DevOps, Jira 
+
+Cloud & AI Platforms: Azure OpenAI, Azure AI Services 
+
+EDUCATION BACKGROUND 
+
+Bachelor of Engineering in Artificial Intelligence — FPT University, Quy Nhon AI Campus 
+
+GPA: 3.3/4.0 
+
+LANGUAGE SKILLS 
+
+Intermediate: Intermediate 
+
+Japanese: Basic 
+
+PROFESSIONAL EXPERIENCE HIGHLIGHTS (FPT SOFTWARE) 
+
+## **FPT Software** 
+
+**Project: Estimation Tool (05/2025 - 02/2026)** 
+
+**An AI-powered tool that assists Project Managers in estimating task effort points by analyzing sprint inputs through an LLM pipeline via Azure OpenAI.** 
+
+**Role: AI & Backend Developer (Intern)** 
+
+**Responsibilities:** 
+
+Engineered an LLM pipeline via Azure OpenAI (GPT) to automate sprint effort estimation for Project 
+
+Managers, reducing manual estimation effort in the delivery workflow. 
+
+Designed and iterated prompt engineering strategies (system prompts, context formatting, output 
+
+schema enforcement) through evaluation cycles to improve output consistency. 
+
+rate. 
+
+Processed and structured sprint input data into a a clean context pipeline for the LLM, with output 
+
+parsing and quality validation logic built in Python. 
+
+Technologies Used: 
+
+Python, C# 
+
+Sklearn, Pandas, .Net Core, CosmosDB 
+
+Azure AI Foundry, Azure OpenAI 
+
+Gitlab, HAPI 
+
+OTHER EXPERIENCE 
+
+Project: FiPilot – Intelligent AI Mock Interview (04/2026 – 07/2026) 
+
+End-to-end AI platform delivering interactive technical mock interviews with visual resume layout analysis, low-latency bidirectional voice interaction, and domain-grounded RAG evaluation. Role: AI Engineer Responsibilities: 
+
+Fine-tuned DocLayout-YOLO to visually segment complex multicolumn resume layouts into structured sections (Skills, Experiences, Projects), achieving 86.5% mAP@0.5 and 80.8% mAP@0.5:0.95, optimized via ONNX Runtime for rapid CPU inference. 
+
+Architected an adaptive real-time conversational pipeline using Azure OpenAI and Azure Speech Services (STT/TTS), maintaining sub-2.0s turn latency for seamless live technical interview simulations. 
+
+Implemented a domain-specific RAG knowledge retrieval 
+
+system (AI, Backend, Frontend) with multi-criteria rubric scoring to generate structured diagnostic feedback reports and targeted skill improvement roadmaps. 
+
+Technologies Used: 
+
+Python, PyTorch, ONNX Runtime, FastAPI 
+
+DocLayout-YOLO, YOLOv12, Azure OpenAI / LLM, Azure AI Speech (STT/TTS), RAG 
+
+**Project: Invoice OCR System (01/2025 – 05/2025)** 
+
+**Research project tackling Vietnamese invoice OCR — a domain with high complexity due to mixed fonts, layouts and handwriting — benchmarked against MC-OCR competition solutions.** 
+
+**Role: AI Engineer Responsibilities:** 
+
+Reduced invoice OCR Character Error Rate by 22%, benchmarked against competition-tier baselines. 
+
+Engineered multi-model pipeline (YOLOv11 → VietOCR → PhoBERT) with controlled fine-tuning on Viet-namese invoice datasets. 
+
+Built systematic evaluation framework with bounding-box visualization for iterative model comparison. 
+
+Technologies Used: 
+
+Python, PyTorch, TensorFlow 
+
+YOLOv11, PhoBERT, VietOCR 
+
+NumPy, OpenCV 
+
+## **Project: Scene Text Recognition (05/2024 – 11/2024)** 
+
+A computer vision system that automatically detects and recognizes text in natural scenes — such as street signs and advertisements — using deep learning. 
+
+## **Role: AI Developer** 
+
+Responsibilities: 
+
+Developed a scene text recognition system for natural environments (street signs, advertisements) using deep learning, delivering accurate text extraction via a web-based interface. 
+
+Engineered a full-stack pipeline integrating YOLOv11 detection and ResNet + Bi-LSTM + CTC architecture, with OpenCV preprocessing to handle real-world noise (perspective distortion, lighting variance). 
+
+Technologies Used: 
+
+Python, TensorFlow, YOLOv11 
+
+OpenCV, NumPy, Scikit-learn...
+Cache miss! Need to process.
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+Calling LLM...
+Extracted Name: Nguyen Huu Hoai
+Is Resume: True
+Skills: ['Machine Learning', 'Computer Vision', 'Deep Learning', 'Python', 'SQL', 'R', 'C#', 'PyTorch', 'TensorFlow', 'Scikit-learn', 'OpenCV', 'YOLO', 'Git', 'Gitlab', 'RESTful APIs', '.NET Core', 'CosmosDB', 'PostgreSQL', 'Azure DevOps', 'Jira', 'Azure OpenAI', 'Azure AI Services', 'Prompt Engineering', 'ONNX Runtime', 'FastAPI', 'DocLayout-YOLO', 'YOLOv12', 'Azure Speech Services', 'RAG', 'PhoBERT', 'VietOCR', 'NumPy', 'Bi-LSTM', 'CTC', 'ResNet']
+
+[Mock Repo] Saved Candidate ID: fc924c5e-3784-46dc-8a98-d0f8d1a71f0a
+[Mock Repo] Linked Profile: Nguyen Huu Hoai
+[Mock Repo] Linked File Hash: 09bc01abdfcf08e3715b9b554a81b2635d001c3324f4bf9d6aeb17767a95eca3
+
+--- FINAL API RESPONSE MOCK ---
+{'candidate_id': 'fc924c5e-3784-46dc-8a98-d0f8d1a71f0a',
+ 'extraction_metadata': {'file_hash': '09bc01abdfcf08e3715b9b554a81b2635d001c3324f4bf9d6aeb17767a95eca3',
+                         'status': 'completed'},
+ 'profile': {'is_resume': True,
+             'name': 'Nguyen Huu Hoai',
+             'recent_role': 'AI Engineer',
+             'skill_evidence': [{'evidence': 'Proactive AI Engineer with a '
+                                             'strong foundation in Machine '
+                                             'Learning, Computer Vision, and '
+                                             'Deep Learning.',
+                                 'skill': 'Machine Learning'},
+                                {'evidence': 'Developed a scene text '
+                                             'recognition system for natural '
+                                             'environments using deep learning '
+                                             'and YOLOv11.',
+                                 'skill': 'Computer Vision'},
+                                {'evidence': 'Engineered multi-model pipeline '
+                                             '(YOLOv11 → VietOCR → PhoBERT) '
+                                             'with controlled fine-tuning on '
+                                             'Vietnamese invoice datasets.',
+                                 'skill': 'Deep Learning'},
+                                {'evidence': 'Technologies Used: Python, C#, '
+                                             'Sklearn, Pandas, .Net Core, '
+                                             'CosmosDB, Azure AI Foundry, '
+                                             'Azure OpenAI.',
+                                 'skill': 'Python'},
+                                {'evidence': 'Engineered an LLM pipeline via '
+                                             'Azure OpenAI (GPT) to automate '
+                                             'sprint effort estimation.',
+                                 'skill': 'Azure OpenAI'},
+                                {'evidence': 'Designed and iterated prompt '
+                                             'engineering strategies (system '
+                                             'prompts, context formatting, '
+                                             'output schema enforcement).',
+                                 'skill': 'Prompt Engineering'},
+                                {'evidence': 'Fine-tuned DocLayout-YOLO and '
+                                             'used PyTorch for AI platform '
+                                             'delivering interactive technical '
+                                             'mock interviews.',
+                                 'skill': 'PyTorch'},
+                                {'evidence': 'Used TensorFlow in Invoice OCR '
+                                             'System and Scene Text '
+                                             'Recognition projects.',
+                                 'skill': 'TensorFlow'},
+                                {'evidence': 'Used YOLOv11, YOLOv12, and '
+                                             'DocLayout-YOLO for object '
+                                             'detection and layout analysis.',
+                                 'skill': 'YOLO'},
+                                {'evidence': 'Optimized DocLayout-YOLO via '
+                                             'ONNX Runtime for rapid CPU '
+                                             'inference.',
+                                 'skill': 'ONNX Runtime'},
+                                {'evidence': 'Backend & APIs: RESTful APIs, '
+                                             '.NET Core.',
+                                 'skill': 'RESTful APIs'},
+                                {'evidence': 'Version Control: Git, Gitlab.',
+                                 'skill': 'Git'},
+                                {'evidence': 'Technologies Used: FastAPI in AI '
+                                             'platform project.',
+                                 'skill': 'FastAPI'},
+                                {'evidence': 'Architected real-time '
+                                             'conversational pipeline using '
+                                             'Azure Speech Services (STT/TTS).',
+                                 'skill': 'Azure Speech Services'},
+                                {'evidence': 'Implemented a domain-specific '
+                                             'RAG knowledge retrieval system '
+                                             'with multi-criteria rubric '
+                                             'scoring.',
+                                 'skill': 'RAG'}],
+             'skills': ['Machine Learning',
+                        'Computer Vision',
+                        'Deep Learning',
+                        'Python',
+                        'SQL',
+                        'R',
+                        'C#',
+                        'PyTorch',
+                        'TensorFlow',
+                        'Scikit-learn',
+                        'OpenCV',
+                        'YOLO',
+                        'Git',
+                        'Gitlab',
+                        'RESTful APIs',
+                        '.NET Core',
+                        'CosmosDB',
+                        'PostgreSQL',
+                        'Azure DevOps',
+                        'Jira',
+                        'Azure OpenAI',
+                        'Azure AI Services',
+                        'Prompt Engineering',
+                        'ONNX Runtime',
+                        'FastAPI',
+                        'DocLayout-YOLO',
+                        'YOLOv12',
+                        'Azure Speech Services',
+                        'RAG',
+                        'PhoBERT',
+                        'VietOCR',
+                        'NumPy',
+                        'Bi-LSTM',
+                        'CTC',
+                        'ResNet'],
+             'years_experience': None}}
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+Planning interview for AI Engineer (Computer Vision & LLM) (Mid-level)...
+
+=== INTERVIEW BLUEPRINT ===
+
+Focus Areas: Computer Vision model development and optimization, Deep Learning frameworks and architectures, Integration and deployment of AI models using cloud services, Large Language Models and prompt engineering techniques, Programming proficiency in Python and related ML libraries
+
+Round 1: General Machine Learning and Programming Fundamentals (Easy - 20%)
+  -> Target Skills: Machine Learning, Python, SQL, R, C#, NumPy, Scikit-learn
+
+Round 2: Deep Learning and Computer Vision Basics (Medium - 30%)
+  -> Target Skills: Deep Learning, Computer Vision, PyTorch, TensorFlow, OpenCV, ResNet, YOLO, YOLOv12
+
+Round 3: Advanced Computer Vision and Model Deployment (Medium - 20%)
+  -> Target Skills: DocLayout-YOLO, ONNX Runtime, FastAPI, RESTful APIs, Git, Gitlab, .NET Core, Azure DevOps, Azure AI Services
+
+Round 4: Large Language Models and Prompt Engineering (Medium - 20%)
+  -> Target Skills: Azure OpenAI, Prompt Engineering, RAG, PhoBERT, VietOCR, Bi-LSTM, CTC
+
+Round 5: Cloud Services and Database Integration (Easy - 10%)
+  -> Target Skills: CosmosDB, PostgreSQL, Azure Speech Services, Azure DevOps, Jira
+
+[Mock Repo] Blueprint saved to cache & DB.
+[Mock Repo] Response: profile_version = v1
+[Orchestrator] Starting Round 1: General Machine Learning and Programming Fundamentals
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+Calling QuestionGeneratorAgent...
+
+=== API RESPONSE (Interview Start) ===
+Session ID: 2143b23d-3588-4ad4-8453-636d0c08f873
+
+[AI Interviewer Asks]:
+> Bạn hãy giải thích sự khác biệt giữa supervised learning và unsupervised learning trong machine learning, đồng thời cho ví dụ cụ thể về cách sử dụng Python với thư viện scikit-learn để thực hiện một bài toán supervised learning đơn giản.
+
+[Expected Key Points (Hidden from Candidate)]:
+- Supervised learning có dữ liệu đầu vào và nhãn (label) trong khi unsupervised learning không có nhãn
+- Supervised learning dùng để dự đoán hoặc phân loại dựa trên dữ liệu đã gán nhãn
+- Unsupervised learning dùng để tìm cấu trúc hoặc nhóm trong dữ liệu chưa gán nhãn
+- Ví dụ supervised learning: phân loại hoa Iris bằng mô hình Logistic Regression hoặc Decision Tree
+- Sử dụng scikit-learn để load dữ liệu, chia tập train/test, huấn luyện mô hình và đánh giá kết quả
+- Sử dụng Python để viết code rõ ràng, có import các thư viện cần thiết như sklearn.datasets, sklearn.model_selection, sklearn.linear_model
+
+===============================================
+[Ứng viên trả lời]:
+> Trong dự án phân tích hóa đơn, tôi đã sử dụng YOLOv12 thay vì YOLOv8 cũ vì kiến trúc mới của nó cho kết quả nhận diện Layout nhanh hơn hẳn.
+
+--- 1. EVALUATOR AGENT CHẤM ĐIỂM (EVIDENCE-BASED) ---
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+[1 - Not Met] Tiêu chí: Supervised learning có dữ liệu đầu vào và nhãn (label) trong khi unsupervised learning không có nhãn
+    Lý do: The candidate did not mention the presence or absence of labels in supervised or unsupervised learning.
+[1 - Not Met] Tiêu chí: Supervised learning dùng để dự đoán hoặc phân loại dựa trên dữ liệu đã gán nhãn
+    Lý do: There was no explanation about supervised learning being used for prediction or classification on labeled data.
+[1 - Not Met] Tiêu chí: Unsupervised learning dùng để tìm cấu trúc hoặc nhóm trong dữ liệu chưa gán nhãn
+    Lý do: The candidate did not address unsupervised learning or its purpose.
+[1 - Not Met] Tiêu chí: Ví dụ supervised learning: phân loại hoa Iris bằng mô hình Logistic Regression hoặc Decision Tree
+    Lý do: No example related to Iris dataset or supervised learning models was provided.
+[1 - Not Met] Tiêu chí: Sử dụng scikit-learn để load dữ liệu, chia tập train/test, huấn luyện mô hình và đánh giá kết quả
+    Lý do: The candidate did not mention scikit-learn or any steps related to data loading, splitting, training, or evaluation.
+[1 - Not Met] Tiêu chí: Sử dụng Python để viết code rõ ràng, có import các thư viện cần thiết như sklearn.datasets, sklearn.model_selection, sklearn.linear_model
+    Lý do: No Python code or mention of necessary imports was provided.
+
+Đánh giá chung: The candidate's answer is completely off-topic and does not address any part of the question regarding supervised and unsupervised learning or the use of scikit-learn in Python.
+
+--- 2. DECISION CONTROLLER (FOLLOW-UP) ---
+[Policy] Phát hiện lỗ hổng. Trigger cờ FOLLOW_UP cho tiêu chí: 'Supervised learning có dữ liệu đầu vào và nhãn (label) trong khi unsupervised learning không có nhãn'
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+
+[AI Interviewer Hỏi Xoáy]:
+> Bạn có thể giải thích rõ hơn về vai trò của nhãn (label) trong supervised learning và tại sao việc có nhãn lại quan trọng hơn so với unsupervised learning không?
+Bắt đầu xuất Report...
+
+===============================================
+       HACKERRANK CHAKRA-STYLE SCORECARD       
+===============================================
+
+⭐ OVERALL SCORE: 1.7 / 5.0
+
+🔍 EVIDENCE-ANCHORED BREAKDOWN:
+  1. Supervised learning có dữ liệu đầu vào và nhãn (label) trong khi unsupervised learning không có nhãn [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: The candidate did not mention the presence or absence of labels in supervised or unsupervised learning.
+
+  2. Supervised learning dùng để dự đoán hoặc phân loại dựa trên dữ liệu đã gán nhãn [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: There was no explanation about supervised learning being used for prediction or classification on labeled data.
+
+  3. Unsupervised learning dùng để tìm cấu trúc hoặc nhóm trong dữ liệu chưa gán nhãn [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: The candidate did not address unsupervised learning or its purpose.
+
+  4. Ví dụ supervised learning: phân loại hoa Iris bằng mô hình Logistic Regression hoặc Decision Tree [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: No example related to Iris dataset or supervised learning models was provided.
+
+  5. Sử dụng scikit-learn để load dữ liệu, chia tập train/test, huấn luyện mô hình và đánh giá kết quả [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: The candidate did not mention scikit-learn or any steps related to data loading, splitting, training, or evaluation.
+
+  6. Sử dụng Python để viết code rõ ràng, có import các thư viện cần thiết như sklearn.datasets, sklearn.model_selection, sklearn.linear_model [1 - Not Met]
+     > Bằng chứng: [Không tìm thấy bằng chứng trong Transcript]
+     > Đánh giá: No Python code or mention of necessary imports was provided.
+
+💡 ACTIONABLE COACHING FEEDBACK:
+Đang phân tích lỗ hổng để sinh lời khuyên...
+SmartResume: using Azure OpenAI endpoint https://hoai-openai-test-2026-55ac1.openai.azure.com/openai/v1/ (model: gpt41mini)
+> Bạn cần làm rõ hơn về sự khác biệt giữa supervised và unsupervised learning, đặc biệt là việc supervised learning có dữ liệu đầu vào kèm nhãn (label) còn unsupervised learning thì không có nhãn. Hãy giải thích rõ supervised learning thường dùng để dự đoán hoặc phân loại dựa trên dữ liệu đã gán nhãn, trong khi unsupervised learning dùng để tìm cấu trúc hoặc nhóm trong dữ liệu chưa gán nhãn. Bạn cũng nên chuẩn bị các ví dụ cụ thể, ví dụ như sử dụng mô hình Logistic Regression hoặc Decision Tree để phân loại bộ dữ liệu Iris trong supervised learning. Ngoài ra, hãy làm quen với việc sử dụng thư viện scikit-learn trong Python để load dữ liệu, chia tập train/test, huấn luyện mô hình và đánh giá kết quả, đồng thời viết code rõ ràng với các import cần thiết như sklearn.datasets, sklearn.model_selection, sklearn.linear_model để thể hiện kỹ năng thực hành của bạn trong các buổi phỏng vấn thực tế.

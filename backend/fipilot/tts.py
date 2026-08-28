@@ -69,6 +69,7 @@ def synthesize_speech(text: str, rate: str = "+0%") -> bytes:
         method="POST",
     )
 
+    import http.client
     try:
         with urllib.request.urlopen(request, timeout=30) as response:
             audio = response.read()
@@ -77,6 +78,8 @@ def synthesize_speech(text: str, rate: str = "+0%") -> bytes:
         raise RuntimeError(f"Azure Speech REST failed ({error.code}): {details}") from error
     except urllib.error.URLError as error:
         raise RuntimeError(f"Azure Speech REST connection failed: {error.reason}") from error
+    except http.client.IncompleteRead as error:
+        raise RuntimeError("Azure Speech REST connection interrupted") from error
 
     if not audio:
         raise RuntimeError("Azure Speech REST returned empty audio")
