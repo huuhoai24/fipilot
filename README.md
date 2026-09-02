@@ -6,7 +6,7 @@ FiPilot is an AI-powered technical interview platform. It analyzes resumes, gene
 
 [![Watch the FiPilot demo](docs/demo-cover.jpg)](docs/demo.mp4?raw=true)
 
-**[▶ Watch or download the demo](docs/demo.mp4?raw=true)**
+
 
 ## Features
 
