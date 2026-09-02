@@ -6,31 +6,47 @@ from concurrent.futures import ThreadPoolExecutor
 import json_repair
 from dotenv import load_dotenv
 
-from fipilot.utils.config import config
 from fipilot.utils.prompts import get_prompts
 
 
 class LLMClient:
     def __init__(self):
+        load_dotenv()
         self.prompts = get_prompts()
         self.remote_client = None
-        azure = getattr(config, 'azure_openai', None)
-        if azure and azure.get('base_url'):
+        base_url = (
+            os.environ.get("AZURE_OPENAI_BASE_URL")
+            or os.environ.get("AZURE_FOUNDRY_ENDPOINT")
+            or os.environ.get("OPENAI_BASE_URL")
+        )
+        api_key = (
+            os.environ.get("AZURE_OPENAI_API_KEY")
+            or os.environ.get("AZURE_FOUNDRY_API_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+        )
+        self.model = (
+            os.environ.get("AZURE_OPENAI_SIMPLE_DEPLOYMENT")
+            or os.environ.get("AZURE_OPENAI_DEPLOYMENT")
+            or os.environ.get("AZURE_MODEL_NAME")
+            or os.environ.get("OPENAI_MODEL")
+            or "gpt-4o-mini"
+        )
+        if base_url and api_key:
             from openai import OpenAI
-            load_dotenv()
-            self.model = azure['model']
+
             self.remote_client = OpenAI(
-                base_url=azure['base_url'],
-                api_key=os.environ.get(azure.get('api_key_env', 'AZURE_OPENAI_API_KEY')),
+                base_url=base_url,
+                api_key=api_key,
                 timeout=60.0,
                 max_retries=0,
             )
-            print(f"SmartResume: using Azure OpenAI endpoint {azure['base_url']} (model: {self.model})")
+            print(f"SmartResume: using OpenAI endpoint {base_url} (model: {self.model})")
 
     def _call_llm(self, system_prompt: str, user_prompt: str, max_new_tokens: int = 1024) -> str:
         if self.remote_client is None:
             raise RuntimeError(
-                "Azure OpenAI not configured. Add 'azure_openai' section in config.yaml"
+                "LLM is not configured. Set AZURE_OPENAI_BASE_URL and "
+                "AZURE_OPENAI_API_KEY in .env"
             )
 
         response = self.remote_client.chat.completions.create(
@@ -50,7 +66,7 @@ class LLMClient:
     def extract_info(self, text_content: str, extract_types: List[str], resume_id: str, use_backup_channel: bool = False) -> Dict[str, Any]:
         if self.remote_client is None:
             raise RuntimeError(
-                "No LLM available. Configure 'azure_openai' section in config.yaml."
+                "No LLM available. Configure the Azure/OpenAI variables in .env."
             )
 
         def call_direct_llm(prompt_key: str) -> Dict[str, Any]:

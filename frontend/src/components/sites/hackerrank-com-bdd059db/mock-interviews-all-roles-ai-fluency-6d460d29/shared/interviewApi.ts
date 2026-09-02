@@ -92,6 +92,10 @@ export function createInterviewSetup(
   customDescription: string,
   profile: ResumeProfile,
 ): InterviewSetup {
+  const workExperience = profile.workExperience
+    ?? (Array.isArray(profile.work_experience) ? profile.work_experience : undefined)
+    ?? (Array.isArray(profile.experiences) ? profile.experiences : []);
+
   return {
     clientId: getAnonymousClientId(),
     sessionId,
@@ -99,7 +103,7 @@ export function createInterviewSetup(
     role,
     level,
     customDescription,
-    workExperience: profile.workExperience ?? [],
+    workExperience,
   };
 }
 

@@ -19,15 +19,12 @@ COPY gateway ./gateway
 COPY services ./services
 COPY infrastructure ./infrastructure
 COPY shared ./shared
-COPY app ./app
 COPY main.py ./main.py
 COPY alembic.ini ./alembic.ini
 COPY alembic ./alembic
 COPY Knowledge ./Knowledge
-COPY models/best.onnx ./models/best.onnx
 
 RUN pip install --no-cache-dir --upgrade pip \
-  && pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
   && pip install --no-cache-dir .
 
 EXPOSE 8000

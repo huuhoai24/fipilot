@@ -7,7 +7,5 @@ __pycache__
 .env
 data
 contents
-models/*
-!models/best.onnx
 *.ipynb
 *.ses

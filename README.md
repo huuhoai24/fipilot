@@ -1,107 +1,148 @@
-# FiPilot - AI-Powered Mock Interview Platform
+# FiPilot
 
-**FiPilot** là nền tảng luyện phỏng vấn kỹ thuật thông minh ứng dụng AI:
-- **Phân tích cấu trúc CV (Resume Layout Extraction)**: Sử dụng mô hình YOLO ONNX và PyMuPDF để nhận diện bố cục, phân loại các khối kinh nghiệm, dự án, kỹ năng.
-- **Sinh câu hỏi phỏng vấn sát thực tế (Adaptive Question Engine)**: Truy xuất dữ liệu chuyên ngành (Knowledge Index) kết hợp cùng thông tin từ CV ứng viên để sinh câu hỏi và bộ tiêu chí chấm điểm (Rubric).
-- **Phỏng vấn thời gian thực bằng giọng nói & văn bản**: Hỗ trợ chuyển đổi giọng nói (STT / TTS) qua Azure Speech Service và giao diện tương tác trực tiếp.
-- **Đánh giá & Chấm điểm tức thì (Real-time Evaluation)**: Chấm điểm từng lượt trả lời (Turn-by-turn evaluation) và tổng kết báo cáo năng lực chi tiết (Final Report).
+FiPilot là nền tảng luyện phỏng vấn kỹ thuật bằng AI. Ứng dụng đọc CV, tạo câu hỏi theo kinh nghiệm thực tế, hỗ trợ trả lời bằng văn bản hoặc giọng nói, chấm từng lượt và lưu báo cáo phỏng vấn.
 
----
+## Demo
 
-## 1. Kiến trúc hệ thống (System Architecture)
+[![Xem video demo FiPilot](docs/demo-cover.jpg)](docs/demo.mp4)
 
+<div align="center">
+  <video src="./docs/demo.mp4" controls width="900">
+    Trình duyệt của bạn không hỗ trợ phát video trực tiếp.
+  </video>
+  <p><a href="./docs/demo.mp4">▶ Xem hoặc tải video demo</a></p>
+</div>
+
+Video web trong repository đã được tối ưu từ bản ghi gốc tại `demo.mp4`.
+
+## Tính năng chính
+
+- Đăng ký, đăng nhập và quản lý phiên bằng HttpOnly cookie.
+- Nhận CV PDF/DOCX, trích xuất nội dung và dùng OCR khi tài liệu là ảnh quét.
+- Chuẩn hóa CV thành hồ sơ có kỹ năng, dự án và kinh nghiệm bằng Azure OpenAI.
+- Sinh câu hỏi theo role, level, CV và kho tri thức chuyên ngành.
+- Đánh giá câu trả lời, đặt câu hỏi đào sâu và tạo báo cáo cuối buổi.
+- Nhận dạng và tổng hợp giọng nói bằng Azure Speech.
+- Lưu CV, phiên phỏng vấn, từng lượt trả lời và báo cáo trong PostgreSQL.
+
+## Kiến trúc
+
+```mermaid
+flowchart LR
+    Browser[Next.js frontend] -->|API proxy| API[FastAPI backend]
+    API --> Document[DocumentService]
+    Document --> OCR[RapidOCR]
+    Document --> ResumeAgent[ResumeAgent]
+    ResumeAgent --> LLM[Azure OpenAI]
+    API --> Interview[Interview engine]
+    Interview --> LLM
+    Interview --> Knowledge[Knowledge base]
+    API --> Speech[Azure Speech]
+    API --> DB[(PostgreSQL)]
 ```
+
+Pipeline CV đang hoạt động:
+
+```text
+PDF/DOCX → DocumentService → PyMuPDF4LLM/python-docx → RapidOCR fallback
+         → ResumeAgent → Azure OpenAI → CandidateProfile → PostgreSQL
+```
+
+Backend chỉ dùng `.env` làm nguồn cấu hình LLM. Không còn pipeline YOLO, model GPU cục bộ hay `config.yaml` riêng.
+
+## Công nghệ
+
+| Thành phần | Công nghệ |
+|---|---|
+| Frontend | Next.js 16, React 19, TypeScript |
+| Backend | Python 3.12, FastAPI, Pydantic |
+| AI | Azure OpenAI, Azure Speech |
+| Document | PyMuPDF4LLM, python-docx, pypdf, RapidOCR |
+| Database | PostgreSQL 17, SQLAlchemy, Alembic |
+| Runtime | uv, npm, Docker |
+
+## Cấu trúc repository
+
+```text
 fipilot/
-├── backend/                       # Backend API & AI Core (Python / FastAPI)
-│   ├── api/                       # RESTful API Endpoints (Auth, Resume, Interview, Speech)
-│   ├── fipilot/                   # Core business logic & AI Pipelines
-│   │   ├── auth.py                # Quản lý User Authentication & Session (Bcrypt, SHA-256)
-│   │   ├── resume_extraction.py   # Pipeline bóc tách Resume (YOLO ONNX + PyMuPDF + LLM)
-│   │   ├── interview_engine.py    # Điều phối tiến trình phỏng vấn & chấm điểm
-│   │   ├── knowledge_index.py     # Tra cứu tri thức ngành nghề (Knowledge Domain)
-│   │   ├── stt.py / tts.py        # Module xử lý giọng nói (Azure Speech + ffmpeg)
-│   │   ├── models.py              # SQLAlchemy Schema (Users, Resumes, Interviews, Sessions)
-│   │   └── persistence.py         # Tầng lưu trữ cơ sở dữ liệu PostgreSQL
-│   ├── models/                    # Lưu trữ mô hình AI (best.onnx)
-│   ├── Knowledge/                 # Cơ sở tri thức theo từng chuyên ngành (AI, Backend, Frontend...)
-│   ├── pyproject.toml / uv.lock   # Quản lý gói phụ thuộc bằng uv
-│   └── alembic/                   # Quản lý Database Migrations
-│
-├── frontend/                      # Giao diện Web (Next.js 16, React 19, TypeScript, Tailwind CSS)
-│   ├── src/app/                   # App Router (Dashboard, Mock Interview Session, Feedback)
-│   ├── src/components/            # UI Components & Mock Interview Stages
-│   └── src/lib/                   # API Proxy, Auth Helpers & Client Identity
-│
-└── docs/                          # Hướng dẫn triển khai (Azure Deploy)
+├── backend/
+│   ├── api/                 # FastAPI app và API v1
+│   ├── core/                # Dependency injection và logging
+│   ├── gateway/api/         # API v2 theo kiến trúc mới
+│   ├── infrastructure/      # Document, OCR, LLM và repository adapters
+│   ├── services/            # Resume scanner và interview agents
+│   ├── shared/schemas/      # Pydantic schemas dùng chung
+│   ├── fipilot/             # Auth, interview engine, speech và persistence
+│   ├── Knowledge/           # Kho tri thức theo role và level
+│   └── alembic/             # Database migrations
+├── frontend/                # Next.js application và API proxy
+├── docs/                    # Tài liệu triển khai và video demo
+└── README.md
 ```
 
----
+## Yêu cầu
 
-## 2. Yêu cầu môi trường (Prerequisites)
+- Python 3.12 trở lên.
+- [uv](https://docs.astral.sh/uv/).
+- Node.js 24 trở lên và npm.
+- Docker Engine với Docker Compose plugin.
+- ffmpeg cho tính năng giọng nói.
+- Một Azure OpenAI chat deployment và Azure Speech resource.
 
-Trước khi bắt đầu, hãy đảm bảo máy tính của bạn đã cài đặt:
-1. **Python**: Phiên bản 3.12 trở lên.
-2. **uv**: Công cụ quản lý môi trường & package Python siêu nhanh (Khuyên dùng thay thế cho pip/venv).
-   - Cài đặt nhanh `uv`:
-     - **Linux/macOS**: `curl -LsSf https://astral.sh/uv/install.sh | sh`
-     - **Windows**: `powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
-3. **Node.js**: Phiên bản 20.x hoặc 24.x (kèm `npm`).
-4. **Docker**: Dùng để chạy PostgreSQL database.
-5. **ffmpeg**: Bắt buộc để xử lý file âm thanh trong quá trình chuyển đổi giọng nói (STT / TTS).
-   - **Linux (Ubuntu/Debian)**: `sudo apt update && sudo apt install -y ffmpeg`
-   - **Linux (Arch/EndeavourOS)**: `sudo pacman -S ffmpeg`
-   - **macOS**: `brew install ffmpeg`
-   - **Windows**: Tải qua [ffmpeg.org](https://ffmpeg.org/download.html) và thêm vào System PATH.
+## Cấu hình
 
----
+### Backend
 
-## 3. Cấu hình biến môi trường (Environment Variables)
+Tạo `backend/.env` từ `backend/.env.example`:
 
-### Cấu hình Backend (`backend/.env`)
-Tạo file `backend/.env` từ file mẫu `backend/.env.example`:
+```bash
+cp backend/.env.example backend/.env
+```
+
+Cập nhật các biến sau:
 
 ```env
-# Database kết nối PostgreSQL cục bộ
 DATABASE_URL=postgresql+psycopg://fipilot:fipilot@127.0.0.1:5432/fipilot
 COOKIE_SECURE=false
 
-# Azure AI Services & LLM Keys
-AZURE_OPENAI_API_KEY="<YOUR_AZURE_OPENAI_API_KEY>"
-AZURE_FOUNDRY_ENDPOINT="https://<your-resource>.services.ai.azure.com"
-AZURE_FOUNDRY_API_KEY="<YOUR_AZURE_FOUNDRY_API_KEY>"
-AZURE_EMBEDDING_MODEL="text-embedding-3-small"
+# Base URL, không dùng full Target URI /chat/completions?... của Azure Portal.
+AZURE_OPENAI_BASE_URL=https://your-resource.openai.azure.com/openai/v1/
+AZURE_OPENAI_API_KEY=your-api-key
 
-# Azure Speech (Voice AI)
-AZURE_SPEECH_KEY="<YOUR_AZURE_SPEECH_KEY>"
-AZURE_SPEECH_REGION="centralindia"
-AZURE_SPEECH_VOICE="en-US-Harper:MAI-Voice-2"
+# Điền deployment name, không phải endpoint và không phải embedding deployment.
+AZURE_OPENAI_DEPLOYMENT=your-chat-deployment
+AZURE_OPENAI_SIMPLE_DEPLOYMENT=your-chat-deployment
+AZURE_OPENAI_COMPLEX_DEPLOYMENT=your-chat-deployment
 
-# HuggingFace (Tùy chọn tải layout model bổ sung)
-HUGGINGFACE_API_KEY="<YOUR_HF_TOKEN>"
+AZURE_EMBEDDING_MODEL=text-embedding-3-small
+
+AZURE_SPEECH_KEY=your-speech-key
+AZURE_SPEECH_REGION=your-speech-region
+AZURE_SPEECH_VOICE=vi-VN-HoaiMyNeural
 ```
 
-### Cấu hình Frontend (`frontend/.env.local`)
-Tạo file `frontend/.env.local` (nếu chạy local thì Next.js tự động mặc định proxy về `http://localhost:8000`):
+Không commit `backend/.env`. Các file `.env.*` chứa secret cũng được ignore, ngoại trừ `.env.example`.
+
+### Frontend
+
+Tạo `frontend/.env.local`:
 
 ```env
-RESUME_API_URL=http://localhost:8000
+RESUME_API_URL=http://127.0.0.1:8000
 ```
 
----
+## Chạy local
 
-## 4. Hướng dẫn cài đặt & Khởi chạy End-to-End với `uv` (Local)
-
-### Bước 1: Khởi động Cơ sở dữ liệu (PostgreSQL)
-
-Mở Terminal và chạy:
+### 1. PostgreSQL
 
 ```bash
 cd backend
+docker compose up -d postgres
+```
 
-# Cách 1: Khởi động container có sẵn
-docker start fipilot-postgres
+Nếu máy không có Compose:
 
-# Hoặc Cách 2: Tạo mới container nếu chưa từng tạo
+```bash
 docker run --name fipilot-postgres \
   -e POSTGRES_DB=fipilot \
   -e POSTGRES_USER=fipilot \
@@ -111,73 +152,96 @@ docker run --name fipilot-postgres \
   -d postgres:17-alpine
 ```
 
----
-
-### Bước 2: Đồng bộ Dependencies & Khởi chạy Backend với `uv`
-
-Tại thư mục `backend`:
+### 2. Backend
 
 ```bash
 cd backend
-
-# 1. Cài đặt và đồng bộ toàn bộ dependencies từ uv.lock (Tự động tạo .venv nếu chưa có)
 uv sync
-
-# 2. Chạy Database Migrations để tạo bảng
 uv run alembic upgrade head
-
-# 3. Khởi động Backend Server (Port 8000)
 uv run uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-> 🔍 **Kiểm tra Backend**: Mở trình duyệt truy cập Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+Kiểm tra:
 
----
+- Health: <http://127.0.0.1:8000/health>
+- Swagger UI: <http://127.0.0.1:8000/docs>
 
-### Bước 3: Cài đặt Dependencies & Khởi chạy Frontend
+### 3. Frontend
 
-Mở một cửa sổ Terminal mới:
+Mở terminal khác:
 
 ```bash
 cd frontend
-
-# 1. Cài đặt các gói npm
 npm install
-
-# 2. Khởi chạy Next.js Development Server (Port 3000)
 npm run dev
 ```
 
-> 🌐 **Truy cập Ứng dụng**: Mở trình duyệt vào [http://localhost:3000](http://localhost:3000)
+Mở <http://localhost:3000>.
 
----
+## Luồng sử dụng
 
-## 5. Quy trình trải nghiệm người dùng (End-to-End Flow)
+1. Tạo tài khoản hoặc đăng nhập.
+2. Chọn vị trí và cấp độ phỏng vấn.
+3. Upload CV PDF/DOCX.
+4. Kiểm tra thiết bị và bắt đầu phỏng vấn.
+5. Trả lời bằng microphone hoặc văn bản.
+6. Xem báo cáo và lịch sử phỏng vấn.
 
-1. **Đăng ký & Đăng nhập**:
-   - Nhấn nút **"Try for free"** hoặc **"Sign In"** ở góc phải trên.
-   - Nhập thông tin để tạo tài khoản hoặc đăng nhập. Hệ thống sẽ cấp phát phiên làm việc an toàn (`HttpOnly Cookie`).
-2. **Chọn Role & Tải CV**:
-   - Lựa chọn vị trí muốn phỏng vấn (ví dụ: *AI Engineer, Backend Developer, Frontend Developer...*) và cấp độ (*Junior, Middle, Senior*).
-   - Tải lên file CV định dạng `.pdf`. Mô hình YOLO ONNX sẽ tự động phân tích khối và trích xuất dự án/kỹ năng.
-3. **Tiến hành Phỏng vấn**:
-   - Hệ thống phát câu chào bằng giọng nói và đặt câu hỏi mở đầu.
-   - Ứng viên có thể trả lời bằng **Microphone (giọng nói)** hoặc bật khung **Chat** để gõ văn bản.
-   - AI chấm điểm theo rubric, phản hồi và đặt câu hỏi đào sâu (Follow-up questions).
-4. **Xem Báo cáo Tổng kết (Feedback Report)**:
-   - Kết thúc buổi phỏng vấn, hệ thống tự động tổng hợp toàn bộ các turn hỏi - đáp.
-   - Hiển thị điểm số chuẩn hóa, điểm mạnh, điểm yếu và các đề xuất cải thiện chuyên môn.
-   - Lịch sử buổi phỏng vấn sẽ được lưu lại trong mục **Interview History** trên Dashboard.
+## API chính
 
----
+| Method | Endpoint | Mục đích |
+|---|---|---|
+| `GET` | `/health` | Kiểm tra service và cấu hình database |
+| `POST` | `/api/v1/auth/register` | Tạo tài khoản |
+| `POST` | `/api/v1/auth/login` | Đăng nhập |
+| `GET` | `/api/v1/auth/me` | Lấy người dùng hiện tại |
+| `POST` | `/api/v1/resume/upload` | Upload và phân tích CV |
+| `GET` | `/api/v1/resumes/latest` | Lấy CV gần nhất |
+| `POST` | `/api/v1/interview/questions` | Sinh câu hỏi đầu tiên |
+| `POST` | `/api/v1/interview/next` | Chấm câu trả lời và sinh câu tiếp theo |
+| `POST` | `/api/v1/interview/report` | Tạo báo cáo cuối buổi |
+| `GET` | `/api/v1/interviews` | Lấy lịch sử phỏng vấn |
+| `POST` | `/api/v1/speech` | Tổng hợp giọng nói |
+| `POST` | `/api/v1/speech/recognize` | Nhận dạng giọng nói |
 
-## 6. Hướng dẫn Triển khai lên Cloud (Deploy to Azure)
+Các endpoint v2 vẫn được giữ tại `/api/v2` cho pipeline service/gateway mới. Xem schema đầy đủ trong Swagger UI.
 
-Dự án đã được đóng gói sẵn Docker tối ưu và có thể deploy lên **Azure Container Apps**:
+## Kiểm thử
 
-- **Chi tiết các bước triển khai Azure**: Tham khảo file tài liệu [`docs/AZURE_DEPLOY.md`](docs/AZURE_DEPLOY.md).
-- **Tóm tắt quy trình deploy Azure**:
-  1. Tạo Azure Container Registry (ACR) và PostgreSQL Flexible Server.
-  2. Build và Push Docker Image cho Backend và Frontend.
-  3. Deploy 2 Container Apps (`fipilot-backend` và `fipilot-frontend`).
-  4. Chạy `alembic upgrade head` trực tiếp trong Backend Container App để khởi tạo Database.
+```bash
+cd backend
+uv run python -m unittest discover -s test -p 'test_*.py' -v
+uv run python -m compileall -q api core fipilot gateway infrastructure services shared
+
+cd ../frontend
+npm run typecheck -- --incremental false
+```
+
+## Docker
+
+Build backend:
+
+```bash
+docker build -t fipilot-backend ./backend
+```
+
+Docker image không còn cài Torch/Ultralytics hoặc copy model YOLO. Database migration cần được chạy trước khi phục vụ request có persistence.
+
+## Triển khai
+
+Hướng dẫn triển khai Azure Container Apps, ACR và PostgreSQL Flexible Server nằm tại [docs/AZURE_DEPLOY.md](docs/AZURE_DEPLOY.md).
+
+Khi chạy production:
+
+- Đặt `COOKIE_SECURE=true`.
+- Quản lý API key bằng secret store, không ghi trực tiếp vào image.
+- Chỉ cho phép origin frontend tin cậy tại lớp ingress/API gateway.
+- Chạy `alembic upgrade head` cho mỗi phiên bản schema mới.
+
+## Trạng thái bàn giao
+
+- Pipeline CV hiện tại: `DocumentService → ResumeAgent → PostgreSQL`.
+- LLM chat: cấu hình thống nhất qua `.env`.
+- Knowledge base được giữ lại vì interview engine sử dụng lúc tạo câu hỏi.
+- Script vá tạm, notebook thử nghiệm, Azure ML prototype, log/debug artifact và SQLite cũ đã được loại bỏ.
+- Backend unit tests, OpenAPI schema, document smoke-test, frontend typecheck và Docker build đã được xác nhận.

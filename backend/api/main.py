@@ -50,7 +50,6 @@ app.include_router(_interview_router)
 MAX_FILE_SIZE = 10 * 1024 * 1024
 MAX_AUDIO_SIZE = 20 * 1024 * 1024
 
-_extractor = None
 _question_llm = None
 
 
@@ -107,15 +106,6 @@ class InterviewReportRequest(BaseModel):
     role: str = Field(min_length=1, max_length=200)
     level: str = Field(min_length=1, max_length=50)
     turns: list[InterviewTurnRequest] = Field(default_factory=list, max_length=30)
-
-
-def get_extractor():
-    global _extractor
-    if _extractor is None:
-        from fipilot.resume_extraction import ResumeExtract
-
-        _extractor = ResumeExtract()
-    return _extractor
 
 
 def get_question_llm():

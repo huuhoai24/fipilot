@@ -9,6 +9,8 @@ wheels/
 # Virtual environments
 .venv
 .env
+.env.*
+!.env.example
 .ipynb_checkpoints/
 
 # FE
@@ -29,3 +31,5 @@ models/
 backend/test/page_image/
 backend/SmartResume_git/
 backend/SmartResume_hungingface/
+backend/contents/
+/demo.mp4
